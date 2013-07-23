@@ -13,6 +13,6 @@ bin/
 
 # Android Studio project ignores
 .idea/
-common.iml
+support.iml
 gen-external-apklibs/
 out/

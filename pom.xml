@@ -8,11 +8,11 @@
     <version>9-SNAPSHOT</version>
   </parent>
 
-  <artifactId>common</artifactId>
+  <artifactId>support</artifactId>
   <version>0.1.0-SNAPSHOT</version>
   <packaging>jar</packaging>
 
-  <name>Common Android Functionality</name>
+  <name>GTO Android Support</name>
 
   <build>
     <sourceDirectory>${project.basedir}/src/main/java</sourceDirectory>
