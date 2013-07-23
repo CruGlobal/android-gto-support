@@ -14,6 +14,14 @@
 
   <name>GTO Android Support</name>
 
+  <dependencies>
+    <dependency>
+      <groupId>com.android.support</groupId>
+      <artifactId>support-v4</artifactId>
+      <optional>true</optional>
+    </dependency>
+  </dependencies>
+
   <build>
     <sourceDirectory>${project.basedir}/src/main/java</sourceDirectory>
   </build>
