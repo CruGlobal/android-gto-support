@@ -1,5 +1,6 @@
 package org.ccci.gto.android.common.db;
 
+import android.content.ContentValues;
 import android.database.Cursor;
 
 public abstract class AbstractMapper<T> implements Mapper<T> {
@@ -50,5 +51,19 @@ public abstract class AbstractMapper<T> implements Mapper<T> {
     protected final String getString(final Cursor c, final String field, final String defValue) {
         final int index = c.getColumnIndex(field);
         return index != -1 ? c.getString(index) : defValue;
+    }
+
+    @Override
+    public final ContentValues toContentValues(final T obj, final String[] projection) {
+        // only add values in the projection
+        final ContentValues values = new ContentValues();
+        for (final String field : projection) {
+            this.mapField(values, field, obj);
+        }
+        return values;
+    }
+
+    protected void mapField(final ContentValues values, final String field, final T obj) {
+        // ignore unrecognized fields
     }
 }
