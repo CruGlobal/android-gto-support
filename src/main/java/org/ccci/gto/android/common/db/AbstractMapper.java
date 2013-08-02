@@ -66,4 +66,11 @@ public abstract class AbstractMapper<T> implements Mapper<T> {
     protected void mapField(final ContentValues values, final String field, final T obj) {
         // ignore unrecognized fields
     }
+
+    protected abstract T newObject(final Cursor c);
+
+    @Override
+    public T toObject(final Cursor c) {
+        return this.newObject(c);
+    }
 }
