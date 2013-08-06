@@ -8,12 +8,22 @@ import android.util.Pair;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 public abstract class AbstractDao {
     protected final SQLiteOpenHelper dbHelper;
+    private final Executor asyncExecutor;
 
     protected AbstractDao(final SQLiteOpenHelper dbHelper) {
         this.dbHelper = dbHelper;
+        this.asyncExecutor = Executors.newFixedThreadPool(1);
+        if(this.asyncExecutor instanceof ThreadPoolExecutor) {
+            ((ThreadPoolExecutor) this.asyncExecutor).setKeepAliveTime(30, TimeUnit.SECONDS);
+            ((ThreadPoolExecutor) this.asyncExecutor).allowCoreThreadTimeOut(true);
+        }
     }
 
     protected String getTable(final Class<?> clazz) {
@@ -232,6 +242,10 @@ public abstract class AbstractDao {
         } finally {
             db.endTransaction();
         }
+    }
+
+    public final void async(final Runnable task) {
+        this.asyncExecutor.execute(task);
     }
 
     public final Transaction newTransaction() {
