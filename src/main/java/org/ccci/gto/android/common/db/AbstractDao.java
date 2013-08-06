@@ -205,6 +205,23 @@ public abstract class AbstractDao {
         }
     }
 
+    public final void updateOrInsert(final Object obj, final String[] projection) {
+        final SQLiteDatabase db = this.dbHelper.getWritableDatabase();
+        db.beginTransaction();
+        try {
+            final Pair<String, String[]> where = this.getPrimaryKeyWhere(obj);
+            final Object existing = this.find(obj.getClass(), where.second);
+            if (existing != null) {
+                this.update(obj, projection);
+            } else {
+                this.insert(obj);
+            }
+            db.setTransactionSuccessful();
+        } finally {
+            db.endTransaction();
+        }
+    }
+
     public final void delete(final Object obj) {
         final SQLiteDatabase db = this.dbHelper.getWritableDatabase();
         db.beginTransaction();
