@@ -153,7 +153,7 @@ public abstract class AbstractDao {
         return null;
     }
 
-    public final <T> void insert(final T obj) {
+    public final void insert(final Object obj) {
         this.insert(obj, SQLiteDatabase.CONFLICT_NONE);
     }
 
@@ -185,7 +185,7 @@ public abstract class AbstractDao {
         }
     }
 
-    public final <T> void update(final T obj) {
+    public final void update(final Object obj) {
         this.update(obj, this.getFullProjection(obj.getClass()));
     }
 
@@ -205,15 +205,12 @@ public abstract class AbstractDao {
         }
     }
 
-    public final <T> void delete(final T obj) {
-        @SuppressWarnings("unchecked")
-        final Class<T> clazz = (Class<T>) obj.getClass();
-
+    public final void delete(final Object obj) {
         final SQLiteDatabase db = this.dbHelper.getWritableDatabase();
         db.beginTransaction();
         try {
             final Pair<String, String[]> where = this.getPrimaryKeyWhere(obj);
-            db.delete(this.getTable(clazz), where.first, where.second);
+            db.delete(this.getTable(obj.getClass()), where.first, where.second);
             db.setTransactionSuccessful();
         } finally {
             db.endTransaction();
