@@ -1,6 +1,10 @@
 package org.ccci.gto.android.common.support.v4.fragment;
 
+import android.database.Cursor;
+import android.os.Build;
 import android.support.v4.app.ListFragment;
+import android.widget.CursorAdapter;
+import android.widget.ListAdapter;
 
 import org.ccci.gto.android.common.support.v4.util.FragmentUtils;
 
@@ -11,5 +15,18 @@ public class AbstractListFragment extends ListFragment {
 
     protected final <T> T getListener(final Class<T> clazz) {
         return FragmentUtils.getListener(this, clazz);
+    }
+
+    protected void swapCursor(final Cursor cursor) {
+        final ListAdapter adapter = getListAdapter();
+        if (adapter instanceof CursorAdapter) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+                ((CursorAdapter) adapter).swapCursor(cursor);
+            } else {
+                ((CursorAdapter) adapter).changeCursor(cursor);
+            }
+        } else if (adapter instanceof android.support.v4.widget.CursorAdapter) {
+            ((android.support.v4.widget.CursorAdapter) adapter).swapCursor(cursor);
+        }
     }
 }
