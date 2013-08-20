@@ -4,11 +4,11 @@ import android.content.Context;
 import android.content.IntentFilter;
 import android.support.v4.content.AsyncTaskLoader;
 
-public abstract class BroadcastReceiverAsyncTaskLoader<T> extends AsyncTaskLoader<T>
+public abstract class AsyncTaskBroadcastReceiverLoader<T> extends AsyncTaskLoader<T>
         implements BroadcastReceiverLoaderHelper.Interface {
     private final BroadcastReceiverLoaderHelper helper;
 
-    public BroadcastReceiverAsyncTaskLoader(final Context context, final IntentFilter... filters) {
+    public AsyncTaskBroadcastReceiverLoader(final Context context, final IntentFilter... filters) {
         super(context);
         this.helper = new BroadcastReceiverLoaderHelper(this, filters);
     }

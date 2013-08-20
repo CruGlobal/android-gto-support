@@ -5,11 +5,11 @@ import android.content.IntentFilter;
 import android.database.Cursor;
 import android.support.v4.content.CursorLoader;
 
-public abstract class BroadcastReceiverCursorLoader extends CursorLoader
+public abstract class CursorBroadcastReceiverLoader extends CursorLoader
         implements BroadcastReceiverLoaderHelper.Interface {
     private final BroadcastReceiverLoaderHelper helper;
 
-    public BroadcastReceiverCursorLoader(final Context context, final IntentFilter... filters) {
+    public CursorBroadcastReceiverLoader(final Context context, final IntentFilter... filters) {
         super(context);
         this.helper = new BroadcastReceiverLoaderHelper(this, filters);
     }
