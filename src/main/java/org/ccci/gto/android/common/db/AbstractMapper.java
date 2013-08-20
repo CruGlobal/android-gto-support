@@ -3,6 +3,8 @@ package org.ccci.gto.android.common.db;
 import android.content.ContentValues;
 import android.database.Cursor;
 
+import org.ccci.gto.android.common.util.CursorUtils;
+
 public abstract class AbstractMapper<T> implements Mapper<T> {
     /**
      * returns a boolean value stored in the specified column. (SQLite doesn't
@@ -31,12 +33,11 @@ public abstract class AbstractMapper<T> implements Mapper<T> {
     }
 
     protected final int getInt(final Cursor c, final String field, final int defValue) {
-        final int index = c.getColumnIndex(field);
-        return index != -1 ? c.getInt(index) : defValue;
+        return CursorUtils.getInt(c,field,defValue);
     }
 
     protected final long getLong(final Cursor c, final String field) {
-        return this.getInt(c, field, 0);
+        return CursorUtils.getLong(c,field);
     }
 
     protected final long getLong(final Cursor c, final String field, final long defValue) {
