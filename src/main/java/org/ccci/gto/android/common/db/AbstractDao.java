@@ -27,7 +27,7 @@ public abstract class AbstractDao {
     }
 
     protected String getTable(final Class<?> clazz) {
-        throw new IllegalArgumentException("invalid class specified");
+        throw new IllegalArgumentException("invalid class specified: " + (clazz != null ? clazz.getName() : null));
     }
 
     protected String[] getFullProjection(final Class<?> clazz) {
