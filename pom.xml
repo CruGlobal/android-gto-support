@@ -20,6 +20,11 @@
       <artifactId>support-v4</artifactId>
       <optional>true</optional>
     </dependency>
+    <dependency>
+      <groupId>me.thekey.android</groupId>
+      <artifactId>thekey-api</artifactId>
+      <version>0.4.0-SNAPSHOT</version>
+    </dependency>
   </dependencies>
 
   <build>
