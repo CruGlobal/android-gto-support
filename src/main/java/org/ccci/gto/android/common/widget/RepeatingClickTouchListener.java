@@ -1,5 +1,6 @@
 package org.ccci.gto.android.common.widget;
 
+import android.util.Pair;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -7,53 +8,70 @@ public class RepeatingClickTouchListener implements View.OnTouchListener {
     private long initialDelay = 500;
     private long repeatingDelay = 100;
 
-    private Runnable task;
+    private Pair<View, Runnable> task;
+    private boolean fired = false;
 
     @Override
     public boolean onTouch(final View v, final MotionEvent event) {
-        int action = event.getAction();
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                //Just to be sure that we removed all callbacks,
-                // which should have occurred in the ACTION_UP
-                v.removeCallbacks(this.task);
-
-                //Perform the default click action.
-                v.performClick();
+                // reset any currently running task
+                this.resetTask();
 
                 // create a runnable task for the view
-                this.createTask(v);
+                this.task = this.createTask(v);
+                this.fired = false;
 
-                //Schedule the start of repetitions after the initial delay.
-                v.postDelayed(this.task, this.initialDelay);
+                // Schedule the start of repetitions after the initial delay.
+                v.postDelayed(this.task.second, this.initialDelay);
 
-                return true;
+                return false;
             case MotionEvent.ACTION_UP:
-                //Cancel any repetition in progress.
-                v.removeCallbacks(this.task);
+                // should we consume this event?
+                final boolean consumed = this.fired;
 
-                // reset task
-                this.task = null;
+                // reset any currently running task
+                this.resetTask();
 
-                return true;
+                // did we consume the event?
+                return consumed;
+            case MotionEvent.ACTION_CANCEL:
+                // reset any currently running task
+                this.resetTask();
+
+                // never consume cancel events
+                return false;
         }
 
-        // we didn't consume the event, so let other handlers possible take it
+        // we didn't handle the event, so don't consume it
         return false;
     }
 
-    private void createTask(final View v) {
-        this.task = new Runnable() {
+    private Pair<View,Runnable> createTask(final View v) {
+        return Pair.create(v, (Runnable) new Runnable() {
             @Override
             public void run() {
                 // Perform the present repetition of the click action provided by the user
                 // in setOnClickListener().
-                v.performClick();
+                if(v.isPressed()) {
+                    v.performClick();
+                    fired = true;
+                }
 
                 // Schedule the next repetitions of the click action, using a faster repeat
                 // interval than the initial repeat delay interval.
-                v.postDelayed(task, repeatingDelay);
+                v.postDelayed(this, repeatingDelay);
             }
-        };
+        });
+    }
+
+    public void resetTask() {
+        if(this.task != null) {
+            //Cancel any repetition in progress.
+            this.task.first.removeCallbacks(this.task.second);
+
+            // clear the task
+            this.task = null;
+        }
     }
 }
