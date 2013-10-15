@@ -31,7 +31,7 @@ public abstract class AbstractDao {
     }
 
     protected String[] getFullProjection(final Class<?> clazz) {
-        throw new IllegalArgumentException("invalid class specified");
+        throw new IllegalArgumentException("invalid class specified: " + (clazz != null ? clazz.getName() : null));
     }
 
     protected String getJoin(final Class<?> base, final String type, final Class<?> join) {
@@ -39,7 +39,7 @@ public abstract class AbstractDao {
     }
 
     protected Pair<String, String[]> getPrimaryKeyWhere(final Class<?> clazz, final Object... key) {
-        throw new IllegalArgumentException("invalid class specified");
+        throw new IllegalArgumentException("invalid class specified: " + (clazz != null ? clazz.getName() : null));
     }
 
     protected Pair<String, String[]> getPrimaryKeyWhere(final Object obj) {
