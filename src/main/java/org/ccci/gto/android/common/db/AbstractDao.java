@@ -50,15 +50,15 @@ public abstract class AbstractDao {
         throw new IllegalArgumentException("invalid class specified");
     }
 
-    public String buildJoin(final Class<?> clazz) {
+    public final String buildJoin(final Class<?> clazz) {
         return this.buildJoin(clazz, null, null);
     }
 
-    public String buildJoin(final Class<?> clazz, final String type) {
+    public final String buildJoin(final Class<?> clazz, final String type) {
         return this.buildJoin(clazz, type, null);
     }
 
-    public String buildJoin(final Class<?> clazz, final String type, final String on) {
+    public final String buildJoin(final Class<?> clazz, final String type, final String on) {
         final StringBuilder sb = new StringBuilder(32 + (type != null ? type.length() + 1 : 0) +
                                                            (on != null ? on.length() + 4 : 0));
         if (type != null) {
@@ -71,21 +71,21 @@ public abstract class AbstractDao {
         return sb.toString();
     }
 
-    public Cursor getCursor(final Class<?> clazz) {
+    public final Cursor getCursor(final Class<?> clazz) {
         return getCursor(clazz, null, null, null);
     }
 
-    public Cursor getCursor(final Class<?> clazz, final String whereClause, final String[] whereBindValues,
+    public final Cursor getCursor(final Class<?> clazz, final String whereClause, final String[] whereBindValues,
                             final String orderBy) {
         return getCursor(clazz, (String[]) null, this.getFullProjection(clazz), whereClause, whereBindValues, orderBy);
     }
 
-    public Cursor getCursor(final Class<?> clazz, final String[] projection, final String whereClause,
+    public final Cursor getCursor(final Class<?> clazz, final String[] projection, final String whereClause,
                             final String[] whereBindValues, final String orderBy) {
         return getCursor(clazz, (String[]) null, projection, whereClause, whereBindValues, orderBy);
     }
 
-    public Cursor getCursor(final Class<?> clazz, final Pair<String, Class<?>>[] joins, final String[] projection,
+    public final Cursor getCursor(final Class<?> clazz, final Pair<String, Class<?>>[] joins, final String[] projection,
                             final String whereClause, final String[] whereBindValues, final String orderBy) {
         // process joins
         final String[] rawJoins = new String[joins.length];
@@ -96,7 +96,7 @@ public abstract class AbstractDao {
         return getCursor(clazz, rawJoins, projection, whereClause, whereBindValues, orderBy);
     }
 
-    public Cursor getCursor(final Class<?> clazz, final String[] joins, final String[] projection,
+    public final Cursor getCursor(final Class<?> clazz, final String[] joins, final String[] projection,
                             final String whereClause, final String[] whereBindValues, final String orderBy) {
         final String table = this.getTable(clazz) + (joins != null ? TextUtils.join(" ", joins) : "");
 
@@ -116,15 +116,15 @@ public abstract class AbstractDao {
      * @param clazz the type of object to retrieve
      * @return
      */
-    public <T> List<T> get(final Class<T> clazz) {
+    public final <T> List<T> get(final Class<T> clazz) {
         return this.get(clazz, null, null, null);
     }
 
-    public <T> List<T> get(final Class<T> clazz, final String whereClause, final String[] whereBindValues) {
+    public final <T> List<T> get(final Class<T> clazz, final String whereClause, final String[] whereBindValues) {
         return this.get(clazz, whereClause, whereBindValues, null);
     }
 
-    public <T> List<T> get(final Class<T> clazz, final String whereClause, final String[] whereBindValues,
+    public final <T> List<T> get(final Class<T> clazz, final String whereClause, final String[] whereBindValues,
                            final String orderBy) {
         // load all rows from the cursor
         final List<T> results = new ArrayList<T>();
