@@ -38,6 +38,10 @@ public abstract class AbstractGtoSmxApi {
     private final TheKey thekey;
     private final Uri apiUri;
 
+    protected AbstractGtoSmxApi(final Context context, final TheKey thekey, final String prefFile, final int apiUriResource) {
+        this(context, thekey, prefFile, context.getString(apiUriResource));
+    }
+
     protected AbstractGtoSmxApi(final Context context, final TheKey thekey, final String prefFile,
                                 final String apiUri) {
         this(context, thekey, prefFile, Uri.parse(apiUri.endsWith("/") ? apiUri : apiUri + "/"));
