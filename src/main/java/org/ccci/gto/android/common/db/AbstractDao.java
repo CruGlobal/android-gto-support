@@ -1,8 +1,10 @@
 package org.ccci.gto.android.common.db;
 
+import android.annotation.TargetApi;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.os.Build;
 import android.text.TextUtils;
 import android.util.Pair;
 
@@ -17,12 +19,15 @@ public abstract class AbstractDao {
     protected final SQLiteOpenHelper dbHelper;
     private final Executor asyncExecutor;
 
+    @TargetApi(Build.VERSION_CODES.GINGERBREAD)
     protected AbstractDao(final SQLiteOpenHelper dbHelper) {
         this.dbHelper = dbHelper;
         this.asyncExecutor = Executors.newFixedThreadPool(1);
         if(this.asyncExecutor instanceof ThreadPoolExecutor) {
             ((ThreadPoolExecutor) this.asyncExecutor).setKeepAliveTime(30, TimeUnit.SECONDS);
-            ((ThreadPoolExecutor) this.asyncExecutor).allowCoreThreadTimeOut(true);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD) {
+                ((ThreadPoolExecutor) this.asyncExecutor).allowCoreThreadTimeOut(true);
+            }
         }
     }
 
