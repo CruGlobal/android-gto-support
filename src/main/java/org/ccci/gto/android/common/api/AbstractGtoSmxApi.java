@@ -14,13 +14,13 @@ import org.ccci.gto.android.common.util.IOUtils;
 import org.ccci.gto.android.common.util.UriUtils;
 
 import java.io.IOException;
+import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
@@ -31,6 +31,8 @@ public abstract class AbstractGtoSmxApi {
     private static final String PREF_SESSIONID = "session_id";
     private static final String PREF_SESSIONGUID = "session_guid";
 
+    private static final int DEFAULT_ATTEMPTS = 3;
+
     private static final Object LOCK_SESSION = new Object();
 
     private final String prefFile;
@@ -38,7 +40,8 @@ public abstract class AbstractGtoSmxApi {
     private final TheKey thekey;
     private final Uri apiUri;
 
-    protected AbstractGtoSmxApi(final Context context, final TheKey thekey, final String prefFile, final int apiUriResource) {
+    protected AbstractGtoSmxApi(final Context context, final TheKey thekey, final String prefFile,
+                                final int apiUriResource) {
         this(context, thekey, prefFile, context.getString(apiUriResource));
     }
 
@@ -106,39 +109,55 @@ public abstract class AbstractGtoSmxApi {
         }
     }
 
+    @Deprecated
     protected final HttpURLConnection apiGetRequest(final String path)
             throws ApiSocketException, InvalidSessionApiException {
-        return this.apiGetRequest(path, Collections.<Pair<String, String>>emptyList(), false);
+        return this.sendRequest(new Request(path));
     }
 
+    @Deprecated
     protected final HttpURLConnection apiGetRequest(final boolean useSession, final String path)
             throws ApiSocketException, InvalidSessionApiException {
-        return this.apiGetRequest(useSession, path, Collections.<Pair<String, String>>emptyList(), false);
+        final Request request = new Request(path);
+        request.useSession = useSession;
+        return this.sendRequest(request);
     }
 
+    @Deprecated
     protected final HttpURLConnection apiGetRequest(final String path, final Collection<Pair<String, String>> params,
                                                     final boolean replaceParams)
             throws ApiSocketException, InvalidSessionApiException {
-        return this.apiGetRequest(true, path, params, replaceParams);
+        final Request request = new Request(path);
+        request.params.addAll(params);
+        request.replaceParams = replaceParams;
+        return this.sendRequest(request);
     }
 
+    @Deprecated
     protected final HttpURLConnection apiGetRequest(final boolean useSession, final String path,
                                                     final Collection<Pair<String, String>> params,
                                                     final boolean replaceParams)
             throws ApiSocketException, InvalidSessionApiException {
-        return this.apiGetRequest(useSession, path, params, replaceParams, 3);
+        final Request request = new Request(path);
+        request.useSession = useSession;
+        request.params.addAll(params);
+        request.replaceParams = replaceParams;
+        return this.sendRequest(request);
     }
 
-    protected final HttpURLConnection apiGetRequest(final boolean useSession, final String path,
-                                                    final Collection<Pair<String, String>> params,
-                                                    final boolean replaceParams, final int attempts)
+    protected final HttpURLConnection sendRequest(final Request request)
+            throws ApiSocketException, InvalidSessionApiException {
+        return this.sendRequest(request, DEFAULT_ATTEMPTS);
+    }
+
+    protected final HttpURLConnection sendRequest(final Request request, final int attempts)
             throws ApiSocketException, InvalidSessionApiException {
         try {
             try {
                 // build the request uri
                 Pair<String, String> session = null;
                 final Uri.Builder uri = this.apiUri.buildUpon();
-                if (useSession) {
+                if (request.useSession) {
                     // get the session, establish a session if one doesn't exist or if we have a stale session
                     synchronized (LOCK_SESSION) {
                         session = this.getSession();
@@ -156,26 +175,49 @@ public abstract class AbstractGtoSmxApi {
                     // use the current sessionId in the url
                     uri.appendPath(session.first);
                 }
-                uri.appendEncodedPath(path);
-                if (params.size() > 0) {
-                    if (replaceParams) {
+                uri.appendEncodedPath(request.path);
+                if (request.params.size() > 0) {
+                    if (request.replaceParams) {
                         final List<String> keys = new ArrayList<String>();
-                        for (final Pair<String, String> param : params) {
+                        for (final Pair<String, String> param : request.params) {
                             keys.add(param.first);
                         }
                         UriUtils.removeQueryParams(uri, keys.toArray(new String[keys.size()]));
                     }
-                    for (final Pair<String, String> param : params) {
+                    for (final Pair<String, String> param : request.params) {
                         uri.appendQueryParameter(param.first, param.second);
                     }
                 }
 
-                // open the connection
+                // build base request object
                 final HttpURLConnection conn = (HttpURLConnection) new URL(uri.build().toString()).openConnection();
+                conn.setRequestMethod(request.method);
+                if (request.contentType != null) {
+                    conn.addRequestProperty("Content-Type", request.contentType);
+                }
                 conn.setInstanceFollowRedirects(false);
 
+                // POST/PUT requests
+                if ("POST".equals(request.method) || "PUT".equals(request.method)) {
+                    conn.setDoOutput(true);
+                    final String data = request.content != null ? request.content : "";
+                    conn.setRequestProperty("Content-Length", Integer.toString(data.length()));
+                    conn.setUseCaches(false);
+                    OutputStream out = null;
+                    try {
+                        out = conn.getOutputStream();
+                        out.write(data.getBytes("UTF-8"));
+                    } finally {
+                        if (out != null) {
+                            out.close();
+                        }
+                    }
+                }
+
+                // no need to explicitly execute, accessing the response triggers the execute
+
                 // check for an expired session
-                if (useSession && conn.getResponseCode() == HTTP_UNAUTHORIZED) {
+                if (request.useSession && conn.getResponseCode() == HTTP_UNAUTHORIZED) {
                     // determine the type of auth requested
                     String auth = conn.getHeaderField("WWW-Authenticate");
                     if (auth != null) {
@@ -196,6 +238,7 @@ public abstract class AbstractGtoSmxApi {
                         // reset the session
                         synchronized (LOCK_SESSION) {
                             // only reset if this is still the same session
+                            assert session != null;
                             if (session.equals(this.getSession())) {
                                 this.setSession(null);
                             }
@@ -216,7 +259,7 @@ public abstract class AbstractGtoSmxApi {
         } catch (final InvalidSessionApiException e) {
             // retry request on invalid session exceptions
             if (attempts > 0) {
-                return this.apiGetRequest(useSession, path, params, replaceParams, attempts - 1);
+                return this.sendRequest(request, attempts - 1);
             }
 
             // propagate the exception
@@ -224,7 +267,7 @@ public abstract class AbstractGtoSmxApi {
         } catch (final ApiSocketException e) {
             // retry request on socket exceptions (maybe spotty internet)
             if (attempts > 0) {
-                return this.apiGetRequest(useSession, path, params, replaceParams, attempts - 1);
+                return this.sendRequest(request, attempts - 1);
             }
 
             // propagate the exception
@@ -233,9 +276,11 @@ public abstract class AbstractGtoSmxApi {
     }
 
     public String getService() throws ApiSocketException {
+        final Request request = new Request("auth/service");
+        request.useSession = false;
         HttpURLConnection conn = null;
         try {
-            conn = this.apiGetRequest(false, "auth/service");
+            conn = this.sendRequest(request);
 
             if (conn != null && conn.getResponseCode() == HTTP_OK) {
                 return IOUtils.readString(conn.getInputStream());
@@ -282,6 +327,28 @@ public abstract class AbstractGtoSmxApi {
             throw new ApiSocketException(e);
         } finally {
             IOUtils.closeQuietly(conn);
+        }
+    }
+
+    /**
+     * class that represents a request being sent to the api
+     */
+    public static class Request {
+        public String method = "GET";
+
+        // uri attributes
+        public boolean useSession = true;
+        protected final String path;
+        public final Collection<Pair<String, String>> params = new ArrayList<Pair<String, String>>();
+        public boolean replaceParams = false;
+
+        // POST/PUT data
+        public String contentType = null;
+        public String content = null;
+
+        public Request(final String path) {
+            assert path != null : "request path cannot be null";
+            this.path = path;
         }
     }
 }
