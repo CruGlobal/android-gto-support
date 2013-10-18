@@ -23,6 +23,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 import me.thekey.android.TheKey;
 import me.thekey.android.TheKeySocketException;
@@ -34,6 +38,8 @@ public abstract class AbstractGtoSmxApi {
     private static final int DEFAULT_ATTEMPTS = 3;
 
     private static final Object LOCK_SESSION = new Object();
+
+    private final Executor asyncExecutor;
 
     private final String prefFile;
     private final Context context;
@@ -55,6 +61,13 @@ public abstract class AbstractGtoSmxApi {
         this.thekey = thekey;
         this.prefFile = prefFile;
         this.apiUri = apiUri;
+        this.asyncExecutor = Executors.newFixedThreadPool(1);
+        if (this.asyncExecutor instanceof ThreadPoolExecutor) {
+            ((ThreadPoolExecutor) this.asyncExecutor).setKeepAliveTime(30, TimeUnit.SECONDS);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD) {
+                ((ThreadPoolExecutor) this.asyncExecutor).allowCoreThreadTimeOut(true);
+            }
+        }
     }
 
     protected SharedPreferences getPrefs() {
@@ -328,6 +341,10 @@ public abstract class AbstractGtoSmxApi {
         } finally {
             IOUtils.closeQuietly(conn);
         }
+    }
+
+    public final void async(final Runnable task) {
+        this.asyncExecutor.execute(task);
     }
 
     /**
