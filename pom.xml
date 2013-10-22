@@ -14,6 +14,12 @@
 
   <name>GTO Android Support</name>
 
+  <scm>
+    <connection>scm:git:git@git.gcx.org:android/lib/gto-support.git</connection>
+    <developerConnection>scm:git:git@git.gcx.org:android/lib/gto-support.git</developerConnection>
+    <tag>HEAD</tag>
+  </scm>
+
   <dependencies>
     <dependency>
       <groupId>com.android.support</groupId>
