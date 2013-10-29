@@ -35,6 +35,8 @@ public abstract class AbstractGtoSmxApi {
     private static final String PREF_SESSIONID = "session_id";
     private static final String PREF_SESSIONGUID = "session_guid";
 
+    private static final String PARAM_APPVERSION = "_appVersion";
+
     private static final int DEFAULT_ATTEMPTS = 3;
 
     private static final Object LOCK_SESSION = new Object();
@@ -45,6 +47,8 @@ public abstract class AbstractGtoSmxApi {
     private final Context context;
     private final TheKey thekey;
     private final Uri apiUri;
+    private final String appVersion;
+    private boolean includeAppVersion = false;
 
     protected AbstractGtoSmxApi(final Context context, final TheKey thekey, final String prefFile,
                                 final int apiUriResource) {
@@ -68,6 +72,21 @@ public abstract class AbstractGtoSmxApi {
                 ((ThreadPoolExecutor) this.asyncExecutor).allowCoreThreadTimeOut(true);
             }
         }
+
+        // generate the app version string
+        final StringBuilder sb = new StringBuilder();
+        try {
+            sb.append(context.getPackageName());
+            sb.append("/");
+            sb.append(context.getPackageManager().getPackageInfo(context.getPackageName(), 0).versionName);
+        } catch (final Exception e) {
+            // this isn't critical so suppress all exceptions
+        }
+        this.appVersion = sb.toString();
+    }
+
+    public void setIncludeAppVersion(final boolean includeAppVersion) {
+        this.includeAppVersion = includeAppVersion;
     }
 
     protected SharedPreferences getPrefs() {
@@ -189,6 +208,9 @@ public abstract class AbstractGtoSmxApi {
                     uri.appendPath(session.first);
                 }
                 uri.appendEncodedPath(request.path);
+                if(this.includeAppVersion) {
+                    uri.appendQueryParameter(PARAM_APPVERSION, this.appVersion);
+                }
                 if (request.params.size() > 0) {
                     if (request.replaceParams) {
                         final List<String> keys = new ArrayList<String>();
