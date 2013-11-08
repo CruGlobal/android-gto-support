@@ -43,9 +43,9 @@ public abstract class AbstractGtoSmxApi {
 
     private final Executor asyncExecutor;
 
+    private final Context mContext;
+    private final TheKey mTheKey;
     private final String prefFile;
-    private final Context context;
-    private final TheKey thekey;
     private final Uri apiUri;
     private final String appVersion;
     private boolean includeAppVersion = false;
@@ -61,8 +61,8 @@ public abstract class AbstractGtoSmxApi {
     }
 
     protected AbstractGtoSmxApi(final Context context, final TheKey thekey, final String prefFile, final Uri apiUri) {
-        this.context = context;
-        this.thekey = thekey;
+        mContext = context;
+        mTheKey = thekey;
         this.prefFile = prefFile;
         this.apiUri = apiUri;
         this.asyncExecutor = Executors.newFixedThreadPool(1);
@@ -90,7 +90,7 @@ public abstract class AbstractGtoSmxApi {
     }
 
     protected SharedPreferences getPrefs() {
-        return this.context.getSharedPreferences(this.prefFile, Context.MODE_PRIVATE);
+        return mContext.getSharedPreferences(this.prefFile, Context.MODE_PRIVATE);
     }
 
     private Pair<String, String> getSession() {
@@ -127,7 +127,7 @@ public abstract class AbstractGtoSmxApi {
                 final String service = this.getService();
 
                 // get a ticket for the specified service
-                final Pair<String, TheKey.Attributes> ticket = this.thekey.getTicketAndAttributes(service);
+                final Pair<String, TheKey.Attributes> ticket = mTheKey.getTicketAndAttributes(service);
 
                 // login to the hub
                 final Pair<String, String> session = Pair.create(this.login(ticket.first), ticket.second.getGuid());
@@ -194,7 +194,7 @@ public abstract class AbstractGtoSmxApi {
                     synchronized (LOCK_SESSION) {
                         session = this.getSession();
                         if (session == null || session.first == null || session.second == null ||
-                                !session.second.equals(this.thekey.getGuid())) {
+                                !session.second.equals(mTheKey.getGuid())) {
                             session = this.establishSession();
                         }
                     }
