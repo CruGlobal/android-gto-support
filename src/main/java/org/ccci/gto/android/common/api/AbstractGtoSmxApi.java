@@ -89,7 +89,7 @@ public abstract class AbstractGtoSmxApi {
         this.includeAppVersion = includeAppVersion;
     }
 
-    protected SharedPreferences getPrefs() {
+    private SharedPreferences getPrefs() {
         return mContext.getSharedPreferences(this.prefFile, Context.MODE_PRIVATE);
     }
 
@@ -372,7 +372,7 @@ public abstract class AbstractGtoSmxApi {
     /**
      * class that represents a request being sent to the api
      */
-    public static class Request {
+    protected static class Request {
         public String method = "GET";
 
         // uri attributes
