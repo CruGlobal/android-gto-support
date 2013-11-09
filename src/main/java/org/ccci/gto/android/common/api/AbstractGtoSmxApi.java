@@ -236,13 +236,13 @@ public abstract class AbstractGtoSmxApi {
                 // POST/PUT requests
                 if ("POST".equals(request.method) || "PUT".equals(request.method)) {
                     conn.setDoOutput(true);
-                    final String data = request.content != null ? request.content : "";
-                    conn.setRequestProperty("Content-Length", Integer.toString(data.length()));
+                    final byte[] data = request.content != null ? request.content : new byte[0];
+                    conn.setFixedLengthStreamingMode(data.length);
                     conn.setUseCaches(false);
                     OutputStream out = null;
                     try {
                         out = conn.getOutputStream();
-                        out.write(data.getBytes("UTF-8"));
+                        out.write(data);
                     } finally {
                         if (out != null) {
                             out.close();
@@ -342,9 +342,9 @@ public abstract class AbstractGtoSmxApi {
         final Request request = new Request("auth/login");
         request.useSession = false;
         request.method = "POST";
-        request.contentType = "application/x-www-form-urlencoded";
         try {
-            request.content = "ticket=" + URLEncoder.encode(ticket, "UTF-8");
+            request.setContent("application/x-www-form-urlencoded",
+                               ("ticket=" + URLEncoder.encode(ticket, "UTF-8")).getBytes("UTF-8"));
         } catch (final UnsupportedEncodingException e) {
             throw new RuntimeException("unexpected error, UTF-8 encoding doesn't exist?", e);
         }
@@ -383,17 +383,30 @@ public abstract class AbstractGtoSmxApi {
 
         // uri attributes
         public boolean useSession = true;
-        protected final String path;
+        private final String path;
         public final Collection<Pair<String, String>> params = new ArrayList<Pair<String, String>>();
         public boolean replaceParams = false;
 
         // POST/PUT data
-        public String contentType = null;
-        public String content = null;
+        private String contentType = null;
+        private byte[] content = null;
 
         public Request(final String path) {
             assert path != null : "request path cannot be null";
             this.path = path;
+        }
+
+        protected void setContent(final String type, final byte[] data) {
+            this.contentType = type;
+            this.content = data;
+        }
+
+        protected void setContent(final String type, final String data) {
+            try {
+                this.setContent(type, data != null ? data.getBytes("UTF-8") : null);
+            } catch (final UnsupportedEncodingException e) {
+                throw new RuntimeException("unexpected error, UTF-8 encoding isn't present", e);
+            }
         }
     }
 }
