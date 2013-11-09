@@ -15,6 +15,7 @@ import org.ccci.gto.android.common.util.UriUtils;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -337,25 +338,28 @@ public abstract class AbstractGtoSmxApi {
             return null;
         }
 
+        // build request
+        final Request request = new Request("auth/login");
+        request.useSession = false;
+        request.method = "POST";
+        request.contentType = "application/x-www-form-urlencoded";
+        try {
+            request.content = "ticket=" + URLEncoder.encode(ticket, "UTF-8");
+        } catch (final UnsupportedEncodingException e) {
+            throw new RuntimeException("unexpected error, UTF-8 encoding doesn't exist?", e);
+        }
+
+        // issue login request
         HttpURLConnection conn = null;
         try {
-            // issue login request
-            final String uri = this.apiUri.buildUpon().appendEncodedPath("auth/login").build().toString();
-            conn = (HttpURLConnection) new URL(uri).openConnection();
-            conn.setInstanceFollowRedirects(false);
-            conn.setDoOutput(true);
-            conn.addRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-            final byte[] data = ("ticket=" + URLEncoder.encode(ticket, "UTF-8")).getBytes("UTF-8");
-            conn.setFixedLengthStreamingMode(data.length);
-            conn.getOutputStream().write(data);
+            conn = this.sendRequest(request);
 
             // was this a valid login
             if (conn != null && conn.getResponseCode() == HTTP_OK) {
                 // the sessionId is returned as the body of the response
                 return IOUtils.readString(conn.getInputStream());
             }
-
-            return null;
+        } catch (final InvalidSessionApiException ignored) {
         } catch (final MalformedURLException e) {
             throw new RuntimeException("unexpected exception", e);
         } catch (final IOException e) {
@@ -363,6 +367,8 @@ public abstract class AbstractGtoSmxApi {
         } finally {
             IOUtils.closeQuietly(conn);
         }
+
+        return null;
     }
 
     public final void async(final Runnable task) {
