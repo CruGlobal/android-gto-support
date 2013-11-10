@@ -34,7 +34,6 @@ import me.thekey.android.TheKeySocketException;
 
 public abstract class AbstractGtoSmxApi {
     private static final String PREF_SESSIONID = "session_id";
-    private static final String PREF_SESSIONGUID = "session_guid";
 
     private static final String PARAM_APPVERSION = "_appVersion";
 
@@ -47,24 +46,38 @@ public abstract class AbstractGtoSmxApi {
     private final Context mContext;
     private final TheKey mTheKey;
     private final String prefFile;
+    private final String guid;
     private final Uri apiUri;
     private final String appVersion;
     private boolean includeAppVersion = false;
+    private boolean allowGuest = false;
 
     protected AbstractGtoSmxApi(final Context context, final TheKey thekey, final String prefFile,
                                 final int apiUriResource) {
-        this(context, thekey, prefFile, context.getString(apiUriResource));
+        this(context, thekey, prefFile, apiUriResource, null);
+    }
+
+    protected AbstractGtoSmxApi(final Context context, final TheKey thekey, final String prefFile,
+                                final int apiUriResource, final String guid) {
+        this(context, thekey, prefFile, context.getString(apiUriResource), guid);
     }
 
     protected AbstractGtoSmxApi(final Context context, final TheKey thekey, final String prefFile,
                                 final String apiUri) {
-        this(context, thekey, prefFile, Uri.parse(apiUri.endsWith("/") ? apiUri : apiUri + "/"));
+        this(context, thekey, prefFile, apiUri, null);
     }
 
-    protected AbstractGtoSmxApi(final Context context, final TheKey thekey, final String prefFile, final Uri apiUri) {
+    protected AbstractGtoSmxApi(final Context context, final TheKey thekey, final String prefFile,
+                                final String apiUri, final String guid) {
+        this(context, thekey, prefFile, Uri.parse(apiUri.endsWith("/") ? apiUri : apiUri + "/"), guid);
+    }
+
+    protected AbstractGtoSmxApi(final Context context, final TheKey thekey, final String prefFile, final Uri apiUri,
+                                final String guid) {
         mContext = context;
         mTheKey = thekey;
         this.prefFile = prefFile;
+        this.guid = guid;
         this.apiUri = apiUri;
         this.asyncExecutor = Executors.newFixedThreadPool(1);
         if (this.asyncExecutor instanceof ThreadPoolExecutor) {
@@ -90,28 +103,47 @@ public abstract class AbstractGtoSmxApi {
         this.includeAppVersion = includeAppVersion;
     }
 
+    public void setAllowGuest(final boolean allowGuest) {
+        this.allowGuest = allowGuest;
+    }
+
     private SharedPreferences getPrefs() {
         return mContext.getSharedPreferences(this.prefFile, Context.MODE_PRIVATE);
     }
 
-    private Pair<String, String> getSession() {
+    private String getActiveGuid() {
+        String guid = this.guid;
+        if (guid == null) {
+            guid = mTheKey.getGuid();
+
+            if (guid == null && this.allowGuest) {
+                guid = "GUEST";
+            }
+        }
+
+        return guid;
+    }
+
+    private Session getSession(final String guid) {
+        assert guid != null;
+
+        // look up the session
+        final String name = PREF_SESSIONID + guid;
+        final SharedPreferences prefs = this.getPrefs();
         synchronized (LOCK_SESSION) {
-            final SharedPreferences prefs = this.getPrefs();
-            return Pair.create(prefs.getString(PREF_SESSIONID, null), prefs.getString(PREF_SESSIONGUID, null));
+            final Session session = new Session(guid, prefs.getString(name, null));
+            return session.id != null ? session : null;
         }
     }
 
-    private String getSessionId() {
-        return this.getSession().first;
-    }
-
     @TargetApi(Build.VERSION_CODES.GINGERBREAD)
-    private void setSession(final Pair<String, String> session) {
-        synchronized (LOCK_SESSION) {
-            final SharedPreferences.Editor prefs = this.getPrefs().edit();
-            prefs.putString(PREF_SESSIONID, session != null ? session.first : null);
-            prefs.putString(PREF_SESSIONGUID, session != null ? session.second : null);
+    private void storeSession(final Session session) {
+        assert session != null;
+        final String name = PREF_SESSIONID + session.guid;
+        final SharedPreferences.Editor prefs = this.getPrefs().edit();
+        prefs.putString(name, session.id);
 
+        synchronized (LOCK_SESSION) {
             // store updates
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD) {
                 prefs.apply();
@@ -121,24 +153,46 @@ public abstract class AbstractGtoSmxApi {
         }
     }
 
-    private Pair<String, String> establishSession() throws ApiSocketException {
+    @TargetApi(Build.VERSION_CODES.GINGERBREAD)
+    private void removeSession(final Session session) {
+        assert session != null;
+        final String name = PREF_SESSIONID + session.guid;
+        final SharedPreferences.Editor prefs = this.getPrefs().edit();
+        prefs.remove(name);
+
         synchronized (LOCK_SESSION) {
-            try {
-                // get the service to retrieve a ticket for
-                final String service = this.getService();
-
-                // get a ticket for the specified service
-                final Pair<String, TheKey.Attributes> ticket = mTheKey.getTicketAndAttributes(service);
-
-                // login to the hub
-                final Pair<String, String> session = Pair.create(this.login(ticket.first), ticket.second.getGuid());
-                this.setSession(session);
-
-                // return the newly established session
-                return session;
-            } catch (TheKeySocketException e) {
-                throw new ApiSocketException(e);
+            // store updates
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD) {
+                prefs.apply();
+            } else {
+                prefs.commit();
             }
+        }
+    }
+
+    private Session establishSession(final String guid) throws ApiSocketException {
+        assert guid != null;
+
+        // get the service to retrieve a ticket for
+        final String service = this.getService();
+
+        try {
+            // get a ticket for the specified service
+            final Pair<String, TheKey.Attributes> ticket = mTheKey.getTicketAndAttributes(service);
+
+            // short-circuit if we don't have a valid ticket
+            if (ticket == null || !guid.equals(ticket.second.getGuid())) {
+                return null;
+            }
+
+            // login to the hub
+            final Session session = new Session(ticket.second.getGuid(), this.login(ticket.first));
+            this.storeSession(session);
+
+            // return the newly established session
+            return session.id != null ? session : null;
+        } catch (final TheKeySocketException e) {
+            throw new ApiSocketException(e);
         }
     }
 
@@ -188,25 +242,30 @@ public abstract class AbstractGtoSmxApi {
         try {
             try {
                 // build the request uri
-                Pair<String, String> session = null;
                 final Uri.Builder uri = this.apiUri.buildUpon();
+                final String guid = getActiveGuid();
+                Session session = null;
                 if (request.useSession) {
+                    // short-circuit if we will be unable to get a valid session
+                    if (guid == null) {
+                        throw new InvalidSessionApiException();
+                    }
+
                     // get the session, establish a session if one doesn't exist or if we have a stale session
                     synchronized (LOCK_SESSION) {
-                        session = this.getSession();
-                        if (session == null || session.first == null || session.second == null ||
-                                !session.second.equals(mTheKey.getGuid())) {
-                            session = this.establishSession();
+                        session = this.getSession(guid);
+                        if (session == null) {
+                            session = this.establishSession(guid);
                         }
                     }
 
                     // throw an InvalidSessionApiException if we don't have a valid session
-                    if (session == null || session.first == null || session.second == null) {
+                    if (session == null) {
                         throw new InvalidSessionApiException();
                     }
 
                     // use the current sessionId in the url
-                    uri.appendPath(session.first);
+                    uri.appendPath(session.id);
                 }
                 uri.appendEncodedPath(request.path);
                 if(this.includeAppVersion) {
@@ -275,8 +334,9 @@ public abstract class AbstractGtoSmxApi {
                         synchronized (LOCK_SESSION) {
                             // only reset if this is still the same session
                             assert session != null;
-                            if (session.equals(this.getSession())) {
-                                this.setSession(null);
+                            final Session current = this.getSession(guid);
+                            if (current != null && session.id.equals(current.id)) {
+                                this.removeSession(session);
                             }
                         }
 
@@ -373,6 +433,17 @@ public abstract class AbstractGtoSmxApi {
 
     public final void async(final Runnable task) {
         this.asyncExecutor.execute(task);
+    }
+
+    private static final class Session {
+        private final String id;
+        private final String guid;
+
+        private Session(final String guid, final String id) {
+            assert guid != null;
+            this.guid = guid;
+            this.id = id;
+        }
     }
 
     /**
