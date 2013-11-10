@@ -225,7 +225,7 @@ public abstract class AbstractDao {
         db.beginTransaction();
         try {
             final Pair<String, String[]> where = this.getPrimaryKeyWhere(obj);
-            final Object existing = this.find(obj.getClass(), where.second);
+            final Object existing = this.find(obj.getClass(), (Object[]) where.second);
             if (existing != null) {
                 this.update(obj, projection);
             } else {
