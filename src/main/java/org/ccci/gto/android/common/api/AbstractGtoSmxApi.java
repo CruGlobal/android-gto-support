@@ -173,12 +173,20 @@ public abstract class AbstractGtoSmxApi {
     private Session establishSession(final String guid) throws ApiSocketException {
         assert guid != null;
 
-        // get the service to retrieve a ticket for
-        final String service = this.getService();
+        final String sessionId;
+        if ("GUEST".equals(guid) && this.allowGuest) {
+            sessionId = this.guestLogin();
+        } else {
+            // get the service to retrieve a ticket for
+            final String service = this.getService();
 
-        try {
             // get a ticket for the specified service
-            final Pair<String, TheKey.Attributes> ticket = mTheKey.getTicketAndAttributes(service);
+            final Pair<String, TheKey.Attributes> ticket;
+            try {
+                ticket = mTheKey.getTicketAndAttributes(service);
+            } catch (final TheKeySocketException e) {
+                throw new ApiSocketException(e);
+            }
 
             // short-circuit if we don't have a valid ticket
             if (ticket == null || !guid.equals(ticket.second.getGuid())) {
@@ -186,14 +194,15 @@ public abstract class AbstractGtoSmxApi {
             }
 
             // login to the hub
-            final Session session = new Session(ticket.second.getGuid(), this.login(ticket.first));
-            this.storeSession(session);
-
-            // return the newly established session
-            return session.id != null ? session : null;
-        } catch (final TheKeySocketException e) {
-            throw new ApiSocketException(e);
+            sessionId = this.login(ticket.first);
         }
+
+        // create a session object
+        final Session session = new Session(guid, sessionId);
+        this.storeSession(session);
+
+        // return the newly established session
+        return session.id != null ? session : null;
     }
 
     @Deprecated
@@ -408,6 +417,35 @@ public abstract class AbstractGtoSmxApi {
         } catch (final UnsupportedEncodingException e) {
             throw new RuntimeException("unexpected error, UTF-8 encoding doesn't exist?", e);
         }
+
+        // issue login request
+        HttpURLConnection conn = null;
+        try {
+            conn = this.sendRequest(request);
+
+            // was this a valid login
+            if (conn != null && conn.getResponseCode() == HTTP_OK) {
+                // the sessionId is returned as the body of the response
+                return IOUtils.readString(conn.getInputStream());
+            }
+        } catch (final InvalidSessionApiException ignored) {
+        } catch (final MalformedURLException e) {
+            throw new RuntimeException("unexpected exception", e);
+        } catch (final IOException e) {
+            throw new ApiSocketException(e);
+        } finally {
+            IOUtils.closeQuietly(conn);
+        }
+
+        return null;
+    }
+
+    public String guestLogin() throws ApiSocketException {
+        // build request
+        final Request request = new Request("auth/login");
+        request.useSession = false;
+        request.method = "POST";
+        request.setContent("application/x-www-form-urlencoded", "guest=true");
 
         // issue login request
         HttpURLConnection conn = null;
