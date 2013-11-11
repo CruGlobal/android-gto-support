@@ -33,7 +33,7 @@ import me.thekey.android.TheKey;
 import me.thekey.android.TheKeySocketException;
 
 public abstract class AbstractGtoSmxApi {
-    private static final String PREF_SESSIONID = "session_id";
+    private static final String PREF_SESSIONID = "session_id_";
 
     private static final String PARAM_APPVERSION = "_appVersion";
 
