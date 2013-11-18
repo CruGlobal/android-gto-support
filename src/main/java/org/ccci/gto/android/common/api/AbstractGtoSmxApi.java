@@ -84,6 +84,8 @@ public abstract class AbstractGtoSmxApi {
             ((ThreadPoolExecutor) this.asyncExecutor).setKeepAliveTime(30, TimeUnit.SECONDS);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD) {
                 ((ThreadPoolExecutor) this.asyncExecutor).allowCoreThreadTimeOut(true);
+            } else {
+                ((ThreadPoolExecutor) this.asyncExecutor).setCorePoolSize(0);
             }
         }
 
