@@ -301,7 +301,7 @@ public abstract class AbstractGtoSmxApi {
                 if (request.contentType != null) {
                     conn.addRequestProperty("Content-Type", request.contentType);
                 }
-                conn.setInstanceFollowRedirects(false);
+                conn.setInstanceFollowRedirects(request.followRedirects);
 
                 // POST/PUT requests
                 if ("POST".equals(request.method) || "PUT".equals(request.method)) {
@@ -501,6 +501,9 @@ public abstract class AbstractGtoSmxApi {
         // POST/PUT data
         private String contentType = null;
         private byte[] content = null;
+
+        // miscellaneous attributes
+        public boolean followRedirects = false;
 
         public Request(final String path) {
             assert path != null : "request path cannot be null";
