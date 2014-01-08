@@ -298,8 +298,11 @@ public abstract class AbstractGtoSmxApi {
                 // build base request object
                 final HttpURLConnection conn = (HttpURLConnection) new URL(uri.build().toString()).openConnection();
                 conn.setRequestMethod(request.method);
+                if (request.accept != null) {
+                    conn.addRequestProperty("Accept", request.accept.type);
+                }
                 if (request.contentType != null) {
-                    conn.addRequestProperty("Content-Type", request.contentType);
+                    conn.addRequestProperty("Content-Type", request.contentType.type);
                 }
                 conn.setInstanceFollowRedirects(request.followRedirects);
 
@@ -385,6 +388,7 @@ public abstract class AbstractGtoSmxApi {
     public String getService() throws ApiSocketException {
         final Request request = new Request("auth/service");
         request.useSession = false;
+        request.accept = Request.MediaType.TEXT_PLAIN;
         HttpURLConnection conn = null;
         try {
             conn = this.sendRequest(request);
@@ -413,8 +417,9 @@ public abstract class AbstractGtoSmxApi {
         final Request request = new Request("auth/login");
         request.useSession = false;
         request.method = "POST";
+        request.accept = Request.MediaType.TEXT_PLAIN;
         try {
-            request.setContent("application/x-www-form-urlencoded",
+            request.setContent(Request.MediaType.APPLICATION_FORM_URLENCODED,
                                ("ticket=" + URLEncoder.encode(ticket, "UTF-8")).getBytes("UTF-8"));
         } catch (final UnsupportedEncodingException e) {
             throw new RuntimeException("unexpected error, UTF-8 encoding doesn't exist?", e);
@@ -447,7 +452,8 @@ public abstract class AbstractGtoSmxApi {
         final Request request = new Request("auth/login");
         request.useSession = false;
         request.method = "POST";
-        request.setContent("application/x-www-form-urlencoded", "guest=true");
+        request.accept = Request.MediaType.TEXT_PLAIN;
+        request.setContent(Request.MediaType.APPLICATION_FORM_URLENCODED, "guest=true");
 
         // issue login request
         HttpURLConnection conn = null;
@@ -490,6 +496,17 @@ public abstract class AbstractGtoSmxApi {
      * class that represents a request being sent to the api
      */
     protected static class Request {
+        public enum MediaType {
+            APPLICATION_FORM_URLENCODED("application/x-www-form-urlencoded"), APPLICATION_JSON("application/json"),
+            APPLICATION_XML("application/xml"), TEXT_PLAIN("text/plain");
+
+            private final String type;
+
+            private MediaType(final String type) {
+                this.type = type;
+            }
+        }
+
         public String method = "GET";
 
         // uri attributes
@@ -499,10 +516,11 @@ public abstract class AbstractGtoSmxApi {
         public boolean replaceParams = false;
 
         // POST/PUT data
-        private String contentType = null;
+        private MediaType contentType = null;
         private byte[] content = null;
 
         // miscellaneous attributes
+        public MediaType accept = null;
         public boolean followRedirects = false;
 
         public Request(final String path) {
@@ -510,12 +528,12 @@ public abstract class AbstractGtoSmxApi {
             this.path = path;
         }
 
-        protected void setContent(final String type, final byte[] data) {
+        protected void setContent(final MediaType type, final byte[] data) {
             this.contentType = type;
             this.content = data;
         }
 
-        protected void setContent(final String type, final String data) {
+        protected void setContent(final MediaType type, final String data) {
             try {
                 this.setContent(type, data != null ? data.getBytes("UTF-8") : null);
             } catch (final UnsupportedEncodingException e) {
