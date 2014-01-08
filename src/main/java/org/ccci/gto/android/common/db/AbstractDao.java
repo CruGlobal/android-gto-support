@@ -55,6 +55,18 @@ public abstract class AbstractDao {
         throw new IllegalArgumentException("invalid class specified");
     }
 
+    protected String[] getBindValues(final Object... raw) {
+        final String[] values = new String[raw.length];
+        for (int i = 0; i < raw.length; i++) {
+            if(raw[i] instanceof Boolean) {
+                values[i] = ((Boolean)raw[i]) ? "1" : "0";
+            } else {
+                values[i] = raw[i].toString();
+            }
+        }
+        return values;
+    }
+
     public final String buildJoin(final Class<?> clazz) {
         return this.buildJoin(clazz, null, null);
     }
