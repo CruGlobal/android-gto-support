@@ -20,6 +20,10 @@
     <tag>HEAD</tag>
   </scm>
 
+  <properties>
+    <thekey-lib.version>0.5.1</thekey-lib.version>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>com.android.support</groupId>
@@ -29,7 +33,7 @@
     <dependency>
       <groupId>me.thekey.android</groupId>
       <artifactId>thekey-api</artifactId>
-      <version>0.5.0</version>
+      <version>${thekey-lib.version}</version>
     </dependency>
   </dependencies>
 
