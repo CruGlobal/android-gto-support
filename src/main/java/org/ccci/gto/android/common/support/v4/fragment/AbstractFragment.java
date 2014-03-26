@@ -9,6 +9,10 @@ public abstract class AbstractFragment extends Fragment {
         return FragmentUtils.findView(this, clazz, id);
     }
 
+    protected final <T> T getAncestorFragment(final Class<T> clazz) {
+        return FragmentUtils.getAncestorFragment(this, clazz);
+    }
+
     protected final <T> T getListener(final Class<T> clazz) {
         return FragmentUtils.getListener(this, clazz);
     }
