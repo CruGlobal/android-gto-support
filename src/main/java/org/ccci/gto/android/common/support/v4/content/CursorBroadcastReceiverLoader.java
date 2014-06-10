@@ -30,6 +30,7 @@ public abstract class CursorBroadcastReceiverLoader extends CursorLoader
 
     /* END lifecycle */
 
+    @Override
     public final void addIntentFilter(final IntentFilter filter) {
         this.helper.addIntentFilter(filter);
     }
