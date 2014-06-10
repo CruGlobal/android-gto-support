@@ -21,6 +21,7 @@
   </scm>
 
   <properties>
+    <android.support.version>19.1.0</android.support.version>
     <thekey-lib.version>0.5.1</thekey-lib.version>
   </properties>
 
