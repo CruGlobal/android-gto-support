@@ -5,11 +5,11 @@
   <parent>
     <groupId>org.ccci.gto.android</groupId>
     <artifactId>android-parent</artifactId>
-    <version>17-SNAPSHOT</version>
+    <version>17</version>
   </parent>
 
   <artifactId>gto-support</artifactId>
-  <version>0.3.0-SNAPSHOT</version>
+  <version>0.3.0</version>
   <packaging>jar</packaging>
 
   <name>GTO Android Support</name>
@@ -17,7 +17,7 @@
   <scm>
     <connection>scm:git:git@git.gcx.org:android/lib/gto-support.git</connection>
     <developerConnection>scm:git:git@git.gcx.org:android/lib/gto-support.git</developerConnection>
-    <tag>HEAD</tag>
+    <tag>v0.3.0</tag>
   </scm>
 
   <properties>
