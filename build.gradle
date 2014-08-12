@@ -4,10 +4,12 @@ buildscript {
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:0.12.2'
+        classpath 'com.github.dcendents:android-maven-plugin:1.1'
     }
 }
 
 apply plugin: 'com.android.library'
+apply plugin: 'android-maven'
 
 group 'org.ccci.gto.android'
 version '0.4.0-SNAPSHOT'
@@ -43,4 +45,12 @@ repositories {
 dependencies {
     compile 'com.android.support:support-v4:19.1.0'
     compile 'me.thekey.android:thekey-api:0.6.0'
+}
+
+apply from: 'maven_publish.gradle'
+afterEvaluate { project ->
+    artifacts {
+        archives androidSourcesJar
+//        archives androidJavadocsJar
+    }
 }
