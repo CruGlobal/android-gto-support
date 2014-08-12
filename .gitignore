@@ -19,4 +19,5 @@ bin/
 .idea/
 gto-support.iml
 gen-external-apklibs/
+local.properties
 out/
