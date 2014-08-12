@@ -1,6 +1,10 @@
 # standard android ignores
 gen/
 
+# gradle project ignores
+.gradle/
+build/
+
 # maven project ignores
 target/
 

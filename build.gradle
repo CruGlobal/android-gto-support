@@ -1,0 +1,46 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:0.12.2'
+    }
+}
+
+apply plugin: 'com.android.library'
+
+group 'org.ccci.gto.android'
+version '0.4.0-SNAPSHOT'
+
+android {
+    compileSdkVersion 20
+    buildToolsVersion "20"
+
+    defaultConfig {
+        minSdkVersion 8
+        targetSdkVersion 20
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_7
+        targetCompatibility JavaVersion.VERSION_1_7
+    }
+}
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+    maven {
+        name "maven.gcx.org"
+        url "https://maven.gcx.org/"
+        credentials {
+            username gcxMavenRepositoryUsername
+            password gcxMavenRepositoryPassword
+        }
+    }
+}
+
+dependencies {
+    compile 'com.android.support:support-v4:19.1.0'
+    compile 'me.thekey.android:thekey-api:0.6.0'
+}
