@@ -72,6 +72,7 @@ public abstract class AbstractGtoSmxApi {
         this(context, thekey, prefFile, Uri.parse(apiUri.endsWith("/") ? apiUri : apiUri + "/"), guid);
     }
 
+    @TargetApi(Build.VERSION_CODES.GINGERBREAD)
     protected AbstractGtoSmxApi(final Context context, final TheKey thekey, final String prefFile, final Uri apiUri,
                                 final String guid) {
         mContext = context;

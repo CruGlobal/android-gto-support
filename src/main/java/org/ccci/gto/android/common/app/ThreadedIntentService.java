@@ -1,7 +1,9 @@
 package org.ccci.gto.android.common.app;
 
+import android.annotation.TargetApi;
 import android.app.Service;
 import android.content.Intent;
+import android.os.Build;
 import android.os.IBinder;
 
 import java.util.Comparator;
@@ -95,6 +97,7 @@ public abstract class ThreadedIntentService extends Service {
         mRedelivery = enabled;
     }
 
+    @TargetApi(Build.VERSION_CODES.GINGERBREAD)
     private Executor defaultExecutor() {
         // create the defaultExecutor if it doesn't exist yet
         if (this.defaultExecutor == null) {
@@ -106,11 +109,14 @@ public abstract class ThreadedIntentService extends Service {
                     return new Thread(r, name + " #" + count.getAndIncrement());
                 }
             };
-            final BlockingQueue<Runnable> queue =
-                    new PriorityBlockingQueue<Runnable>(1, new IntentPriorityComparator());
+            final BlockingQueue<Runnable> queue = new PriorityBlockingQueue<>(1, new IntentPriorityComparator());
             this.defaultExecutor =
                     new ThreadPoolExecutor(this.poolSize, this.poolSize, 10, TimeUnit.SECONDS, queue, threadFactory);
-            this.defaultExecutor.allowCoreThreadTimeOut(true);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD) {
+                this.defaultExecutor.allowCoreThreadTimeOut(true);
+            } else {
+                this.defaultExecutor.setCorePoolSize(0);
+            }
         }
 
         return this.defaultExecutor;
