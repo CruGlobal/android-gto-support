@@ -6,13 +6,13 @@ import android.support.v4.content.AsyncTaskLoader;
 
 public abstract class AsyncTaskBroadcastReceiverLoader<D> extends AsyncTaskLoader<D>
         implements BroadcastReceiverLoaderHelper.Interface {
-    private final BroadcastReceiverLoaderHelper helper;
+    private final BroadcastReceiverLoaderHelper mHelper;
 
-    private D data;
+    private D mData;
 
     public AsyncTaskBroadcastReceiverLoader(final Context context, final IntentFilter... filters) {
         super(context);
-        this.helper = new BroadcastReceiverLoaderHelper(this, filters);
+        mHelper = new BroadcastReceiverLoaderHelper(this, filters);
     }
 
     /* BEGIN lifecycle */
@@ -20,15 +20,15 @@ public abstract class AsyncTaskBroadcastReceiverLoader<D> extends AsyncTaskLoade
     @Override
     protected void onStartLoading() {
         super.onStartLoading();
-        this.helper.onStartLoading();
+        mHelper.onStartLoading();
 
         // deliver already loaded data
-        if (data != null) {
-            deliverResult(data);
+        if (mData != null) {
+            deliverResult(mData);
         }
 
         // force a fresh load if needed
-        if (takeContentChanged() || data == null) {
+        if (takeContentChanged() || mData == null) {
             forceLoad();
         }
     }
@@ -36,13 +36,13 @@ public abstract class AsyncTaskBroadcastReceiverLoader<D> extends AsyncTaskLoade
     @Override
     protected void onAbandon() {
         super.onAbandon();
-        this.helper.onAbandon();
+        mHelper.onAbandon();
     }
 
     /* END lifecycle */
 
     @Override
     public final void addIntentFilter(final IntentFilter filter) {
-        this.helper.addIntentFilter(filter);
+        mHelper.addIntentFilter(filter);
     }
 }
