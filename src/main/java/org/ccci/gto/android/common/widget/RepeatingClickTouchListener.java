@@ -47,7 +47,7 @@ public class RepeatingClickTouchListener implements View.OnTouchListener {
         return false;
     }
 
-    private Pair<View,Runnable> createTask(final View v) {
+    private Pair<View, Runnable> createTask(final View v) {
         return Pair.create(v, (Runnable) new Runnable() {
             @Override
             public void run() {

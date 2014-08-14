@@ -6,14 +6,14 @@ import android.content.Intent;
 import android.support.v4.content.Loader;
 
 public class LoaderBroadcastReceiver extends BroadcastReceiver {
-    private final Loader loader;
+    private final Loader mLoader;
 
     public LoaderBroadcastReceiver(final Loader loader) {
-        this.loader = loader;
+        mLoader = loader;
     }
 
     @Override
     public void onReceive(final Context context, final Intent intent) {
-        loader.onContentChanged();
+        mLoader.onContentChanged();
     }
 }
