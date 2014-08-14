@@ -7,11 +7,11 @@ import android.support.v4.content.CursorLoader;
 
 public abstract class CursorBroadcastReceiverLoader extends CursorLoader
         implements BroadcastReceiverLoaderHelper.Interface {
-    private final BroadcastReceiverLoaderHelper helper;
+    private final BroadcastReceiverLoaderHelper mHelper;
 
     public CursorBroadcastReceiverLoader(final Context context, final IntentFilter... filters) {
         super(context);
-        this.helper = new BroadcastReceiverLoaderHelper(this, filters);
+        mHelper = new BroadcastReceiverLoaderHelper(this, filters);
     }
 
     /* BEGIN lifecycle */
@@ -19,20 +19,20 @@ public abstract class CursorBroadcastReceiverLoader extends CursorLoader
     @Override
     protected void onStartLoading() {
         super.onStartLoading();
-        this.helper.onStartLoading();
+        mHelper.onStartLoading();
     }
 
     @Override
     protected void onAbandon() {
         super.onAbandon();
-        this.helper.onAbandon();
+        mHelper.onAbandon();
     }
 
     /* END lifecycle */
 
     @Override
     public final void addIntentFilter(final IntentFilter filter) {
-        this.helper.addIntentFilter(filter);
+        mHelper.addIntentFilter(filter);
     }
 
     @Override
