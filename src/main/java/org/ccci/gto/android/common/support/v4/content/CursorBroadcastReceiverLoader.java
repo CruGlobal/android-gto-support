@@ -36,6 +36,11 @@ public abstract class CursorBroadcastReceiverLoader extends CursorLoader
     }
 
     @Override
+    public final void setBroadcastReceiver(final LoaderBroadcastReceiver receiver) {
+        mHelper.setBroadcastReceiver(receiver);
+    }
+
+    @Override
     public final Cursor loadInBackground() {
         final Cursor c = this.getCursor();
         if(c != null) {

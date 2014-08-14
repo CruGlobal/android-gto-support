@@ -45,4 +45,9 @@ public abstract class AsyncTaskBroadcastReceiverLoader<D> extends AsyncTaskLoade
     public final void addIntentFilter(final IntentFilter filter) {
         mHelper.addIntentFilter(filter);
     }
+
+    @Override
+    public final void setBroadcastReceiver(final LoaderBroadcastReceiver receiver) {
+        mHelper.setBroadcastReceiver(receiver);
+    }
 }
