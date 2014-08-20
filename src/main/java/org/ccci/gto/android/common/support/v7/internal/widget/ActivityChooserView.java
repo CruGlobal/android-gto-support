@@ -108,6 +108,8 @@ public class ActivityChooserView extends ViewGroup implements
      */
     private final ImageView mDefaultActivityButtonImage;
 
+    private boolean mDefaultActivityButtonEnabled = true;
+
     /**
      * The maximal width of the list popup.
      */
@@ -476,6 +478,15 @@ public class ActivityChooserView extends ViewGroup implements
     }
 
     /**
+     * A boolean indicating if the Default Activity Button should be enabled or disabled
+     * @param enabled
+     */
+    public void setDefaultActivityButtonEnabled(final boolean enabled) {
+        mDefaultActivityButtonEnabled = enabled;
+        updateAppearance();
+    }
+
+    /**
      * Gets the list popup window which is lazily initialized.
      *
      * @return The popup.
@@ -505,7 +516,7 @@ public class ActivityChooserView extends ViewGroup implements
         // Default activity button.
         final int activityCount = mAdapter.getActivityCount();
         final int historySize = mAdapter.getHistorySize();
-        if (activityCount==1 || activityCount > 1 && historySize > 0) {
+        if (mDefaultActivityButtonEnabled && (activityCount == 1 || activityCount > 1 && historySize > 0)) {
             mDefaultActivityButton.setVisibility(VISIBLE);
             ResolveInfo activity = mAdapter.getDefaultActivity();
             PackageManager packageManager = getContext().getPackageManager();
