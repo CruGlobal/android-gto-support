@@ -16,6 +16,7 @@
 
 package org.ccci.gto.android.common.support.v7.internal.widget;
 
+import android.annotation.TargetApi;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -587,6 +588,7 @@ public class ActivityChooserModel extends DataSetObservable {
                 mHistoryFileName);
     }
 
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     private void executePersistHistoryAsyncTaskSDK11() {
         new PersistHistoryAsyncTask().executeOnExecutor(AsyncTask.SERIAL_EXECUTOR,
                 new ArrayList<HistoricalRecord>(mHistoricalRecords), mHistoryFileName);
