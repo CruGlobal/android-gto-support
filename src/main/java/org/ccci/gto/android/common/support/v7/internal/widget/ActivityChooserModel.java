@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package android.support.v7.internal.widget;
+package org.ccci.gto.android.common.support.v7.internal.widget;
 
 import android.content.ComponentName;
 import android.content.Context;

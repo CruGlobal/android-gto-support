@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package android.support.v7.widget;
+package org.ccci.gto.android.common.support.v7.widget;
 
 import android.content.Context;
 import android.content.Intent;
@@ -22,16 +22,17 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.drawable.Drawable;
 import android.support.v4.view.ActionProvider;
-import android.support.v7.appcompat.R;
-import android.support.v7.internal.widget.ActivityChooserModel;
-import android.support.v7.internal.widget.ActivityChooserView;
 import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MenuItem.OnMenuItemClickListener;
 import android.view.SubMenu;
 import android.view.View;
-import android.support.v7.internal.widget.ActivityChooserModel.OnChooseActivityListener;
+
+import org.ccci.gto.android.common.R;
+import org.ccci.gto.android.common.support.v7.internal.widget.ActivityChooserModel;
+import org.ccci.gto.android.common.support.v7.internal.widget.ActivityChooserModel.OnChooseActivityListener;
+import org.ccci.gto.android.common.support.v7.internal.widget.ActivityChooserView;
 
 /**
  * This is a provider for a share action. It is responsible for creating views
