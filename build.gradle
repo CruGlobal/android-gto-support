@@ -44,7 +44,7 @@ repositories {
 dependencies {
     compile 'com.android.support:support-v4:20.0.0@aar'
     compile 'com.android.support:appcompat-v7:20.0.0@aar'
-    compile 'me.thekey.android:thekey-api:0.6.0'
+    compile 'me.thekey.android:thekey-api:0.7.0-SNAPSHOT'
 }
 
 apply from: 'maven_publish.gradle'

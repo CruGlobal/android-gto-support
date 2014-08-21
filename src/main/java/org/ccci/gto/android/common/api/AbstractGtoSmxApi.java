@@ -184,7 +184,7 @@ public abstract class AbstractGtoSmxApi {
             final String service = this.getService();
 
             // get a ticket for the specified service
-            final Pair<String, TheKey.Attributes> ticket;
+            final TheKey.TicketAttributesPair ticket;
             try {
                 ticket = mTheKey.getTicketAndAttributes(service);
             } catch (final TheKeySocketException e) {
@@ -192,12 +192,12 @@ public abstract class AbstractGtoSmxApi {
             }
 
             // short-circuit if we don't have a valid ticket
-            if (ticket == null || !guid.equals(ticket.second.getGuid())) {
+            if (ticket == null || !guid.equals(ticket.attributes.getGuid())) {
                 return null;
             }
 
             // login to the hub
-            sessionId = this.login(ticket.first);
+            sessionId = this.login(ticket.ticket);
         }
 
         // create a session object
