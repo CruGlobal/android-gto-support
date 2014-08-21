@@ -9,7 +9,6 @@ buildscript {
 }
 
 apply plugin: 'com.android.library'
-apply plugin: 'android-maven'
 
 group 'org.ccci.gto.android'
 version '0.4.0-SNAPSHOT'
@@ -51,7 +50,7 @@ dependencies {
 apply from: 'maven_publish.gradle'
 afterEvaluate { project ->
     artifacts {
-        archives androidSourcesJar
-//        archives androidJavadocsJar
+        archives artifactSourcesJar
+        archives artifactJavadocJar
     }
 }
