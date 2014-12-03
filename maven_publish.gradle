@@ -32,7 +32,7 @@ afterEvaluate {
             classifier = 'javadoc'
         }
     } else if (project.plugins.hasPlugin('com.android.library')) {
-        apply plugin: 'android-maven'
+        apply plugin: 'com.github.dcendents.android-maven'
 
         task artifactSourcesJar(type: Jar) {
             classifier = 'sources'
