@@ -3,7 +3,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:1.0.0-rc1'
+        classpath 'com.android.tools.build:gradle:1.0.1'
         classpath 'com.github.dcendents:android-maven-plugin:1.2'
         classpath 'com.github.jcandksolutions.gradle:android-unit-test:2.0.2'
     }
@@ -15,8 +15,8 @@ group 'org.ccci.gto.android'
 version '0.4.1-SNAPSHOT'
 
 android {
-    compileSdkVersion 20
-    buildToolsVersion "20"
+    compileSdkVersion 21
+    buildToolsVersion "21.1.2"
 
     defaultConfig {
         minSdkVersion 8
