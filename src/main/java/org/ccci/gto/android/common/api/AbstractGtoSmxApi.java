@@ -8,6 +8,9 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Build;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.annotation.StringRes;
 import android.util.Pair;
 
 import org.ccci.gto.android.common.util.IOUtils;
@@ -43,38 +46,46 @@ public abstract class AbstractGtoSmxApi {
 
     private final Executor asyncExecutor;
 
+    @NonNull
     private final Context mContext;
+    @NonNull
     private final TheKey mTheKey;
+    @NonNull
     private final String prefFile;
+    @Nullable
     private final String guid;
+    @NonNull
     private final Uri apiUri;
     private final String appVersion;
     private boolean includeAppVersion = false;
     private boolean allowGuest = false;
 
-    protected AbstractGtoSmxApi(final Context context, final TheKey thekey, final String prefFile,
-                                final int apiUriResource) {
+    protected AbstractGtoSmxApi(@NonNull final Context context, @NonNull final TheKey thekey,
+                                @NonNull final String prefFile, @StringRes final int apiUriResource) {
         this(context, thekey, prefFile, apiUriResource, null);
     }
 
-    protected AbstractGtoSmxApi(final Context context, final TheKey thekey, final String prefFile,
-                                final int apiUriResource, final String guid) {
+    protected AbstractGtoSmxApi(@NonNull final Context context, @NonNull final TheKey thekey,
+                                @NonNull final String prefFile, @StringRes final int apiUriResource,
+                                @Nullable final String guid) {
         this(context, thekey, prefFile, context.getString(apiUriResource), guid);
     }
 
-    protected AbstractGtoSmxApi(final Context context, final TheKey thekey, final String prefFile,
-                                final String apiUri) {
+    protected AbstractGtoSmxApi(@NonNull final Context context, @NonNull final TheKey thekey,
+                                @NonNull final String prefFile, @NonNull final String apiUri) {
         this(context, thekey, prefFile, apiUri, null);
     }
 
-    protected AbstractGtoSmxApi(final Context context, final TheKey thekey, final String prefFile,
-                                final String apiUri, final String guid) {
+    protected AbstractGtoSmxApi(@NonNull final Context context, @NonNull final TheKey thekey,
+                                @NonNull final String prefFile, @NonNull final String apiUri,
+                                @Nullable final String guid) {
         this(context, thekey, prefFile, Uri.parse(apiUri.endsWith("/") ? apiUri : apiUri + "/"), guid);
     }
 
     @TargetApi(Build.VERSION_CODES.GINGERBREAD)
-    protected AbstractGtoSmxApi(final Context context, final TheKey thekey, final String prefFile, final Uri apiUri,
-                                final String guid) {
+    protected AbstractGtoSmxApi(@NonNull final Context context, @NonNull final TheKey thekey,
+                                @NonNull final String prefFile, @NonNull final Uri apiUri,
+                                @Nullable final String guid) {
         mContext = context;
         mTheKey = thekey;
         this.prefFile = prefFile;
@@ -114,6 +125,7 @@ public abstract class AbstractGtoSmxApi {
         return mContext.getSharedPreferences(this.prefFile, Context.MODE_PRIVATE);
     }
 
+    @Nullable
     private String getActiveGuid() {
         String guid = this.guid;
         if (guid == null) {
@@ -127,9 +139,8 @@ public abstract class AbstractGtoSmxApi {
         return guid;
     }
 
-    private Session getSession(final String guid) {
-        assert guid != null;
-
+    @Nullable
+    private Session getSession(@NonNull final String guid) {
         // look up the session
         final String name = PREF_SESSIONID + guid;
         final SharedPreferences prefs = this.getPrefs();
@@ -140,8 +151,7 @@ public abstract class AbstractGtoSmxApi {
     }
 
     @TargetApi(Build.VERSION_CODES.GINGERBREAD)
-    private void storeSession(final Session session) {
-        assert session != null;
+    private void storeSession(@NonNull final Session session) {
         final String name = PREF_SESSIONID + session.guid;
         final SharedPreferences.Editor prefs = this.getPrefs().edit();
         prefs.putString(name, session.id);
@@ -157,8 +167,7 @@ public abstract class AbstractGtoSmxApi {
     }
 
     @TargetApi(Build.VERSION_CODES.GINGERBREAD)
-    private void removeSession(final Session session) {
-        assert session != null;
+    private void removeSession(@NonNull final Session session) {
         final String name = PREF_SESSIONID + session.guid;
         final SharedPreferences.Editor prefs = this.getPrefs().edit();
         prefs.remove(name);
@@ -173,9 +182,7 @@ public abstract class AbstractGtoSmxApi {
         }
     }
 
-    private Session establishSession(final String guid) throws ApiSocketException {
-        assert guid != null;
-
+    private Session establishSession(@NonNull final String guid) throws ApiSocketException {
         final String sessionId;
         if ("GUEST".equals(guid) && this.allowGuest) {
             sessionId = this.guestLogin();
@@ -208,13 +215,15 @@ public abstract class AbstractGtoSmxApi {
         return session.id != null ? session : null;
     }
 
-    protected final HttpURLConnection sendRequest(final Request request)
-            throws ApiSocketException, InvalidSessionApiException {
+    @NonNull
+    protected final HttpURLConnection sendRequest(@NonNull final Request request)
+    throws ApiSocketException, InvalidSessionApiException {
         return this.sendRequest(request, DEFAULT_ATTEMPTS);
     }
 
-    protected final HttpURLConnection sendRequest(final Request request, final int attempts)
-            throws ApiSocketException, InvalidSessionApiException {
+    @NonNull
+    protected final HttpURLConnection sendRequest(@NonNull final Request request, final int attempts)
+    throws ApiSocketException, InvalidSessionApiException {
         try {
             try {
                 // build the request uri
@@ -249,7 +258,7 @@ public abstract class AbstractGtoSmxApi {
                 }
                 if (request.params.size() > 0) {
                     if (request.replaceParams) {
-                        final List<String> keys = new ArrayList<String>();
+                        final List<String> keys = new ArrayList<>();
                         for (final Pair<String, String> param : request.params) {
                             keys.add(param.first);
                         }
@@ -292,6 +301,9 @@ public abstract class AbstractGtoSmxApi {
 
                 // check for an expired session
                 if (request.useSession && conn.getResponseCode() == HTTP_UNAUTHORIZED) {
+                    // we can assert guid & session != null because of earlier if(request.useSession) code block
+                    assert guid != null && session != null;
+
                     // determine the type of auth requested
                     String auth = conn.getHeaderField("WWW-Authenticate");
                     if (auth != null) {
@@ -302,8 +314,7 @@ public abstract class AbstractGtoSmxApi {
                         }
                         auth = auth.toUpperCase(Locale.US);
                     } else {
-                        // there isn't an auth header, so assume it is the CAS
-                        // scheme
+                        // there isn't an auth header, so assume it is the CAS scheme
                         auth = "CAS";
                     }
 
@@ -312,7 +323,6 @@ public abstract class AbstractGtoSmxApi {
                         // reset the session
                         synchronized (LOCK_SESSION) {
                             // only reset if this is still the same session
-                            assert session != null;
                             final Session current = this.getSession(guid);
                             if (current != null && session.id.equals(current.id)) {
                                 this.removeSession(session);
@@ -358,7 +368,7 @@ public abstract class AbstractGtoSmxApi {
         try {
             conn = this.sendRequest(request);
 
-            if (conn != null && conn.getResponseCode() == HTTP_OK) {
+            if (conn.getResponseCode() == HTTP_OK) {
                 return IOUtils.readString(conn.getInputStream());
             }
         } catch (final InvalidSessionApiException e) {
@@ -396,7 +406,7 @@ public abstract class AbstractGtoSmxApi {
             conn = this.sendRequest(request);
 
             // was this a valid login
-            if (conn != null && conn.getResponseCode() == HTTP_OK) {
+            if (conn.getResponseCode() == HTTP_OK) {
                 // the sessionId is returned as the body of the response
                 return IOUtils.readString(conn.getInputStream());
             }
@@ -426,7 +436,7 @@ public abstract class AbstractGtoSmxApi {
             conn = this.sendRequest(request);
 
             // was this a valid login
-            if (conn != null && conn.getResponseCode() == HTTP_OK) {
+            if (conn.getResponseCode() == HTTP_OK) {
                 // the sessionId is returned as the body of the response
                 return IOUtils.readString(conn.getInputStream());
             }
@@ -477,7 +487,7 @@ public abstract class AbstractGtoSmxApi {
         // uri attributes
         public boolean useSession = true;
         private final String path;
-        public final Collection<Pair<String, String>> params = new ArrayList<Pair<String, String>>();
+        public final Collection<Pair<String, String>> params = new ArrayList<>();
         public boolean replaceParams = false;
 
         // POST/PUT data
