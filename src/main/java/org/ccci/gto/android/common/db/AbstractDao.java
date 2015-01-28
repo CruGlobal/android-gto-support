@@ -5,6 +5,8 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Build;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.Pair;
 
@@ -16,11 +18,13 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 public abstract class AbstractDao {
+    @NonNull
     protected final SQLiteOpenHelper dbHelper;
+    @NonNull
     private final Executor asyncExecutor;
 
     @TargetApi(Build.VERSION_CODES.GINGERBREAD)
-    protected AbstractDao(final SQLiteOpenHelper dbHelper) {
+    protected AbstractDao(@NonNull final SQLiteOpenHelper dbHelper) {
         this.dbHelper = dbHelper;
         this.asyncExecutor = Executors.newFixedThreadPool(1);
         if(this.asyncExecutor instanceof ThreadPoolExecutor) {
@@ -31,31 +35,38 @@ public abstract class AbstractDao {
         }
     }
 
-    protected String getTable(final Class<?> clazz) {
-        throw new IllegalArgumentException("invalid class specified: " + (clazz != null ? clazz.getName() : null));
+    @NonNull
+    protected String getTable(@NonNull final Class<?> clazz) {
+        throw new IllegalArgumentException("invalid class specified: " + clazz.getName());
     }
 
-    protected String[] getFullProjection(final Class<?> clazz) {
-        throw new IllegalArgumentException("invalid class specified: " + (clazz != null ? clazz.getName() : null));
+    @NonNull
+    protected String[] getFullProjection(@NonNull final Class<?> clazz) {
+        throw new IllegalArgumentException("invalid class specified: " + clazz.getName());
     }
 
-    protected String getJoin(final Class<?> base, final String type, final Class<?> join) {
+    @NonNull
+    protected String getJoin(@NonNull final Class<?> base, @Nullable final String type, @NonNull final Class<?> join) {
         throw new IllegalArgumentException("unsupported join");
     }
 
-    protected Pair<String, String[]> getPrimaryKeyWhere(final Class<?> clazz, final Object... key) {
-        throw new IllegalArgumentException("invalid class specified: " + (clazz != null ? clazz.getName() : null));
+    @NonNull
+    protected Pair<String, String[]> getPrimaryKeyWhere(@NonNull final Class<?> clazz, @NonNull final Object... key) {
+        throw new IllegalArgumentException("invalid class specified: " + clazz.getName());
     }
 
-    protected Pair<String, String[]> getPrimaryKeyWhere(final Object obj) {
+    @NonNull
+    protected Pair<String, String[]> getPrimaryKeyWhere(@NonNull final Object obj) {
         throw new IllegalArgumentException("unsupported object");
     }
 
-    protected <T> Mapper<T> getMapper(final Class<T> clazz) {
+    @NonNull
+    protected <T> Mapper<T> getMapper(@NonNull final Class<T> clazz) {
         throw new IllegalArgumentException("invalid class specified");
     }
 
-    protected String[] getBindValues(final Object... raw) {
+    @NonNull
+    protected String[] getBindValues(@NonNull final Object... raw) {
         final String[] values = new String[raw.length];
         for (int i = 0; i < raw.length; i++) {
             if(raw[i] instanceof Boolean) {
@@ -67,17 +78,21 @@ public abstract class AbstractDao {
         return values;
     }
 
-    public final String buildJoin(final Class<?> clazz) {
+    @NonNull
+    public final String buildJoin(@NonNull final Class<?> clazz) {
         return this.buildJoin(clazz, null, null);
     }
 
-    public final String buildJoin(final Class<?> clazz, final String type) {
+    @NonNull
+    public final String buildJoin(@NonNull final Class<?> clazz, @Nullable final String type) {
         return this.buildJoin(clazz, type, null);
     }
 
-    public final String buildJoin(final Class<?> clazz, final String type, final String on) {
-        final StringBuilder sb = new StringBuilder(32 + (type != null ? type.length() + 1 : 0) +
-                                                           (on != null ? on.length() + 4 : 0));
+    @NonNull
+    public final String buildJoin(@NonNull final Class<?> clazz, @Nullable final String type,
+                                  @Nullable final String on) {
+        final StringBuilder sb =
+                new StringBuilder(32 + (type != null ? type.length() + 1 : 0) + (on != null ? on.length() + 4 : 0));
         if (type != null) {
             sb.append(" ").append(type);
         }
@@ -88,22 +103,28 @@ public abstract class AbstractDao {
         return sb.toString();
     }
 
-    public final Cursor getCursor(final Class<?> clazz) {
+    @NonNull
+    public final Cursor getCursor(@NonNull final Class<?> clazz) {
         return getCursor(clazz, null, null, null);
     }
 
-    public final Cursor getCursor(final Class<?> clazz, final String whereClause, final String[] whereBindValues,
-                            final String orderBy) {
+    @NonNull
+    public final Cursor getCursor(@NonNull final Class<?> clazz, @Nullable final String whereClause,
+                                  @Nullable final String[] whereBindValues, @Nullable final String orderBy) {
         return getCursor(clazz, (String[]) null, this.getFullProjection(clazz), whereClause, whereBindValues, orderBy);
     }
 
-    public final Cursor getCursor(final Class<?> clazz, final String[] projection, final String whereClause,
-                            final String[] whereBindValues, final String orderBy) {
+    @NonNull
+    public final Cursor getCursor(@NonNull final Class<?> clazz, @NonNull final String[] projection,
+                                  @Nullable final String whereClause, @Nullable final String[] whereBindValues,
+                                  @Nullable final String orderBy) {
         return getCursor(clazz, (String[]) null, projection, whereClause, whereBindValues, orderBy);
     }
 
-    public final Cursor getCursor(final Class<?> clazz, final Pair<String, Class<?>>[] joins, final String[] projection,
-                            final String whereClause, final String[] whereBindValues, final String orderBy) {
+    @NonNull
+    public final Cursor getCursor(@NonNull final Class<?> clazz, @NonNull final Pair<String, Class<?>>[] joins,
+                                  @NonNull final String[] projection, @Nullable final String whereClause,
+                                  @Nullable final String[] whereBindValues, @Nullable final String orderBy) {
         // process joins
         final String[] rawJoins = new String[joins.length];
         for (int i = 0; i < joins.length; i++) {
@@ -113,17 +134,16 @@ public abstract class AbstractDao {
         return getCursor(clazz, rawJoins, projection, whereClause, whereBindValues, orderBy);
     }
 
-    public final Cursor getCursor(final Class<?> clazz, final String[] joins, final String[] projection,
-                            final String whereClause, final String[] whereBindValues, final String orderBy) {
+    @NonNull
+    public final Cursor getCursor(@NonNull final Class<?> clazz, @Nullable final String[] joins,
+                                  @NonNull final String[] projection, @Nullable final String whereClause,
+                                  @Nullable final String[] whereBindValues, @Nullable final String orderBy) {
         final String table = this.getTable(clazz) + (joins != null ? TextUtils.join(" ", joins) : "");
 
-        final Cursor c = this.dbHelper.getReadableDatabase().query(table, projection, whereClause,
-                                                                   whereBindValues, null, null, orderBy);
+        final Cursor c = this.dbHelper.getReadableDatabase()
+                .query(table, projection, whereClause, whereBindValues, null, null, orderBy);
 
-        if (c != null) {
-            c.moveToPosition(-1);
-        }
-
+        c.moveToPosition(-1);
         return c;
     }
 
@@ -133,18 +153,22 @@ public abstract class AbstractDao {
      * @param clazz the type of object to retrieve
      * @return
      */
-    public final <T> List<T> get(final Class<T> clazz) {
+    @NonNull
+    public final <T> List<T> get(@NonNull final Class<T> clazz) {
         return this.get(clazz, null, null, null);
     }
 
-    public final <T> List<T> get(final Class<T> clazz, final String whereClause, final String[] whereBindValues) {
+    @NonNull
+    public final <T> List<T> get(@NonNull final Class<T> clazz, @Nullable final String whereClause,
+                                 @Nullable final String[] whereBindValues) {
         return this.get(clazz, whereClause, whereBindValues, null);
     }
 
-    public final <T> List<T> get(final Class<T> clazz, final String whereClause, final String[] whereBindValues,
-                           final String orderBy) {
+    @NonNull
+    public final <T> List<T> get(@NonNull final Class<T> clazz, @Nullable final String whereClause,
+                                 @Nullable final String[] whereBindValues, @Nullable final String orderBy) {
         // load all rows from the cursor
-        final List<T> results = new ArrayList<T>();
+        final List<T> results = new ArrayList<>();
         final Cursor c = this.getCursor(clazz, whereClause, whereBindValues, orderBy);
         c.moveToPosition(-1);
         final Mapper<T> mapper = this.getMapper(clazz);
@@ -159,14 +183,15 @@ public abstract class AbstractDao {
         return results;
     }
 
-    public final <T> T find(final Class<T> clazz, final Object... key) {
+    @Nullable
+    public final <T> T find(@NonNull final Class<T> clazz, @NonNull final Object... key) {
         final Pair<String, String[]> where = this.getPrimaryKeyWhere(clazz, key);
 
         // return the first record if it exists
         Cursor c = null;
         try {
             c = this.getCursor(clazz, where.first, where.second, null);
-            if (c != null && c.getCount() > 0) {
+            if (c.getCount() > 0) {
                 c.moveToFirst();
                 return this.getMapper(clazz).toObject(c);
             }
@@ -180,11 +205,11 @@ public abstract class AbstractDao {
         return null;
     }
 
-    public final void insert(final Object obj) {
+    public final void insert(@NonNull final Object obj) {
         this.insert(obj, SQLiteDatabase.CONFLICT_NONE);
     }
 
-    public final <T> void insert(final T obj, final int conflictAlgorithm) {
+    public final <T> void insert(@NonNull final T obj, final int conflictAlgorithm) {
         @SuppressWarnings("unchecked")
         final Class<T> clazz = (Class<T>) obj.getClass();
 
@@ -200,7 +225,7 @@ public abstract class AbstractDao {
         }
     }
 
-    public final void replace(final Object obj) {
+    public final void replace(@NonNull final Object obj) {
         final SQLiteDatabase db = this.dbHelper.getWritableDatabase();
         db.beginTransaction();
         try {
@@ -212,11 +237,11 @@ public abstract class AbstractDao {
         }
     }
 
-    public final void update(final Object obj) {
+    public final void update(@NonNull final Object obj) {
         this.update(obj, this.getFullProjection(obj.getClass()));
     }
 
-    public final <T> void update(final T obj, final String[] projection) {
+    public final <T> void update(@NonNull final T obj, @NonNull final String[] projection) {
         @SuppressWarnings("unchecked")
         final Class<T> clazz = (Class<T>) obj.getClass();
 
@@ -232,7 +257,7 @@ public abstract class AbstractDao {
         }
     }
 
-    public final void updateOrInsert(final Object obj, final String[] projection) {
+    public final void updateOrInsert(@NonNull final Object obj, @NonNull final String[] projection) {
         final SQLiteDatabase db = this.dbHelper.getWritableDatabase();
         db.beginTransaction();
         try {
@@ -249,7 +274,7 @@ public abstract class AbstractDao {
         }
     }
 
-    public final void delete(final Object obj) {
+    public final void delete(@NonNull final Object obj) {
         final SQLiteDatabase db = this.dbHelper.getWritableDatabase();
         db.beginTransaction();
         try {
@@ -261,14 +286,16 @@ public abstract class AbstractDao {
         }
     }
 
-    public final void async(final Runnable task) {
+    public final void async(@NonNull final Runnable task) {
         this.asyncExecutor.execute(task);
     }
 
+    @NonNull
     public final Transaction newTransaction() {
         return new Transaction(this.dbHelper.getWritableDatabase());
     }
 
+    @NonNull
     public final Transaction beginTransaction() {
         return newTransaction().beginTransaction();
     }
@@ -282,14 +309,16 @@ public abstract class AbstractDao {
         private final SQLiteDatabase db;
         private int state = STATE_INIT;
 
-        private Transaction(final SQLiteDatabase db) {
+        private Transaction(@NonNull final SQLiteDatabase db) {
             this.db = db;
         }
 
+        @NonNull
         public synchronized Transaction begin() {
             return this.beginTransaction();
         }
 
+        @NonNull
         public synchronized Transaction beginTransaction() {
             if (this.state < STATE_OPEN) {
                 this.db.beginTransaction();
@@ -299,10 +328,12 @@ public abstract class AbstractDao {
             return this;
         }
 
+        @NonNull
         public synchronized Transaction setSuccessful() {
             return this.setTransactionSuccessful();
         }
 
+        @NonNull
         public synchronized Transaction setTransactionSuccessful() {
             if (this.state >= STATE_OPEN && this.state < STATE_SUCCESSFUL) {
                 this.db.setTransactionSuccessful();
@@ -312,10 +343,12 @@ public abstract class AbstractDao {
             return this;
         }
 
+        @NonNull
         public synchronized Transaction end() {
             return this.endTransaction();
         }
 
+        @NonNull
         public synchronized Transaction endTransaction() {
             if (this.state >= STATE_OPEN && this.state < STATE_CLOSED) {
                 this.db.endTransaction();
