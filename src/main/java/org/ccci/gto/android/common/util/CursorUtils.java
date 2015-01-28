@@ -1,6 +1,8 @@
 package org.ccci.gto.android.common.util;
 
 import android.database.Cursor;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 public final class CursorUtils {
     /**
@@ -12,7 +14,7 @@ public final class CursorUtils {
      * @param defValue the default value
      * @return the boolean value
      */
-    public static boolean getBool(final Cursor c, final String field, final boolean defValue) {
+    public static boolean getBool(@NonNull final Cursor c, @NonNull final String field, final boolean defValue) {
         final int index = c.getColumnIndex(field);
         if (index != -1) {
             final int value = c.getInt(index);
@@ -25,29 +27,30 @@ public final class CursorUtils {
         return defValue;
     }
 
-    public static int getInt(final Cursor c, final String field) {
+    public static int getInt(@NonNull final Cursor c, @NonNull final String field) {
         return getInt(c, field, 0);
     }
 
-    public static int getInt(final Cursor c, final String field, final int defValue) {
+    public static int getInt(@NonNull final Cursor c, @NonNull final String field, final int defValue) {
         final int index = c.getColumnIndex(field);
         return index != -1 ? c.getInt(index) : defValue;
     }
 
-    public static long getLong(final Cursor c, final String field) {
+    public static long getLong(@NonNull final Cursor c, @NonNull final String field) {
         return getLong(c, field, 0);
     }
 
-    public static long getLong(final Cursor c, final String field, final long defValue) {
+    public static long getLong(@NonNull final Cursor c, @NonNull final String field, final long defValue) {
         final int index = c.getColumnIndex(field);
         return index != -1 ? c.getLong(index) : defValue;
     }
 
-    public static String getString(final Cursor c, final String field) {
+    public static String getString(@NonNull final Cursor c, @NonNull final String field) {
         return getString(c, field, null);
     }
 
-    public static String getString(final Cursor c, final String field, final String defValue) {
+    public static String getString(@NonNull final Cursor c, @NonNull final String field,
+                                   @Nullable final String defValue) {
         final int index = c.getColumnIndex(field);
         return index != -1 ? c.getString(index) : defValue;
     }

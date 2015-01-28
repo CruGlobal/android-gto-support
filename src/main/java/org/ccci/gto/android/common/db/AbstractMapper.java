@@ -2,6 +2,8 @@ package org.ccci.gto.android.common.db;
 
 import android.content.ContentValues;
 import android.database.Cursor;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import org.ccci.gto.android.common.util.CursorUtils;
 
@@ -15,47 +17,40 @@ public abstract class AbstractMapper<T> implements Mapper<T> {
      * @param defValue the default value
      * @return
      */
-    protected final boolean getBool(final Cursor c, final String field, final boolean defValue) {
-        final int index = c.getColumnIndex(field);
-        if (index != -1) {
-            final int value = c.getInt(index);
-            if (value == 1) {
-                return true;
-            } else if (value == 0) {
-                return false;
-            }
-        }
-        return defValue;
+    protected final boolean getBool(@NonNull final Cursor c, @NonNull final String field, final boolean defValue) {
+        return CursorUtils.getBool(c, field, defValue);
     }
 
-    protected final int getInt(final Cursor c, final String field) {
-        return this.getInt(c, field, 0);
+    protected final int getInt(@NonNull final Cursor c, @NonNull final String field) {
+        return CursorUtils.getInt(c, field);
     }
 
-    protected final int getInt(final Cursor c, final String field, final int defValue) {
-        return CursorUtils.getInt(c,field,defValue);
+    protected final int getInt(@NonNull final Cursor c, @NonNull final String field, final int defValue) {
+        return CursorUtils.getInt(c, field, defValue);
     }
 
-    protected final long getLong(final Cursor c, final String field) {
-        return CursorUtils.getLong(c,field);
+    protected final long getLong(@NonNull final Cursor c, @NonNull final String field) {
+        return CursorUtils.getLong(c, field);
     }
 
-    protected final long getLong(final Cursor c, final String field, final long defValue) {
-        final int index = c.getColumnIndex(field);
-        return index != -1 ? c.getLong(index) : defValue;
+    protected final long getLong(@NonNull final Cursor c, @NonNull final String field, final long defValue) {
+        return CursorUtils.getLong(c, field, defValue);
     }
 
-    protected final String getString(final Cursor c, final String field) {
-        return this.getString(c, field, null);
+    @Nullable
+    protected final String getString(@NonNull final Cursor c, @NonNull final String field) {
+        return CursorUtils.getString(c, field);
     }
 
-    protected final String getString(final Cursor c, final String field, final String defValue) {
-        final int index = c.getColumnIndex(field);
-        return index != -1 ? c.getString(index) : defValue;
+    @Nullable
+    protected final String getString(@NonNull final Cursor c, @NonNull final String field,
+                                     @Nullable final String defValue) {
+        return CursorUtils.getString(c, field, defValue);
     }
 
+    @NonNull
     @Override
-    public final ContentValues toContentValues(final T obj, final String[] projection) {
+    public final ContentValues toContentValues(@NonNull final T obj, @NonNull final String[] projection) {
         // only add values in the projection
         final ContentValues values = new ContentValues();
         for (final String field : projection) {
@@ -64,14 +59,16 @@ public abstract class AbstractMapper<T> implements Mapper<T> {
         return values;
     }
 
-    protected void mapField(final ContentValues values, final String field, final T obj) {
+    protected void mapField(@NonNull final ContentValues values, @NonNull final String field, @NonNull final T obj) {
         // ignore unrecognized fields
     }
 
-    protected abstract T newObject(final Cursor c);
+    @NonNull
+    protected abstract T newObject(@NonNull final Cursor c);
 
+    @NonNull
     @Override
-    public T toObject(final Cursor c) {
+    public T toObject(@NonNull final Cursor c) {
         return this.newObject(c);
     }
 }

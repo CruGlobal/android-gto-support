@@ -2,11 +2,15 @@ package org.ccci.gto.android.common.db;
 
 import android.content.ContentValues;
 import android.database.Cursor;
+import android.support.annotation.NonNull;
 
 public interface Mapper<T> {
-    ContentValues toContentValues(T obj);
+    @NonNull
+    ContentValues toContentValues(@NonNull T obj);
 
-    ContentValues toContentValues(T obj, String[] projection);
+    @NonNull
+    ContentValues toContentValues(@NonNull T obj, @NonNull String[] projection);
 
-    T toObject(Cursor c);
+    @NonNull
+    T toObject(@NonNull Cursor c);
 }
