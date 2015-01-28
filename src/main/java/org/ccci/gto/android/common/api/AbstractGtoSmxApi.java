@@ -208,42 +208,6 @@ public abstract class AbstractGtoSmxApi {
         return session.id != null ? session : null;
     }
 
-    @Deprecated
-    protected final HttpURLConnection apiGetRequest(final String path)
-            throws ApiSocketException, InvalidSessionApiException {
-        return this.sendRequest(new Request(path));
-    }
-
-    @Deprecated
-    protected final HttpURLConnection apiGetRequest(final boolean useSession, final String path)
-            throws ApiSocketException, InvalidSessionApiException {
-        final Request request = new Request(path);
-        request.useSession = useSession;
-        return this.sendRequest(request);
-    }
-
-    @Deprecated
-    protected final HttpURLConnection apiGetRequest(final String path, final Collection<Pair<String, String>> params,
-                                                    final boolean replaceParams)
-            throws ApiSocketException, InvalidSessionApiException {
-        final Request request = new Request(path);
-        request.params.addAll(params);
-        request.replaceParams = replaceParams;
-        return this.sendRequest(request);
-    }
-
-    @Deprecated
-    protected final HttpURLConnection apiGetRequest(final boolean useSession, final String path,
-                                                    final Collection<Pair<String, String>> params,
-                                                    final boolean replaceParams)
-            throws ApiSocketException, InvalidSessionApiException {
-        final Request request = new Request(path);
-        request.useSession = useSession;
-        request.params.addAll(params);
-        request.replaceParams = replaceParams;
-        return this.sendRequest(request);
-    }
-
     protected final HttpURLConnection sendRequest(final Request request)
             throws ApiSocketException, InvalidSessionApiException {
         return this.sendRequest(request, DEFAULT_ATTEMPTS);
