@@ -21,6 +21,14 @@ public abstract class AbstractMapper<T> implements Mapper<T> {
         return CursorUtils.getBool(c, field, defValue);
     }
 
+    protected final double getDouble(@NonNull final Cursor c, @NonNull final String field) {
+        return CursorUtils.getDouble(c, field);
+    }
+
+    protected final double getDouble(@NonNull final Cursor c, @NonNull final String field, final double defValue) {
+        return CursorUtils.getDouble(c, field, defValue);
+    }
+
     protected final int getInt(@NonNull final Cursor c, @NonNull final String field) {
         return CursorUtils.getInt(c, field);
     }

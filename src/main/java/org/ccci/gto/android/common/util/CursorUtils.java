@@ -27,6 +27,15 @@ public final class CursorUtils {
         return defValue;
     }
 
+    public static double getDouble(@NonNull final Cursor c, @NonNull final String field) {
+        return getDouble(c, field, 0);
+    }
+
+    public static double getDouble(@NonNull final Cursor c, @NonNull final String field, final double defValue) {
+        final int index = c.getColumnIndex(field);
+        return index != -1 ? c.getDouble(index) : defValue;
+    }
+
     public static int getInt(@NonNull final Cursor c, @NonNull final String field) {
         return getInt(c, field, 0);
     }
