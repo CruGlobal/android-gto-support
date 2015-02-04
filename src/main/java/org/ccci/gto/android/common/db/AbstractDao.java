@@ -258,6 +258,10 @@ public abstract class AbstractDao {
         }
     }
 
+    public final void updateOrInsert(@NonNull final Object obj) {
+        this.updateOrInsert(obj, this.getFullProjection(obj.getClass()));
+    }
+
     public final void updateOrInsert(@NonNull final Object obj, @NonNull final String[] projection) {
         final SQLiteDatabase db = this.dbHelper.getWritableDatabase();
         db.beginTransaction();
