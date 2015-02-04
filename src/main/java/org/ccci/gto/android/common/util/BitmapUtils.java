@@ -1,16 +1,20 @@
 package org.ccci.gto.android.common.util;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+
 import org.ccci.gto.android.common.model.Dimension;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
 public class BitmapUtils {
-    public static int calcScale(final Dimension size, final Dimension fullSize) {
+    public static int calcScale(@Nullable final Dimension size, @NonNull final Dimension fullSize) {
         return calcScale(size, fullSize, null);
     }
 
-    public static int calcScale(final Dimension size, final Dimension fullSize, final Dimension maxSize) {
+    public static int calcScale(@Nullable final Dimension size, @NonNull final Dimension fullSize,
+                                @Nullable final Dimension maxSize) {
         int scale = 1;
 
         // calculate min scale if a max size was specified & applies

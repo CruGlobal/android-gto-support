@@ -2,11 +2,13 @@ package org.ccci.gto.android.common.util;
 
 import android.net.Uri;
 import android.net.Uri.Builder;
+import android.support.annotation.NonNull;
 
 import java.util.regex.Pattern;
 
 public final class UriUtils {
-    public static final Builder removeQueryParams(final Builder uri, final String... keys) {
+    @NonNull
+    public static Builder removeQueryParams(@NonNull final Builder uri, final String... keys) {
         if (keys.length > 0) {
             final Uri uriTemp = uri.build();
             String query = uriTemp.getEncodedQuery();
@@ -34,7 +36,9 @@ public final class UriUtils {
         return uri;
     }
 
-    public static final Builder replaceQueryParam(final Builder uri, final String key, final String... values) {
+    @NonNull
+    public static Builder replaceQueryParam(@NonNull final Builder uri, @NonNull final String key,
+                                            final String... values) {
         // remove all values for key from query
         removeQueryParams(uri, key);
 

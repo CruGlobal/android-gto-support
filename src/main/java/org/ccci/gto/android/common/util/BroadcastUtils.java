@@ -3,13 +3,14 @@ package org.ccci.gto.android.common.util;
 import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.PatternMatcher;
+import android.support.annotation.NonNull;
 
 public final class BroadcastUtils {
-    public static void addDataUri(final IntentFilter filter, final Uri uri) {
+    public static void addDataUri(@NonNull final IntentFilter filter, @NonNull final Uri uri) {
         addDataUri(filter, uri, PatternMatcher.PATTERN_LITERAL);
     }
 
-    public static void addDataUri(final IntentFilter filter, final Uri uri, final int type) {
+    public static void addDataUri(@NonNull final IntentFilter filter, @NonNull final Uri uri, final int type) {
         final String scheme = uri.getScheme();
         if (scheme != null) {
             filter.addDataScheme(scheme);
