@@ -57,6 +57,13 @@ public abstract class AbstractMapper<T> implements Mapper<T> {
     }
 
     @NonNull
+    @Deprecated
+    public ContentValues toContentValues(@NonNull T obj) {
+        throw new UnsupportedOperationException(
+                "toContentValues(obj) is deprecated, use toContentValues(obj, projection) instead");
+    }
+
+    @NonNull
     @Override
     public final ContentValues toContentValues(@NonNull final T obj, @NonNull final String[] projection) {
         // only add values in the projection

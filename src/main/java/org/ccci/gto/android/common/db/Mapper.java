@@ -6,9 +6,6 @@ import android.support.annotation.NonNull;
 
 public interface Mapper<T> {
     @NonNull
-    ContentValues toContentValues(@NonNull T obj);
-
-    @NonNull
     ContentValues toContentValues(@NonNull T obj, @NonNull String[] projection);
 
     @NonNull

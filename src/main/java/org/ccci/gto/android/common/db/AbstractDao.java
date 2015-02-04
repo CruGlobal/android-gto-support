@@ -217,7 +217,8 @@ public abstract class AbstractDao {
         db.beginTransaction();
         try {
             // execute insert
-            db.insertWithOnConflict(this.getTable(clazz), null, this.getMapper(clazz).toContentValues(obj),
+            db.insertWithOnConflict(this.getTable(clazz), null,
+                                    this.getMapper(clazz).toContentValues(obj, this.getFullProjection(clazz)),
                                     conflictAlgorithm);
             db.setTransactionSuccessful();
         } finally {
