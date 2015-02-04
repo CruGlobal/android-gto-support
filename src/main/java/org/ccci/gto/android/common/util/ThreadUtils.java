@@ -20,6 +20,7 @@ public final class ThreadUtils {
         }
     }
 
+    @SuppressWarnings("SynchronizationOnLocalVariableOrMethodParameter")
     public static <K> Object getLock(final Map<K, Object> locks, final K key) {
         synchronized (locks) {
             if (!locks.containsKey(key)) {
