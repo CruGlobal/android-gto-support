@@ -1,5 +1,8 @@
 package org.ccci.gto.android.common.util;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+
 import java.io.BufferedReader;
 import java.io.Closeable;
 import java.io.IOException;
@@ -14,7 +17,7 @@ public final class IOUtils {
     private static final int DEFAULT_BUFFER_SIZE = 640 * 1024;
     private static final int EOF = -1;
 
-    public static void closeQuietly(final Closeable handle) {
+    public static void closeQuietly(@Nullable final Closeable handle) {
         if (handle != null) {
             try {
                 handle.close();
@@ -24,16 +27,16 @@ public final class IOUtils {
         }
     }
 
-    public static void closeQuietly(final HttpURLConnection conn) {
+    public static void closeQuietly(@Nullable final HttpURLConnection conn) {
         if (conn != null) {
             conn.disconnect();
         }
     }
 
-    public static long copy(final InputStream in, OutputStream out) throws IOException {
+    public static long copy(@NonNull final InputStream in, @NonNull final OutputStream out) throws IOException {
         byte[] buffer = new byte[DEFAULT_BUFFER_SIZE];
         long count = 0;
-        int n = 0;
+        int n;
         while (EOF != (n = in.read(buffer))) {
             out.write(buffer, 0, n);
             count += n;
@@ -41,7 +44,8 @@ public final class IOUtils {
         return count;
     }
 
-    public static String readString(final InputStream in) throws IOException {
+    @NonNull
+    public static String readString(@NonNull final InputStream in) throws IOException {
         final BufferedReader reader = new BufferedReader(new InputStreamReader(in, "UTF-8"), DEFAULT_BUFFER_SIZE);
         final StringBuilder out = new StringBuilder();
         final char[] buffer = new char[DEFAULT_BUFFER_SIZE];
