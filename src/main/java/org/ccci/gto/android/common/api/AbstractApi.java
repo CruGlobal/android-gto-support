@@ -41,16 +41,14 @@ public abstract class AbstractApi<R extends AbstractApi.Request> {
             // build the request uri
             uri = this.buildRequestUri(request, mBaseUri.buildUpon());
 
-            // build base request object
-            final HttpURLConnection conn = (HttpURLConnection) new URL(uri.build().toString()).openConnection();
-            conn.setRequestMethod(request.method.toString());
-            if (request.accept != null) {
-                conn.addRequestProperty("Accept", request.accept.type);
-            }
-            conn.setInstanceFollowRedirects(request.followRedirects);
+            // prepare the request
+            final HttpURLConnection conn =
+                    prepareRequest(request, (HttpURLConnection) new URL(uri.build().toString()).openConnection());
 
             // no need to explicitly execute, accessing the response triggers the execute
-            conn.getResponseCode();
+
+            // process the response
+            processResponse(request, conn);
 
             // return the connection for method specific handling
             return conn;
@@ -79,6 +77,23 @@ public abstract class AbstractApi<R extends AbstractApi.Request> {
             }
         }
         return uri;
+    }
+
+    @NonNull
+    protected HttpURLConnection prepareRequest(@NonNull final R request, @NonNull final HttpURLConnection conn)
+            throws ApiException, IOException {
+        // build base request object
+        conn.setRequestMethod(request.method.toString());
+        if (request.accept != null) {
+            conn.addRequestProperty("Accept", request.accept.type);
+        }
+        conn.setInstanceFollowRedirects(request.followRedirects);
+
+        return conn;
+    }
+
+    protected void processResponse(@NonNull final R request, @NonNull final HttpURLConnection conn)
+            throws ApiException, IOException {
     }
 
     protected static class Request {
