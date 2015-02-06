@@ -59,6 +59,10 @@ public abstract class AbstractApi<R extends AbstractApi.Request> {
         }
     }
 
+    protected final Request.Parameter param(@NonNull final String name, @NonNull final String value) {
+        return new Request.Parameter(name, value);
+    }
+
     @NonNull
     protected Uri.Builder buildRequestUri(@NonNull final R request, @NonNull final Uri.Builder uri)
             throws ApiException {
