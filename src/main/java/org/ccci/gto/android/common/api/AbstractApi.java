@@ -4,6 +4,8 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import org.ccci.gto.android.common.api.AbstractApi.Request;
+import org.ccci.gto.android.common.util.IOUtils;
 import org.ccci.gto.android.common.util.UriUtils;
 
 import java.io.IOException;
@@ -36,6 +38,8 @@ public abstract class AbstractApi<R extends AbstractApi.Request> {
     @NonNull
     protected final HttpURLConnection sendRequest(@NonNull final R request, final int attempts)
             throws ApiException {
+        HttpURLConnection conn = null;
+        boolean successful = false;
         try {
             // build the request uri
             final Uri.Builder uri = mBaseUri.buildUpon();
@@ -48,7 +52,7 @@ public abstract class AbstractApi<R extends AbstractApi.Request> {
             }
 
             // prepare the request
-            final HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn = (HttpURLConnection) url.openConnection();
             onPrepareRequest(conn, request);
 
             // no need to explicitly execute, accessing the response triggers the execute
@@ -57,9 +61,15 @@ public abstract class AbstractApi<R extends AbstractApi.Request> {
             onProcessResponse(conn, request);
 
             // return the connection for method specific handling
+            successful = true;
             return conn;
         } catch (final IOException e) {
             throw new ApiSocketException(e);
+        } finally {
+            // close a potentially open connection if we weren't successful
+            if(!successful) {
+                IOUtils.closeQuietly(conn);
+            }
         }
     }
 
