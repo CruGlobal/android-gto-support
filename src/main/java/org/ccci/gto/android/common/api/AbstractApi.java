@@ -36,35 +36,41 @@ public abstract class AbstractApi<R extends AbstractApi.Request> {
     @NonNull
     protected final HttpURLConnection sendRequest(@NonNull final R request, final int attempts)
             throws ApiException {
-        Uri.Builder uri = null;
         try {
             // build the request uri
-            uri = this.buildRequestUri(request, mBaseUri.buildUpon());
+            final Uri.Builder uri = mBaseUri.buildUpon();
+            onPrepareUri(uri, request);
+            final URL url;
+            try {
+                url = new URL(uri.build().toString());
+            } catch (final MalformedURLException e) {
+                throw new RuntimeException("invalid Request URL: " + uri.build().toString(), e);
+            }
 
             // prepare the request
-            final HttpURLConnection conn =
-                    prepareRequest(request, (HttpURLConnection) new URL(uri.build().toString()).openConnection());
+            final HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            onPrepareRequest(conn, request);
 
             // no need to explicitly execute, accessing the response triggers the execute
 
             // process the response
-            processResponse(request, conn);
+            onProcessResponse(conn, request);
 
             // return the connection for method specific handling
             return conn;
-        } catch (final MalformedURLException e) {
-            throw new RuntimeException("invalid Request URL: " + uri.build().toString(), e);
         } catch (final IOException e) {
             throw new ApiSocketException(e);
         }
     }
 
+    @NonNull
     protected final Request.Parameter param(@NonNull final String name, @NonNull final String value) {
         return new Request.Parameter(name, value);
     }
 
-    @NonNull
-    protected Uri.Builder buildRequestUri(@NonNull final R request, @NonNull final Uri.Builder uri)
+    /* BEGIN request lifecycle events */
+
+    protected void onPrepareUri(@NonNull final Uri.Builder uri, @NonNull final R request)
             throws ApiException {
         // build the request uri
         uri.appendEncodedPath(request.path);
@@ -80,11 +86,9 @@ public abstract class AbstractApi<R extends AbstractApi.Request> {
                 uri.appendQueryParameter(param.name, param.value);
             }
         }
-        return uri;
     }
 
-    @NonNull
-    protected HttpURLConnection prepareRequest(@NonNull final R request, @NonNull final HttpURLConnection conn)
+    protected void onPrepareRequest(@NonNull final HttpURLConnection conn, @NonNull final R request)
             throws ApiException, IOException {
         // build base request object
         conn.setRequestMethod(request.method.toString());
@@ -92,31 +96,31 @@ public abstract class AbstractApi<R extends AbstractApi.Request> {
             conn.addRequestProperty("Accept", request.accept.type);
         }
         conn.setInstanceFollowRedirects(request.followRedirects);
-
-        return conn;
     }
 
-    protected void processResponse(@NonNull final R request, @NonNull final HttpURLConnection conn)
+    protected void onProcessResponse(@NonNull final HttpURLConnection conn, @NonNull final R request)
             throws ApiException, IOException {
     }
 
+    /* END request lifecycle events */
+
     protected static class Request {
+        public enum Method {GET, POST, PUT, DELETE}
+
         public enum MediaType {
             APPLICATION_FORM_URLENCODED("application/x-www-form-urlencoded"), APPLICATION_JSON("application/json"),
             APPLICATION_XML("application/xml"), TEXT_PLAIN("text/plain");
 
-            private final String type;
+            final String type;
 
             private MediaType(final String type) {
                 this.type = type;
             }
         }
 
-        public enum Method {GET, POST, PUT, DELETE}
-
-        public static final class Parameter {
-            private final String name;
-            private final String value;
+        protected static final class Parameter {
+            final String name;
+            final String value;
 
             public Parameter(@NonNull final String name, @NonNull final String value) {
                 this.name = name;
