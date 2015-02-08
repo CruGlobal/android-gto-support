@@ -236,7 +236,8 @@ public abstract class AbstractApi<R extends Request<S>, S extends Session> {
         }
     }
 
-    protected boolean isSessionInvalid(@NonNull final HttpURLConnection conn, final R request) {
+    protected boolean isSessionInvalid(@NonNull final HttpURLConnection conn, @NonNull final R request)
+            throws IOException {
         return false;
     }
 

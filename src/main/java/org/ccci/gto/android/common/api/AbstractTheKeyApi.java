@@ -55,6 +55,11 @@ public abstract class AbstractTheKeyApi<R extends AbstractTheKeyApi.Request<S>, 
     protected void onPrepareSession(@NonNull final R request) throws ApiException {
         super.onPrepareSession(request);
         request.guid = this.getActiveGuid();
+
+        // throw an exception if there isn't an active guid
+        if(request.guid == null) {
+            throw new InvalidSessionApiException();
+        }
     }
 
     @Override
@@ -67,8 +72,21 @@ public abstract class AbstractTheKeyApi<R extends AbstractTheKeyApi.Request<S>, 
         @Nullable
         private final String guid;
 
-        protected Session(@NonNull final SharedPreferences prefs, @NonNull final String baseAttrName,
-                          @NonNull final String guid) {
+        protected Session(@Nullable final String id, @NonNull final String guid) {
+            this(id, guid, PREF_SESSION_BASE_NAME);
+        }
+
+        protected Session(@Nullable final String id, @NonNull final String guid, @NonNull final String baseAttrName) {
+            super(id, guid.toUpperCase(Locale.US) + "." + baseAttrName);
+            this.guid = guid;
+        }
+
+        protected Session(@NonNull final SharedPreferences prefs, @NonNull final String guid) {
+            this(prefs, guid, PREF_SESSION_BASE_NAME);
+        }
+
+        protected Session(@NonNull final SharedPreferences prefs, @NonNull final String guid,
+                          @NonNull final String baseAttrName) {
             super(prefs, guid.toUpperCase(Locale.US) + "." + baseAttrName);
             this.guid = guid;
         }

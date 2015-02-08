@@ -10,22 +10,17 @@ import android.net.Uri;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.annotation.StringRes;
-import android.util.Pair;
 
+import org.ccci.gto.android.common.api.AbstractApi.Request.MediaType;
+import org.ccci.gto.android.common.api.AbstractGtoSmxApi.Request;
+import org.ccci.gto.android.common.api.AbstractTheKeyApi.Session;
 import org.ccci.gto.android.common.util.IOUtils;
-import org.ccci.gto.android.common.util.UriUtils;
 
 import java.io.IOException;
-import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
-import java.net.URL;
 import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
@@ -35,62 +30,31 @@ import java.util.concurrent.TimeUnit;
 import me.thekey.android.TheKey;
 import me.thekey.android.TheKeySocketException;
 
-public abstract class AbstractGtoSmxApi {
-    private static final String PREF_SESSIONID = "session_id_";
-
+public abstract class AbstractGtoSmxApi extends AbstractTheKeyApi<Request, Session> {
     private static final String PARAM_APPVERSION = "_appVersion";
-
-    private static final int DEFAULT_ATTEMPTS = 3;
-
-    private static final Object LOCK_SESSION = new Object();
 
     private final Executor asyncExecutor;
 
-    @NonNull
-    private final Context mContext;
-    @NonNull
-    private final TheKey mTheKey;
-    @NonNull
-    private final String prefFile;
-    @Nullable
-    private final String guid;
-    @NonNull
-    private final Uri apiUri;
     private final String appVersion;
     private boolean includeAppVersion = false;
     private boolean allowGuest = false;
 
     protected AbstractGtoSmxApi(@NonNull final Context context, @NonNull final TheKey thekey,
-                                @NonNull final String prefFile, @StringRes final int apiUriResource) {
-        this(context, thekey, prefFile, apiUriResource, null);
+                                @NonNull final String apiUri, @NonNull final String prefFile) {
+        this(context, thekey, apiUri, prefFile, null);
     }
 
     protected AbstractGtoSmxApi(@NonNull final Context context, @NonNull final TheKey thekey,
-                                @NonNull final String prefFile, @StringRes final int apiUriResource,
+                                @NonNull final String apiUri, @NonNull final String prefFile,
                                 @Nullable final String guid) {
-        this(context, thekey, prefFile, context.getString(apiUriResource), guid);
-    }
-
-    protected AbstractGtoSmxApi(@NonNull final Context context, @NonNull final TheKey thekey,
-                                @NonNull final String prefFile, @NonNull final String apiUri) {
-        this(context, thekey, prefFile, apiUri, null);
-    }
-
-    protected AbstractGtoSmxApi(@NonNull final Context context, @NonNull final TheKey thekey,
-                                @NonNull final String prefFile, @NonNull final String apiUri,
-                                @Nullable final String guid) {
-        this(context, thekey, prefFile, Uri.parse(apiUri.endsWith("/") ? apiUri : apiUri + "/"), guid);
+        this(context, thekey, Uri.parse(apiUri.endsWith("/") ? apiUri : apiUri + "/"), prefFile, guid);
     }
 
     @TargetApi(Build.VERSION_CODES.GINGERBREAD)
     protected AbstractGtoSmxApi(@NonNull final Context context, @NonNull final TheKey thekey,
-                                @NonNull final String prefFile, @NonNull final Uri apiUri,
+                                @NonNull final Uri apiUri, @NonNull final String prefFile,
                                 @Nullable final String guid) {
-        mContext = context;
-        mTheKey = thekey;
-        this.prefFile = prefFile;
-        this.guid = guid;
-        this.apiUri = apiUri;
+        super(context, thekey, apiUri, prefFile, guid);
         this.asyncExecutor = Executors.newFixedThreadPool(1);
         if (this.asyncExecutor instanceof ThreadPoolExecutor) {
             ((ThreadPoolExecutor) this.asyncExecutor).setKeepAliveTime(30, TimeUnit.SECONDS);
@@ -121,70 +85,36 @@ public abstract class AbstractGtoSmxApi {
         this.allowGuest = allowGuest;
     }
 
-    private SharedPreferences getPrefs() {
-        return mContext.getSharedPreferences(this.prefFile, Context.MODE_PRIVATE);
-    }
-
     @Nullable
-    private String getActiveGuid() {
-        String guid = this.guid;
-        if (guid == null) {
-            guid = mTheKey.getGuid();
+    @Override
+    protected String getActiveGuid() {
+        String guid = super.getActiveGuid();
 
-            if (guid == null && this.allowGuest) {
-                guid = "GUEST";
-            }
+        if (guid == null && this.allowGuest) {
+            guid = "GUEST";
         }
 
         return guid;
     }
 
     @Nullable
-    private Session getSession(@NonNull final String guid) {
-        // look up the session
-        final String name = PREF_SESSIONID + guid;
-        final SharedPreferences prefs = this.getPrefs();
-        synchronized (LOCK_SESSION) {
-            final Session session = new Session(guid, prefs.getString(name, null));
-            return session.id != null ? session : null;
-        }
+    @Override
+    protected final Session loadSession(@NonNull final SharedPreferences prefs, @NonNull final Request request) {
+        return new Session(prefs, request.guid);
     }
 
-    @TargetApi(Build.VERSION_CODES.GINGERBREAD)
-    private void storeSession(@NonNull final Session session) {
-        final String name = PREF_SESSIONID + session.guid;
-        final SharedPreferences.Editor prefs = this.getPrefs().edit();
-        prefs.putString(name, session.id);
-
-        synchronized (LOCK_SESSION) {
-            // store updates
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD) {
-                prefs.apply();
-            } else {
-                prefs.commit();
-            }
+    @Nullable
+    @Override
+    protected Session establishSession(@NonNull final Request request) throws ApiException {
+        // short-circuit if we don't have a guid to establish a session for
+        if (request.guid == null) {
+            // can't establish a session for an invalid user
+            return null;
         }
-    }
 
-    @TargetApi(Build.VERSION_CODES.GINGERBREAD)
-    private void removeSession(@NonNull final Session session) {
-        final String name = PREF_SESSIONID + session.guid;
-        final SharedPreferences.Editor prefs = this.getPrefs().edit();
-        prefs.remove(name);
-
-        synchronized (LOCK_SESSION) {
-            // store updates
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD) {
-                prefs.apply();
-            } else {
-                prefs.commit();
-            }
-        }
-    }
-
-    private Session establishSession(@NonNull final String guid) throws ApiSocketException {
+        // establish a session
         final String sessionId;
-        if ("GUEST".equals(guid) && this.allowGuest) {
+        if ("GUEST".equals(request.guid) && this.allowGuest) {
             sessionId = this.guestLogin();
         } else {
             // get the service to retrieve a ticket for
@@ -199,7 +129,7 @@ public abstract class AbstractGtoSmxApi {
             }
 
             // short-circuit if we don't have a valid ticket
-            if (ticket == null || !guid.equals(ticket.attributes.getGuid())) {
+            if (ticket == null || !request.guid.equals(ticket.attributes.getGuid())) {
                 return null;
             }
 
@@ -207,163 +137,61 @@ public abstract class AbstractGtoSmxApi {
             sessionId = this.login(ticket.ticket);
         }
 
-        // create a session object
-        final Session session = new Session(guid, sessionId);
-        this.storeSession(session);
-
-        // return the newly established session
-        return session.id != null ? session : null;
+        // create & return a session object
+        return sessionId != null ? new Session(sessionId, request.guid) : null;
     }
 
-    @NonNull
-    protected final HttpURLConnection sendRequest(@NonNull final Request request)
-    throws ApiSocketException, InvalidSessionApiException {
-        return this.sendRequest(request, DEFAULT_ATTEMPTS);
-    }
+    @Override
+    protected void onPrepareUri(@NonNull final Uri.Builder uri, @NonNull final Request request)
+            throws ApiException {
+        // prepend api method url with the session id
+        if (request.useSession && request.session != null) {
+            uri.appendPath(request.session.id);
+        }
 
-    @NonNull
-    protected final HttpURLConnection sendRequest(@NonNull final Request request, final int attempts)
-    throws ApiSocketException, InvalidSessionApiException {
-        try {
-            try {
-                // build the request uri
-                final Uri.Builder uri = this.apiUri.buildUpon();
-                final String guid = getActiveGuid();
-                Session session = null;
-                if (request.useSession) {
-                    // short-circuit if we will be unable to get a valid session
-                    if (guid == null) {
-                        throw new InvalidSessionApiException();
-                    }
+        // generate uri
+        super.onPrepareUri(uri, request);
 
-                    // get the session, establish a session if one doesn't exist or if we have a stale session
-                    synchronized (LOCK_SESSION) {
-                        session = this.getSession(guid);
-                        if (session == null) {
-                            session = this.establishSession(guid);
-                        }
-                    }
-
-                    // throw an InvalidSessionApiException if we don't have a valid session
-                    if (session == null) {
-                        throw new InvalidSessionApiException();
-                    }
-
-                    // use the current sessionId in the url
-                    uri.appendPath(session.id);
-                }
-                uri.appendEncodedPath(request.path);
-                if(this.includeAppVersion) {
-                    uri.appendQueryParameter(PARAM_APPVERSION, this.appVersion);
-                }
-                if (request.params.size() > 0) {
-                    if (request.replaceParams) {
-                        final List<String> keys = new ArrayList<>();
-                        for (final Pair<String, String> param : request.params) {
-                            keys.add(param.first);
-                        }
-                        UriUtils.removeQueryParams(uri, keys.toArray(new String[keys.size()]));
-                    }
-                    for (final Pair<String, String> param : request.params) {
-                        uri.appendQueryParameter(param.first, param.second);
-                    }
-                }
-
-                // build base request object
-                final HttpURLConnection conn = (HttpURLConnection) new URL(uri.build().toString()).openConnection();
-                conn.setRequestMethod(request.method);
-                if (request.accept != null) {
-                    conn.addRequestProperty("Accept", request.accept.type);
-                }
-                if (request.contentType != null) {
-                    conn.addRequestProperty("Content-Type", request.contentType.type);
-                }
-                conn.setInstanceFollowRedirects(request.followRedirects);
-
-                // POST/PUT requests
-                if ("POST".equals(request.method) || "PUT".equals(request.method)) {
-                    conn.setDoOutput(true);
-                    final byte[] data = request.content != null ? request.content : new byte[0];
-                    conn.setFixedLengthStreamingMode(data.length);
-                    conn.setUseCaches(false);
-                    OutputStream out = null;
-                    try {
-                        out = conn.getOutputStream();
-                        out.write(data);
-                    } finally {
-                        if (out != null) {
-                            out.close();
-                        }
-                    }
-                }
-
-                // no need to explicitly execute, accessing the response triggers the execute
-
-                // check for an expired session
-                if (request.useSession && conn.getResponseCode() == HTTP_UNAUTHORIZED) {
-                    // we can assert guid & session != null because of earlier if(request.useSession) code block
-                    assert guid != null && session != null;
-
-                    // determine the type of auth requested
-                    String auth = conn.getHeaderField("WWW-Authenticate");
-                    if (auth != null) {
-                        auth = auth.trim();
-                        int i = auth.indexOf(" ");
-                        if (i != -1) {
-                            auth = auth.substring(0, i);
-                        }
-                        auth = auth.toUpperCase(Locale.US);
-                    } else {
-                        // there isn't an auth header, so assume it is the CAS scheme
-                        auth = "CAS";
-                    }
-
-                    // the 401 is requesting CAS auth, assume session is invalid
-                    if ("CAS".equals(auth)) {
-                        // reset the session
-                        synchronized (LOCK_SESSION) {
-                            // only reset if this is still the same session
-                            final Session current = this.getSession(guid);
-                            if (current != null && session.id.equals(current.id)) {
-                                this.removeSession(session);
-                            }
-                        }
-
-                        // throw an invalid session exception
-                        throw new InvalidSessionApiException();
-                    }
-                }
-
-                // return the connection for method specific handling
-                return conn;
-            } catch (final MalformedURLException e) {
-                throw new RuntimeException("unexpected exception", e);
-            } catch (final IOException e) {
-                throw new ApiSocketException(e);
-            }
-        } catch (final InvalidSessionApiException e) {
-            // retry request on invalid session exceptions
-            if (attempts > 0) {
-                return this.sendRequest(request, attempts - 1);
-            }
-
-            // propagate the exception
-            throw e;
-        } catch (final ApiSocketException e) {
-            // retry request on socket exceptions (maybe spotty internet)
-            if (attempts > 0) {
-                return this.sendRequest(request, attempts - 1);
-            }
-
-            // propagate the exception
-            throw e;
+        // append the app version to the uri
+        if (this.includeAppVersion) {
+            uri.appendQueryParameter(PARAM_APPVERSION, this.appVersion);
         }
     }
 
-    public String getService() throws ApiSocketException {
+    @Override
+    protected boolean isSessionInvalid(@NonNull final HttpURLConnection conn, @NonNull final Request request)
+            throws IOException {
+        // short-circuit if we already know the session is invalid
+        if (super.isSessionInvalid(conn, request)) {
+            return true;
+        }
+
+        // Check 401 Unauthorized responses to see if it's because of needing CAS authentication
+        if (conn.getResponseCode() == HTTP_UNAUTHORIZED) {
+            String auth = conn.getHeaderField("WWW-Authenticate");
+            if (auth != null) {
+                auth = auth.trim();
+                int i = auth.indexOf(" ");
+                if (i != -1) {
+                    auth = auth.substring(0, i);
+                }
+                auth = auth.toUpperCase(Locale.US);
+            } else {
+                // there isn't an auth header, so assume it is the CAS scheme
+                auth = "CAS";
+            }
+
+            // the 401 is requesting CAS auth, assume session is invalid
+            return "CAS".equals(auth);
+        }
+
+        return false;
+    }
+
+    public String getService() throws ApiException {
         final Request request = new Request("auth/service");
         request.useSession = false;
-        request.accept = Request.MediaType.TEXT_PLAIN;
+        request.accept = MediaType.TEXT_PLAIN;
         HttpURLConnection conn = null;
         try {
             conn = this.sendRequest(request);
@@ -382,7 +210,7 @@ public abstract class AbstractGtoSmxApi {
         return null;
     }
 
-    public String login(final String ticket) throws ApiSocketException {
+    public String login(final String ticket) throws ApiException {
         // don't attempt to login if we don't have a ticket
         if (ticket == null) {
             return null;
@@ -391,10 +219,10 @@ public abstract class AbstractGtoSmxApi {
         // build request
         final Request request = new Request("auth/login");
         request.useSession = false;
-        request.method = "POST";
-        request.accept = Request.MediaType.TEXT_PLAIN;
+        request.method = AbstractApi.Request.Method.POST;
+        request.accept = AbstractApi.Request.MediaType.TEXT_PLAIN;
         try {
-            request.setContent(Request.MediaType.APPLICATION_FORM_URLENCODED,
+            request.setContent(MediaType.APPLICATION_FORM_URLENCODED,
                                ("ticket=" + URLEncoder.encode(ticket, "UTF-8")).getBytes("UTF-8"));
         } catch (final UnsupportedEncodingException e) {
             throw new RuntimeException("unexpected error, UTF-8 encoding doesn't exist?", e);
@@ -422,13 +250,13 @@ public abstract class AbstractGtoSmxApi {
         return null;
     }
 
-    public String guestLogin() throws ApiSocketException {
+    public String guestLogin() throws ApiException {
         // build request
         final Request request = new Request("auth/login");
         request.useSession = false;
-        request.method = "POST";
-        request.accept = Request.MediaType.TEXT_PLAIN;
-        request.setContent(Request.MediaType.APPLICATION_FORM_URLENCODED, "guest=true");
+        request.method = AbstractApi.Request.Method.POST;
+        request.accept = MediaType.TEXT_PLAIN;
+        request.setContent(MediaType.APPLICATION_FORM_URLENCODED, "guest=true");
 
         // issue login request
         HttpURLConnection conn = null;
@@ -456,64 +284,12 @@ public abstract class AbstractGtoSmxApi {
         this.asyncExecutor.execute(task);
     }
 
-    private static final class Session {
-        private final String id;
-        private final String guid;
-
-        private Session(final String guid, final String id) {
-            assert guid != null;
-            this.guid = guid;
-            this.id = id;
-        }
-    }
-
     /**
      * class that represents a request being sent to the api
      */
-    protected static class Request {
-        public enum MediaType {
-            APPLICATION_FORM_URLENCODED("application/x-www-form-urlencoded"), APPLICATION_JSON("application/json"),
-            APPLICATION_XML("application/xml"), TEXT_PLAIN("text/plain");
-
-            private final String type;
-
-            private MediaType(final String type) {
-                this.type = type;
-            }
-        }
-
-        public String method = "GET";
-
-        // uri attributes
-        public boolean useSession = true;
-        private final String path;
-        public final Collection<Pair<String, String>> params = new ArrayList<>();
-        public boolean replaceParams = false;
-
-        // POST/PUT data
-        private MediaType contentType = null;
-        private byte[] content = null;
-
-        // miscellaneous attributes
-        public MediaType accept = null;
-        public boolean followRedirects = false;
-
-        public Request(final String path) {
-            assert path != null : "request path cannot be null";
-            this.path = path;
-        }
-
-        protected void setContent(final MediaType type, final byte[] data) {
-            this.contentType = type;
-            this.content = data;
-        }
-
-        protected void setContent(final MediaType type, final String data) {
-            try {
-                this.setContent(type, data != null ? data.getBytes("UTF-8") : null);
-            } catch (final UnsupportedEncodingException e) {
-                throw new RuntimeException("unexpected error, UTF-8 encoding isn't present", e);
-            }
+    protected static class Request extends AbstractTheKeyApi.Request<Session> {
+        public Request(@NonNull final String path) {
+            super(path);
         }
     }
 }
