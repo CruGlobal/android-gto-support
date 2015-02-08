@@ -12,6 +12,7 @@ import org.ccci.gto.android.common.api.AbstractApi.Request;
 import org.ccci.gto.android.common.api.AbstractApi.Session;
 import org.ccci.gto.android.common.util.IOUtils;
 import org.ccci.gto.android.common.util.UriUtils;
+import org.json.JSONArray;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -371,7 +372,9 @@ public abstract class AbstractApi<R extends Request<S>, S extends Session> {
         public boolean replaceParams = false;
 
         // POST/PUT data
+        @Nullable
         MediaType contentType = null;
+        @Nullable
         byte[] content = null;
 
         // session attributes
@@ -388,17 +391,21 @@ public abstract class AbstractApi<R extends Request<S>, S extends Session> {
             this.path = path;
         }
 
-        protected void setContent(final MediaType type, final byte[] data) {
+        protected void setContent(@Nullable final MediaType type, @Nullable final byte[] data) {
             this.contentType = type;
             this.content = data;
         }
 
-        protected void setContent(final MediaType type, final String data) {
+        protected void setContent(@Nullable final MediaType type, @Nullable final String data) {
             try {
                 this.setContent(type, data != null ? data.getBytes("UTF-8") : null);
             } catch (final UnsupportedEncodingException e) {
                 throw new RuntimeException("unexpected error, UTF-8 encoding isn't present", e);
             }
+        }
+
+        protected void setContent(@Nullable final JSONArray json) {
+            this.setContent(MediaType.APPLICATION_JSON, json != null ? json.toString() : null);
         }
     }
 }
