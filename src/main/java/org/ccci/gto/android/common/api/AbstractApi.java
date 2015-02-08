@@ -181,6 +181,10 @@ public abstract class AbstractApi<R extends Request<S>, S extends Session> {
         return new Request.Parameter(name, value);
     }
 
+    protected final Request.Parameter param(@NonNull final String name, final int value) {
+        return new Request.Parameter(name, Integer.toString(value));
+    }
+
     @Nullable
     protected S loadSession(@NonNull final R request) {
         // load a pre-existing session
