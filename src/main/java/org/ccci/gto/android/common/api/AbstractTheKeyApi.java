@@ -16,6 +16,11 @@ public abstract class AbstractTheKeyApi<R extends AbstractTheKeyApi.Request<S>, 
     protected final String mGuid;
 
     protected AbstractTheKeyApi(@NonNull final Context context, @NonNull final TheKey theKey,
+                                @NonNull final String baseUri) {
+        this(context, theKey, baseUri, null, null);
+    }
+
+    protected AbstractTheKeyApi(@NonNull final Context context, @NonNull final TheKey theKey,
                                 @NonNull final String baseUri, @Nullable final String prefFile) {
         this(context, theKey, baseUri, prefFile, null);
     }
