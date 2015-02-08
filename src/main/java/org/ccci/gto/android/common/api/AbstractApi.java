@@ -14,6 +14,8 @@ import org.ccci.gto.android.common.util.IOUtils;
 import org.ccci.gto.android.common.util.UriUtils;
 
 import java.io.IOException;
+import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -106,6 +108,24 @@ public abstract class AbstractApi<R extends Request<S>, S extends Session> {
             // prepare the request
             conn = (HttpURLConnection) url.openConnection();
             onPrepareRequest(conn, request);
+
+            // POST/PUT requests
+            if (request.method == Request.Method.POST || request.method == Request.Method.PUT) {
+                conn.setDoOutput(true);
+                final byte[] data = request.content != null ? request.content : new byte[0];
+                conn.setFixedLengthStreamingMode(data.length);
+                conn.setUseCaches(false);
+                OutputStream out = null;
+                try {
+                    out = conn.getOutputStream();
+                    out.write(data);
+                } finally {
+                    // XXX: don't use IOUtils.closeQuietly, we want exceptions thrown
+                    if (out != null) {
+                        out.close();
+                    }
+                }
+            }
 
             // no need to explicitly execute, accessing the response triggers the execute
 
@@ -236,6 +256,9 @@ public abstract class AbstractApi<R extends Request<S>, S extends Session> {
         if (request.accept != null) {
             conn.addRequestProperty("Accept", request.accept.type);
         }
+        if (request.contentType != null) {
+            conn.addRequestProperty("Content-Type", request.contentType.type);
+        }
         conn.setInstanceFollowRedirects(request.followRedirects);
     }
 
@@ -332,6 +355,10 @@ public abstract class AbstractApi<R extends Request<S>, S extends Session> {
         public final Collection<Parameter> params = new ArrayList<>();
         public boolean replaceParams = false;
 
+        // POST/PUT data
+        MediaType contentType = null;
+        byte[] content = null;
+
         // session attributes
         public boolean useSession = false;
         @Nullable
@@ -344,6 +371,19 @@ public abstract class AbstractApi<R extends Request<S>, S extends Session> {
 
         public Request(@NonNull final String path) {
             this.path = path;
+        }
+
+        protected void setContent(final MediaType type, final byte[] data) {
+            this.contentType = type;
+            this.content = data;
+        }
+
+        protected void setContent(final MediaType type, final String data) {
+            try {
+                this.setContent(type, data != null ? data.getBytes("UTF-8") : null);
+            } catch (final UnsupportedEncodingException e) {
+                throw new RuntimeException("unexpected error, UTF-8 encoding isn't present", e);
+            }
         }
     }
 }
