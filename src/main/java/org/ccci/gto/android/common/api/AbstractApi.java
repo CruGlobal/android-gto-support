@@ -68,101 +68,111 @@ public abstract class AbstractApi<R extends Request<S>, S extends Session> {
     @NonNull
     protected final HttpURLConnection sendRequest(@NonNull final R request, final int attempts)
             throws ApiException {
-        HttpURLConnection conn = null;
-        boolean successful = false;
         try {
-            // load/establish the session if we are using sessions
-            if (request.useSession) {
-                // prepare for the session
-                this.onPrepareSession(request);
+            HttpURLConnection conn = null;
+            boolean successful = false;
+            try {
+                // load/establish the session if we are using sessions
+                if (request.useSession) {
+                    // prepare for the session
+                    this.onPrepareSession(request);
 
-                // get the session, establish a session if one doesn't exist or if we have a stale session
-                synchronized (LOCK_SESSION) {
-                    request.session = loadSession(request);
+                    // get the session, establish a session if one doesn't exist or if we have a stale session
+                    synchronized (LOCK_SESSION) {
+                        request.session = loadSession(request);
+                        if (request.session == null) {
+                            request.session = this.establishSession(request);
+
+                            // save the newly established session
+                            if (request.session != null) {
+                                this.saveSession(request.session);
+                            }
+                        }
+                    }
+
+                    // throw an exception if we don't have a valid session
                     if (request.session == null) {
-                        request.session = this.establishSession(request);
+                        throw new InvalidSessionApiException();
+                    }
+                }
 
-                        // save the newly established session
-                        if (request.session != null) {
-                            this.saveSession(request.session);
+                // build the request uri
+                final Uri.Builder uri = mBaseUri.buildUpon();
+                onPrepareUri(uri, request);
+                final URL url;
+                try {
+                    url = new URL(uri.build().toString());
+                } catch (final MalformedURLException e) {
+                    throw new RuntimeException("invalid Request URL: " + uri.build().toString(), e);
+                }
+
+                // prepare the request
+                conn = (HttpURLConnection) url.openConnection();
+                onPrepareRequest(conn, request);
+
+                // POST/PUT requests
+                if (request.method == Request.Method.POST || request.method == Request.Method.PUT) {
+                    conn.setDoOutput(true);
+                    final byte[] data = request.content != null ? request.content : new byte[0];
+                    conn.setFixedLengthStreamingMode(data.length);
+                    conn.setUseCaches(false);
+                    OutputStream out = null;
+                    try {
+                        out = conn.getOutputStream();
+                        out.write(data);
+                    } finally {
+                        // XXX: don't use IOUtils.closeQuietly, we want exceptions thrown
+                        if (out != null) {
+                            out.close();
                         }
                     }
                 }
 
-                // throw an exception if we don't have a valid session
-                if (request.session == null) {
+                // no need to explicitly execute, accessing the response triggers the execute
+
+                // check for an invalid session
+                if (request.useSession && this.isSessionInvalid(conn, request)) {
+                    // reset the session
+                    synchronized (LOCK_SESSION) {
+                        // only reset if this is still the same session
+                        final Session current = this.loadSession(request);
+                        if (current != null && current.equals(request.session)) {
+                            this.deleteSession(request.session);
+                        }
+                    }
+
+                    // throw an invalid session exception
                     throw new InvalidSessionApiException();
                 }
-            }
 
-            // build the request uri
-            final Uri.Builder uri = mBaseUri.buildUpon();
-            onPrepareUri(uri, request);
-            final URL url;
-            try {
-                url = new URL(uri.build().toString());
-            } catch (final MalformedURLException e) {
-                throw new RuntimeException("invalid Request URL: " + uri.build().toString(), e);
-            }
+                // process the response
+                onProcessResponse(conn, request);
 
-            // prepare the request
-            conn = (HttpURLConnection) url.openConnection();
-            onPrepareRequest(conn, request);
-
-            // POST/PUT requests
-            if (request.method == Request.Method.POST || request.method == Request.Method.PUT) {
-                conn.setDoOutput(true);
-                final byte[] data = request.content != null ? request.content : new byte[0];
-                conn.setFixedLengthStreamingMode(data.length);
-                conn.setUseCaches(false);
-                OutputStream out = null;
-                try {
-                    out = conn.getOutputStream();
-                    out.write(data);
-                } finally {
-                    // XXX: don't use IOUtils.closeQuietly, we want exceptions thrown
-                    if (out != null) {
-                        out.close();
-                    }
-                }
-            }
-
-            // no need to explicitly execute, accessing the response triggers the execute
-
-            // check for an invalid session
-            if (request.useSession && this.isSessionInvalid(conn, request)) {
-                // reset the session
-                synchronized (LOCK_SESSION) {
-                    // only reset if this is still the same session
-                    final Session current = this.loadSession(request);
-                    if (current != null && current.equals(request.session)) {
-                        this.deleteSession(request.session);
-                    }
+                // return the connection for method specific handling
+                successful = true;
+                return conn;
+            } catch (final IOException e) {
+                throw new ApiSocketException(e);
+            } finally {
+                // close a potentially open connection if we weren't successful
+                if (!successful) {
+                    IOUtils.closeQuietly(conn);
                 }
 
-                // throw an invalid session exception
-                throw new InvalidSessionApiException();
+                // clear out the session that was loaded & used
+                request.session = null;
+
+                // cleanup any request specific data
+                onCleanupRequest(request);
+            }
+        } catch (final ApiException e) {
+            // retry request on an API exception
+            if (attempts > 0) {
+                return this.sendRequest(request, attempts - 1);
             }
 
-            // process the response
-            onProcessResponse(conn, request);
-
-            // return the connection for method specific handling
-            successful = true;
-            return conn;
-        } catch (final IOException e) {
-            throw new ApiSocketException(e);
-        } finally {
-            // close a potentially open connection if we weren't successful
-            if(!successful) {
-                IOUtils.closeQuietly(conn);
-            }
-
-            // clear out the session that was loaded & used
-            request.session = null;
-
-            // cleanup any request specific data
-            onCleanupRequest(request);
+            // propagate the exception
+            throw e;
         }
     }
 
