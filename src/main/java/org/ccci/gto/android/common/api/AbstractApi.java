@@ -338,7 +338,7 @@ public abstract class AbstractApi<R extends Request<S>, S extends Session> {
             }
 
             final Session that = (Session) o;
-            return baseAttrName.equals(that.baseAttrName) && !(id != null ? !id.equals(that.id) : that.id != null);
+            return !(id != null ? !id.equals(that.id) : that.id != null);
         }
     }
 
