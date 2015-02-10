@@ -196,7 +196,7 @@ public abstract class AbstractApi<R extends Request<S>, S extends Session> {
         }
 
         // only return valid sessions
-        return session != null && session.id != null ? session : null;
+        return session != null && session.isValid() ? session : null;
     }
 
     @Nullable
@@ -310,6 +310,10 @@ public abstract class AbstractApi<R extends Request<S>, S extends Session> {
         protected Session(@NonNull final SharedPreferences prefs, @Nullable final String baseAttrName) {
             this.baseAttrName = baseAttrName != null ? baseAttrName : PREF_SESSION_BASE_NAME;
             this.id = prefs.getString(getPrefAttrName("id"), null);
+        }
+
+        protected boolean isValid() {
+            return this.id != null;
         }
 
         protected final String getPrefAttrName(@NonNull final String type) {
