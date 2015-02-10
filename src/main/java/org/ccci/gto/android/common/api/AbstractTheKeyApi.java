@@ -83,7 +83,7 @@ public abstract class AbstractTheKeyApi<R extends AbstractTheKeyApi.Request<S>, 
 
         protected Session(@Nullable final String id, @NonNull final String guid, @NonNull final String baseAttrName) {
             super(id, guid.toUpperCase(Locale.US) + "." + baseAttrName);
-            this.guid = guid;
+            this.guid = guid.toUpperCase(Locale.US);
         }
 
         protected Session(@NonNull final SharedPreferences prefs, @NonNull final String guid) {
@@ -93,7 +93,7 @@ public abstract class AbstractTheKeyApi<R extends AbstractTheKeyApi.Request<S>, 
         protected Session(@NonNull final SharedPreferences prefs, @NonNull final String guid,
                           @NonNull final String baseAttrName) {
             super(prefs, guid.toUpperCase(Locale.US) + "." + baseAttrName);
-            this.guid = guid;
+            this.guid = guid.toUpperCase(Locale.US);;
         }
 
         @Override
