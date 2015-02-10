@@ -85,7 +85,7 @@ public abstract class AbstractApi<R extends Request<S>, S extends Session> {
                             request.session = this.establishSession(request);
 
                             // save the newly established session
-                            if (request.session != null) {
+                            if (request.session != null && request.session.isValid()) {
                                 this.saveSession(request.session);
                             }
                         }
