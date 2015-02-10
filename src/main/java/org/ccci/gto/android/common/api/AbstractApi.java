@@ -34,7 +34,7 @@ public abstract class AbstractApi<R extends Request<S>, S extends Session> {
     private final Context mContext;
 
     @NonNull
-    private final Uri mBaseUri;
+    protected final Uri mBaseUri;
     @NonNull
     private final String mPrefFile;
 
