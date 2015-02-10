@@ -182,8 +182,14 @@ public abstract class AbstractApi<R extends Request<S>, S extends Session> {
         return new Request.Parameter(name, value);
     }
 
+    @NonNull
     protected final Request.Parameter param(@NonNull final String name, final int value) {
         return new Request.Parameter(name, Integer.toString(value));
+    }
+
+    @NonNull
+    protected final Request.Parameter param(@NonNull final String name, final boolean value) {
+        return new Request.Parameter(name, Boolean.toString(value));
     }
 
     @Nullable
