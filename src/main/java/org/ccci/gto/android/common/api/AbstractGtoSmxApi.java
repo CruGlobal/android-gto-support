@@ -1,7 +1,6 @@
 package org.ccci.gto.android.common.api;
 
 import static java.net.HttpURLConnection.HTTP_OK;
-import static java.net.HttpURLConnection.HTTP_UNAUTHORIZED;
 
 import android.annotation.TargetApi;
 import android.content.Context;
@@ -21,7 +20,6 @@ import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URLEncoder;
-import java.util.Locale;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -158,37 +156,26 @@ public abstract class AbstractGtoSmxApi extends AbstractTheKeyApi<Request, Sessi
         }
     }
 
-    @Override
-    protected boolean isSessionInvalid(@NonNull final HttpURLConnection conn, @NonNull final Request request)
-            throws IOException {
-        // short-circuit if we already know the session is invalid
-        if (super.isSessionInvalid(conn, request)) {
-            return true;
+    @Nullable
+    protected String getService() throws ApiException {
+        // short-circuit if we have a cached service
+        String service = super.getCurrentService();
+        if(service != null) {
+            return service;
         }
 
-        // Check 401 Unauthorized responses to see if it's because of needing CAS authentication
-        if (conn.getResponseCode() == HTTP_UNAUTHORIZED) {
-            String auth = conn.getHeaderField("WWW-Authenticate");
-            if (auth != null) {
-                auth = auth.trim();
-                int i = auth.indexOf(" ");
-                if (i != -1) {
-                    auth = auth.substring(0, i);
-                }
-                auth = auth.toUpperCase(Locale.US);
-            } else {
-                // there isn't an auth header, so assume it is the CAS scheme
-                auth = "CAS";
-            }
+        // try loading the service directly from the API
+        service = this.getServiceFromApi();
 
-            // the 401 is requesting CAS auth, assume session is invalid
-            return "CAS".equals(auth);
+        // we found a service, let's store it for future use before returning
+        if(service != null) {
+            this.setService(service);
         }
-
-        return false;
+        return service;
     }
 
-    public String getService() throws ApiException {
+    @Nullable
+    protected String getServiceFromApi() throws ApiException {
         final Request request = new Request("auth/service");
         request.useSession = false;
         request.accept = MediaType.TEXT_PLAIN;
@@ -210,7 +197,7 @@ public abstract class AbstractGtoSmxApi extends AbstractTheKeyApi<Request, Sessi
         return null;
     }
 
-    public String login(final String ticket) throws ApiException {
+    protected String login(final String ticket) throws ApiException {
         // don't attempt to login if we don't have a ticket
         if (ticket == null) {
             return null;
@@ -250,7 +237,7 @@ public abstract class AbstractGtoSmxApi extends AbstractTheKeyApi<Request, Sessi
         return null;
     }
 
-    public String guestLogin() throws ApiException {
+    protected String guestLogin() throws ApiException {
         // build request
         final Request request = new Request("auth/login");
         request.useSession = false;
