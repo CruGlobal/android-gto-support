@@ -13,6 +13,7 @@ import org.ccci.gto.android.common.api.AbstractApi.Session;
 import org.ccci.gto.android.common.util.IOUtils;
 import org.ccci.gto.android.common.util.UriUtils;
 import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -415,6 +416,10 @@ public abstract class AbstractApi<R extends Request<S>, S extends Session> {
         }
 
         public void setContent(@Nullable final JSONArray json) {
+            this.setContent(MediaType.APPLICATION_JSON, json != null ? json.toString() : null);
+        }
+
+        public void setContent(@Nullable final JSONObject json) {
             this.setContent(MediaType.APPLICATION_JSON, json != null ? json.toString() : null);
         }
     }
