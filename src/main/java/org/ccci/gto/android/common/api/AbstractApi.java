@@ -293,7 +293,7 @@ public abstract class AbstractApi<R extends Request<S>, S extends Session> {
 
     /* END request lifecycle events */
 
-    protected static class Session {
+    public static class Session {
         @NonNull
         private final String baseAttrName;
 
@@ -348,7 +348,7 @@ public abstract class AbstractApi<R extends Request<S>, S extends Session> {
         }
     }
 
-    protected static class Request<S extends Session> {
+    public static class Request<S extends Session> {
         public enum Method {GET, POST, PUT, DELETE}
 
         public enum MediaType {
@@ -401,12 +401,12 @@ public abstract class AbstractApi<R extends Request<S>, S extends Session> {
             this.path = path;
         }
 
-        protected void setContent(@Nullable final MediaType type, @Nullable final byte[] data) {
+        public void setContent(@Nullable final MediaType type, @Nullable final byte[] data) {
             this.contentType = type;
             this.content = data;
         }
 
-        protected void setContent(@Nullable final MediaType type, @Nullable final String data) {
+        public void setContent(@Nullable final MediaType type, @Nullable final String data) {
             try {
                 this.setContent(type, data != null ? data.getBytes("UTF-8") : null);
             } catch (final UnsupportedEncodingException e) {
@@ -414,7 +414,7 @@ public abstract class AbstractApi<R extends Request<S>, S extends Session> {
             }
         }
 
-        protected void setContent(@Nullable final JSONArray json) {
+        public void setContent(@Nullable final JSONArray json) {
             this.setContent(MediaType.APPLICATION_JSON, json != null ? json.toString() : null);
         }
     }

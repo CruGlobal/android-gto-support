@@ -73,7 +73,7 @@ public abstract class AbstractTheKeyApi<R extends AbstractTheKeyApi.Request<S>, 
         request.guid = null;
     }
 
-    protected static class Session extends AbstractApi.Session {
+    public static class Session extends AbstractApi.Session {
         @Nullable
         private final String guid;
 
@@ -110,7 +110,7 @@ public abstract class AbstractTheKeyApi<R extends AbstractTheKeyApi.Request<S>, 
         }
     }
 
-    protected static class Request<S extends Session> extends AbstractApi.Request<S> {
+    public static class Request<S extends Session> extends AbstractApi.Request<S> {
         // session attributes
         public String guid = null;
 
