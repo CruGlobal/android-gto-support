@@ -13,7 +13,7 @@ import java.util.Map;
 public final class HttpHeaderUtils {
     public static Challenge parseChallenge(@NonNull final String challenge) {
         // separate the scheme from the params
-        final String[] parts = challenge.trim().split(" \t", 2);
+        final String[] parts = challenge.trim().split("[ \t]", 2);
         final String scheme = parts[0].trim();
 
         // parse any attributes
