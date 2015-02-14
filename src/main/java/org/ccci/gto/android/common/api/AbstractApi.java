@@ -111,6 +111,7 @@ public abstract class AbstractApi<R extends Request<S>, S extends Session> {
 
                 // prepare the request
                 conn = (HttpURLConnection) url.openConnection();
+                conn.setRequestMethod(request.method.name());
                 onPrepareRequest(conn, request);
 
                 // POST/PUT requests
