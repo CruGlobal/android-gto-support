@@ -2,9 +2,11 @@ package org.ccci.gto.android.common.api;
 
 import static java.net.HttpURLConnection.HTTP_UNAUTHORIZED;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.Uri;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
@@ -18,13 +20,12 @@ import me.thekey.android.TheKey;
 
 public abstract class AbstractTheKeyApi<R extends AbstractTheKeyApi.Request<S>, S extends AbstractTheKeyApi.Session>
         extends AbstractApi<R, S> {
+    private static final String PREF_CACHED_SERVICE = "service";
+
     @NonNull
     protected final TheKey mTheKey;
     @Nullable
     protected final String mGuid;
-
-    @Nullable
-    private String mService;
 
     protected AbstractTheKeyApi(@NonNull final Context context, @NonNull final TheKey theKey,
                                 @NonNull final String baseUri) {
@@ -42,6 +43,7 @@ public abstract class AbstractTheKeyApi<R extends AbstractTheKeyApi.Request<S>, 
         super(context, baseUri, prefFile);
         mTheKey = theKey;
         mGuid = guid;
+        init();
     }
 
     protected AbstractTheKeyApi(@NonNull final Context context, @NonNull final TheKey theKey,
@@ -55,6 +57,14 @@ public abstract class AbstractTheKeyApi<R extends AbstractTheKeyApi.Request<S>, 
         super(context, baseUri, prefFile);
         mTheKey = theKey;
         mGuid = guid;
+        init();
+    }
+
+    private void init() {
+        // initialize service if there isn't one already defined
+        if (getCachedService() == null) {
+            setCachedService(getDefaultService());
+        }
     }
 
     @Nullable
@@ -69,16 +79,42 @@ public abstract class AbstractTheKeyApi<R extends AbstractTheKeyApi.Request<S>, 
 
     @Nullable
     protected String getService() throws ApiException {
-        return getCurrentService();
+        // short-circuit if we have a cached service
+        String service = getCachedService();
+        if (service != null) {
+            return service;
+        }
+
+        // check for a default service
+        service = getDefaultService();
+
+        // cache any found service before returning
+        if (service != null) {
+            this.setCachedService(service);
+        }
+        return service;
     }
 
     @Nullable
-    protected final String getCurrentService() {
-        return mService;
+    protected String getDefaultService() {
+        return null;
     }
 
-    protected final void setService(@Nullable final String service) {
-        mService = service;
+    @Nullable
+    protected final String getCachedService() {
+        return this.getPrefs().getString(PREF_CACHED_SERVICE, null);
+    }
+
+    @TargetApi(Build.VERSION_CODES.GINGERBREAD)
+    protected final void setCachedService(@Nullable final String service) {
+        final SharedPreferences.Editor prefs = this.getPrefs().edit();
+        prefs.putString(PREF_CACHED_SERVICE, service);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD) {
+            prefs.apply();
+        } else {
+            prefs.commit();
+        }
     }
 
     @Override
@@ -111,7 +147,7 @@ public abstract class AbstractTheKeyApi<R extends AbstractTheKeyApi.Request<S>, 
                     // update service if one is returned
                     final String service = challenge.params.get("service");
                     if (service != null && service.length() > 0) {
-                        this.setService(service);
+                        this.setCachedService(service);
                     }
 
                     // this was a CAS WWW-Authenticate, so the current session is invalid

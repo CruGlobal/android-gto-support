@@ -157,9 +157,15 @@ public abstract class AbstractGtoSmxApi extends AbstractTheKeyApi<Request, Sessi
     }
 
     @Nullable
+    @Override
+    protected String getDefaultService() {
+        return mBaseUri.buildUpon().appendEncodedPath("auth/login").toString();
+    }
+
+    @Nullable
     protected String getService() throws ApiException {
         // short-circuit if we have a cached service
-        String service = super.getCurrentService();
+        String service = super.getCachedService();
         if(service != null) {
             return service;
         }
@@ -167,9 +173,14 @@ public abstract class AbstractGtoSmxApi extends AbstractTheKeyApi<Request, Sessi
         // try loading the service directly from the API
         service = this.getServiceFromApi();
 
+        // try the default service again as a last resort
+        if (service == null) {
+            service = this.getDefaultService();
+        }
+
         // we found a service, let's store it for future use before returning
         if(service != null) {
-            this.setService(service);
+            this.setCachedService(service);
         }
         return service;
     }

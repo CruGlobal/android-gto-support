@@ -58,7 +58,8 @@ public abstract class AbstractApi<R extends Request<S>, S extends Session> {
         this.mPrefFile = prefFile != null ? prefFile : getClass().getSimpleName();
     }
 
-    private SharedPreferences getPrefs() {
+    @NonNull
+    protected final SharedPreferences getPrefs() {
         return mContext.getSharedPreferences(mPrefFile, Context.MODE_PRIVATE);
     }
 
