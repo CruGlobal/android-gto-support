@@ -5,7 +5,7 @@ buildscript {
     dependencies {
         classpath 'com.android.tools.build:gradle:1.0.1'
         classpath 'com.github.dcendents:android-maven-plugin:1.2'
-        classpath 'com.github.jcandksolutions.gradle:android-unit-test:2.0.2'
+        classpath 'com.github.jcandksolutions.gradle:android-unit-test:2.1.1'
     }
 }
 
@@ -49,7 +49,7 @@ dependencies {
     compile 'com.android.support:appcompat-v7:20.0.0'
     compile 'me.thekey.android:thekey-api:0.7.0'
 
-    testCompile 'junit:junit:4.11'
+    testCompile 'junit:junit:4.12'
 }
 
 apply from: 'maven_publish.gradle'
