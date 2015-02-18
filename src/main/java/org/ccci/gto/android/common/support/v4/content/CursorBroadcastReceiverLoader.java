@@ -3,6 +3,7 @@ package org.ccci.gto.android.common.support.v4.content;
 import android.content.Context;
 import android.content.IntentFilter;
 import android.database.Cursor;
+import android.support.annotation.NonNull;
 import android.support.v4.content.CursorLoader;
 
 public abstract class CursorBroadcastReceiverLoader extends CursorLoader
@@ -31,7 +32,7 @@ public abstract class CursorBroadcastReceiverLoader extends CursorLoader
     /* END lifecycle */
 
     @Override
-    public final void addIntentFilter(final IntentFilter filter) {
+    public final void addIntentFilter(@NonNull final IntentFilter filter) {
         mHelper.addIntentFilter(filter);
     }
 

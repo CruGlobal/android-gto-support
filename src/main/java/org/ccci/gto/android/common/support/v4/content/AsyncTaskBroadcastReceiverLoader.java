@@ -2,6 +2,7 @@ package org.ccci.gto.android.common.support.v4.content;
 
 import android.content.Context;
 import android.content.IntentFilter;
+import android.support.annotation.NonNull;
 import android.support.v4.content.AsyncTaskLoader;
 
 public abstract class AsyncTaskBroadcastReceiverLoader<D> extends AsyncTaskLoader<D>
@@ -42,7 +43,7 @@ public abstract class AsyncTaskBroadcastReceiverLoader<D> extends AsyncTaskLoade
     /* END lifecycle */
 
     @Override
-    public final void addIntentFilter(final IntentFilter filter) {
+    public final void addIntentFilter(@NonNull final IntentFilter filter) {
         mHelper.addIntentFilter(filter);
     }
 

@@ -2,6 +2,7 @@ package org.ccci.gto.android.common.support.v4.content;
 
 import android.content.BroadcastReceiver;
 import android.content.IntentFilter;
+import android.support.annotation.NonNull;
 import android.support.v4.content.Loader;
 import android.support.v4.content.LocalBroadcastManager;
 
@@ -9,7 +10,7 @@ import java.util.ArrayList;
 
 final class BroadcastReceiverLoaderHelper {
     public static interface Interface {
-        void addIntentFilter(IntentFilter filter);
+        void addIntentFilter(@NonNull IntentFilter filter);
 
         void setBroadcastReceiver(LoaderBroadcastReceiver receiver);
     }
@@ -28,11 +29,7 @@ final class BroadcastReceiverLoaderHelper {
         }
     }
 
-    void addIntentFilter(final IntentFilter filter) {
-        if (filter == null) {
-            throw new NullPointerException("filter cannot be null");
-        }
-
+    void addIntentFilter(@NonNull final IntentFilter filter) {
         mFilters.add(filter);
 
         // register filter if Loader is already started
