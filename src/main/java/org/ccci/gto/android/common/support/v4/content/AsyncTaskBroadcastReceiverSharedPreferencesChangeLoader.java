@@ -59,8 +59,13 @@ public abstract class AsyncTaskBroadcastReceiverSharedPreferencesChangeLoader<D>
     }
 
     @Override
-    public final void addPreferenceKey(@Nullable String key) {
+    public final void addPreferenceKey(@Nullable final String key) {
         mHelper2.addPreferenceKey(key);
+    }
+
+    @Override
+    public final void removePreferenceKey(@Nullable final String key) {
+        mHelper2.removePreferenceKey(key);
     }
 
     @Override

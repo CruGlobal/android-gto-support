@@ -12,6 +12,8 @@ import java.util.Set;
 final class SharedPreferencesChangeLoaderHelper {
     public static interface Interface {
         void addPreferenceKey(@Nullable String key);
+
+        void removePreferenceKey(@Nullable String key);
     }
 
     private final Loader mLoader;
@@ -40,6 +42,10 @@ final class SharedPreferencesChangeLoaderHelper {
 
     void addPreferenceKey(@Nullable final String key) {
         mKeys.add(key);
+    }
+
+    void removePreferenceKey(@Nullable final String key) {
+        mKeys.remove(key);
     }
 
     private class ChangeListener implements SharedPreferences.OnSharedPreferenceChangeListener {

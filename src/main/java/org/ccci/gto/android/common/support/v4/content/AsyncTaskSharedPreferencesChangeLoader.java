@@ -58,4 +58,9 @@ public abstract class AsyncTaskSharedPreferencesChangeLoader<D> extends AsyncTas
     public final void addPreferenceKey(@Nullable final String key) {
         mHelper.addPreferenceKey(key);
     }
+
+    @Override
+    public void removePreferenceKey(@Nullable final String key) {
+        mHelper.removePreferenceKey(key);
+    }
 }
