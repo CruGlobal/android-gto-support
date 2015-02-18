@@ -3,6 +3,7 @@ package org.ccci.gto.android.common.support.v4.content;
 import android.content.BroadcastReceiver;
 import android.content.IntentFilter;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.content.Loader;
 import android.support.v4.content.LocalBroadcastManager;
 
@@ -12,15 +13,18 @@ final class BroadcastReceiverLoaderHelper {
     public static interface Interface {
         void addIntentFilter(@NonNull IntentFilter filter);
 
-        void setBroadcastReceiver(LoaderBroadcastReceiver receiver);
+        void setBroadcastReceiver(@Nullable LoaderBroadcastReceiver receiver);
     }
 
+    @NonNull
     private final LocalBroadcastManager mLocalBroadcastManager;
+    @NonNull
     private final Loader mLoader;
+    @NonNull
     private LoaderBroadcastReceiver mReceiver;
     private final ArrayList<IntentFilter> mFilters = new ArrayList<>();
 
-    BroadcastReceiverLoaderHelper(final Loader loader, final IntentFilter... filters) {
+    BroadcastReceiverLoaderHelper(@NonNull final Loader loader, @NonNull final IntentFilter... filters) {
         mLocalBroadcastManager = LocalBroadcastManager.getInstance(loader.getContext());
         mLoader = loader;
         this.setBroadcastReceiver(null);
@@ -40,7 +44,7 @@ final class BroadcastReceiverLoaderHelper {
         }
     }
 
-    void setBroadcastReceiver(LoaderBroadcastReceiver receiver) {
+    void setBroadcastReceiver(@Nullable LoaderBroadcastReceiver receiver) {
         if (receiver == null) {
             receiver = new LoaderBroadcastReceiver(mLoader);
         }
@@ -58,7 +62,9 @@ final class BroadcastReceiverLoaderHelper {
     }
 
     void onStartLoading() {
-        registerReceiver(mReceiver);
+        synchronized (this) {
+            registerReceiver(mReceiver);
+        }
     }
 
     void onAbandon() {
@@ -67,7 +73,7 @@ final class BroadcastReceiverLoaderHelper {
         }
     }
 
-    private synchronized void registerReceiver(final BroadcastReceiver receiver) {
+    private synchronized void registerReceiver(@NonNull final BroadcastReceiver receiver) {
         for (final IntentFilter filter : mFilters) {
             mLocalBroadcastManager.registerReceiver(receiver, filter);
         }
