@@ -32,7 +32,7 @@ public abstract class AbstractApi<R extends Request<S>, S extends Session> {
     protected final Object LOCK_SESSION = new Object();
 
     @NonNull
-    private final Context mContext;
+    protected final Context mContext;
 
     @NonNull
     protected final Uri mBaseUri;
