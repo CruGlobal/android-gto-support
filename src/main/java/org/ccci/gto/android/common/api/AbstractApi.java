@@ -115,21 +115,6 @@ public abstract class AbstractApi<R extends Request<S>, S extends Session> {
 
                 // no need to explicitly execute, accessing the response triggers the execute
 
-                // check for an invalid session
-                if (request.useSession && this.isSessionInvalid(conn, request)) {
-                    // reset the session
-                    synchronized (LOCK_SESSION) {
-                        // only reset if this is still the same session
-                        final Session current = this.loadSession(request);
-                        if (current != null && current.equals(request.session)) {
-                            this.deleteSession(request.session);
-                        }
-                    }
-
-                    // throw an invalid session exception
-                    throw new InvalidSessionApiException();
-                }
-
                 // process the response
                 onProcessResponse(conn, request);
 
@@ -288,6 +273,20 @@ public abstract class AbstractApi<R extends Request<S>, S extends Session> {
 
     protected void onProcessResponse(@NonNull final HttpURLConnection conn, @NonNull final R request)
             throws ApiException, IOException {
+        // check for an invalid session
+        if (request.useSession && this.isSessionInvalid(conn, request)) {
+            // reset the session
+            synchronized (LOCK_SESSION) {
+                // only reset if this is still the same session
+                final Session current = this.loadSession(request);
+                if (current != null && current.equals(request.session)) {
+                    this.deleteSession(request.session);
+                }
+            }
+
+            // throw an invalid session exception
+            throw new InvalidSessionApiException();
+        }
     }
 
     protected void onCleanupRequest(@NonNull final R request) {
