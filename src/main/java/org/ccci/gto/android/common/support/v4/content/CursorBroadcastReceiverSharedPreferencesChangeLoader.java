@@ -52,6 +52,16 @@ public abstract class CursorBroadcastReceiverSharedPreferencesChangeLoader exten
         mHelper1.setBroadcastReceiver(receiver);
     }
 
+    @Override
+    public final void addPreferenceKey(@Nullable final String key) {
+        mHelper2.addPreferenceKey(key);
+    }
+
+    @Override
+    public final void removePreferenceKey(@Nullable final String key) {
+        mHelper2.removePreferenceKey(key);
+    }
+
     @Nullable
     @Override
     public final Cursor loadInBackground() {
