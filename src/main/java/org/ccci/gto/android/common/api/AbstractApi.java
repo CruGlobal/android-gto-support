@@ -111,26 +111,7 @@ public abstract class AbstractApi<R extends Request<S>, S extends Session> {
 
                 // prepare the request
                 conn = (HttpURLConnection) url.openConnection();
-                conn.setRequestMethod(request.method.name());
                 onPrepareRequest(conn, request);
-
-                // POST/PUT requests
-                if (request.method == Request.Method.POST || request.method == Request.Method.PUT) {
-                    conn.setDoOutput(true);
-                    final byte[] data = request.content != null ? request.content : new byte[0];
-                    conn.setFixedLengthStreamingMode(data.length);
-                    conn.setUseCaches(false);
-                    OutputStream out = null;
-                    try {
-                        out = conn.getOutputStream();
-                        out.write(data);
-                    } finally {
-                        // XXX: don't use IOUtils.closeQuietly, we want exceptions thrown
-                        if (out != null) {
-                            out.close();
-                        }
-                    }
-                }
 
                 // no need to explicitly execute, accessing the response triggers the execute
 
@@ -285,6 +266,24 @@ public abstract class AbstractApi<R extends Request<S>, S extends Session> {
             conn.addRequestProperty("Content-Type", request.contentType.type);
         }
         conn.setInstanceFollowRedirects(request.followRedirects);
+
+        // POST/PUT requests
+        if (request.method == Request.Method.POST || request.method == Request.Method.PUT) {
+            conn.setDoOutput(true);
+            final byte[] data = request.content != null ? request.content : new byte[0];
+            conn.setFixedLengthStreamingMode(data.length);
+            conn.setUseCaches(false);
+            OutputStream out = null;
+            try {
+                out = conn.getOutputStream();
+                out.write(data);
+            } finally {
+                // XXX: don't use IOUtils.closeQuietly, we want exceptions thrown
+                if (out != null) {
+                    out.close();
+                }
+            }
+        }
     }
 
     protected void onProcessResponse(@NonNull final HttpURLConnection conn, @NonNull final R request)
