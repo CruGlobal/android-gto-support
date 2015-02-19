@@ -117,6 +117,8 @@ public abstract class AbstractTheKeyApi<R extends AbstractTheKeyApi.Request<S>, 
         }
     }
 
+    /* BEGIN request lifecycle events */
+
     @Override
     protected void onPrepareSession(@NonNull final R request) throws ApiException {
         super.onPrepareSession(request);
@@ -129,13 +131,39 @@ public abstract class AbstractTheKeyApi<R extends AbstractTheKeyApi.Request<S>, 
     }
 
     @Override
-    protected boolean isSessionInvalid(@NonNull final HttpURLConnection conn, @NonNull final R request)
-            throws IOException {
-        // short-circuit if we already know the session is invalid
-        if (super.isSessionInvalid(conn, request)) {
-            return true;
+    protected void onProcessResponse(@NonNull final HttpURLConnection conn, @NonNull final R request)
+            throws ApiException, IOException {
+        // update cached service based on any CAS challenge
+        final HttpHeaderUtils.Challenge challenge = this.getCasAuthChallenge(conn);
+        if (challenge != null) {
+            // update service if one is returned
+            final String service = challenge.params.get("service");
+            if (service != null && service.length() > 0) {
+                this.setCachedService(service);
+            }
         }
 
+        // continue processing the response
+        super.onProcessResponse(conn, request);
+    }
+
+    @Override
+    protected boolean isSessionInvalid(@NonNull final HttpURLConnection conn, @NonNull final R request)
+            throws IOException {
+        return super.isSessionInvalid(conn, request) || getCasAuthChallenge(conn) != null;
+    }
+
+    @Override
+    protected void onCleanupRequest(@NonNull R request) {
+        super.onCleanupRequest(request);
+        request.guid = null;
+    }
+
+    /* END request lifecycle events */
+
+    @Nullable
+    protected final HttpHeaderUtils.Challenge getCasAuthChallenge(@NonNull final HttpURLConnection conn)
+            throws IOException {
         // Check 401 Unauthorized responses to see if it's because of needing CAS authentication
         if (conn.getResponseCode() == HTTP_UNAUTHORIZED) {
             // Check the WWW-Authenticate challenge
@@ -144,26 +172,12 @@ public abstract class AbstractTheKeyApi<R extends AbstractTheKeyApi.Request<S>, 
                 // is this a CAS WWW-Authenticate challenge
                 final HttpHeaderUtils.Challenge challenge = HttpHeaderUtils.parseChallenge(auth);
                 if (challenge.scheme.equals("CAS")) {
-                    // update service if one is returned
-                    final String service = challenge.params.get("service");
-                    if (service != null && service.length() > 0) {
-                        this.setCachedService(service);
-                    }
-
-                    // this was a CAS WWW-Authenticate, so the current session is invalid
-                    return true;
+                    return challenge;
                 }
             }
         }
 
-        // assume the session is still valid
-        return false;
-    }
-
-    @Override
-    protected void onCleanupRequest(@NonNull R request) {
-        super.onCleanupRequest(request);
-        request.guid = null;
+        return null;
     }
 
     public static class Session extends AbstractApi.Session {
