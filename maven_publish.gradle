@@ -42,6 +42,7 @@ afterEvaluate {
         task javadoc(type: Javadoc) {
             source = android.sourceSets.main.java.srcDirs
             classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+            failOnError = false
         }
 
         task artifactJavadocJar(type: Jar, dependsOn: 'javadoc') {
