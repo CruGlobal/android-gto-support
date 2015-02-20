@@ -66,16 +66,23 @@ public abstract class AbstractDao {
     }
 
     @NonNull
-    protected String[] getBindValues(@NonNull final Object... raw) {
+    public final String[] bindValues(@NonNull final Object... raw) {
         final String[] values = new String[raw.length];
         for (int i = 0; i < raw.length; i++) {
-            if(raw[i] instanceof Boolean) {
+            if (raw[i] == null) {
+                values[i] = null;
+            } else if (raw[i] instanceof Boolean) {
                 values[i] = ((Boolean)raw[i]) ? "1" : "0";
             } else {
                 values[i] = raw[i].toString();
             }
         }
         return values;
+    }
+
+    @Deprecated
+    protected final String[] getBindValues(@NonNull final Object... raw) {
+        return bindValues(raw);
     }
 
     @NonNull
