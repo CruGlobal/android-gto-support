@@ -66,7 +66,7 @@ public abstract class AbstractDao {
     }
 
     @NonNull
-    public final String[] bindValues(@NonNull final Object... raw) {
+    public static String[] bindValues(@NonNull final Object... raw) {
         final String[] values = new String[raw.length];
         for (int i = 0; i < raw.length; i++) {
             if (raw[i] == null) {
