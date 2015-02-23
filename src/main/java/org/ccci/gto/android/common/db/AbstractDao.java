@@ -70,7 +70,7 @@ public abstract class AbstractDao {
         final String[] values = new String[raw.length];
         for (int i = 0; i < raw.length; i++) {
             if (raw[i] == null) {
-                values[i] = null;
+                throw new IllegalArgumentException("Bind Values cannot be null");
             } else if (raw[i] instanceof Boolean) {
                 values[i] = ((Boolean)raw[i]) ? "1" : "0";
             } else {
