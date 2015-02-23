@@ -113,6 +113,9 @@ public abstract class AbstractApi<R extends Request<S>, S extends Session> {
                 conn = (HttpURLConnection) url.openConnection();
                 onPrepareRequest(conn, request);
 
+                // send any request data
+                onSendRequestData(conn, request);
+
                 // no need to explicitly execute, accessing the response triggers the execute
 
                 // process the response
@@ -251,8 +254,11 @@ public abstract class AbstractApi<R extends Request<S>, S extends Session> {
             conn.addRequestProperty("Content-Type", request.contentType.type);
         }
         conn.setInstanceFollowRedirects(request.followRedirects);
+    }
 
-        // POST/PUT requests
+    protected void onSendRequestData(@NonNull final HttpURLConnection conn, @NonNull final R request)
+            throws ApiException, IOException {
+        // send data for POST/PUT requests
         if (request.method == Request.Method.POST || request.method == Request.Method.PUT) {
             conn.setDoOutput(true);
             final byte[] data = request.content != null ? request.content : new byte[0];
