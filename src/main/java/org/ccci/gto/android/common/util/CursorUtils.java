@@ -54,13 +54,22 @@ public final class CursorUtils {
         return index != -1 ? c.getLong(index) : defValue;
     }
 
+    @Nullable
     public static String getString(@NonNull final Cursor c, @NonNull final String field) {
         return getString(c, field, null);
     }
 
+    @Nullable
     public static String getString(@NonNull final Cursor c, @NonNull final String field,
                                    @Nullable final String defValue) {
         final int index = c.getColumnIndex(field);
         return index != -1 ? c.getString(index) : defValue;
+    }
+
+    @NonNull
+    public static String getNonNullString(@NonNull final Cursor c, @NonNull final String field,
+                                          @NonNull final String defValue) {
+        final String val = getString(c, field, defValue);
+        return val != null ? val : defValue;
     }
 }

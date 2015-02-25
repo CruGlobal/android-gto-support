@@ -57,6 +57,12 @@ public abstract class AbstractMapper<T> implements Mapper<T> {
     }
 
     @NonNull
+    protected final String getNonNullString(@NonNull final Cursor c, @NonNull final String field,
+                                            @NonNull final String defValue) {
+        return CursorUtils.getNonNullString(c, field, defValue);
+    }
+
+    @NonNull
     @Deprecated
     public ContentValues toContentValues(@NonNull T obj) {
         throw new UnsupportedOperationException(
