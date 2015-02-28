@@ -1,16 +1,19 @@
 package org.ccci.gto.android.common.support.v4.content;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.IntentFilter;
 import android.database.Cursor;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.content.CursorLoader;
 
 public abstract class CursorBroadcastReceiverLoader extends CursorLoader
         implements BroadcastReceiverLoaderHelper.Interface {
+    @NonNull
     private final BroadcastReceiverLoaderHelper mHelper;
 
-    public CursorBroadcastReceiverLoader(final Context context, final IntentFilter... filters) {
+    public CursorBroadcastReceiverLoader(@NonNull final Context context, @NonNull final IntentFilter... filters) {
         super(context);
         mHelper = new BroadcastReceiverLoaderHelper(this, filters);
     }
@@ -37,10 +40,11 @@ public abstract class CursorBroadcastReceiverLoader extends CursorLoader
     }
 
     @Override
-    public final void setBroadcastReceiver(final LoaderBroadcastReceiver receiver) {
+    public final void setBroadcastReceiver(@Nullable final BroadcastReceiver receiver) {
         mHelper.setBroadcastReceiver(receiver);
     }
 
+    @Nullable
     @Override
     public final Cursor loadInBackground() {
         final Cursor c = this.getCursor();
@@ -50,5 +54,6 @@ public abstract class CursorBroadcastReceiverLoader extends CursorLoader
         return c;
     }
 
+    @Nullable
     protected abstract Cursor getCursor();
 }

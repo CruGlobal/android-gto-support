@@ -1,5 +1,6 @@
 package org.ccci.gto.android.common.support.v4.content;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
@@ -48,7 +49,7 @@ public abstract class CursorBroadcastReceiverSharedPreferencesChangeLoader exten
     }
 
     @Override
-    public final void setBroadcastReceiver(@Nullable final LoaderBroadcastReceiver receiver) {
+    public final void setBroadcastReceiver(@Nullable final BroadcastReceiver receiver) {
         mHelper1.setBroadcastReceiver(receiver);
     }
 

@@ -1,8 +1,10 @@
 package org.ccci.gto.android.common.support.v4.content;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.IntentFilter;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.content.AsyncTaskLoader;
 
 public abstract class AsyncTaskBroadcastReceiverLoader<D> extends AsyncTaskLoader<D>
@@ -11,7 +13,7 @@ public abstract class AsyncTaskBroadcastReceiverLoader<D> extends AsyncTaskLoade
 
     private D mData;
 
-    public AsyncTaskBroadcastReceiverLoader(final Context context, final IntentFilter... filters) {
+    public AsyncTaskBroadcastReceiverLoader(@NonNull final Context context, @NonNull final IntentFilter... filters) {
         super(context);
         mHelper = new BroadcastReceiverLoaderHelper(this, filters);
     }
@@ -48,7 +50,7 @@ public abstract class AsyncTaskBroadcastReceiverLoader<D> extends AsyncTaskLoade
     }
 
     @Override
-    public final void setBroadcastReceiver(final LoaderBroadcastReceiver receiver) {
+    public final void setBroadcastReceiver(@Nullable final BroadcastReceiver receiver) {
         mHelper.setBroadcastReceiver(receiver);
     }
 }

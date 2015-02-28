@@ -13,7 +13,7 @@ final class BroadcastReceiverLoaderHelper {
     public static interface Interface {
         void addIntentFilter(@NonNull IntentFilter filter);
 
-        void setBroadcastReceiver(@Nullable LoaderBroadcastReceiver receiver);
+        void setBroadcastReceiver(@Nullable BroadcastReceiver receiver);
     }
 
     @NonNull
@@ -21,7 +21,7 @@ final class BroadcastReceiverLoaderHelper {
     @NonNull
     private final Loader mLoader;
     @NonNull
-    private LoaderBroadcastReceiver mReceiver;
+    private BroadcastReceiver mReceiver;
     private final ArrayList<IntentFilter> mFilters = new ArrayList<>();
 
     BroadcastReceiverLoaderHelper(@NonNull final Loader loader, @NonNull final IntentFilter... filters) {
@@ -44,7 +44,7 @@ final class BroadcastReceiverLoaderHelper {
         }
     }
 
-    void setBroadcastReceiver(@Nullable LoaderBroadcastReceiver receiver) {
+    void setBroadcastReceiver(@Nullable BroadcastReceiver receiver) {
         if (receiver == null) {
             receiver = new LoaderBroadcastReceiver(mLoader);
         }
@@ -53,7 +53,7 @@ final class BroadcastReceiverLoaderHelper {
             // register the new receiver and unregister the old receiver. we overlap registrations to not drop broadcasts
             if (mLoader.isStarted()) {
                 registerReceiver(receiver);
-                mLocalBroadcastManager.unregisterReceiver(mReceiver);
+                unregisterReceiver(mReceiver);
             }
 
             // save new receiver
@@ -69,7 +69,7 @@ final class BroadcastReceiverLoaderHelper {
 
     void onAbandon() {
         synchronized (this) {
-            mLocalBroadcastManager.unregisterReceiver(mReceiver);
+            unregisterReceiver(mReceiver);
         }
     }
 
@@ -77,5 +77,9 @@ final class BroadcastReceiverLoaderHelper {
         for (final IntentFilter filter : mFilters) {
             mLocalBroadcastManager.registerReceiver(receiver, filter);
         }
+    }
+
+    private synchronized void unregisterReceiver(@NonNull final BroadcastReceiver receiver) {
+        mLocalBroadcastManager.unregisterReceiver(mReceiver);
     }
 }
