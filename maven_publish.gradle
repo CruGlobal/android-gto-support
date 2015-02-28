@@ -26,14 +26,11 @@ afterEvaluate {
             from sourceSets.main.allSource
             classifier = 'sources'
         }
-
-        task artifactJavadocJar(type: Jar, dependsOn: 'javadoc') {
-            from javadoc.destinationDir
-            classifier = 'javadoc'
-        }
-    } else if (project.plugins.hasPlugin('com.android.library')) {
-        apply plugin: 'com.github.dcendents.android-maven'
-
+    }
+    if (project.plugins.hasPlugin('com.android.library')) {
+        apply plugin: 'android-maven'
+    }
+    if (project.plugins.hasPlugin('com.android.application') || project.plugins.hasPlugin('com.android.library')) {
         task artifactSourcesJar(type: Jar) {
             classifier = 'sources'
             from android.sourceSets.main.java.srcDirs
@@ -44,7 +41,8 @@ afterEvaluate {
             classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
             failOnError = false
         }
-
+    }
+    if (project.plugins.hasPlugin('java') || project.plugins.hasPlugin('com.android.application') || project.plugins.hasPlugin('com.android.library')) {
         task artifactJavadocJar(type: Jar, dependsOn: 'javadoc') {
             classifier = 'javadoc'
             from javadoc.destinationDir
