@@ -1,5 +1,7 @@
 package org.ccci.gto.android.common.db;
 
+import static org.ccci.gto.android.common.db.Join.NO_JOINS;
+
 import android.annotation.TargetApi;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -46,6 +48,7 @@ public abstract class AbstractDao {
     }
 
     @NonNull
+    @Deprecated
     protected String getJoin(@NonNull final Class<?> base, @Nullable final String type, @NonNull final Class<?> join) {
         throw new IllegalArgumentException("unsupported join");
     }
@@ -86,16 +89,19 @@ public abstract class AbstractDao {
     }
 
     @NonNull
+    @Deprecated
     public final String buildJoin(@NonNull final Class<?> clazz) {
         return this.buildJoin(clazz, null, null);
     }
 
     @NonNull
+    @Deprecated
     public final String buildJoin(@NonNull final Class<?> clazz, @Nullable final String type) {
         return this.buildJoin(clazz, type, null);
     }
 
     @NonNull
+    @Deprecated
     public final String buildJoin(@NonNull final Class<?> clazz, @Nullable final String type,
                                   @Nullable final String on) {
         final StringBuilder sb =
@@ -118,17 +124,70 @@ public abstract class AbstractDao {
     @NonNull
     public final Cursor getCursor(@NonNull final Class<?> clazz, @Nullable final String whereClause,
                                   @Nullable final String[] whereBindValues, @Nullable final String orderBy) {
-        return getCursor(clazz, (String[]) null, this.getFullProjection(clazz), whereClause, whereBindValues, orderBy);
+        return getCursor(clazz, NO_JOINS, this.getFullProjection(clazz), whereClause, whereBindValues, orderBy);
     }
 
     @NonNull
     public final Cursor getCursor(@NonNull final Class<?> clazz, @NonNull final String[] projection,
                                   @Nullable final String whereClause, @Nullable final String[] whereBindValues,
                                   @Nullable final String orderBy) {
-        return getCursor(clazz, (String[]) null, projection, whereClause, whereBindValues, orderBy);
+        return getCursor(clazz, NO_JOINS, projection, whereClause, whereBindValues, orderBy);
     }
 
     @NonNull
+    public final <T> Cursor getCursor(@NonNull final Class<T> clazz, @NonNull final Join<T, ?> join,
+                                      @NonNull final String[] projection, @Nullable final String whereClause,
+                                      @Nullable final String[] whereBindValues, @Nullable final String orderBy) {
+        //noinspection unchecked
+        return getCursor(clazz, new Join[] {join}, projection, whereClause, whereBindValues, orderBy);
+    }
+
+    @NonNull
+    public final <T> Cursor getCursor(@NonNull final Class<T> clazz, @NonNull final Join<T, ?> join1,
+                                      @NonNull final Join<T, ?> join2, @NonNull final String[] projection,
+                                      @Nullable final String whereClause, @Nullable final String[] whereBindValues,
+                                      @Nullable final String orderBy) {
+        //noinspection unchecked
+        return getCursor(clazz, new Join[] {join1, join2}, projection, whereClause, whereBindValues, orderBy);
+    }
+
+    @NonNull
+    public final <T> Cursor getCursor(@NonNull final Class<T> clazz, @NonNull final Join<T, ?>[] joins,
+                                      @NonNull final String[] projection, @Nullable final String whereClause,
+                                      @Nullable final String[] whereBindValues, @Nullable final String orderBy) {
+        // process joins
+        final String tables;
+        final String[] columns;
+        if (joins.length > 0) {
+            final String baseTable = getTable(clazz);
+
+            // joins need to be passed appended to the table name
+            final StringBuilder sb = new StringBuilder(baseTable);
+            for (final Join<T, ?> join : joins) {
+                sb.append(join.build(this));
+            }
+            tables = sb.toString();
+
+            // prefix all non-prefixed columns in the projection to prevent ambiguous columns
+            columns = new String[projection.length];
+            for (int i = 0; i < projection.length; i++) {
+                columns[i] = projection[i].contains(".") ? projection[i] : baseTable + "." + projection[i];
+            }
+        } else {
+            tables = getTable(clazz);
+            columns = projection;
+        }
+
+        // execute actual query
+        final Cursor c = this.dbHelper.getReadableDatabase()
+                .query(tables, columns, whereClause, whereBindValues, null, null, orderBy);
+
+        c.moveToPosition(-1);
+        return c;
+    }
+
+    @NonNull
+    @Deprecated
     public final Cursor getCursor(@NonNull final Class<?> clazz, @NonNull final Pair<String, Class<?>>[] joins,
                                   @NonNull final String[] projection, @Nullable final String whereClause,
                                   @Nullable final String[] whereBindValues, @Nullable final String orderBy) {
@@ -142,6 +201,7 @@ public abstract class AbstractDao {
     }
 
     @NonNull
+    @Deprecated
     public final Cursor getCursor(@NonNull final Class<?> clazz, @Nullable final String[] joins,
                                   @NonNull final String[] projection, @Nullable final String whereClause,
                                   @Nullable final String[] whereBindValues, @Nullable final String orderBy) {
