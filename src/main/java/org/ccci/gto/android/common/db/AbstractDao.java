@@ -154,7 +154,7 @@ public abstract class AbstractDao {
     @NonNull
     public final <T> Cursor getCursor(@NonNull final Class<T> clazz, @NonNull final Join<T, ?>[] joins,
                                       @NonNull final String[] projection, @Nullable final String whereClause,
-                                      @Nullable final String[] whereBindValues, @Nullable final String orderBy) {
+                                      @Nullable final String[] whereBindValues, @Nullable String orderBy) {
         // process joins
         final String tables;
         final String[] columns;
@@ -172,6 +172,11 @@ public abstract class AbstractDao {
             columns = new String[projection.length];
             for (int i = 0; i < projection.length; i++) {
                 columns[i] = projection[i].contains(".") ? projection[i] : baseTable + "." + projection[i];
+            }
+
+            // prefix an un-prefixed orderBy field
+            if(orderBy != null && !orderBy.contains(".")) {
+                orderBy = baseTable + "." + orderBy;
             }
         } else {
             tables = getTable(clazz);
