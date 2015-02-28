@@ -3,9 +3,8 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:1.0.1'
+        classpath 'com.android.tools.build:gradle:1.1.2'
         classpath 'com.github.dcendents:android-maven-plugin:1.2'
-        classpath 'com.github.jcandksolutions.gradle:android-unit-test:2.1.1'
     }
 }
 
@@ -28,8 +27,6 @@ android {
         targetCompatibility JavaVersion.VERSION_1_7
     }
 }
-
-apply plugin: 'android-unit-test'
 
 repositories {
     mavenLocal()
