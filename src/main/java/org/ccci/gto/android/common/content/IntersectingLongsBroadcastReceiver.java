@@ -6,8 +6,6 @@ import android.support.annotation.NonNull;
 import android.support.v4.util.LongSparseArray;
 
 public final class IntersectingLongsBroadcastReceiver extends ForwardingBroadcastReceiver {
-    private static final long[] NO_VALUES = new long[0];
-
     public static final String EXTRA_VALUES = IntersectingLongsBroadcastReceiver.class.getName() + ".EXTRA_VALUES";
 
     @NonNull
