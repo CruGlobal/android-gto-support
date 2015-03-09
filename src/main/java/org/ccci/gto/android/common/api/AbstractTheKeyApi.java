@@ -219,6 +219,7 @@ public abstract class AbstractTheKeyApi<R extends AbstractTheKeyApi.Request<S>, 
 
     public static class Request<S extends Session> extends AbstractApi.Request<S> {
         // session attributes
+        @Nullable
         public String guid = null;
 
         public Request(@NonNull final String path) {
