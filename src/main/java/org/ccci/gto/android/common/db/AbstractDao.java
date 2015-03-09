@@ -20,6 +20,8 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 public abstract class AbstractDao {
+    public static final String ARG_PROJECTION = AbstractDao.class.getName() + ".ARG_PROJECTION";
+
     @NonNull
     protected final SQLiteOpenHelper dbHelper;
     @NonNull
@@ -43,7 +45,7 @@ public abstract class AbstractDao {
     }
 
     @NonNull
-    protected String[] getFullProjection(@NonNull final Class<?> clazz) {
+    public String[] getFullProjection(@NonNull final Class<?> clazz) {
         throw new IllegalArgumentException("invalid class specified: " + clazz.getName());
     }
 
