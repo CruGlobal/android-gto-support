@@ -1,6 +1,7 @@
 package org.ccci.gto.android.common.widget;
 
 import android.util.Pair;
+import android.view.HapticFeedbackConstants;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -54,6 +55,12 @@ public class RepeatingClickTouchListener implements View.OnTouchListener {
                 // Perform the present repetition of the click action provided by the user
                 // in setOnClickListener().
                 if(v.isPressed()) {
+                    // perform haptic feedback on first fired click event (long press)
+                    if(!fired) {
+                        v.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
+                    }
+
+                    // perform click
                     v.performClick();
                     fired = true;
                 }
