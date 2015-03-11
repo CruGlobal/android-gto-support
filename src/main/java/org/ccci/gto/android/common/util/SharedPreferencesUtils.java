@@ -1,5 +1,6 @@
 package org.ccci.gto.android.common.util;
 
+import android.annotation.TargetApi;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.support.annotation.NonNull;
@@ -12,6 +13,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class SharedPreferencesUtils {
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     public static SharedPreferences.Editor putStringSet(@NonNull final SharedPreferences.Editor prefs,
                                                         @NonNull final String key, @Nullable final Set<String> values) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
@@ -24,6 +26,7 @@ public class SharedPreferencesUtils {
         return prefs;
     }
 
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     public static Set<String> getStringSet(@NonNull final SharedPreferences prefs, @NonNull final String key,
                                            @Nullable final Set<String> defValue) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
