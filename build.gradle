@@ -12,7 +12,7 @@ buildscript {
 apply plugin: 'com.android.library'
 
 group 'org.ccci.gto.android'
-version '0.4.4-SNAPSHOT'
+version '0.4.4'
 
 android {
     compileSdkVersion 21
