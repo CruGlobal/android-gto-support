@@ -184,23 +184,28 @@ public abstract class AbstractTheKeyApi<R extends AbstractTheKeyApi.Request<S>, 
         @Nullable
         private final String guid;
 
-        protected Session(@Nullable final String id, @NonNull final String guid) {
+        protected Session(@Nullable final String id, @Nullable final String guid) {
             this(id, guid, PREF_SESSION_BASE_NAME);
         }
 
-        protected Session(@Nullable final String id, @NonNull final String guid, @NonNull final String baseAttrName) {
-            super(id, guid.toUpperCase(Locale.US) + "." + baseAttrName);
-            this.guid = guid.toUpperCase(Locale.US);
+        protected Session(@Nullable final String id, @Nullable final String guid, @NonNull final String baseAttrName) {
+            super(id, (guid != null ? guid.toUpperCase(Locale.US) + "." : "") + baseAttrName);
+            this.guid = guid != null ? guid.toUpperCase(Locale.US) : null;
         }
 
-        protected Session(@NonNull final SharedPreferences prefs, @NonNull final String guid) {
+        protected Session(@NonNull final SharedPreferences prefs, @Nullable final String guid) {
             this(prefs, guid, PREF_SESSION_BASE_NAME);
         }
 
-        protected Session(@NonNull final SharedPreferences prefs, @NonNull final String guid,
+        protected Session(@NonNull final SharedPreferences prefs, @Nullable final String guid,
                           @NonNull final String baseAttrName) {
-            super(prefs, guid.toUpperCase(Locale.US) + "." + baseAttrName);
-            this.guid = guid.toUpperCase(Locale.US);;
+            super(prefs, (guid != null ? guid.toUpperCase(Locale.US) + "." : "") + baseAttrName);
+            this.guid = guid != null ? guid.toUpperCase(Locale.US) : null;
+        }
+
+        @Override
+        protected boolean isValid() {
+            return super.isValid() && this.guid != null;
         }
 
         @Override
