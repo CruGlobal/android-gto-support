@@ -1,1 +1,1 @@
-include ':gto-support-core'
+include ':gto-support-core', ':gto-support-db'

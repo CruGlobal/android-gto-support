@@ -5,7 +5,7 @@ import android.database.Cursor;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import org.ccci.gto.android.common.util.CursorUtils;
+import org.ccci.gto.android.common.db.util.CursorUtils;
 
 public abstract class AbstractMapper<T> implements Mapper<T> {
     /**

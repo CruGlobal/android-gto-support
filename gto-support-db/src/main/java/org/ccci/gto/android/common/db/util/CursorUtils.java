@@ -1,4 +1,4 @@
-package org.ccci.gto.android.common.util;
+package org.ccci.gto.android.common.db.util;
 
 import android.database.Cursor;
 import android.support.annotation.NonNull;
