@@ -17,7 +17,7 @@ bin/
 
 # Android Studio project ignores
 .idea/
-gto-support.iml
+*.iml
 gen-external-apklibs/
 local.properties
 out/
