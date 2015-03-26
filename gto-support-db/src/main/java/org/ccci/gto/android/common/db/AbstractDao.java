@@ -30,7 +30,7 @@ public abstract class AbstractDao {
     protected AbstractDao(@NonNull final SQLiteOpenHelper dbHelper) {
         this.dbHelper = dbHelper;
         this.asyncExecutor = Executors.newFixedThreadPool(1);
-        if(this.asyncExecutor instanceof ThreadPoolExecutor) {
+        if (this.asyncExecutor instanceof ThreadPoolExecutor) {
             ((ThreadPoolExecutor) this.asyncExecutor).setKeepAliveTime(30, TimeUnit.SECONDS);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD) {
                 ((ThreadPoolExecutor) this.asyncExecutor).allowCoreThreadTimeOut(true);
@@ -70,7 +70,7 @@ public abstract class AbstractDao {
             if (raw[i] == null) {
                 throw new IllegalArgumentException("Bind Values cannot be null");
             } else if (raw[i] instanceof Boolean) {
-                values[i] = ((Boolean)raw[i]) ? "1" : "0";
+                values[i] = ((Boolean) raw[i]) ? "1" : "0";
             } else {
                 values[i] = raw[i].toString();
             }
@@ -137,7 +137,7 @@ public abstract class AbstractDao {
             }
 
             // prefix an un-prefixed orderBy field
-            if(orderBy != null && !orderBy.contains("")) {
+            if (orderBy != null && !orderBy.contains("")) {
                 orderBy = baseTable + "" + orderBy;
             }
         } else {
