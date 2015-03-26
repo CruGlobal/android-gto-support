@@ -26,6 +26,12 @@ subprojects {
         }
     }
 
+    afterEvaluate {
+        dependencies {
+            compile 'com.android.support:support-annotations:22.0.0'
+        }
+    }
+
     apply from: "$rootProject.projectDir/maven_publish.gradle"
     afterEvaluate { project ->
         artifacts {
