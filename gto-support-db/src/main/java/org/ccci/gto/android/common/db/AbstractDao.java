@@ -9,7 +9,6 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.text.TextUtils;
 import android.util.Pair;
 
 import java.util.ArrayList;
@@ -50,12 +49,6 @@ public abstract class AbstractDao {
     }
 
     @NonNull
-    @Deprecated
-    protected String getJoin(@NonNull final Class<?> base, @Nullable final String type, @NonNull final Class<?> join) {
-        throw new IllegalArgumentException("unsupported join");
-    }
-
-    @NonNull
     protected Pair<String, String[]> getPrimaryKeyWhere(@NonNull final Class<?> clazz, @NonNull final Object... key) {
         throw new IllegalArgumentException("invalid class specified: " + clazz.getName());
     }
@@ -83,39 +76,6 @@ public abstract class AbstractDao {
             }
         }
         return values;
-    }
-
-    @Deprecated
-    protected final String[] getBindValues(@NonNull final Object... raw) {
-        return bindValues(raw);
-    }
-
-    @NonNull
-    @Deprecated
-    public final String buildJoin(@NonNull final Class<?> clazz) {
-        return this.buildJoin(clazz, null, null);
-    }
-
-    @NonNull
-    @Deprecated
-    public final String buildJoin(@NonNull final Class<?> clazz, @Nullable final String type) {
-        return this.buildJoin(clazz, type, null);
-    }
-
-    @NonNull
-    @Deprecated
-    public final String buildJoin(@NonNull final Class<?> clazz, @Nullable final String type,
-                                  @Nullable final String on) {
-        final StringBuilder sb =
-                new StringBuilder(32 + (type != null ? type.length() + 1 : 0) + (on != null ? on.length() + 4 : 0));
-        if (type != null) {
-            sb.append(" ").append(type);
-        }
-        sb.append(" JOIN ").append(this.getTable(clazz));
-        if (on != null) {
-            sb.append(" ON ").append(on);
-        }
-        return sb.toString();
     }
 
     @NonNull
@@ -188,34 +148,6 @@ public abstract class AbstractDao {
         // execute actual query
         final Cursor c = this.dbHelper.getReadableDatabase()
                 .query(tables, columns, whereClause, whereBindValues, null, null, orderBy);
-
-        c.moveToPosition(-1);
-        return c;
-    }
-
-    @NonNull
-    @Deprecated
-    public final Cursor getCursor(@NonNull final Class<?> clazz, @NonNull final Pair<String, Class<?>>[] joins,
-                                  @NonNull final String[] projection, @Nullable final String whereClause,
-                                  @Nullable final String[] whereBindValues, @Nullable final String orderBy) {
-        // process joins
-        final String[] rawJoins = new String[joins.length];
-        for (int i = 0; i < joins.length; i++) {
-            rawJoins[i] = this.getJoin(clazz, joins[i].first, joins[i].second);
-        }
-
-        return getCursor(clazz, rawJoins, projection, whereClause, whereBindValues, orderBy);
-    }
-
-    @NonNull
-    @Deprecated
-    public final Cursor getCursor(@NonNull final Class<?> clazz, @Nullable final String[] joins,
-                                  @NonNull final String[] projection, @Nullable final String whereClause,
-                                  @Nullable final String[] whereBindValues, @Nullable final String orderBy) {
-        final String table = this.getTable(clazz) + (joins != null ? TextUtils.join(" ", joins) : "");
-
-        final Cursor c = this.dbHelper.getReadableDatabase()
-                .query(table, projection, whereClause, whereBindValues, null, null, orderBy);
 
         c.moveToPosition(-1);
         return c;
