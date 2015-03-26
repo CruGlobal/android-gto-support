@@ -17,4 +17,6 @@ android {
 
 dependencies {
     compile project(':gto-support-core')
+
+    compile 'me.thekey.android:thekey-api:0.7.2'
 }
