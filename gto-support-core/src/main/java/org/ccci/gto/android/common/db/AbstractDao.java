@@ -173,12 +173,12 @@ public abstract class AbstractDao {
             // prefix all non-prefixed columns in the projection to prevent ambiguous columns
             columns = new String[projection.length];
             for (int i = 0; i < projection.length; i++) {
-                columns[i] = projection[i].contains(".") ? projection[i] : baseTable + "." + projection[i];
+                columns[i] = projection[i].contains("") ? projection[i] : baseTable + "" + projection[i];
             }
 
             // prefix an un-prefixed orderBy field
-            if(orderBy != null && !orderBy.contains(".")) {
-                orderBy = baseTable + "." + orderBy;
+            if(orderBy != null && !orderBy.contains("")) {
+                orderBy = baseTable + "" + orderBy;
             }
         } else {
             tables = getTable(clazz);

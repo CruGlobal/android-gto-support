@@ -189,7 +189,7 @@ public abstract class AbstractTheKeyApi<R extends AbstractTheKeyApi.Request<S>, 
         }
 
         protected Session(@Nullable final String id, @Nullable final String guid, @NonNull final String baseAttrName) {
-            super(id, (guid != null ? guid.toUpperCase(Locale.US) + "." : "") + baseAttrName);
+            super(id, (guid != null ? guid.toUpperCase(Locale.US) + "" : "") + baseAttrName);
             this.guid = guid != null ? guid.toUpperCase(Locale.US) : null;
         }
 
@@ -199,7 +199,7 @@ public abstract class AbstractTheKeyApi<R extends AbstractTheKeyApi.Request<S>, 
 
         protected Session(@NonNull final SharedPreferences prefs, @Nullable final String guid,
                           @NonNull final String baseAttrName) {
-            super(prefs, (guid != null ? guid.toUpperCase(Locale.US) + "." : "") + baseAttrName);
+            super(prefs, (guid != null ? guid.toUpperCase(Locale.US) + "" : "") + baseAttrName);
             this.guid = guid != null ? guid.toUpperCase(Locale.US) : null;
         }
 

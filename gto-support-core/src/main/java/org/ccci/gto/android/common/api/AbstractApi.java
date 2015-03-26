@@ -330,7 +330,7 @@ public abstract class AbstractApi<R extends Request<S>, S extends Session> {
         }
 
         protected final String getPrefAttrName(@NonNull final String type) {
-            return baseAttrName + "." + type;
+            return baseAttrName + "" + type;
         }
 
         protected void save(@NonNull final SharedPreferences.Editor prefs) {
