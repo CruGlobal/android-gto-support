@@ -20,18 +20,12 @@ import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URLEncoder;
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 
 import me.thekey.android.TheKey;
 import me.thekey.android.TheKeySocketException;
 
 public abstract class AbstractGtoSmxApi extends AbstractTheKeyApi<Request, Session> {
     private static final String PARAM_APPVERSION = "_appVersion";
-
-    private final Executor asyncExecutor;
 
     private final String appVersion;
     private boolean includeAppVersion = false;
@@ -53,15 +47,6 @@ public abstract class AbstractGtoSmxApi extends AbstractTheKeyApi<Request, Sessi
                                 @NonNull final Uri apiUri, @NonNull final String prefFile,
                                 @Nullable final String guid) {
         super(context, thekey, apiUri, prefFile, guid);
-        this.asyncExecutor = Executors.newFixedThreadPool(1);
-        if (this.asyncExecutor instanceof ThreadPoolExecutor) {
-            ((ThreadPoolExecutor) this.asyncExecutor).setKeepAliveTime(30, TimeUnit.SECONDS);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD) {
-                ((ThreadPoolExecutor) this.asyncExecutor).allowCoreThreadTimeOut(true);
-            } else {
-                ((ThreadPoolExecutor) this.asyncExecutor).setCorePoolSize(0);
-            }
-        }
 
         // generate the app version string
         final StringBuilder sb = new StringBuilder();
@@ -276,10 +261,6 @@ public abstract class AbstractGtoSmxApi extends AbstractTheKeyApi<Request, Sessi
         }
 
         return null;
-    }
-
-    public final void async(final Runnable task) {
-        this.asyncExecutor.execute(task);
     }
 
     /**

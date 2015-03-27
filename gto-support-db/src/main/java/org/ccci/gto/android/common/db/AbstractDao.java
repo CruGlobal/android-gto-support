@@ -13,29 +13,16 @@ import android.util.Pair;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 
 public abstract class AbstractDao {
     public static final String ARG_PROJECTION = AbstractDao.class.getName() + ".ARG_PROJECTION";
 
     @NonNull
     protected final SQLiteOpenHelper dbHelper;
-    @NonNull
-    private final Executor asyncExecutor;
 
     @TargetApi(Build.VERSION_CODES.GINGERBREAD)
     protected AbstractDao(@NonNull final SQLiteOpenHelper dbHelper) {
         this.dbHelper = dbHelper;
-        this.asyncExecutor = Executors.newFixedThreadPool(1);
-        if (this.asyncExecutor instanceof ThreadPoolExecutor) {
-            ((ThreadPoolExecutor) this.asyncExecutor).setKeepAliveTime(30, TimeUnit.SECONDS);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD) {
-                ((ThreadPoolExecutor) this.asyncExecutor).allowCoreThreadTimeOut(true);
-            }
-        }
     }
 
     @NonNull
@@ -295,10 +282,6 @@ public abstract class AbstractDao {
         } finally {
             db.endTransaction();
         }
-    }
-
-    public final void async(@NonNull final Runnable task) {
-        this.asyncExecutor.execute(task);
     }
 
     @NonNull
