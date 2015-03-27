@@ -2,11 +2,9 @@ package org.ccci.gto.android.common.api;
 
 import static java.net.HttpURLConnection.HTTP_OK;
 
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.Uri;
-import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
@@ -42,7 +40,6 @@ public abstract class AbstractGtoSmxApi extends AbstractTheKeyApi<Request, Sessi
         this(context, thekey, Uri.parse(apiUri.endsWith("/") ? apiUri : apiUri + "/"), prefFile, guid);
     }
 
-    @TargetApi(Build.VERSION_CODES.GINGERBREAD)
     protected AbstractGtoSmxApi(@NonNull final Context context, @NonNull final TheKey thekey,
                                 @NonNull final Uri apiUri, @NonNull final String prefFile,
                                 @Nullable final String guid) {

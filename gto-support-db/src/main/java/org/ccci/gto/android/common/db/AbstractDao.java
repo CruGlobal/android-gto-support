@@ -2,11 +2,9 @@ package org.ccci.gto.android.common.db;
 
 import static org.ccci.gto.android.common.db.Join.NO_JOINS;
 
-import android.annotation.TargetApi;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Pair;
@@ -20,7 +18,6 @@ public abstract class AbstractDao {
     @NonNull
     protected final SQLiteOpenHelper dbHelper;
 
-    @TargetApi(Build.VERSION_CODES.GINGERBREAD)
     protected AbstractDao(@NonNull final SQLiteOpenHelper dbHelper) {
         this.dbHelper = dbHelper;
     }
