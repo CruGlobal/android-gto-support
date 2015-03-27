@@ -151,7 +151,7 @@ public abstract class AbstractGtoSmxApi extends AbstractTheKeyApi<Request, Sessi
     protected String getService() throws ApiException {
         // short-circuit if we have a cached service
         String service = super.getCachedService();
-        if(service != null) {
+        if (service != null) {
             return service;
         }
 
@@ -164,7 +164,7 @@ public abstract class AbstractGtoSmxApi extends AbstractTheKeyApi<Request, Sessi
         }
 
         // we found a service, let's store it for future use before returning
-        if(service != null) {
+        if (service != null) {
             this.setCachedService(service);
         }
         return service;
