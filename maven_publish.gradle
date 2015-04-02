@@ -3,10 +3,10 @@ apply plugin: 'maven'
 uploadArchives {
     repositories {
         mavenDeployer {
-            repository(url: "https://maven.gcx.org/") {
+            repository(url: "https://maven.gcx.org/artifactory/public-release") {
                 authentication(userName: gcxMavenRepositoryUsername, password: gcxMavenRepositoryPassword)
             }
-            snapshotRepository(url: "https://maven.gcx.org/") {
+            snapshotRepository(url: "https://maven.gcx.org/artifactory/public-snapshot") {
                 authentication(userName: gcxMavenRepositoryUsername, password: gcxMavenRepositoryPassword)
             }
 
