@@ -13,9 +13,9 @@ public abstract class CursorBroadcastReceiverLoader extends CursorLoader
     @NonNull
     private final BroadcastReceiverLoaderHelper mHelper;
 
-    public CursorBroadcastReceiverLoader(@NonNull final Context context, @NonNull final IntentFilter... filters) {
+    public CursorBroadcastReceiverLoader(@NonNull final Context context) {
         super(context);
-        mHelper = new BroadcastReceiverLoaderHelper(this, filters);
+        mHelper = new BroadcastReceiverLoaderHelper(this);
     }
 
     /* BEGIN lifecycle */
@@ -48,7 +48,7 @@ public abstract class CursorBroadcastReceiverLoader extends CursorLoader
     @Override
     public final Cursor loadInBackground() {
         final Cursor c = this.getCursor();
-        if(c != null) {
+        if (c != null) {
             c.getCount();
         }
         return c;

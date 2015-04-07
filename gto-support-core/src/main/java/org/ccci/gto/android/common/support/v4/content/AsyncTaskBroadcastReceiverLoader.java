@@ -13,9 +13,9 @@ public abstract class AsyncTaskBroadcastReceiverLoader<D> extends AsyncTaskLoade
 
     private D mData;
 
-    public AsyncTaskBroadcastReceiverLoader(@NonNull final Context context, @NonNull final IntentFilter... filters) {
+    public AsyncTaskBroadcastReceiverLoader(@NonNull final Context context) {
         super(context);
-        mHelper = new BroadcastReceiverLoaderHelper(this, filters);
+        mHelper = new BroadcastReceiverLoaderHelper(this);
     }
 
     /* BEGIN lifecycle */

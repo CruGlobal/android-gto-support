@@ -15,17 +15,15 @@ public abstract class AsyncTaskSharedPreferencesChangeLoader<D> extends AsyncTas
 
     private D mData;
 
-    public AsyncTaskSharedPreferencesChangeLoader(@NonNull final Context context, @NonNull final String prefsName,
-                                                  @NonNull final String... keys) {
-        this(context, context.getSharedPreferences(prefsName, Context.MODE_PRIVATE), keys);
+    public AsyncTaskSharedPreferencesChangeLoader(@NonNull final Context context, @NonNull final String prefsName) {
+        this(context, context.getSharedPreferences(prefsName, Context.MODE_PRIVATE));
     }
 
     public AsyncTaskSharedPreferencesChangeLoader(@NonNull final Context context,
-                                                  @NonNull final SharedPreferences prefs,
-                                                  @NonNull final String... keys) {
+                                                  @NonNull final SharedPreferences prefs) {
         super(context);
         mPrefs = prefs;
-        mHelper = new SharedPreferencesChangeLoaderHelper(this, mPrefs, keys);
+        mHelper = new SharedPreferencesChangeLoaderHelper(this, mPrefs);
     }
 
     /* BEGIN lifecycle */

@@ -10,7 +10,7 @@ import android.support.v4.content.LocalBroadcastManager;
 import java.util.ArrayList;
 
 final class BroadcastReceiverLoaderHelper {
-    public static interface Interface {
+    public interface Interface {
         void addIntentFilter(@NonNull IntentFilter filter);
 
         void setBroadcastReceiver(@Nullable BroadcastReceiver receiver);
@@ -24,13 +24,10 @@ final class BroadcastReceiverLoaderHelper {
     private BroadcastReceiver mReceiver;
     private final ArrayList<IntentFilter> mFilters = new ArrayList<>();
 
-    BroadcastReceiverLoaderHelper(@NonNull final Loader loader, @NonNull final IntentFilter... filters) {
+    BroadcastReceiverLoaderHelper(@NonNull final Loader loader) {
         mLocalBroadcastManager = LocalBroadcastManager.getInstance(loader.getContext());
         mLoader = loader;
         this.setBroadcastReceiver(null);
-        for (final IntentFilter filter : filters) {
-            this.addIntentFilter(filter);
-        }
     }
 
     void addIntentFilter(@NonNull final IntentFilter filter) {
@@ -80,6 +77,6 @@ final class BroadcastReceiverLoaderHelper {
     }
 
     private synchronized void unregisterReceiver(@NonNull final BroadcastReceiver receiver) {
-        mLocalBroadcastManager.unregisterReceiver(mReceiver);
+        mLocalBroadcastManager.unregisterReceiver(receiver);
     }
 }

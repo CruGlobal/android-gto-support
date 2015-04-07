@@ -5,12 +5,11 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.Loader;
 
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
 final class SharedPreferencesChangeLoaderHelper {
-    public static interface Interface {
+    public interface Interface {
         void addPreferenceKey(@Nullable String key);
 
         void removePreferenceKey(@Nullable String key);
@@ -21,11 +20,9 @@ final class SharedPreferencesChangeLoaderHelper {
     private final Set<String> mKeys = new HashSet<>();
     private final ChangeListener mChangeListener = new ChangeListener();
 
-    SharedPreferencesChangeLoaderHelper(@NonNull final Loader loader, @NonNull final SharedPreferences prefs,
-                                        @NonNull final String... keys) {
+    SharedPreferencesChangeLoaderHelper(@NonNull final Loader loader, @NonNull final SharedPreferences prefs) {
         mLoader = loader;
         mPrefs = prefs;
-        mKeys.addAll(Arrays.asList(keys));
     }
 
     /* BEGIN lifecycle */
