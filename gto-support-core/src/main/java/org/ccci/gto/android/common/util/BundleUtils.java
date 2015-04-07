@@ -25,15 +25,4 @@ public class BundleUtils {
         System.arraycopy(raw, 0, arr, 0, raw.length);
         return arr;
     }
-
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR1)
-    public static String getString(@NonNull final Bundle bundle, @NonNull final String key,
-                                   @Nullable final String defaultValue) {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB_MR1) {
-            final String value = bundle.getString(key);
-            return value != null ? value : defaultValue;
-        } else {
-            return bundle.getString(key, defaultValue);
-        }
-    }
 }
