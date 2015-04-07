@@ -116,7 +116,7 @@ public abstract class ViewHolderPagerAdapter<VH extends ViewHolderPagerAdapter.V
     protected void onViewRecycled(@NonNull final VH holder) {
     }
 
-    protected static class ViewHolder {
+    public static class ViewHolder {
         long mId = NO_ID;
         int mLastKnownPosition = POSITION_NONE;
 
