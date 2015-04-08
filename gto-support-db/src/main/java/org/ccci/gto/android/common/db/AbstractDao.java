@@ -9,6 +9,8 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Pair;
 
+import org.ccci.gto.android.common.util.ArrayUtils;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -104,7 +106,9 @@ public abstract class AbstractDao {
     @NonNull
     public final <T> Cursor getCursor(@NonNull final Class<T> clazz, @NonNull final Join<T, ?>[] joins,
                                       @NonNull final String[] projection, @Nullable final String whereClause,
-                                      @Nullable final String[] whereBindValues, @Nullable String orderBy) {
+                                      @Nullable final String[] whereArgs, @Nullable String orderBy) {
+        String[] args = null;
+
         // process joins
         final String tables;
         final String[] columns;
@@ -113,8 +117,10 @@ public abstract class AbstractDao {
 
             // joins need to be passed appended to the table name
             final StringBuilder sb = new StringBuilder(baseTable);
-            for (final Join<T, ?> join : joins) {
-                sb.append(join.build(this));
+            for (final Join<T, ?> joinObj : joins) {
+                final Pair<String, String[]> join = joinObj.build(this);
+                sb.append(join.first);
+                args = ArrayUtils.merge(String.class, args, join.second);
             }
             tables = sb.toString();
 
@@ -133,9 +139,12 @@ public abstract class AbstractDao {
             columns = projection;
         }
 
+        // add WHERE args
+        args = ArrayUtils.merge(String.class, args, whereArgs);
+
         // execute actual query
-        final Cursor c = this.dbHelper.getReadableDatabase()
-                .query(tables, columns, whereClause, whereBindValues, null, null, orderBy);
+        final Cursor c =
+                this.dbHelper.getReadableDatabase().query(tables, columns, whereClause, args, null, null, orderBy);
 
         c.moveToPosition(-1);
         return c;
