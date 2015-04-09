@@ -19,7 +19,7 @@ import org.ccci.gto.android.common.db.Join;
 import org.ccci.gto.android.common.support.v4.content.CursorBroadcastReceiverLoader;
 import org.ccci.gto.android.common.util.BundleUtils;
 
-public abstract class DaoCursorBroadcastReceiverLoader<T> extends CursorBroadcastReceiverLoader {
+public class DaoCursorBroadcastReceiverLoader<T> extends CursorBroadcastReceiverLoader {
     private static final Pair<String, String[]> NO_WHERE = Pair.create(null, new String[0]);
 
     @NonNull
@@ -34,8 +34,8 @@ public abstract class DaoCursorBroadcastReceiverLoader<T> extends CursorBroadcas
     private Pair<String, String[]> mWhere = NO_WHERE;
 
     @SuppressWarnings("unchecked")
-    protected DaoCursorBroadcastReceiverLoader(@NonNull final Context context, @NonNull final AbstractDao dao,
-                                               @NonNull final Class<T> type, @Nullable final Bundle args) {
+    public DaoCursorBroadcastReceiverLoader(@NonNull final Context context, @NonNull final AbstractDao dao,
+                                            @NonNull final Class<T> type, @Nullable final Bundle args) {
         super(context);
         mDao = dao;
 
