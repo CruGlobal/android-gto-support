@@ -74,12 +74,14 @@ public abstract class AbstractDao {
     }
 
     @NonNull
+    @SuppressWarnings("unchecked")
     public final Cursor getCursor(@NonNull final Class<?> clazz, @Nullable final String whereClause,
                                   @Nullable final String[] whereBindValues, @Nullable final String orderBy) {
         return getCursor(clazz, NO_JOINS, this.getFullProjection(clazz), whereClause, whereBindValues, orderBy);
     }
 
     @NonNull
+    @SuppressWarnings("unchecked")
     public final Cursor getCursor(@NonNull final Class<?> clazz, @NonNull final String[] projection,
                                   @Nullable final String whereClause, @Nullable final String[] whereBindValues,
                                   @Nullable final String orderBy) {
