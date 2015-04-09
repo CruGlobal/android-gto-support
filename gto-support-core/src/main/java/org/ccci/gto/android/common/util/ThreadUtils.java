@@ -1,7 +1,10 @@
 package org.ccci.gto.android.common.util;
 
 import android.os.Looper;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
+import java.util.Arrays;
 import java.util.Map;
 
 public final class ThreadUtils {
@@ -32,5 +35,31 @@ public final class ThreadUtils {
 
     public static boolean isUiThread() {
         return Looper.getMainLooper().getThread() == Thread.currentThread();
+    }
+
+    public static final class GenericKey {
+        @NonNull
+        private final Object[] mKey;
+
+        public GenericKey(@NonNull final Object... key) {
+            mKey = key;
+        }
+
+        @Override
+        public boolean equals(@Nullable final Object o) {
+            if (this == o) {
+                return true;
+            }
+            if (o == null || getClass() != o.getClass()) {
+                return false;
+            }
+            final GenericKey that = (GenericKey) o;
+            return Arrays.deepEquals(mKey, that.mKey);
+        }
+
+        @Override
+        public int hashCode() {
+            return Arrays.hashCode(mKey);
+        }
     }
 }
