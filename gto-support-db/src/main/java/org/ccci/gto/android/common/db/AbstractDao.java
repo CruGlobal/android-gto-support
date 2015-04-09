@@ -22,10 +22,18 @@ public abstract class AbstractDao {
     public static final String ARG_ORDER_BY = AbstractDao.class.getName() + ".ARG_ORDER_BY";
 
     @NonNull
-    protected final SQLiteOpenHelper dbHelper;
+    private final SQLiteOpenHelper mDbHelper;
 
-    protected AbstractDao(@NonNull final SQLiteOpenHelper dbHelper) {
-        this.dbHelper = dbHelper;
+    protected AbstractDao(@NonNull final SQLiteOpenHelper helper) {
+        mDbHelper = helper;
+    }
+
+    protected final SQLiteDatabase getReadableDatabase() {
+        return mDbHelper.getReadableDatabase();
+    }
+
+    protected final SQLiteDatabase getWritableDatabase() {
+        return mDbHelper.getWritableDatabase();
     }
 
     @NonNull
@@ -145,8 +153,7 @@ public abstract class AbstractDao {
         args = ArrayUtils.merge(String.class, args, whereArgs);
 
         // execute actual query
-        final Cursor c =
-                this.dbHelper.getReadableDatabase().query(tables, columns, whereClause, args, null, null, orderBy);
+        final Cursor c = mDbHelper.getReadableDatabase().query(tables, columns, whereClause, args, null, null, orderBy);
 
         c.moveToPosition(-1);
         return c;
@@ -218,7 +225,7 @@ public abstract class AbstractDao {
         @SuppressWarnings("unchecked")
         final Class<T> clazz = (Class<T>) obj.getClass();
 
-        final SQLiteDatabase db = this.dbHelper.getWritableDatabase();
+        final SQLiteDatabase db = mDbHelper.getWritableDatabase();
         db.beginTransaction();
         try {
             // execute insert
@@ -232,7 +239,7 @@ public abstract class AbstractDao {
     }
 
     public final void replace(@NonNull final Object obj) {
-        final SQLiteDatabase db = this.dbHelper.getWritableDatabase();
+        final SQLiteDatabase db = mDbHelper.getWritableDatabase();
         db.beginTransaction();
         try {
             this.delete(obj);
@@ -251,7 +258,7 @@ public abstract class AbstractDao {
         @SuppressWarnings("unchecked")
         final Class<T> clazz = (Class<T>) obj.getClass();
 
-        final SQLiteDatabase db = this.dbHelper.getWritableDatabase();
+        final SQLiteDatabase db = mDbHelper.getWritableDatabase();
         db.beginTransaction();
         try {
             final Pair<String, String[]> where = this.getPrimaryKeyWhere(obj);
@@ -268,7 +275,7 @@ public abstract class AbstractDao {
     }
 
     public final void updateOrInsert(@NonNull final Object obj, @NonNull final String[] projection) {
-        final SQLiteDatabase db = this.dbHelper.getWritableDatabase();
+        final SQLiteDatabase db = mDbHelper.getWritableDatabase();
         db.beginTransaction();
         try {
             final Pair<String, String[]> where = this.getPrimaryKeyWhere(obj);
@@ -285,7 +292,7 @@ public abstract class AbstractDao {
     }
 
     public final void delete(@NonNull final Object obj) {
-        final SQLiteDatabase db = this.dbHelper.getWritableDatabase();
+        final SQLiteDatabase db = mDbHelper.getWritableDatabase();
         db.beginTransaction();
         try {
             final Pair<String, String[]> where = this.getPrimaryKeyWhere(obj);
@@ -298,7 +305,7 @@ public abstract class AbstractDao {
 
     @NonNull
     public final Transaction newTransaction() {
-        return new Transaction(this.dbHelper.getWritableDatabase());
+        return new Transaction(mDbHelper.getWritableDatabase());
     }
 
     @NonNull
