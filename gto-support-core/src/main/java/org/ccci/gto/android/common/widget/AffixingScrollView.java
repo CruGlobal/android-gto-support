@@ -2,6 +2,8 @@ package org.ccci.gto.android.common.widget;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.support.annotation.IdRes;
+import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ScrollView;
@@ -11,9 +13,13 @@ import org.ccci.gto.android.common.R;
 public class AffixingScrollView extends ScrollView {
     private final static int INVALID_RESOURCE = -1;
 
+    @IdRes
     private int mAffixingId = INVALID_RESOURCE;
+    @Nullable
     private View mAffixingView;
+    @IdRes
     private int mAnchorId = INVALID_RESOURCE;
+    @Nullable
     private View mAnchorView;
 
     public AffixingScrollView(final Context context) {
