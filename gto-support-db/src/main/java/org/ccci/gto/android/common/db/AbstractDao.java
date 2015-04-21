@@ -2,6 +2,7 @@ package org.ccci.gto.android.common.db;
 
 import static org.ccci.gto.android.common.db.Join.NO_JOINS;
 
+import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -224,29 +225,31 @@ public abstract class AbstractDao {
     public final <T> void insert(@NonNull final T obj, final int conflictAlgorithm) {
         @SuppressWarnings("unchecked")
         final Class<T> clazz = (Class<T>) obj.getClass();
+        final String table = getTable(clazz);
+        final ContentValues values = getMapper(clazz).toContentValues(obj, this.getFullProjection(clazz));
 
+        // execute insert
         final SQLiteDatabase db = mDbHelper.getWritableDatabase();
-        db.beginTransaction();
+        final Transaction tx = new Transaction(db);
         try {
-            // execute insert
-            db.insertWithOnConflict(this.getTable(clazz), null,
-                                    this.getMapper(clazz).toContentValues(obj, this.getFullProjection(clazz)),
-                                    conflictAlgorithm);
-            db.setTransactionSuccessful();
+            tx.beginTransactionNonExclusive();
+            db.insertWithOnConflict(table, null, values, conflictAlgorithm);
+            tx.setTransactionSuccessful();
         } finally {
-            db.endTransaction();
+            tx.endTransaction();
         }
     }
 
     public final void replace(@NonNull final Object obj) {
         final SQLiteDatabase db = mDbHelper.getWritableDatabase();
-        db.beginTransaction();
+        final Transaction tx = new Transaction(db);
         try {
+            tx.beginTransactionNonExclusive();
             this.delete(obj);
             this.insert(obj);
-            db.setTransactionSuccessful();
+            tx.setTransactionSuccessful();
         } finally {
-            db.endTransaction();
+            tx.endTransaction();
         }
     }
 
@@ -257,16 +260,19 @@ public abstract class AbstractDao {
     public final <T> void update(@NonNull final T obj, @NonNull final String[] projection) {
         @SuppressWarnings("unchecked")
         final Class<T> clazz = (Class<T>) obj.getClass();
+        final String table = this.getTable(clazz);
+        final ContentValues values = this.getMapper(clazz).toContentValues(obj, projection);
+        final Pair<String, String[]> where = this.getPrimaryKeyWhere(obj);
 
+        // execute update
         final SQLiteDatabase db = mDbHelper.getWritableDatabase();
-        db.beginTransaction();
+        final Transaction tx = new Transaction(db);
         try {
-            final Pair<String, String[]> where = this.getPrimaryKeyWhere(obj);
-            db.update(this.getTable(clazz), this.getMapper(clazz).toContentValues(obj, projection), where.first,
-                      where.second);
-            db.setTransactionSuccessful();
+            tx.beginTransactionNonExclusive();
+            db.update(table, values, where.first, where.second);
+            tx.setTransactionSuccessful();
         } finally {
-            db.endTransaction();
+            tx.endTransaction();
         }
     }
 
@@ -275,31 +281,36 @@ public abstract class AbstractDao {
     }
 
     public final void updateOrInsert(@NonNull final Object obj, @NonNull final String[] projection) {
+        final Pair<String, String[]> where = this.getPrimaryKeyWhere(obj);
+
         final SQLiteDatabase db = mDbHelper.getWritableDatabase();
-        db.beginTransaction();
+        final Transaction tx = new Transaction(db);
         try {
-            final Pair<String, String[]> where = this.getPrimaryKeyWhere(obj);
-            final Object existing = this.find(obj.getClass(), (Object[]) where.second);
+            tx.beginTransactionNonExclusive();
+            final Object existing = find(obj.getClass(), where.second);
             if (existing != null) {
                 this.update(obj, projection);
             } else {
                 this.insert(obj);
             }
-            db.setTransactionSuccessful();
+            tx.setTransactionSuccessful();
         } finally {
-            db.endTransaction();
+            tx.endTransaction();
         }
     }
 
     public final void delete(@NonNull final Object obj) {
+        final String table = this.getTable(obj.getClass());
+        final Pair<String, String[]> where = this.getPrimaryKeyWhere(obj);
+
         final SQLiteDatabase db = mDbHelper.getWritableDatabase();
-        db.beginTransaction();
+        final Transaction tx = new Transaction(db);
         try {
-            final Pair<String, String[]> where = this.getPrimaryKeyWhere(obj);
-            db.delete(this.getTable(obj.getClass()), where.first, where.second);
-            db.setTransactionSuccessful();
+            tx.beginTransactionNonExclusive();
+            db.delete(table, where.first, where.second);
+            tx.setTransactionSuccessful();
         } finally {
-            db.endTransaction();
+            tx.endTransaction();
         }
     }
 

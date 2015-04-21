@@ -5,10 +5,12 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
 import android.support.annotation.NonNull;
 
+import java.io.Closeable;
+
 /**
  * Not Thread-safe, this object is designed to be used on a single-thread only
  */
-public final class Transaction {
+public final class Transaction implements Closeable {
     private static final int STATE_INIT = 0;
     private static final int STATE_OPEN = 1;
     private static final int STATE_SUCCESSFUL = 2;
@@ -89,5 +91,10 @@ public final class Transaction {
         }
 
         return this;
+    }
+
+    @Override
+    public void close() {
+        endTransaction();
     }
 }
