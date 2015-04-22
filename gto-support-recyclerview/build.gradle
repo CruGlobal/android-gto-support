@@ -17,6 +17,4 @@ android {
 
 dependencies {
     compile 'com.android.support:recyclerview-v7:22.1.0'
-
-    compile 'org.slf4j:slf4j-api:1.7.10'
 }
