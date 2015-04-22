@@ -5,6 +5,7 @@ import static org.ccci.gto.android.common.widget.AccordionView.Adapter.POSITION_
 
 import android.animation.Animator;
 import android.animation.AnimatorSet;
+import android.animation.TimeInterpolator;
 import android.animation.ValueAnimator;
 import android.annotation.TargetApi;
 import android.content.Context;
@@ -18,6 +19,7 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
@@ -514,6 +516,8 @@ public class AccordionView extends LinearLayout {
         @Nullable
         private Animator mCurrentAnimation;
 
+        @Nullable
+        private TimeInterpolator mInterpolator = new DecelerateInterpolator();
         private long mDuration = DEFAULT_DURATION;
 
         @Override
@@ -546,6 +550,10 @@ public class AccordionView extends LinearLayout {
             mDuration = duration;
         }
 
+        public void setInterpolator(@Nullable final TimeInterpolator interpolator) {
+            mInterpolator = interpolator;
+        }
+
         @NonNull
         protected Animator buildAnimation(@NonNull final ViewHolder opening, @NonNull final ViewHolder... closing) {
             final AnimatorSet animation = new AnimatorSet();
@@ -554,6 +562,7 @@ public class AccordionView extends LinearLayout {
                 animation.play(getClosingAnimator(holder));
             }
             animation.setDuration(mDuration);
+            animation.setInterpolator(mInterpolator);
             return animation;
         }
 
