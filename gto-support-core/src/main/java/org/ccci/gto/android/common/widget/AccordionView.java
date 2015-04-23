@@ -200,7 +200,7 @@ public class AccordionView extends LinearLayout {
 
         // reset active section if needed
         if (mActiveSection == null && mSections.length > 0) {
-            showSection(mSections[0]);
+            showSection(mSections[0], false);
         }
 
         // request a fresh layout
@@ -247,7 +247,7 @@ public class AccordionView extends LinearLayout {
         return holder;
     }
 
-    void showSection(@NonNull final ViewHolder section) {
+    void showSection(@NonNull final ViewHolder section, final boolean animate) {
         // short-circuit if the specified section is already active
         if (mActiveSection == section) {
             return;
@@ -279,7 +279,7 @@ public class AccordionView extends LinearLayout {
 
         // handle animation
         boolean animating = false;
-        if (mAnimate && mAnimationManager != null) {
+        if (animate && mAnimate && mAnimationManager != null) {
             // determine requested height of opening section
             if (mActiveSection.mLastKnownHeight == HEIGHT_UNKNOWN) {
                 // backup the height of the opening section
@@ -499,7 +499,7 @@ public class AccordionView extends LinearLayout {
             if (lp instanceof LayoutParams) {
                 final ViewHolder section = ((LayoutParams) lp).mHolder;
                 if (section != null) {
-                    showSection(section);
+                    showSection(section, true);
                 }
             }
         }
