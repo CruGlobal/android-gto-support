@@ -23,7 +23,7 @@ public class AlertDialogCompat {
     }
 
     @NonNull
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public static AlertDialog.Builder setView(@NonNull final AlertDialog.Builder builder, @LayoutRes final int layout) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
             throw new UnsupportedOperationException(

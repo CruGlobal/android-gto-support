@@ -2,6 +2,7 @@ package org.ccci.gto.android.common.db;
 
 import static org.ccci.gto.android.common.db.AbstractDao.bindValues;
 
+import android.annotation.TargetApi;
 import android.os.Build;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -136,34 +137,29 @@ public final class Join<S, T> implements Parcelable {
     public static final Creator<Join> CREATOR;
     static {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB_MR2) {
-            CREATOR = new Creator<Join>() {
-                @Override
-                public Join createFromParcel(@NonNull final Parcel in) {
-                    return new Join(in, null);
-                }
-
-                @Override
-                public Join[] newArray(final int size) {
-                    return new Join[size];
-                }
-            };
+            CREATOR = new HoneycombMR1JoinCreator();
         } else {
-            CREATOR = new ClassLoaderCreator<Join>() {
-                @Override
-                public Join createFromParcel(@NonNull final Parcel in, @Nullable final ClassLoader loader) {
-                    return new Join(in, loader);
-                }
+            CREATOR = new JoinCreator();
+        }
+    }
 
-                @Override
-                public Join createFromParcel(@NonNull final Parcel in) {
-                    return createFromParcel(in, null);
-                }
+    private static class HoneycombMR1JoinCreator implements Creator<Join> {
+        @Override
+        public Join createFromParcel(@NonNull final Parcel in) {
+            return new Join(in, null);
+        }
 
-                @Override
-                public Join[] newArray(final int size) {
-                    return new Join[size];
-                }
-            };
+        @Override
+        public Join[] newArray(final int size) {
+            return new Join[size];
+        }
+    }
+
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
+    private static class JoinCreator extends HoneycombMR1JoinCreator implements ClassLoaderCreator<Join> {
+        @Override
+        public Join createFromParcel(@NonNull final Parcel in, @Nullable final ClassLoader loader) {
+            return new Join(in, loader);
         }
     }
 }

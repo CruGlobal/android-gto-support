@@ -1,5 +1,6 @@
 package org.ccci.gto.android.common.util;
 
+import android.annotation.TargetApi;
 import android.os.Build;
 import android.view.View;
 
@@ -8,6 +9,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public final class ViewCompat {
     private static final AtomicInteger sNextGeneratedId = new AtomicInteger(1);
 
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
     public static int generateViewId() {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR1) {
             while (true) {

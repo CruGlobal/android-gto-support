@@ -30,6 +30,7 @@ public abstract class WalSQLiteOpenHelper extends SQLiteOpenHelper {
     }
 
     @Override
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     public void onOpen(@NonNull final SQLiteDatabase db) {
         super.onOpen(db);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
