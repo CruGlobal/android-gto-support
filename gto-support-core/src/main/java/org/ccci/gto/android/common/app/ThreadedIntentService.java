@@ -30,20 +30,20 @@ public abstract class ThreadedIntentService extends Service {
 
     private boolean mRedelivery;
 
-    private final String name;
-    private final int poolSize;
+    private final String mName;
+    private final int mPoolSize;
 
-    private ThreadPoolExecutor defaultExecutor = null;
-    private Executor executor = null;
-    private final BlockingQueue<Future<Integer>> tasks = new LinkedBlockingQueue<Future<Integer>>();
+    private ThreadPoolExecutor mDefaultExecutor = null;
+    private Executor mExecutor = null;
+    private final BlockingQueue<Future<Integer>> mTasks = new LinkedBlockingQueue<>();
 
     protected ThreadedIntentService(final String name) {
         this(name, 10);
     }
 
     protected ThreadedIntentService(final String name, final int poolSize) {
-        this.name = name;
-        this.poolSize = poolSize;
+        mName = name;
+        mPoolSize = poolSize;
     }
 
     /* BEGIN lifecycle */
@@ -53,11 +53,11 @@ public abstract class ThreadedIntentService extends Service {
         super.onCreate();
 
         // create the executor for this IntentService
-        final Executor executor = this.onCreateExecutor();
-        this.executor = executor != null ? executor : defaultExecutor();
+        final Executor executor = onCreateExecutor();
+        mExecutor = executor != null ? executor : defaultExecutor();
     }
 
-    public Executor onCreateExecutor() {
+    protected Executor onCreateExecutor() {
         return null;
     }
 
@@ -69,8 +69,8 @@ public abstract class ThreadedIntentService extends Service {
     @Override
     public int onStartCommand(final Intent intent, final int flags, final int startId) {
         final RunnableFuture<Integer> task = new IntentRunnable(intent, startId);
-        this.tasks.add(task);
-        this.executor.execute(task);
+        mTasks.add(task);
+        mExecutor.execute(task);
         return mRedelivery ? START_REDELIVER_INTENT : START_NOT_STICKY;
     }
 
@@ -79,15 +79,15 @@ public abstract class ThreadedIntentService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        this.onDestroyExecutor();
+        onDestroyExecutor();
     }
 
-    public void onDestroyExecutor() {
-        this.executor = null;
+    protected void onDestroyExecutor() {
+        mExecutor = null;
 
         // shutdown the default executor if it exists
-        if (this.defaultExecutor != null) {
-            this.defaultExecutor.shutdown();
+        if (mDefaultExecutor != null) {
+            mDefaultExecutor.shutdown();
         }
     }
 
@@ -100,39 +100,38 @@ public abstract class ThreadedIntentService extends Service {
     @TargetApi(Build.VERSION_CODES.GINGERBREAD)
     private Executor defaultExecutor() {
         // create the defaultExecutor if it doesn't exist yet
-        if (this.defaultExecutor == null) {
-            final ThreadFactory threadFactory = new ThreadFactory() {
-                private final String name = ThreadedIntentService.this.name;
-                private final AtomicInteger count = new AtomicInteger(1);
+        if (mDefaultExecutor == null) {
+            final ThreadFactory factory = new ThreadFactory() {
+                private final AtomicInteger mCount = new AtomicInteger(1);
 
+                @Override
                 public Thread newThread(final Runnable r) {
-                    return new Thread(r, name + " #" + count.getAndIncrement());
+                    return new Thread(r, mName + " #" + mCount.getAndIncrement());
                 }
             };
             final BlockingQueue<Runnable> queue = new PriorityBlockingQueue<>(1, new IntentPriorityComparator());
-            this.defaultExecutor =
-                    new ThreadPoolExecutor(this.poolSize, this.poolSize, 10, TimeUnit.SECONDS, queue, threadFactory);
+            mDefaultExecutor = new ThreadPoolExecutor(mPoolSize, mPoolSize, 10, TimeUnit.SECONDS, queue, factory);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD) {
-                this.defaultExecutor.allowCoreThreadTimeOut(true);
+                mDefaultExecutor.allowCoreThreadTimeOut(true);
             } else {
-                this.defaultExecutor.setCorePoolSize(0);
+                mDefaultExecutor.setCorePoolSize(0);
             }
         }
 
-        return this.defaultExecutor;
+        return mDefaultExecutor;
     }
 
-    private void cleanDoneTasks() {
-        synchronized (this.tasks) {
+    void cleanDoneTasks() {
+        synchronized (mTasks) {
             Future<Integer> task;
-            while ((task = this.tasks.peek()) != null && task.isDone()) {
-                final Future<Integer> task2 = this.tasks.remove();
+            while ((task = mTasks.peek()) != null && task.isDone()) {
+                final Future<Integer> task2 = mTasks.remove();
                 try {
-                    this.stopSelf(task2.get());
+                    stopSelf(task2.get());
                 } catch (final InterruptedException e) {
                     // suppress interrupted exceptions, but still signal a stop for the current task
                     if (task2 instanceof IntentRunnable) {
-                        this.stopSelf(((IntentRunnable) task2).startId);
+                        stopSelf(((IntentRunnable) task2).mStartId);
                     }
                 } catch (final ExecutionException e) {
                     // propagate runtime ExecutionExceptions
@@ -147,21 +146,21 @@ public abstract class ThreadedIntentService extends Service {
         }
     }
 
-    private class IntentRunnable extends FutureTask<Integer> {
-        private final int priority;
-        private final int startId;
+    private final class IntentRunnable extends FutureTask<Integer> {
+        final int mPriority;
+        final int mStartId;
 
         private IntentRunnable(final Intent intent, final int startId) {
             super(new Callable<Integer>() {
                 @Override
                 public Integer call() {
-                    ThreadedIntentService.this.onHandleIntent(intent);
+                    onHandleIntent(intent);
                     return startId;
                 }
             });
 
-            this.startId = startId;
-            this.priority = intent.getIntExtra(EXTRA_PRIORITY, PRIORITY_DEFAULT);
+            mStartId = startId;
+            mPriority = intent.getIntExtra(EXTRA_PRIORITY, PRIORITY_DEFAULT);
         }
 
         @Override
@@ -171,11 +170,11 @@ public abstract class ThreadedIntentService extends Service {
         }
     }
 
-    protected class IntentPriorityComparator implements Comparator<Runnable> {
+    protected static class IntentPriorityComparator implements Comparator<Runnable> {
         @Override
         public int compare(final Runnable lhs, final Runnable rhs) {
-            final Integer lhsPri = lhs instanceof IntentRunnable ? ((IntentRunnable) lhs).priority : PRIORITY_DEFAULT;
-            final Integer rhsPri = rhs instanceof IntentRunnable ? ((IntentRunnable) rhs).priority : PRIORITY_DEFAULT;
+            final Integer lhsPri = lhs instanceof IntentRunnable ? ((IntentRunnable) lhs).mPriority : PRIORITY_DEFAULT;
+            final Integer rhsPri = rhs instanceof IntentRunnable ? ((IntentRunnable) rhs).mPriority : PRIORITY_DEFAULT;
             return lhsPri.compareTo(rhsPri);
         }
     }
