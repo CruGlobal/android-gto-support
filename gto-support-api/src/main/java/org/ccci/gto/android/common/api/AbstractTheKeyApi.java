@@ -71,7 +71,7 @@ public abstract class AbstractTheKeyApi<R extends AbstractTheKeyApi.Request<S>, 
     protected String getActiveGuid() {
         String guid = mGuid;
         if (guid == null) {
-            guid = mTheKey.getGuid();
+            guid = mTheKey.getDefaultSessionGuid();
         }
 
         return guid;
@@ -125,7 +125,7 @@ public abstract class AbstractTheKeyApi<R extends AbstractTheKeyApi.Request<S>, 
         request.guid = this.getActiveGuid();
 
         // throw an exception if there isn't an active guid
-        if(request.guid == null) {
+        if (request.guid == null) {
             throw new InvalidSessionApiException();
         }
     }

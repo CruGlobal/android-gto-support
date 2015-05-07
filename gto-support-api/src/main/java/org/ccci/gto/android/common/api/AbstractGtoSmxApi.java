@@ -97,24 +97,27 @@ public abstract class AbstractGtoSmxApi extends AbstractTheKeyApi<Request, Sessi
         if ("GUEST".equals(request.guid) && this.allowGuest) {
             sessionId = this.guestLogin();
         } else {
-            // get the service to retrieve a ticket for
-            final String service = this.getService();
+            // short-circuit if we don't have a valid service
+            final String service = getService();
+            if (service == null) {
+                return null;
+            }
 
             // get a ticket for the specified service
-            final TheKey.TicketAttributesPair ticket;
+            final String ticket;
             try {
-                ticket = mTheKey.getTicketAndAttributes(service);
+                ticket = mTheKey.getTicket(request.guid, service);
             } catch (final TheKeySocketException e) {
                 throw new ApiSocketException(e);
             }
 
             // short-circuit if we don't have a valid ticket
-            if (ticket == null || !request.guid.equals(ticket.attributes.getGuid())) {
+            if (ticket == null) {
                 return null;
             }
 
             // login to the hub
-            sessionId = this.login(ticket.ticket);
+            sessionId = this.login(ticket);
         }
 
         // create & return a session object
