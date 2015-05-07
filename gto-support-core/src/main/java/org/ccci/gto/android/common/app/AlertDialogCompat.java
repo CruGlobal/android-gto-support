@@ -14,7 +14,7 @@ public class AlertDialogCompat {
     public static AlertDialog.Builder setView(@NonNull final AlertDialog.Builder builder,
                                               @NonNull final Context context, @LayoutRes final int layout) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
-            builder.setView(LayoutInflater.from(builder.getContext()).inflate(layout, null));
+            builder.setView(LayoutInflater.from(context).inflate(layout, null));
         } else {
             return setView(builder, layout);
         }
