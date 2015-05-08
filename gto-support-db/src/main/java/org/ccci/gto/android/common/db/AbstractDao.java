@@ -218,6 +218,12 @@ public abstract class AbstractDao {
         return null;
     }
 
+    @Nullable
+    @SuppressWarnings("unchecked")
+    public final <T> T refresh(@NonNull T obj) {
+        return find((Class<T>) obj.getClass(), getPrimaryKeyWhere(obj).second);
+    }
+
     public final void insert(@NonNull final Object obj) {
         this.insert(obj, SQLiteDatabase.CONFLICT_NONE);
     }
