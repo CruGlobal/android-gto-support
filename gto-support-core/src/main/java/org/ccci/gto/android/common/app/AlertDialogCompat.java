@@ -8,6 +8,10 @@ import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 
+/**
+ * @deprecated use {@link android.support.v7.app.AlertDialog} for backwards compatible AlertDialogs
+ */
+@Deprecated
 public class AlertDialogCompat {
     @NonNull
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
