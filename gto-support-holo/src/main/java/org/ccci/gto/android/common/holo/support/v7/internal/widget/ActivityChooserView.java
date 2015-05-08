@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.ccci.gto.android.common.support.v7.internal.widget;
+package org.ccci.gto.android.common.holo.support.v7.internal.widget;
 
 import android.content.Context;
 import android.content.Intent;
@@ -40,7 +40,7 @@ import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
-import org.ccci.gto.android.common.R;
+import org.ccci.gto.android.common.holo.R;
 
 /**
  * This class is a view for choosing an activity for handling a given {@link Intent}.

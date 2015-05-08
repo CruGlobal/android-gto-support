@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.ccci.gto.android.common.support.v7.widget;
+package org.ccci.gto.android.common.holo.support.v7.widget;
 
 import android.content.Context;
 import android.content.Intent;
@@ -29,10 +29,10 @@ import android.view.MenuItem.OnMenuItemClickListener;
 import android.view.SubMenu;
 import android.view.View;
 
-import org.ccci.gto.android.common.R;
-import org.ccci.gto.android.common.support.v7.internal.widget.ActivityChooserModel;
-import org.ccci.gto.android.common.support.v7.internal.widget.ActivityChooserModel.OnChooseActivityListener;
-import org.ccci.gto.android.common.support.v7.internal.widget.ActivityChooserView;
+import org.ccci.gto.android.common.holo.R;
+import org.ccci.gto.android.common.holo.support.v7.internal.widget.ActivityChooserModel;
+import org.ccci.gto.android.common.holo.support.v7.internal.widget.ActivityChooserModel.OnChooseActivityListener;
+import org.ccci.gto.android.common.holo.support.v7.internal.widget.ActivityChooserView;
 
 /**
  * This is a provider for a share action. It is responsible for creating views

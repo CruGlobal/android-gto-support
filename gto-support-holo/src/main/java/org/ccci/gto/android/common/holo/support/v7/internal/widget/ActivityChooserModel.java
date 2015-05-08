@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.ccci.gto.android.common.support.v7.internal.widget;
+package org.ccci.gto.android.common.holo.support.v7.internal.widget;
 
 import android.annotation.TargetApi;
 import android.content.ComponentName;
