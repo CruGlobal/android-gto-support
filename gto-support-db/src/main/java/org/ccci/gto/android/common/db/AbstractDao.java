@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class AbstractDao {
+    public static final String ARG_DISTINCT = AbstractDao.class.getName() + ".ARG_DISTINCT";
     public static final String ARG_JOINS = AbstractDao.class.getName() + ".ARG_JOINS";
     public static final String ARG_PROJECTION = AbstractDao.class.getName() + ".ARG_PROJECTION";
     public static final String ARG_WHERE = AbstractDao.class.getName() + ".ARG_WHERE";
@@ -118,6 +119,14 @@ public abstract class AbstractDao {
     public final <T> Cursor getCursor(@NonNull final Class<T> clazz, @NonNull final Join<T, ?>[] joins,
                                       @NonNull final String[] projection, @Nullable final String whereClause,
                                       @Nullable final String[] whereArgs, @Nullable String orderBy) {
+        return getCursor(false, clazz, joins, projection, whereClause, whereArgs, orderBy);
+    }
+
+    @NonNull
+    public final <T> Cursor getCursor(final boolean distinct, @NonNull final Class<T> clazz,
+                                      @NonNull final Join<T, ?>[] joins, @NonNull final String[] projection,
+                                      @Nullable final String whereClause, @Nullable final String[] whereArgs,
+                                      @Nullable String orderBy) {
         String[] args = null;
 
         // process joins
@@ -154,7 +163,8 @@ public abstract class AbstractDao {
         args = ArrayUtils.merge(String.class, args, whereArgs);
 
         // execute actual query
-        final Cursor c = mDbHelper.getReadableDatabase().query(tables, columns, whereClause, args, null, null, orderBy);
+        final Cursor c = mDbHelper.getReadableDatabase()
+                .query(distinct, tables, columns, whereClause, args, null, null, orderBy, null);
 
         c.moveToPosition(-1);
         return c;

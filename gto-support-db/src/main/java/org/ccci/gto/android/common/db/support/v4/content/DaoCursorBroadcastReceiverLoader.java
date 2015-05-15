@@ -1,5 +1,6 @@
 package org.ccci.gto.android.common.db.support.v4.content;
 
+import static org.ccci.gto.android.common.db.AbstractDao.ARG_DISTINCT;
 import static org.ccci.gto.android.common.db.AbstractDao.ARG_JOINS;
 import static org.ccci.gto.android.common.db.AbstractDao.ARG_ORDER_BY;
 import static org.ccci.gto.android.common.db.AbstractDao.ARG_PROJECTION;
@@ -25,6 +26,7 @@ public class DaoCursorBroadcastReceiverLoader<T> extends CursorBroadcastReceiver
     @NonNull
     private final AbstractDao mDao;
 
+    private boolean mDistinct = false;
     @NonNull
     private final Class<T> mType;
     @NonNull
@@ -40,19 +42,35 @@ public class DaoCursorBroadcastReceiverLoader<T> extends CursorBroadcastReceiver
         mDao = dao;
 
         mType = type;
-        setJoins(args != null ? BundleUtils.getParcelableArray(args, ARG_JOINS, Join.class) : null);
-        setProjection(args != null ? args.getStringArray(ARG_PROJECTION) : null);
-        setWhere(args != null ? args.getString(ARG_WHERE) : null,
-                 args != null ? args.getStringArray(ARG_WHERE_ARGS) : null);
-        setSortOrder(args != null ? args.getString(ARG_ORDER_BY) : null);
+        if (args != null) {
+            setDistinct(args.getBoolean(ARG_DISTINCT, false));
+            setJoins(BundleUtils.getParcelableArray(args, ARG_JOINS, Join.class));
+            setProjection(args.getStringArray(ARG_PROJECTION));
+            setWhere(args.getString(ARG_WHERE), args.getStringArray(ARG_WHERE_ARGS));
+            setSortOrder(args.getString(ARG_ORDER_BY));
+        } else {
+            setDistinct(false);
+            setJoins(null);
+            setProjection(null);
+            setWhere(null);
+            setSortOrder(null);
+        }
     }
 
     @Nullable
     @Override
     protected final Cursor getCursor() {
         final Pair<String, String[]> where = getWhere();
-        return mDao.getCursor(mType, getJoins(), getProjection(), where.first, where.second,
+        return mDao.getCursor(isDistinct(), mType, getJoins(), getProjection(), where.first, where.second,
                               getSortOrder());
+    }
+
+    public void setDistinct(final boolean distinct) {
+        mDistinct = distinct;
+    }
+
+    public boolean isDistinct() {
+        return mDistinct;
     }
 
     @SuppressWarnings("unchecked")
