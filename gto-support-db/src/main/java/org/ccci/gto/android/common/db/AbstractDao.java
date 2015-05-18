@@ -1,7 +1,5 @@
 package org.ccci.gto.android.common.db;
 
-import static org.ccci.gto.android.common.db.Join.NO_JOINS;
-
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -80,64 +78,68 @@ public abstract class AbstractDao {
 
     @NonNull
     public final Cursor getCursor(@NonNull final Class<?> clazz) {
-        return getCursor(clazz, null, null, null);
+        return getCursor(Query.select(clazz));
     }
 
     @NonNull
-    @SuppressWarnings("unchecked")
     public final Cursor getCursor(@NonNull final Class<?> clazz, @Nullable final String whereClause,
                                   @Nullable final String[] whereBindValues, @Nullable final String orderBy) {
-        return getCursor(clazz, NO_JOINS, this.getFullProjection(clazz), whereClause, whereBindValues, orderBy);
+        return getCursor(Query.select(clazz).where(whereClause, whereBindValues).orderBy(orderBy));
     }
 
     @NonNull
-    @SuppressWarnings("unchecked")
+    @Deprecated
     public final Cursor getCursor(@NonNull final Class<?> clazz, @NonNull final String[] projection,
                                   @Nullable final String whereClause, @Nullable final String[] whereBindValues,
                                   @Nullable final String orderBy) {
-        return getCursor(clazz, NO_JOINS, projection, whereClause, whereBindValues, orderBy);
+        return getCursor(
+                Query.select(clazz).projection(projection).where(whereClause, whereBindValues).orderBy(orderBy));
     }
 
     @NonNull
+    @Deprecated
     public final <T> Cursor getCursor(@NonNull final Class<T> clazz, @NonNull final Join<T, ?> join,
                                       @NonNull final String[] projection, @Nullable final String whereClause,
                                       @Nullable final String[] whereBindValues, @Nullable final String orderBy) {
-        //noinspection unchecked
-        return getCursor(clazz, new Join[] {join}, projection, whereClause, whereBindValues, orderBy);
+        return getCursor(Query.select(clazz).join(join).projection(projection).where(whereClause, whereBindValues)
+                                 .orderBy(orderBy));
     }
 
     @NonNull
+    @Deprecated
     public final <T> Cursor getCursor(@NonNull final Class<T> clazz, @NonNull final Join<T, ?> join1,
                                       @NonNull final Join<T, ?> join2, @NonNull final String[] projection,
                                       @Nullable final String whereClause, @Nullable final String[] whereBindValues,
                                       @Nullable final String orderBy) {
-        //noinspection unchecked
-        return getCursor(clazz, new Join[] {join1, join2}, projection, whereClause, whereBindValues, orderBy);
+        return getCursor(
+                Query.select(clazz).join(join1, join2).projection(projection).where(whereClause, whereBindValues)
+                        .orderBy(orderBy));
     }
 
     @NonNull
+    @Deprecated
     public final <T> Cursor getCursor(@NonNull final Class<T> clazz, @NonNull final Join<T, ?>[] joins,
                                       @NonNull final String[] projection, @Nullable final String whereClause,
                                       @Nullable final String[] whereArgs, @Nullable String orderBy) {
-        return getCursor(false, clazz, joins, projection, whereClause, whereArgs, orderBy);
+        return getCursor(
+                Query.select(clazz).joins(joins).projection(projection).where(whereClause, whereArgs).orderBy(orderBy));
     }
 
     @NonNull
-    public final <T> Cursor getCursor(final boolean distinct, @NonNull final Class<T> clazz,
-                                      @NonNull final Join<T, ?>[] joins, @NonNull final String[] projection,
-                                      @Nullable final String whereClause, @Nullable final String[] whereArgs,
-                                      @Nullable String orderBy) {
+    public final <T> Cursor getCursor(@NonNull final Query<T> query) {
+        final String[] projection = query.mProjection != null ? query.mProjection : getFullProjection(query.mType);
+        String orderBy = query.mOrderBy;
         String[] args = null;
 
         // process joins
         final String tables;
         final String[] columns;
-        if (joins.length > 0) {
-            final String baseTable = getTable(clazz);
+        if (query.mJoins.length > 0) {
+            final String baseTable = getTable(query.mType);
 
             // joins need to be passed appended to the table name
             final StringBuilder sb = new StringBuilder(baseTable);
-            for (final Join<T, ?> joinObj : joins) {
+            for (final Join<T, ?> joinObj : query.mJoins) {
                 final Pair<String, String[]> join = joinObj.build(this);
                 sb.append(join.first);
                 args = ArrayUtils.merge(String.class, args, join.second);
@@ -155,16 +157,16 @@ public abstract class AbstractDao {
                 orderBy = baseTable + "." + orderBy;
             }
         } else {
-            tables = getTable(clazz);
+            tables = getTable(query.mType);
             columns = projection;
         }
 
         // add WHERE args
-        args = ArrayUtils.merge(String.class, args, whereArgs);
+        args = ArrayUtils.merge(String.class, args, query.mWhereArgs);
 
         // execute actual query
         final Cursor c = mDbHelper.getReadableDatabase()
-                .query(distinct, tables, columns, whereClause, args, null, null, orderBy, null);
+                .query(query.mDistinct, tables, columns, query.mWhere, args, null, null, orderBy, null);
 
         c.moveToPosition(-1);
         return c;
@@ -178,23 +180,28 @@ public abstract class AbstractDao {
      */
     @NonNull
     public final <T> List<T> get(@NonNull final Class<T> clazz) {
-        return this.get(clazz, null, null, null);
+        return get(Query.select(clazz));
     }
 
     @NonNull
     public final <T> List<T> get(@NonNull final Class<T> clazz, @Nullable final String whereClause,
                                  @Nullable final String[] whereBindValues) {
-        return this.get(clazz, whereClause, whereBindValues, null);
+        return get(Query.select(clazz).where(whereClause, whereBindValues));
     }
 
     @NonNull
     public final <T> List<T> get(@NonNull final Class<T> clazz, @Nullable final String whereClause,
                                  @Nullable final String[] whereBindValues, @Nullable final String orderBy) {
+        return get(Query.select(clazz).where(whereClause, whereBindValues).orderBy(orderBy));
+    }
+
+    @NonNull
+    public final <T> List<T> get(@NonNull final Query<T> query) {
         // load all rows from the cursor
         final List<T> results = new ArrayList<>();
-        final Cursor c = this.getCursor(clazz, whereClause, whereBindValues, orderBy);
+        final Cursor c = getCursor(query.projection());
         c.moveToPosition(-1);
-        final Mapper<T> mapper = this.getMapper(clazz);
+        final Mapper<T> mapper = getMapper(query.mType);
         while (c.moveToNext()) {
             results.add(mapper.toObject(c));
         }
@@ -208,12 +215,10 @@ public abstract class AbstractDao {
 
     @Nullable
     public final <T> T find(@NonNull final Class<T> clazz, @NonNull final Object... key) {
-        final Pair<String, String[]> where = this.getPrimaryKeyWhere(clazz, key);
-
         // return the first record if it exists
         Cursor c = null;
         try {
-            c = this.getCursor(clazz, where.first, where.second, null);
+            c = getCursor(Query.select(clazz).where(getPrimaryKeyWhere(clazz, key)));
             if (c.getCount() > 0) {
                 c.moveToFirst();
                 return this.getMapper(clazz).toObject(c);

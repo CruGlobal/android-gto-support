@@ -17,6 +17,7 @@ import android.util.Pair;
 
 import org.ccci.gto.android.common.db.AbstractDao;
 import org.ccci.gto.android.common.db.Join;
+import org.ccci.gto.android.common.db.Query;
 import org.ccci.gto.android.common.support.v4.content.CursorBroadcastReceiverLoader;
 import org.ccci.gto.android.common.util.BundleUtils;
 
@@ -60,9 +61,11 @@ public class DaoCursorBroadcastReceiverLoader<T> extends CursorBroadcastReceiver
     @Nullable
     @Override
     protected final Cursor getCursor() {
+        // build query
         final Pair<String, String[]> where = getWhere();
-        return mDao.getCursor(isDistinct(), mType, getJoins(), getProjection(), where.first, where.second,
-                              getSortOrder());
+        return mDao.getCursor(
+                Query.select(mType).distinct(isDistinct()).joins(getJoins()).projection(getProjection()).where(
+                        where.first, where.second).orderBy(getSortOrder()));
     }
 
     public void setDistinct(final boolean distinct) {
