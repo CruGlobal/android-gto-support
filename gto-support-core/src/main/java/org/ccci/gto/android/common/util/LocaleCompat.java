@@ -29,7 +29,7 @@ public class LocaleCompat {
 
         // append the region
         final String region = locale.getCountry();
-        if(region != null && region.length() > 0) {
+        if (region != null && region.length() > 0) {
             sb.append('-').append(region.toUpperCase(Locale.US));
         }
 
