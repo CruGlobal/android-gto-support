@@ -3,6 +3,7 @@ package org.ccci.gto.android.common.util;
 import android.annotation.TargetApi;
 import android.os.Build;
 import android.support.annotation.NonNull;
+import android.support.annotation.VisibleForTesting;
 
 import java.util.Locale;
 
@@ -18,6 +19,7 @@ public class LocaleCompat {
     }
 
     @NonNull
+    @VisibleForTesting
     static String toLanguageTagPreLollipop(@NonNull final Locale locale) {
         // just perform simple generation
         final StringBuilder sb = new StringBuilder(5);
