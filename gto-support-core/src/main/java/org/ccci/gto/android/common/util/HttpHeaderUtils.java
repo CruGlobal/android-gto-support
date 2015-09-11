@@ -16,14 +16,14 @@ public final class HttpHeaderUtils {
         final String[] parts = challenge.trim().split("[ \t]", 2);
         final String scheme = parts[0].trim();
 
-        // parse any attributes
-        final Map<String, String> params = new HashMap<>();
+        // parse any auth-params
+        HeaderElement[] params = null;
         if (parts.length > 1) {
-            return new Challenge(scheme, Parser.parseElements(parts[1], new Parser.Cursor()));
+            params = Parser.parseElements(parts[1], new Parser.Cursor());
         }
 
         // return the parsed challenge
-        return new Challenge(scheme, null);
+        return new Challenge(scheme, params);
     }
 
     static class NameValuePair {
