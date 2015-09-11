@@ -49,24 +49,14 @@ public final class HttpHeaderUtils {
     }
 
     public static final class Challenge {
-        @NonNull
-        @Deprecated
-        public final String scheme;
-        @NonNull
-        @Deprecated
-        public final Map<String, String> params = new HashMap<>();
-
         private final String mScheme;
         private final Map<String, HeaderElement> mParams = new HashMap<>();
 
         private Challenge(@NonNull final String scheme, @Nullable final HeaderElement[] params) {
             mScheme = scheme;
-            this.scheme = scheme;
-
             if (params != null) {
                 for (final HeaderElement param : params) {
                     mParams.put(param.name.toLowerCase(Locale.US), param);
-                    this.params.put(param.name.toLowerCase(Locale.US), param.value);
                 }
             }
         }

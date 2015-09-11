@@ -137,7 +137,7 @@ public abstract class AbstractTheKeyApi<R extends AbstractTheKeyApi.Request<S>, 
         final HttpHeaderUtils.Challenge challenge = this.getCasAuthChallenge(conn);
         if (challenge != null) {
             // update service if one is returned
-            final String service = challenge.params.get("service");
+            final String service = challenge.getParameterValue("service");
             if (service != null && service.length() > 0) {
                 this.setCachedService(service);
             }
@@ -171,7 +171,7 @@ public abstract class AbstractTheKeyApi<R extends AbstractTheKeyApi.Request<S>, 
             if (auth != null) {
                 // is this a CAS WWW-Authenticate challenge
                 final HttpHeaderUtils.Challenge challenge = HttpHeaderUtils.parseChallenge(auth);
-                if (challenge.scheme.equals("CAS")) {
+                if (challenge.getScheme().equals("CAS")) {
                     return challenge;
                 }
             }
