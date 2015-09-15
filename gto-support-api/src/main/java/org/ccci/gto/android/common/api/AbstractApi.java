@@ -365,16 +365,16 @@ public abstract class AbstractApi<R extends Request<S>, S extends Session> {
 
             final String type;
 
-            private MediaType(final String type) {
+            MediaType(final String type) {
                 this.type = type;
             }
         }
 
-        protected static final class Parameter {
+        public static final class Parameter {
             final String name;
             final String value;
 
-            public Parameter(@NonNull final String name, @NonNull final String value) {
+            Parameter(@NonNull final String name, @NonNull final String value) {
                 this.name = name;
                 this.value = value;
             }
