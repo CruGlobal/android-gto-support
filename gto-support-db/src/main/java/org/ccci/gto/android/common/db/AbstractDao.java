@@ -9,9 +9,11 @@ import android.support.annotation.Nullable;
 import android.util.Pair;
 
 import org.ccci.gto.android.common.util.ArrayUtils;
+import org.ccci.gto.android.common.util.LocaleCompat;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public abstract class AbstractDao {
     public static final String ARG_DISTINCT = AbstractDao.class.getName() + ".ARG_DISTINCT";
@@ -69,6 +71,8 @@ public abstract class AbstractDao {
                 throw new IllegalArgumentException("Bind Values cannot be null");
             } else if (raw[i] instanceof Boolean) {
                 values[i] = ((Boolean) raw[i]) ? "1" : "0";
+            } else if (raw[i] instanceof Locale) {
+                values[i] = LocaleCompat.toLanguageTag((Locale) raw[i]);
             } else {
                 values[i] = raw[i].toString();
             }

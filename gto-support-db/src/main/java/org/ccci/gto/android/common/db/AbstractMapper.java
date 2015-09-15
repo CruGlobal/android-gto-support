@@ -7,6 +7,8 @@ import android.support.annotation.Nullable;
 
 import org.ccci.gto.android.common.db.util.CursorUtils;
 
+import java.util.Locale;
+
 public abstract class AbstractMapper<T> implements Mapper<T> {
     /**
      * returns a boolean value stored in the specified column. (SQLite doesn't
@@ -60,6 +62,23 @@ public abstract class AbstractMapper<T> implements Mapper<T> {
     protected final String getNonNullString(@NonNull final Cursor c, @NonNull final String field,
                                             @NonNull final String defValue) {
         return CursorUtils.getNonNullString(c, field, defValue);
+    }
+
+    @Nullable
+    protected final Locale getLocale(@NonNull final Cursor c, @NonNull final String field) {
+        return CursorUtils.getLocale(c, field);
+    }
+
+    @Nullable
+    protected final Locale getLocale(@NonNull final Cursor c, @NonNull final String field,
+                                     @Nullable final Locale defValue) {
+        return CursorUtils.getLocale(c, field, defValue);
+    }
+
+    @NonNull
+    protected final Locale getNonNullLocale(@NonNull final Cursor c, @NonNull final String field,
+                                            @NonNull final Locale defValue) {
+        return CursorUtils.getNonNullLocale(c, field, defValue);
     }
 
     @NonNull

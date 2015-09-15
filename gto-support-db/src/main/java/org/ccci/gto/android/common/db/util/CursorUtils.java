@@ -4,6 +4,10 @@ import android.database.Cursor;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import org.ccci.gto.android.common.util.LocaleCompat;
+
+import java.util.Locale;
+
 public final class CursorUtils {
     /**
      * returns a boolean value stored in the specified column. (SQLite doesn't
@@ -70,6 +74,31 @@ public final class CursorUtils {
     public static String getNonNullString(@NonNull final Cursor c, @NonNull final String field,
                                           @NonNull final String defValue) {
         final String val = getString(c, field, defValue);
+        return val != null ? val : defValue;
+    }
+
+    @Nullable
+    public static Locale getLocale(@NonNull final Cursor c, @NonNull final String field) {
+        return getLocale(c, field, null);
+    }
+
+    @Nullable
+    public static Locale getLocale(@NonNull final Cursor c, @NonNull final String field,
+                                   @Nullable final Locale defValue) {
+        final String raw = getString(c, field, null);
+        if (raw != null) {
+            try {
+                return LocaleCompat.forLanguageTag(raw);
+            } catch (final Exception ignored) {
+            }
+        }
+        return defValue;
+    }
+
+    @NonNull
+    public static Locale getNonNullLocale(@NonNull final Cursor c, @NonNull final String field,
+                                          @NonNull final Locale defValue) {
+        final Locale val = getLocale(c, field, defValue);
         return val != null ? val : defValue;
     }
 }
