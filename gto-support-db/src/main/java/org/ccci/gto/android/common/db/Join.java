@@ -20,7 +20,7 @@ public final class Join<S, T> implements Parcelable {
     private final Join<S, ?> mBase;
 
     @NonNull
-    private final Class<T> mTarget;
+    private final Table<T> mTarget;
 
     @NonNull
     private final String mType;
@@ -31,11 +31,14 @@ public final class Join<S, T> implements Parcelable {
     @NonNull
     private final String[] mArgs;
 
-    private Join(@NonNull final Class<T> target) {
+    @Nullable
+    private transient Pair<String, String[]> mSqlJoin;
+
+    private Join(@NonNull final Table<T> target) {
         this(null, target, null, null, null);
     }
 
-    private Join(@Nullable final Join<S, ?> base, @NonNull final Class<T> target, @Nullable final String type,
+    private Join(@Nullable final Join<S, ?> base, @NonNull final Table<T> target, @Nullable final String type,
                  @Nullable final String on, @Nullable final String[] args) {
         mBase = base;
         mTarget = target;
@@ -47,11 +50,7 @@ public final class Join<S, T> implements Parcelable {
     @SuppressWarnings("unchecked")
     Join(@NonNull final Parcel in, @Nullable final ClassLoader loader) {
         mBase = in.readParcelable(loader);
-        try {
-            mTarget = (Class<T>) Class.forName(in.readString(), true, loader);
-        } catch (final ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }
+        mTarget = in.readParcelable(loader);
         mType = in.readString();
         mOn = in.readString();
         mArgs = in.createStringArray();
@@ -59,6 +58,11 @@ public final class Join<S, T> implements Parcelable {
 
     @NonNull
     public static <S, T> Join<S, T> create(@NonNull final Class<S> source, @NonNull final Class<T> target) {
+        return create(source, Table.forClass(target));
+    }
+
+    @NonNull
+    public static <S, T> Join<S, T> create(@NonNull final Class<S> source, @NonNull final Table<T> target) {
         return new Join<>(target);
     }
 
@@ -100,24 +104,35 @@ public final class Join<S, T> implements Parcelable {
 
     @NonNull
     public final <T2> Join<S, T2> join(final Class<T2> target) {
+        return join(Table.forClass(target));
+    }
+
+    @NonNull
+    public final <T2> Join<S, T2> join(final Table<T2> target) {
         return new Join<>(this, target, null, null, null);
     }
 
     @NonNull
-    final Pair<String, String[]> build(@NonNull final AbstractDao dao) {
-        final Pair<String, String[]> base = mBase != null ? mBase.build(dao) : Pair.create("", new String[0]);
+    final Pair<String, String[]> buildSql(@NonNull final AbstractDao dao) {
+        // build join if we haven't built it already
+        if (mSqlJoin == null) {
+            final Pair<String, String[]> base = mBase != null ? mBase.buildSql(dao) : Pair.create("", new String[0]);
 
-        // build SQL
-        final StringBuilder sql = new StringBuilder(base.first.length() + 32 + mType.length());
-        sql.append(" ").append(base.first);
-        sql.append(" ").append(mType);
-        sql.append(" JOIN ").append(dao.getTable(mTarget));
-        if (mOn != null && mOn.length() > 0) {
-            sql.append(" ON ").append(mOn);
+            // build SQL
+            final StringBuilder sql = new StringBuilder(base.first.length() + 32 + mType.length());
+            sql.append(' ').append(base.first);
+            sql.append(' ').append(mType);
+            sql.append(" JOIN ").append(mTarget.buildSqlName(dao));
+            if (mOn != null && mOn.length() > 0) {
+                sql.append(" ON ").append(mOn);
+            }
+
+            // save built JOIN
+            mSqlJoin = Pair.create(sql.toString(), ArrayUtils.merge(String.class, base.second, mArgs));
         }
 
-        // return built JOIN
-        return Pair.create(sql.toString(), ArrayUtils.merge(String.class, base.second, mArgs));
+        // return the cached join
+        return mSqlJoin;
     }
 
     @Override
@@ -128,7 +143,7 @@ public final class Join<S, T> implements Parcelable {
     @Override
     public void writeToParcel(@NonNull final Parcel out, int flags) {
         out.writeParcelable(mBase, flags);
-        out.writeString(mTarget.getName());
+        out.writeParcelable(mTarget, flags);
         out.writeString(mType);
         out.writeString(mOn);
         out.writeStringArray(mArgs);

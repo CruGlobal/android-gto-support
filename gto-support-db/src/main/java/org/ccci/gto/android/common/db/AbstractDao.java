@@ -131,46 +131,35 @@ public abstract class AbstractDao {
 
     @NonNull
     public final <T> Cursor getCursor(@NonNull final Query<T> query) {
-        final String[] projection = query.mProjection != null ? query.mProjection : getFullProjection(query.mType);
+        // prefix projection and orderBy when we have joins
+        String[] projection = query.mProjection != null ? query.mProjection : getFullProjection(query.mTable.mType);
         String orderBy = query.mOrderBy;
-        String[] args = null;
-
-        // process joins
-        final String tables;
-        final String[] columns;
         if (query.mJoins.length > 0) {
-            final String baseTable = getTable(query.mType);
-
-            // joins need to be passed appended to the table name
-            final StringBuilder sb = new StringBuilder(baseTable);
-            for (final Join<T, ?> joinObj : query.mJoins) {
-                final Pair<String, String[]> join = joinObj.build(this);
-                sb.append(join.first);
-                args = ArrayUtils.merge(String.class, args, join.second);
-            }
-            tables = sb.toString();
+            final String prefix = query.mTable.mAlias != null ? query.mTable.mAlias : getTable(query.mTable.mType);
 
             // prefix all non-prefixed columns in the projection to prevent ambiguous columns
-            columns = new String[projection.length];
+            projection = projection.clone();
             for (int i = 0; i < projection.length; i++) {
-                columns[i] = projection[i].contains(".") ? projection[i] : baseTable + "." + projection[i];
+                projection[i] = projection[i].contains(".") ? projection[i] : prefix + "." + projection[i];
             }
 
             // prefix an un-prefixed orderBy field
             if (orderBy != null && !orderBy.contains(".")) {
-                orderBy = baseTable + "." + orderBy;
+                orderBy = prefix + "." + orderBy;
             }
-        } else {
-            tables = getTable(query.mType);
-            columns = projection;
         }
+
+        // generate "FROM {}" SQL
+        final Pair<String, String[]> from = query.buildSqlFrom(this);
+        final String tables = from.first;
+        String[] args = from.second;
 
         // add WHERE args
         args = ArrayUtils.merge(String.class, args, query.mWhereArgs);
 
         // execute actual query
         final Cursor c = mDbHelper.getReadableDatabase()
-                .query(query.mDistinct, tables, columns, query.mWhere, args, null, null, orderBy, null);
+                .query(query.mDistinct, tables, projection, query.mWhere, args, null, null, orderBy, null);
 
         c.moveToPosition(-1);
         return c;
@@ -205,7 +194,7 @@ public abstract class AbstractDao {
         final List<T> results = new ArrayList<>();
         final Cursor c = getCursor(query.projection());
         c.moveToPosition(-1);
-        final Mapper<T> mapper = getMapper(query.mType);
+        final Mapper<T> mapper = getMapper(query.mTable.mType);
         while (c.moveToNext()) {
             results.add(mapper.toObject(c));
         }
