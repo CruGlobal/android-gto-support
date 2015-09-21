@@ -17,4 +17,6 @@ android {
 
 dependencies {
     compile project(':gto-support-core')
+
+    testCompile 'junit:junit:4.12'
 }
