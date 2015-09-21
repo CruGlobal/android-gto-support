@@ -49,6 +49,11 @@ public abstract class AbstractDao {
     }
 
     @NonNull
+    public final String[] getFullProjection(@NonNull final Table<?> table) {
+        return getFullProjection(table.mType);
+    }
+
+    @NonNull
     protected Pair<String, String[]> getPrimaryKeyWhere(@NonNull final Class<?> clazz, @NonNull final Object... key) {
         throw new IllegalArgumentException("invalid class specified: " + clazz.getName());
     }

@@ -18,6 +18,7 @@ import android.util.Pair;
 import org.ccci.gto.android.common.db.AbstractDao;
 import org.ccci.gto.android.common.db.Join;
 import org.ccci.gto.android.common.db.Query;
+import org.ccci.gto.android.common.db.Table;
 import org.ccci.gto.android.common.support.v4.content.CursorBroadcastReceiverLoader;
 import org.ccci.gto.android.common.util.BundleUtils;
 
@@ -29,20 +30,25 @@ public class DaoCursorBroadcastReceiverLoader<T> extends CursorBroadcastReceiver
 
     private boolean mDistinct = false;
     @NonNull
-    private final Class<T> mType;
+    private final Table<T> mFrom;
     @NonNull
     @SuppressWarnings("unchecked")
     private Join<T, ?>[] mJoins = Join.NO_JOINS;
     @NonNull
     private Pair<String, String[]> mWhere = NO_WHERE;
 
-    @SuppressWarnings("unchecked")
     public DaoCursorBroadcastReceiverLoader(@NonNull final Context context, @NonNull final AbstractDao dao,
                                             @NonNull final Class<T> type, @Nullable final Bundle args) {
+        this(context, dao, Table.forClass(type), args);
+    }
+
+    @SuppressWarnings("unchecked")
+    public DaoCursorBroadcastReceiverLoader(@NonNull final Context context, @NonNull final AbstractDao dao,
+                                            @NonNull final Table<T> from, @Nullable final Bundle args) {
         super(context);
         mDao = dao;
 
-        mType = type;
+        mFrom = from;
         if (args != null) {
             setDistinct(args.getBoolean(ARG_DISTINCT, false));
             setJoins(BundleUtils.getParcelableArray(args, ARG_JOINS, Join.class));
@@ -64,7 +70,7 @@ public class DaoCursorBroadcastReceiverLoader<T> extends CursorBroadcastReceiver
         // build query
         final Pair<String, String[]> where = getWhere();
         return mDao.getCursor(
-                Query.select(mType).distinct(isDistinct()).joins(getJoins()).projection(getProjection()).where(
+                Query.select(mFrom).distinct(isDistinct()).joins(getJoins()).projection(getProjection()).where(
                         where.first, where.second).orderBy(getSortOrder()));
     }
 
@@ -88,13 +94,13 @@ public class DaoCursorBroadcastReceiverLoader<T> extends CursorBroadcastReceiver
 
     @Override
     public void setProjection(@Nullable final String[] projection) {
-        super.setProjection(projection != null ? projection : mDao.getFullProjection(mType));
+        super.setProjection(projection != null ? projection : mDao.getFullProjection(mFrom));
     }
 
     @NonNull
     public String[] getProjection() {
         final String[] projection = super.getProjection();
-        return projection != null ? projection : mDao.getFullProjection(mType);
+        return projection != null ? projection : mDao.getFullProjection(mFrom);
     }
 
     public void setWhere(@Nullable final String where, @Nullable final Object... args) {
