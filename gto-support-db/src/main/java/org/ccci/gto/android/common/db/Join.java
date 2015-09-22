@@ -8,7 +8,6 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.text.TextUtils;
 import android.util.Pair;
 
 import org.ccci.gto.android.common.util.ArrayUtils;
@@ -26,25 +25,21 @@ public final class Join<S, T> implements Parcelable {
     private final String mType;
 
     @Nullable
-    private final String mOn;
-
-    @NonNull
-    private final String[] mArgs;
+    private final Expression mOn;
 
     @Nullable
     private transient Pair<String, String[]> mSqlJoin;
 
     private Join(@NonNull final Table<T> target) {
-        this(null, target, null, null, null);
+        this(null, target, null, null);
     }
 
     private Join(@Nullable final Join<S, ?> base, @NonNull final Table<T> target, @Nullable final String type,
-                 @Nullable final String on, @Nullable final String[] args) {
+                 @Nullable final Expression on) {
         mBase = base;
         mTarget = target;
         mType = type != null ? type : "";
         mOn = on;
-        mArgs = args != null ? args : new String[0];
     }
 
     @SuppressWarnings("unchecked")
@@ -52,54 +47,80 @@ public final class Join<S, T> implements Parcelable {
         mBase = in.readParcelable(loader);
         mTarget = in.readParcelable(loader);
         mType = in.readString();
-        mOn = in.readString();
-        mArgs = in.createStringArray();
+        mOn = in.readParcelable(loader);
     }
 
     @NonNull
+    @Deprecated
     public static <S, T> Join<S, T> create(@NonNull final Class<S> source, @NonNull final Class<T> target) {
-        return create(source, Table.forClass(target));
+        return create(Table.forClass(target));
     }
 
     @NonNull
+    @Deprecated
     public static <S, T> Join<S, T> create(@NonNull final Class<S> source, @NonNull final Table<T> target) {
+        return create(target);
+    }
+
+    @NonNull
+    @Deprecated
+    public static <S, T> Join<S, T> create(@NonNull final Table<S> source, @NonNull final Class<T> target) {
+        return create(Table.forClass(target));
+    }
+
+    @NonNull
+    @Deprecated
+    public static <S, T> Join<S, T> create(@NonNull final Class<T> target) {
+        return create(Table.forClass(target));
+    }
+
+    @NonNull
+    public static <S, T> Join<S, T> create(@NonNull final Table<S> source, @NonNull final Table<T> target) {
+        return create(target);
+    }
+
+    @NonNull
+    public static <S, T> Join<S, T> create(@NonNull final Table<T> target) {
         return new Join<>(target);
     }
 
     @NonNull
     public final Join<S, T> type(@Nullable final String type) {
-        return new Join<>(mBase, mTarget, type, mOn, mArgs);
+        return new Join<>(mBase, mTarget, type, mOn);
     }
 
     @NonNull
+    public final Join<S, T> on(@Nullable final Expression on) {
+        return new Join<>(mBase, mTarget, mType, on);
+    }
+
+    @NonNull
+    public final Join<S, T> andOn(@NonNull final Expression on) {
+        return new Join<>(mBase, mTarget, mType, mOn != null ? mOn.and(on) : on);
+    }
+
+    @NonNull
+    @Deprecated
     public final Join<S, T> on(@Nullable final String on, @NonNull final Object... args) {
         return on(on, bindValues(args));
     }
 
     @NonNull
-    public final Join<S, T> on(@Nullable final String on, @Nullable final String... args) {
-        return new Join<>(mBase, mTarget, mType, on, null).args(args);
+    @Deprecated
+    public final Join<S, T> on(@Nullable final String on, @NonNull final String... args) {
+        return new Join<>(mBase, mTarget, mType, on != null ? Expression.raw(on, args) : null);
     }
 
     @NonNull
+    @Deprecated
     public final Join<S, T> andOn(@NonNull final String on, @NonNull final Object... args) {
         return andOn(on, bindValues(args));
     }
 
     @NonNull
-    public final Join<S, T> andOn(@NonNull final String on, @Nullable final String... args) {
-        return new Join<>(mBase, mTarget, mType, !TextUtils.isEmpty(mOn) ? mOn + " AND " + on : on,
-                          ArrayUtils.merge(String.class, mArgs, args));
-    }
-
-    @NonNull
-    public final Join<S, T> args(@NonNull final Object... args) {
-        return args(bindValues(args));
-    }
-
-    @NonNull
-    public final Join<S, T> args(@Nullable final String... args) {
-        return new Join<>(mBase, mTarget, mType, mOn, args);
+    @Deprecated
+    public final Join<S, T> andOn(@NonNull final String on, @NonNull final String... args) {
+        return andOn(Expression.raw(on, args));
     }
 
     @NonNull
@@ -109,26 +130,29 @@ public final class Join<S, T> implements Parcelable {
 
     @NonNull
     public final <T2> Join<S, T2> join(final Table<T2> target) {
-        return new Join<>(this, target, null, null, null);
+        return new Join<>(this, target, null, null);
     }
 
     @NonNull
     final Pair<String, String[]> buildSql(@NonNull final AbstractDao dao) {
         // build join if we haven't built it already
         if (mSqlJoin == null) {
-            final Pair<String, String[]> base = mBase != null ? mBase.buildSql(dao) : Pair.create("", new String[0]);
+            final Pair<String, String[]> base = mBase != null ? mBase.buildSql(dao) : Pair.create("", (String[]) null);
+            String[] args = base.second;
 
             // build SQL
             final StringBuilder sql = new StringBuilder(base.first.length() + 32 + mType.length());
             sql.append(' ').append(base.first);
             sql.append(' ').append(mType);
             sql.append(" JOIN ").append(mTarget.sqlTable(dao));
-            if (mOn != null && mOn.length() > 0) {
-                sql.append(" ON ").append(mOn);
+            if (mOn != null) {
+                final Pair<String, String[]> on = mOn.buildSql(dao);
+                sql.append(" ON ").append(on.first);
+                args = ArrayUtils.merge(String.class, args, on.second);
             }
 
             // save built JOIN
-            mSqlJoin = Pair.create(sql.toString(), ArrayUtils.merge(String.class, base.second, mArgs));
+            mSqlJoin = Pair.create(sql.toString(), args);
         }
 
         // return the cached join
@@ -141,22 +165,16 @@ public final class Join<S, T> implements Parcelable {
     }
 
     @Override
-    public void writeToParcel(@NonNull final Parcel out, int flags) {
+    public void writeToParcel(@NonNull final Parcel out, final int flags) {
         out.writeParcelable(mBase, flags);
         out.writeParcelable(mTarget, flags);
         out.writeString(mType);
-        out.writeString(mOn);
-        out.writeStringArray(mArgs);
+        out.writeParcelable(mOn, flags);
     }
 
-    public static final Creator<Join> CREATOR;
-    static {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB_MR2) {
-            CREATOR = new HoneycombMR1JoinCreator();
-        } else {
-            CREATOR = new JoinCreator();
-        }
-    }
+    public static final Creator<Join> CREATOR =
+            Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB_MR2 ? new HoneycombMR1JoinCreator() :
+                    new JoinCreator();
 
     private static class HoneycombMR1JoinCreator implements Creator<Join> {
         @Override
