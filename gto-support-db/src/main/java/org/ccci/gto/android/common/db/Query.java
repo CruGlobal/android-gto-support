@@ -94,7 +94,7 @@ public final class Query<T> {
 
     final Pair<String, String[]> buildSqlFrom(@NonNull final AbstractDao dao) {
         // joins need to be passed appended to the table name
-        final StringBuilder sb = new StringBuilder(mTable.buildSqlName(dao));
+        final StringBuilder sb = new StringBuilder(mTable.sqlTable(dao));
         String[] args = null;
         for (final Join<T, ?> joinObj : mJoins) {
             final Pair<String, String[]> join = joinObj.buildSql(dao);

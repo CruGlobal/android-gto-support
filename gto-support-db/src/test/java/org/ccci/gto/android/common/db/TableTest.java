@@ -15,13 +15,13 @@ public class TableTest {
         final Table<Obj1> t1 = Table.forClass(Obj1.class);
         final Table<Obj2> t2 = Table.forClass(Obj2.class);
 
-        assertEquals(Obj1.TABLE_NAME, t1.buildSqlName(dao));
-        assertEquals(Obj1.TABLE_NAME + " AS a", t1.as("a").buildSqlName(dao));
-        assertEquals(Obj1.TABLE_NAME + " AS abcde", t1.as("abcde").buildSqlName(dao));
-        assertNotEquals(Obj2.TABLE_NAME, t1.buildSqlName(dao));
+        assertEquals(Obj1.TABLE_NAME, t1.sqlTable(dao));
+        assertEquals(Obj1.TABLE_NAME + " AS a", t1.as("a").sqlTable(dao));
+        assertEquals(Obj1.TABLE_NAME + " AS abcde", t1.as("abcde").sqlTable(dao));
+        assertNotEquals(Obj2.TABLE_NAME, t1.sqlTable(dao));
 
-        assertEquals(Obj2.TABLE_NAME, t2.buildSqlName(dao));
-        assertEquals(Obj2.TABLE_NAME + " AS b", t2.as("b").buildSqlName(dao));
+        assertEquals(Obj2.TABLE_NAME, t2.sqlTable(dao));
+        assertEquals(Obj2.TABLE_NAME + " AS b", t2.as("b").sqlTable(dao));
     }
 
     static class Obj1 {

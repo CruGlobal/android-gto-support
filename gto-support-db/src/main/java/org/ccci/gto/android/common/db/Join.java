@@ -122,7 +122,7 @@ public final class Join<S, T> implements Parcelable {
             final StringBuilder sql = new StringBuilder(base.first.length() + 32 + mType.length());
             sql.append(' ').append(base.first);
             sql.append(' ').append(mType);
-            sql.append(" JOIN ").append(mTarget.buildSqlName(dao));
+            sql.append(" JOIN ").append(mTarget.sqlTable(dao));
             if (mOn != null && mOn.length() > 0) {
                 sql.append(" ON ").append(mOn);
             }

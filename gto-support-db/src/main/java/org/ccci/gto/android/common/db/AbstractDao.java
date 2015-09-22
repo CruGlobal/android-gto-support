@@ -140,17 +140,17 @@ public abstract class AbstractDao {
         String[] projection = query.mProjection != null ? query.mProjection : getFullProjection(query.mTable.mType);
         String orderBy = query.mOrderBy;
         if (query.mJoins.length > 0) {
-            final String prefix = query.mTable.mAlias != null ? query.mTable.mAlias : getTable(query.mTable.mType);
+            final String prefix = query.mTable.sqlPrefix(this);
 
             // prefix all non-prefixed columns in the projection to prevent ambiguous columns
             projection = projection.clone();
             for (int i = 0; i < projection.length; i++) {
-                projection[i] = projection[i].contains(".") ? projection[i] : prefix + "." + projection[i];
+                projection[i] = projection[i].contains(".") ? projection[i] : prefix + projection[i];
             }
 
             // prefix an un-prefixed orderBy field
             if (orderBy != null && !orderBy.contains(".")) {
-                orderBy = prefix + "." + orderBy;
+                orderBy = prefix + orderBy;
             }
         }
 

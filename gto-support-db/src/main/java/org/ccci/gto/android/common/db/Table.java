@@ -11,10 +11,12 @@ public final class Table<T> implements Parcelable {
     @NonNull
     final Class<T> mType;
     @Nullable
-    final String mAlias;
+    private final String mAlias;
 
     @Nullable
-    private transient String mSqlName;
+    private transient String mSqlTable;
+    @Nullable
+    private transient String mSqlPrefix;
 
     private Table(@NonNull final Class<T> type, @Nullable final String alias) {
         mType = type;
@@ -42,17 +44,26 @@ public final class Table<T> implements Parcelable {
     }
 
     @NonNull
-    final String buildSqlName(@NonNull final AbstractDao dao) {
+    final String sqlTable(@NonNull final AbstractDao dao) {
         // build the name if we haven't built it already
-        if (mSqlName == null) {
+        if (mSqlTable == null) {
             final StringBuilder sql = new StringBuilder(dao.getTable(mType));
             if (mAlias != null) {
                 sql.append(" AS ").append(mAlias);
             }
-            mSqlName = sql.toString();
+            mSqlTable = sql.toString();
         }
 
-        return mSqlName;
+        return mSqlTable;
+    }
+
+    @NonNull
+    final String sqlPrefix(@NonNull final AbstractDao dao) {
+        if (mSqlPrefix == null) {
+            mSqlPrefix = (mAlias != null ? mAlias : dao.getTable(mType)) + ".";
+        }
+
+        return mSqlPrefix;
     }
 
     @Override
