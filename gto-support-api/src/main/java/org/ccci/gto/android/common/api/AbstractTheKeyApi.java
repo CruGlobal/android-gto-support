@@ -153,12 +153,6 @@ public abstract class AbstractTheKeyApi<R extends AbstractTheKeyApi.Request<S>, 
         return super.isSessionInvalid(conn, request) || getCasAuthChallenge(conn) != null;
     }
 
-    @Override
-    protected void onCleanupRequest(@NonNull R request) {
-        super.onCleanupRequest(request);
-        request.guid = null;
-    }
-
     /* END request lifecycle events */
 
     @Nullable

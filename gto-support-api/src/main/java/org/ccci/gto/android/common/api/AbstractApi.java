@@ -132,9 +132,6 @@ public abstract class AbstractApi<R extends Request<S>, S extends Session> {
                     IOUtils.closeQuietly(conn);
                 }
 
-                // clear out the session that was loaded & used
-                request.session = null;
-
                 // cleanup any request specific data
                 onCleanupRequest(request);
             }
