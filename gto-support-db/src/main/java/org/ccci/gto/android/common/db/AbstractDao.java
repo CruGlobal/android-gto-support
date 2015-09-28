@@ -6,6 +6,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.WorkerThread;
 import android.util.Pair;
 
 import org.ccci.gto.android.common.util.ArrayUtils;
@@ -30,10 +31,12 @@ public abstract class AbstractDao {
         mDbHelper = helper;
     }
 
+    @WorkerThread
     protected final SQLiteDatabase getReadableDatabase() {
         return mDbHelper.getReadableDatabase();
     }
 
+    @WorkerThread
     protected final SQLiteDatabase getWritableDatabase() {
         return mDbHelper.getWritableDatabase();
     }
@@ -86,11 +89,13 @@ public abstract class AbstractDao {
     }
 
     @NonNull
+    @WorkerThread
     public final Cursor getCursor(@NonNull final Class<?> clazz) {
         return getCursor(Query.select(clazz));
     }
 
     @NonNull
+    @WorkerThread
     public final Cursor getCursor(@NonNull final Class<?> clazz, @Nullable final String whereClause,
                                   @Nullable final String[] whereBindValues, @Nullable final String orderBy) {
         return getCursor(Query.select(clazz).where(whereClause, whereBindValues).orderBy(orderBy));
@@ -98,6 +103,7 @@ public abstract class AbstractDao {
 
     @NonNull
     @Deprecated
+    @WorkerThread
     public final Cursor getCursor(@NonNull final Class<?> clazz, @NonNull final String[] projection,
                                   @Nullable final String whereClause, @Nullable final String[] whereBindValues,
                                   @Nullable final String orderBy) {
@@ -107,6 +113,7 @@ public abstract class AbstractDao {
 
     @NonNull
     @Deprecated
+    @WorkerThread
     public final <T> Cursor getCursor(@NonNull final Class<T> clazz, @NonNull final Join<T, ?> join,
                                       @NonNull final String[] projection, @Nullable final String whereClause,
                                       @Nullable final String[] whereBindValues, @Nullable final String orderBy) {
@@ -116,6 +123,7 @@ public abstract class AbstractDao {
 
     @NonNull
     @Deprecated
+    @WorkerThread
     public final <T> Cursor getCursor(@NonNull final Class<T> clazz, @NonNull final Join<T, ?> join1,
                                       @NonNull final Join<T, ?> join2, @NonNull final String[] projection,
                                       @Nullable final String whereClause, @Nullable final String[] whereBindValues,
@@ -127,6 +135,7 @@ public abstract class AbstractDao {
 
     @NonNull
     @Deprecated
+    @WorkerThread
     public final <T> Cursor getCursor(@NonNull final Class<T> clazz, @NonNull final Join<T, ?>[] joins,
                                       @NonNull final String[] projection, @Nullable final String whereClause,
                                       @Nullable final String[] whereArgs, @Nullable String orderBy) {
@@ -135,6 +144,7 @@ public abstract class AbstractDao {
     }
 
     @NonNull
+    @WorkerThread
     public final <T> Cursor getCursor(@NonNull final Query<T> query) {
         // prefix projection and orderBy when we have joins
         String[] projection = query.mProjection != null ? query.mProjection : getFullProjection(query.mTable.mType);
@@ -177,23 +187,27 @@ public abstract class AbstractDao {
      * @return
      */
     @NonNull
+    @WorkerThread
     public final <T> List<T> get(@NonNull final Class<T> clazz) {
         return get(Query.select(clazz));
     }
 
     @NonNull
+    @WorkerThread
     public final <T> List<T> get(@NonNull final Class<T> clazz, @Nullable final String whereClause,
                                  @Nullable final String[] whereBindValues) {
         return get(Query.select(clazz).where(whereClause, whereBindValues));
     }
 
     @NonNull
+    @WorkerThread
     public final <T> List<T> get(@NonNull final Class<T> clazz, @Nullable final String whereClause,
                                  @Nullable final String[] whereBindValues, @Nullable final String orderBy) {
         return get(Query.select(clazz).where(whereClause, whereBindValues).orderBy(orderBy));
     }
 
     @NonNull
+    @WorkerThread
     public final <T> List<T> get(@NonNull final Query<T> query) {
         // load all rows from the cursor
         final List<T> results = new ArrayList<>();
@@ -212,6 +226,7 @@ public abstract class AbstractDao {
     }
 
     @Nullable
+    @WorkerThread
     public final <T> T find(@NonNull final Class<T> clazz, @NonNull final Object... key) {
         // return the first record if it exists
         Cursor c = null;
@@ -232,15 +247,18 @@ public abstract class AbstractDao {
     }
 
     @Nullable
+    @WorkerThread
     @SuppressWarnings("unchecked")
     public final <T> T refresh(@NonNull T obj) {
         return find((Class<T>) obj.getClass(), getPrimaryKeyWhere(obj).second);
     }
 
+    @WorkerThread
     public final void insert(@NonNull final Object obj) {
         this.insert(obj, SQLiteDatabase.CONFLICT_NONE);
     }
 
+    @WorkerThread
     public final <T> void insert(@NonNull final T obj, final int conflictAlgorithm) {
         @SuppressWarnings("unchecked")
         final Class<T> clazz = (Class<T>) obj.getClass();
@@ -259,6 +277,7 @@ public abstract class AbstractDao {
         }
     }
 
+    @WorkerThread
     public final void replace(@NonNull final Object obj) {
         final SQLiteDatabase db = mDbHelper.getWritableDatabase();
         final Transaction tx = new Transaction(db);
@@ -272,10 +291,12 @@ public abstract class AbstractDao {
         }
     }
 
+    @WorkerThread
     public final void update(@NonNull final Object obj) {
         this.update(obj, this.getFullProjection(obj.getClass()));
     }
 
+    @WorkerThread
     public final <T> void update(@NonNull final T obj, @NonNull final String[] projection) {
         @SuppressWarnings("unchecked")
         final Class<T> clazz = (Class<T>) obj.getClass();
@@ -295,10 +316,12 @@ public abstract class AbstractDao {
         }
     }
 
+    @WorkerThread
     public final void updateOrInsert(@NonNull final Object obj) {
         this.updateOrInsert(obj, this.getFullProjection(obj.getClass()));
     }
 
+    @WorkerThread
     public final void updateOrInsert(@NonNull final Object obj, @NonNull final String[] projection) {
         final Pair<String, String[]> where = this.getPrimaryKeyWhere(obj);
 
@@ -318,6 +341,7 @@ public abstract class AbstractDao {
         }
     }
 
+    @WorkerThread
     public final void delete(@NonNull final Object obj) {
         final String table = this.getTable(obj.getClass());
         final Pair<String, String[]> where = this.getPrimaryKeyWhere(obj);
@@ -334,11 +358,13 @@ public abstract class AbstractDao {
     }
 
     @NonNull
+    @WorkerThread
     public final Transaction newTransaction() {
         return new Transaction(mDbHelper.getWritableDatabase());
     }
 
     @NonNull
+    @WorkerThread
     public final Transaction beginTransaction() {
         return newTransaction().beginTransaction();
     }
