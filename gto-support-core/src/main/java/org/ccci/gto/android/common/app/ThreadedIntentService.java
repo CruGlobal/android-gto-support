@@ -5,6 +5,7 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.Build;
 import android.os.IBinder;
+import android.support.annotation.WorkerThread;
 
 import java.util.Comparator;
 import java.util.concurrent.BlockingQueue;
@@ -74,6 +75,7 @@ public abstract class ThreadedIntentService extends Service {
         return mRedelivery ? START_REDELIVER_INTENT : START_NOT_STICKY;
     }
 
+    @WorkerThread
     protected abstract void onHandleIntent(Intent intent);
 
     @Override
