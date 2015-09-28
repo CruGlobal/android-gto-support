@@ -55,9 +55,9 @@ public abstract class AbstractApi<R extends Request<C, S>, C extends ExecutionCo
     }
 
     protected AbstractApi(@NonNull final Context context, @NonNull final Uri baseUri, @Nullable final String prefFile) {
-        this.mContext = context;
-        this.mBaseUri = baseUri;
-        this.mPrefFile = prefFile != null ? prefFile : getClass().getSimpleName();
+        mContext = context;
+        mBaseUri = baseUri;
+        mPrefFile = prefFile != null ? prefFile : getClass().getSimpleName();
     }
 
     @NonNull

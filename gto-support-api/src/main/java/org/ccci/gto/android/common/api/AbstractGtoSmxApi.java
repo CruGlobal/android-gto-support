@@ -30,7 +30,7 @@ public abstract class AbstractGtoSmxApi
 
     private final String appVersion;
     private boolean includeAppVersion = false;
-    private boolean allowGuest = false;
+    private boolean mAllowGuest = false;
 
     protected AbstractGtoSmxApi(@NonNull final Context context, @NonNull final TheKey thekey,
                                 @NonNull final String apiUri, @NonNull final String prefFile) {
@@ -65,7 +65,7 @@ public abstract class AbstractGtoSmxApi
     }
 
     public void setAllowGuest(final boolean allowGuest) {
-        this.allowGuest = allowGuest;
+        mAllowGuest = allowGuest;
     }
 
     @Nullable
@@ -73,7 +73,7 @@ public abstract class AbstractGtoSmxApi
     protected String getActiveGuid() {
         String guid = super.getActiveGuid();
 
-        if (guid == null && this.allowGuest) {
+        if (guid == null && mAllowGuest) {
             guid = "GUEST";
         }
 
@@ -100,7 +100,7 @@ public abstract class AbstractGtoSmxApi
 
         // establish a session
         final String sessionId;
-        if ("GUEST".equals(request.context.guid) && this.allowGuest) {
+        if ("GUEST".equals(request.context.guid) && mAllowGuest) {
             sessionId = this.guestLogin();
         } else {
             // short-circuit if we don't have a valid service
