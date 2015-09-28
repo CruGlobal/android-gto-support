@@ -72,12 +72,7 @@ public abstract class AbstractTheKeyApi<R extends Request<C, S>, C extends Execu
 
     @Nullable
     protected String getActiveGuid() {
-        String guid = mGuid;
-        if (guid == null) {
-            guid = mTheKey.getDefaultSessionGuid();
-        }
-
-        return guid;
+        return mGuid != null ? mGuid : mTheKey.getDefaultSessionGuid();
     }
 
     @Nullable
