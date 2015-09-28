@@ -7,9 +7,11 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.WorkerThread;
 
 import org.ccci.gto.android.common.api.AbstractApi.Request.MediaType;
 import org.ccci.gto.android.common.api.AbstractGtoSmxApi.Request;
+import org.ccci.gto.android.common.api.AbstractTheKeyApi.ExecutionContext;
 import org.ccci.gto.android.common.api.AbstractTheKeyApi.Session;
 import org.ccci.gto.android.common.util.IOUtils;
 
@@ -22,7 +24,8 @@ import java.net.URLEncoder;
 import me.thekey.android.TheKey;
 import me.thekey.android.TheKeySocketException;
 
-public abstract class AbstractGtoSmxApi extends AbstractTheKeyApi<Request, Session> {
+public abstract class AbstractGtoSmxApi
+        extends AbstractTheKeyApi<Request, ExecutionContext<Session>, Session> {
     private static final String PARAM_APPVERSION = "_appVersion";
 
     private final String appVersion;
@@ -80,21 +83,24 @@ public abstract class AbstractGtoSmxApi extends AbstractTheKeyApi<Request, Sessi
     @Nullable
     @Override
     protected final Session loadSession(@NonNull final SharedPreferences prefs, @NonNull final Request request) {
-        return new Session(prefs, request.guid);
+        assert request.context != null;
+        return new Session(prefs, request.context.guid);
     }
 
     @Nullable
     @Override
     protected Session establishSession(@NonNull final Request request) throws ApiException {
+        assert request.context != null;
+
         // short-circuit if we don't have a guid to establish a session for
-        if (request.guid == null) {
+        if (request.context.guid == null) {
             // can't establish a session for an invalid user
             return null;
         }
 
         // establish a session
         final String sessionId;
-        if ("GUEST".equals(request.guid) && this.allowGuest) {
+        if ("GUEST".equals(request.context.guid) && this.allowGuest) {
             sessionId = this.guestLogin();
         } else {
             // short-circuit if we don't have a valid service
@@ -106,7 +112,7 @@ public abstract class AbstractGtoSmxApi extends AbstractTheKeyApi<Request, Sessi
             // get a ticket for the specified service
             final String ticket;
             try {
-                ticket = mTheKey.getTicket(request.guid, service);
+                ticket = mTheKey.getTicket(request.context.guid, service);
             } catch (final TheKeySocketException e) {
                 throw new ApiSocketException(e);
             }
@@ -121,15 +127,17 @@ public abstract class AbstractGtoSmxApi extends AbstractTheKeyApi<Request, Sessi
         }
 
         // create & return a session object
-        return sessionId != null ? new Session(sessionId, request.guid) : null;
+        return sessionId != null ? new Session(sessionId, request.context.guid) : null;
     }
 
     @Override
     protected void onPrepareUri(@NonNull final Uri.Builder uri, @NonNull final Request request)
             throws ApiException {
+        assert request.context != null;
+
         // prepend api method url with the session id
-        if (request.useSession && request.session != null) {
-            uri.appendPath(request.session.id);
+        if (request.useSession && request.context.session != null) {
+            uri.appendPath(request.context.session.id);
         }
 
         // generate uri
@@ -171,6 +179,7 @@ public abstract class AbstractGtoSmxApi extends AbstractTheKeyApi<Request, Sessi
     }
 
     @Nullable
+    @WorkerThread
     protected String getServiceFromApi() throws ApiException {
         final Request request = new Request("auth/service");
         request.useSession = false;
@@ -193,7 +202,9 @@ public abstract class AbstractGtoSmxApi extends AbstractTheKeyApi<Request, Sessi
         return null;
     }
 
-    protected String login(final String ticket) throws ApiException {
+    @Nullable
+    @WorkerThread
+    protected String login(@Nullable final String ticket) throws ApiException {
         // don't attempt to login if we don't have a ticket
         if (ticket == null) {
             return null;
@@ -233,6 +244,8 @@ public abstract class AbstractGtoSmxApi extends AbstractTheKeyApi<Request, Sessi
         return null;
     }
 
+    @Nullable
+    @WorkerThread
     protected String guestLogin() throws ApiException {
         // build request
         final Request request = new Request("auth/login");
@@ -266,7 +279,7 @@ public abstract class AbstractGtoSmxApi extends AbstractTheKeyApi<Request, Sessi
     /**
      * class that represents a request being sent to the api
      */
-    protected static class Request extends AbstractTheKeyApi.Request<Session> {
+    protected static class Request extends AbstractTheKeyApi.Request<ExecutionContext<Session>, Session> {
         public Request(@NonNull final String path) {
             super(path);
         }

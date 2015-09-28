@@ -10,6 +10,9 @@ import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import org.ccci.gto.android.common.api.AbstractTheKeyApi.ExecutionContext;
+import org.ccci.gto.android.common.api.AbstractTheKeyApi.Request;
+import org.ccci.gto.android.common.api.AbstractTheKeyApi.Session;
 import org.ccci.gto.android.common.util.HttpHeaderUtils;
 
 import java.io.IOException;
@@ -18,8 +21,8 @@ import java.util.Locale;
 
 import me.thekey.android.TheKey;
 
-public abstract class AbstractTheKeyApi<R extends AbstractTheKeyApi.Request<S>, S extends AbstractTheKeyApi.Session>
-        extends AbstractApi<R, S> {
+public abstract class AbstractTheKeyApi<R extends Request<C, S>, C extends ExecutionContext<S>, S extends Session>
+        extends AbstractApi<R, C, S> {
     private static final String PREF_CACHED_SERVICE = "service";
 
     @NonNull
@@ -117,15 +120,23 @@ public abstract class AbstractTheKeyApi<R extends AbstractTheKeyApi.Request<S>, 
         }
     }
 
+    @NonNull
+    @Override
+    @SuppressWarnings("unchecked")
+    protected C newExecutionContext() {
+        return (C) new ExecutionContext<S>();
+    }
+
     /* BEGIN request lifecycle events */
 
     @Override
     protected void onPrepareSession(@NonNull final R request) throws ApiException {
         super.onPrepareSession(request);
-        request.guid = this.getActiveGuid();
 
         // throw an exception if there isn't an active guid
-        if (request.guid == null) {
+        assert request.context != null;
+        request.context.guid = getActiveGuid();
+        if (request.context.guid == null) {
             throw new InvalidSessionApiException();
         }
     }
@@ -216,11 +227,12 @@ public abstract class AbstractTheKeyApi<R extends AbstractTheKeyApi.Request<S>, 
         }
     }
 
-    public static class Request<S extends Session> extends AbstractApi.Request<S> {
-        // session attributes
+    public static class ExecutionContext<S extends Session> extends AbstractApi.ExecutionContext<S> {
         @Nullable
         public String guid = null;
+    }
 
+    public static class Request<C extends ExecutionContext<S>, S extends Session> extends AbstractApi.Request<C, S> {
         public Request(@NonNull final String path) {
             super(path);
             // use sessions by default for The Key protected APIs

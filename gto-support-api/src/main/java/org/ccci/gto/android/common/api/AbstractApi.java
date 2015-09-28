@@ -7,7 +7,9 @@ import android.net.Uri;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.WorkerThread;
 
+import org.ccci.gto.android.common.api.AbstractApi.ExecutionContext;
 import org.ccci.gto.android.common.api.AbstractApi.Request;
 import org.ccci.gto.android.common.api.AbstractApi.Session;
 import org.ccci.gto.android.common.util.IOUtils;
@@ -25,7 +27,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public abstract class AbstractApi<R extends Request<S>, S extends Session> {
+public abstract class AbstractApi<R extends Request<C, S>, C extends ExecutionContext<S>, S extends Session> {
     private static final int DEFAULT_ATTEMPTS = 3;
     protected static final String PREF_SESSION_BASE_NAME = "session";
 
@@ -64,37 +66,43 @@ public abstract class AbstractApi<R extends Request<S>, S extends Session> {
     }
 
     @NonNull
+    @WorkerThread
     protected final HttpURLConnection sendRequest(@NonNull final R request) throws ApiException {
         return this.sendRequest(request, DEFAULT_ATTEMPTS);
     }
 
     @NonNull
+    @WorkerThread
     protected final HttpURLConnection sendRequest(@NonNull final R request, final int attempts)
             throws ApiException {
         try {
+            // create a new execution context for this request
+            request.context = newExecutionContext();
+
+            // process request
             HttpURLConnection conn = null;
             boolean successful = false;
             try {
                 // load/establish the session if we are using sessions
                 if (request.useSession) {
                     // prepare for the session
-                    this.onPrepareSession(request);
+                    onPrepareSession(request);
 
                     // get the session, establish a session if one doesn't exist or if we have a stale session
                     synchronized (LOCK_SESSION) {
-                        request.session = loadSession(request);
-                        if (request.session == null) {
-                            request.session = this.establishSession(request);
+                        request.context.session = loadSession(request);
+                        if (request.context.session == null) {
+                            request.context.session = establishSession(request);
 
                             // save the newly established session
-                            if (request.session != null && request.session.isValid()) {
-                                this.saveSession(request.session);
+                            if (request.context.session != null && request.context.session.isValid()) {
+                                saveSession(request.context.session);
                             }
                         }
                     }
 
                     // throw an exception if we don't have a valid session
-                    if (request.session == null) {
+                    if (request.context.session == null) {
                         throw new InvalidSessionApiException();
                     }
                 }
@@ -102,15 +110,14 @@ public abstract class AbstractApi<R extends Request<S>, S extends Session> {
                 // build the request uri
                 final Uri.Builder uri = mBaseUri.buildUpon();
                 onPrepareUri(uri, request);
-                final URL url;
                 try {
-                    url = new URL(uri.build().toString());
+                    request.context.url = new URL(uri.build().toString());
                 } catch (final MalformedURLException e) {
                     throw new RuntimeException("invalid Request URL: " + uri.build().toString(), e);
                 }
 
                 // prepare the request
-                conn = (HttpURLConnection) url.openConnection();
+                conn = (HttpURLConnection) request.context.url.openConnection();
                 onPrepareRequest(conn, request);
 
                 // send any request data
@@ -159,6 +166,17 @@ public abstract class AbstractApi<R extends Request<S>, S extends Session> {
     @NonNull
     protected final Request.Parameter param(@NonNull final String name, final boolean value) {
         return new Request.Parameter(name, Boolean.toString(value));
+    }
+
+    /**
+     * creates a new ExecutionContext object. This needs to be overridden when a subclass overrides the ExecutionContext.
+     *
+     * @return
+     */
+    @NonNull
+    @SuppressWarnings("unchecked")
+    protected C newExecutionContext() {
+        return (C) new ExecutionContext<S>();
     }
 
     @Nullable
@@ -281,9 +299,10 @@ public abstract class AbstractApi<R extends Request<S>, S extends Session> {
             // reset the session
             synchronized (LOCK_SESSION) {
                 // only reset if this is still the same session
-                final Session current = this.loadSession(request);
-                if (current != null && current.equals(request.session)) {
-                    this.deleteSession(request.session);
+                final S active = loadSession(request);
+                final S invalid = request.context != null ? request.context.session : null;
+                if (active != null && active.equals(invalid)) {
+                    deleteSession(invalid);
                 }
             }
 
@@ -297,6 +316,9 @@ public abstract class AbstractApi<R extends Request<S>, S extends Session> {
 
     /* END request lifecycle events */
 
+    /**
+     * Object representing an individual session for this API. Can be extended to track additional session data.
+     */
     public static class Session {
         @NonNull
         private final String baseAttrName;
@@ -353,7 +375,25 @@ public abstract class AbstractApi<R extends Request<S>, S extends Session> {
         }
     }
 
-    public static class Request<S extends Session> {
+    /**
+     * Object tracking the execution context data for processing a request.
+     *
+     * @param <S> The session type in use
+     */
+    public static class ExecutionContext<S extends Session> {
+        @Nullable
+        public URL url = null;
+
+        @Nullable
+        public S session = null;
+    }
+
+    /**
+     * Object representing a Request for this API.
+     *
+     * @param <C> The ExecutionContext type being used for this request
+     */
+    public static class Request<C extends ExecutionContext<S>, S extends Session> {
         public enum Method {GET, POST, PUT, DELETE}
 
         public enum MediaType {
@@ -377,6 +417,10 @@ public abstract class AbstractApi<R extends Request<S>, S extends Session> {
             }
         }
 
+        // the ExecutionContext for this request
+        @Nullable
+        public C context = null;
+
         @NonNull
         public Method method = Method.GET;
 
@@ -394,8 +438,6 @@ public abstract class AbstractApi<R extends Request<S>, S extends Session> {
 
         // session attributes
         public boolean useSession = false;
-        @Nullable
-        public S session = null;
 
         // miscellaneous attributes
         @Nullable
