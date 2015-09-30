@@ -21,6 +21,7 @@ public abstract class AbstractDao {
     public static final String ARG_JOINS = AbstractDao.class.getName() + ".ARG_JOINS";
     public static final String ARG_PROJECTION = AbstractDao.class.getName() + ".ARG_PROJECTION";
     public static final String ARG_WHERE = AbstractDao.class.getName() + ".ARG_WHERE";
+    @Deprecated
     public static final String ARG_WHERE_ARGS = AbstractDao.class.getName() + ".ARG_WHERE_ARGS";
     public static final String ARG_ORDER_BY = AbstractDao.class.getName() + ".ARG_ORDER_BY";
 
@@ -169,12 +170,13 @@ public abstract class AbstractDao {
         final String tables = from.first;
         String[] args = from.second;
 
-        // add WHERE args
-        args = ArrayUtils.merge(String.class, args, query.mWhereArgs);
+        // generate "WHERE {}" SQL
+        final Pair<String, String[]> where = query.buildSqlWhere(this);
+        args = ArrayUtils.merge(String.class, args, where.second);
 
         // execute actual query
         final Cursor c = mDbHelper.getReadableDatabase()
-                .query(query.mDistinct, tables, projection, query.mWhere, args, null, null, orderBy, null);
+                .query(query.mDistinct, tables, projection, where.first, args, null, null, orderBy, null);
 
         c.moveToPosition(-1);
         return c;

@@ -16,6 +16,7 @@ import org.ccci.gto.android.common.util.ArrayUtils;
 
 public abstract class Expression implements Parcelable {
     public static final Literal NULL = new Literal((String) null, true);
+    static final String[] NO_ARGS = new String[0];
 
     Expression() {
     }
@@ -123,7 +124,7 @@ public abstract class Expression implements Parcelable {
     }
 
     @NonNull
-    public static Raw raw(@NonNull final String expr, @NonNull final String... args) {
+    public static Raw raw(@NonNull final String expr, @Nullable final String... args) {
         return new Raw(expr, args);
     }
 
@@ -182,11 +183,11 @@ public abstract class Expression implements Parcelable {
         protected Pair<String, String[]> buildSql(@NonNull final AbstractDao dao) {
             if (mConstant) {
                 if (mNumValue != null) {
-                    return Pair.create(mNumValue.toString(), null);
+                    return Pair.create(mNumValue.toString(), NO_ARGS);
                 } else if (mStrValue != null) {
                     //TODO: how should we handle non-null constant string values?
                 } else {
-                    return Pair.create("NULL", null);
+                    return Pair.create("NULL", NO_ARGS);
                 }
             }
 
@@ -255,7 +256,7 @@ public abstract class Expression implements Parcelable {
                     sql.append(mTable.sqlPrefix(dao));
                 }
                 sql.append(mName);
-                mSql = Pair.create(sql.toString(), null);
+                mSql = Pair.create(sql.toString(), NO_ARGS);
             }
 
             return mSql;
@@ -299,9 +300,9 @@ public abstract class Expression implements Parcelable {
         @NonNull
         private final String[] mArgs;
 
-        Raw(@NonNull final String expr, @NonNull final String... args) {
+        Raw(@NonNull final String expr, @Nullable final String... args) {
             mExpr = expr;
-            mArgs = args;
+            mArgs = args != null ? args : NO_ARGS;
         }
 
         Raw(@NonNull final Parcel in, @Nullable final ClassLoader loader) {
@@ -462,7 +463,7 @@ public abstract class Expression implements Parcelable {
             if (mSql == null) {
                 boolean first = true;
                 final StringBuilder sql = new StringBuilder();
-                String[] args = null;
+                String[] args = NO_ARGS;
                 sql.append('(');
                 for (final Expression expr : mExprs) {
                     if (!first) {

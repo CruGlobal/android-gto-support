@@ -13,9 +13,9 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Pair;
 
 import org.ccci.gto.android.common.db.AbstractDao;
+import org.ccci.gto.android.common.db.Expression;
 import org.ccci.gto.android.common.db.Join;
 import org.ccci.gto.android.common.db.Query;
 import org.ccci.gto.android.common.db.Table;
@@ -23,8 +23,6 @@ import org.ccci.gto.android.common.support.v4.content.CursorBroadcastReceiverLoa
 import org.ccci.gto.android.common.util.BundleUtils;
 
 public class DaoCursorBroadcastReceiverLoader<T> extends CursorBroadcastReceiverLoader {
-    private static final Pair<String, String[]> NO_WHERE = Pair.create(null, new String[0]);
-
     @NonNull
     protected final AbstractDao mDao;
 
@@ -34,8 +32,8 @@ public class DaoCursorBroadcastReceiverLoader<T> extends CursorBroadcastReceiver
     @NonNull
     @SuppressWarnings("unchecked")
     private Join<T, ?>[] mJoins = Join.NO_JOINS;
-    @NonNull
-    private Pair<String, String[]> mWhere = NO_WHERE;
+    @Nullable
+    private Expression mWhere;
 
     public DaoCursorBroadcastReceiverLoader(@NonNull final Context context, @NonNull final AbstractDao dao,
                                             @NonNull final Class<T> type, @Nullable final Bundle args) {
@@ -53,7 +51,13 @@ public class DaoCursorBroadcastReceiverLoader<T> extends CursorBroadcastReceiver
             setDistinct(args.getBoolean(ARG_DISTINCT, false));
             setJoins(BundleUtils.getParcelableArray(args, ARG_JOINS, Join.class));
             setProjection(args.getStringArray(ARG_PROJECTION));
-            setWhere(args.getString(ARG_WHERE), args.getStringArray(ARG_WHERE_ARGS));
+            final Expression where = args.getParcelable(ARG_WHERE);
+            if (where != null) {
+                setWhere(where);
+            } else {
+                // we didn't have an Expression WHERE arg, maybe it's a string arg?
+                setWhere(args.getString(ARG_WHERE), args.getStringArray(ARG_WHERE_ARGS));
+            }
             setSortOrder(args.getString(ARG_ORDER_BY));
         } else {
             setDistinct(false);
@@ -68,10 +72,8 @@ public class DaoCursorBroadcastReceiverLoader<T> extends CursorBroadcastReceiver
     @Override
     protected final Cursor getCursor() {
         // build query
-        final Pair<String, String[]> where = getWhere();
-        return mDao.getCursor(
-                Query.select(mFrom).distinct(isDistinct()).joins(getJoins()).projection(getProjection()).where(
-                        where.first, where.second).orderBy(getSortOrder()));
+        return mDao.getCursor(Query.select(mFrom).distinct(isDistinct()).joins(getJoins()).projection(getProjection())
+                                      .where(getWhere()).orderBy(getSortOrder()));
     }
 
     public void setDistinct(final boolean distinct) {
@@ -108,11 +110,15 @@ public class DaoCursorBroadcastReceiverLoader<T> extends CursorBroadcastReceiver
     }
 
     public void setWhere(@Nullable final String where, @Nullable final String... args) {
-        mWhere = Pair.create(where, args);
+        setWhere(where != null ? Expression.raw(where, args) : null);
     }
 
-    @NonNull
-    public Pair<String, String[]> getWhere() {
+    public void setWhere(@Nullable final Expression where) {
+        mWhere = where;
+    }
+
+    @Nullable
+    public Expression getWhere() {
         return mWhere;
     }
 }
