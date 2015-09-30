@@ -10,14 +10,41 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Pair;
 
+import org.ccci.gto.android.common.compat.ArraysCompat;
+import org.ccci.gto.android.common.compat.os.ParcelCompat;
 import org.ccci.gto.android.common.util.ArrayUtils;
 
 public abstract class Expression implements Parcelable {
+    public static final Literal NULL = new Literal((String) null, true);
+
     Expression() {
     }
 
     @NonNull
     protected abstract Pair<String, String[]> buildSql(@NonNull AbstractDao dao);
+
+    @NonNull
+    public Expression args(@NonNull final Object... args) {
+        return args(bindValues(args));
+    }
+
+    /**
+     * returns the number of "dynamic" arguments in this expression. This may not be the same as the actual number of
+     * arguments returned from buildSql
+     *
+     * @return
+     */
+    protected int numOfArgs() {
+        return 0;
+    }
+
+    @NonNull
+    public Expression args(@NonNull final String... args) {
+        if (args.length > 0) {
+            throw new IllegalArgumentException("invalid number of arguments specified");
+        }
+        return this;
+    }
 
     @NonNull
     public final Binary and(@NonNull final Expression expression) {
@@ -30,13 +57,29 @@ public abstract class Expression implements Parcelable {
     }
 
     @NonNull
+    public final Binary is(@NonNull final Expression expression) {
+        return binaryExpr(Binary.IS, expression);
+    }
+
+    @NonNull
     public final Binary or(@NonNull final Expression expression) {
         return binaryExpr(Binary.OR, expression);
     }
 
     @NonNull
+    public final Binary ne(@NonNull final Expression expression) {
+        return binaryExpr(Binary.NE, expression);
+    }
+
+    @NonNull
     protected Binary binaryExpr(@NonNull final String op, @NonNull final Expression expression) {
         return new Binary(op, this, expression);
+    }
+
+    @NonNull
+    public Raw toRaw(@NonNull final AbstractDao dao) {
+        final Pair<String, String[]> sql = buildSql(dao);
+        return raw(sql.first, sql.second);
     }
 
     @NonNull
@@ -56,12 +99,22 @@ public abstract class Expression implements Parcelable {
 
     @NonNull
     public static Literal literal(@NonNull final Object value) {
-        return new Literal(bindValues(value)[0]);
+        return new Literal(bindValues(value)[0], false);
+    }
+
+    @NonNull
+    public static Literal literal(@NonNull final Number value) {
+        return new Literal(value, false);
     }
 
     @NonNull
     public static Literal literal(@NonNull final String value) {
-        return new Literal(value);
+        return new Literal(value, false);
+    }
+
+    @NonNull
+    public static Literal constant(@NonNull final Number value) {
+        return new Literal(value, true);
     }
 
     @NonNull
@@ -85,26 +138,67 @@ public abstract class Expression implements Parcelable {
 
     public static class Literal extends Expression {
         @Nullable
-        private final String mValue;
+        private final String mStrValue;
+        @Nullable
+        private final Number mNumValue;
+        private final boolean mConstant;
 
-        Literal(@Nullable final String value) {
-            mValue = value;
+        Literal(@Nullable final Number value, final boolean constant) {
+            this(null, value, constant);
+        }
+
+        Literal(@Nullable final String value, final boolean constant) {
+            this(value, null, constant);
+        }
+
+        private Literal(@Nullable final String strValue, @Nullable final Number numValue, final boolean constant) {
+            mStrValue = strValue;
+            mNumValue = numValue;
+            mConstant = constant;
         }
 
         Literal(@NonNull final Parcel in, @Nullable final ClassLoader loader) {
-            mValue = in.readString();
+            mStrValue = in.readString();
+            mNumValue = (Number) in.readValue(loader);
+            mConstant = ParcelCompat.readBoolean(in);
+        }
+
+        @Override
+        protected int numOfArgs() {
+            return mConstant ? 0 : 1;
+        }
+
+        @NonNull
+        @Override
+        public Literal args(@NonNull final String... args) {
+            if (args.length != (mConstant ? 0 : 1)) {
+                throw new IllegalArgumentException("incorrect number of args specified");
+            }
+            return mConstant ? this : new Literal(args[0], false);
         }
 
         @NonNull
         @Override
         protected Pair<String, String[]> buildSql(@NonNull final AbstractDao dao) {
-            return Pair.create("?", new String[] {mValue});
+            if (mConstant) {
+                if (mNumValue != null) {
+                    return Pair.create(mNumValue.toString(), null);
+                } else if (mStrValue != null) {
+                    //TODO: how should we handle non-null constant string values?
+                } else {
+                    return Pair.create("NULL", null);
+                }
+            }
+
+            return Pair.create("?", new String[] {mNumValue != null ? mNumValue.toString() : mStrValue});
         }
 
         @Override
         public void writeToParcel(final Parcel out, final int flags) {
             super.writeToParcel(out, flags);
-            out.writeString(mValue);
+            out.writeString(mStrValue);
+            out.writeValue(mNumValue);
+            ParcelCompat.writeBoolean(out, mConstant);
         }
 
         public static final Creator<Literal> CREATOR =
@@ -215,8 +309,20 @@ public abstract class Expression implements Parcelable {
             mArgs = in.createStringArray();
         }
 
+        @Override
+        protected int numOfArgs() {
+            return mArgs.length;
+        }
+
         @NonNull
-        Raw args(@NonNull final String... args) {
+        @Override
+        public Raw args(@NonNull Object... args) {
+            return args(bindValues(args));
+        }
+
+        @NonNull
+        @Override
+        public Raw args(@NonNull final String... args) {
             return new Raw(mExpr, args);
         }
 
@@ -224,6 +330,12 @@ public abstract class Expression implements Parcelable {
         @Override
         protected Pair<String, String[]> buildSql(@NonNull final AbstractDao dao) {
             return Pair.create(mExpr, mArgs);
+        }
+
+        @NonNull
+        @Override
+        public Raw toRaw(@NonNull AbstractDao dao) {
+            return this;
         }
 
         @Override
@@ -262,12 +374,16 @@ public abstract class Expression implements Parcelable {
     public static class Binary extends Expression {
         static final String AND = "AND";
         static final String OR = "OR";
+        static final String IS = "IS";
+        static final String ISNOT = "IS NOT";
         static final String EQ = "==";
+        static final String NE = "!=";
 
         @NonNull
         private final String mOp;
         @NonNull
         private final Expression[] mExprs;
+        private final int mNumOfArgs;
 
         @Nullable
         private transient Pair<String, String[]> mSql;
@@ -275,6 +391,7 @@ public abstract class Expression implements Parcelable {
         Binary(@NonNull final String op, @NonNull final Expression... exprs) {
             mOp = op;
             mExprs = exprs;
+            mNumOfArgs = calcNumOfArgs();
         }
 
         Binary(@NonNull final Parcel in, @Nullable final ClassLoader loader) {
@@ -284,6 +401,15 @@ public abstract class Expression implements Parcelable {
             for (int i = 0; i < exprs.length; i++) {
                 mExprs[i] = (Expression) exprs[i];
             }
+            mNumOfArgs = calcNumOfArgs();
+        }
+
+        private int calcNumOfArgs() {
+            int sum = 0;
+            for (final Expression expr : mExprs) {
+                sum += expr.numOfArgs();
+            }
+            return sum;
         }
 
         @NonNull
@@ -300,6 +426,33 @@ public abstract class Expression implements Parcelable {
             }
 
             return super.binaryExpr(op, expression);
+        }
+
+        @Override
+        protected int numOfArgs() {
+            return mNumOfArgs;
+        }
+
+        @NonNull
+        @Override
+        public Binary args(@NonNull final String... args) {
+            if (args.length != mNumOfArgs) {
+                throw new IllegalArgumentException("incorrect number of args specified");
+            }
+
+            // short-circuit if there are no args
+            if (args.length == 0) {
+                return this;
+            }
+
+            int pos = 0;
+            final Expression[] exprs = new Expression[mExprs.length];
+            for (int i = 0; i < mExprs.length; i++) {
+                final int num = mExprs[i].numOfArgs();
+                exprs[i] = num > 0 ? mExprs[i].args(ArraysCompat.copyOfRange(args, pos, pos + num)) : mExprs[i];
+                pos += num;
+            }
+            return new Binary(mOp, exprs);
         }
 
         @NonNull
