@@ -26,7 +26,7 @@ public class DaoCursorBroadcastReceiverLoader<T> extends CursorBroadcastReceiver
     private static final Pair<String, String[]> NO_WHERE = Pair.create(null, new String[0]);
 
     @NonNull
-    private final AbstractDao mDao;
+    protected final AbstractDao mDao;
 
     private boolean mDistinct = false;
     @NonNull
