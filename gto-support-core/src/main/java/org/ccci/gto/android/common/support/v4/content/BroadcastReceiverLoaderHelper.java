@@ -9,7 +9,7 @@ import android.support.v4.content.LocalBroadcastManager;
 
 import java.util.ArrayList;
 
-final class BroadcastReceiverLoaderHelper {
+public final class BroadcastReceiverLoaderHelper {
     public interface Interface {
         void addIntentFilter(@NonNull IntentFilter filter);
 
@@ -24,13 +24,17 @@ final class BroadcastReceiverLoaderHelper {
     private BroadcastReceiver mReceiver;
     private final ArrayList<IntentFilter> mFilters = new ArrayList<>();
 
-    BroadcastReceiverLoaderHelper(@NonNull final Loader loader) {
-        mLocalBroadcastManager = LocalBroadcastManager.getInstance(loader.getContext());
-        mLoader = loader;
-        this.setBroadcastReceiver(null);
+    public BroadcastReceiverLoaderHelper(@NonNull final Loader loader) {
+        this(loader, null);
     }
 
-    void addIntentFilter(@NonNull final IntentFilter filter) {
+    public BroadcastReceiverLoaderHelper(@NonNull final Loader loader, @Nullable final BroadcastReceiver receiver) {
+        mLocalBroadcastManager = LocalBroadcastManager.getInstance(loader.getContext());
+        mLoader = loader;
+        setBroadcastReceiver(receiver);
+    }
+
+    public void addIntentFilter(@NonNull final IntentFilter filter) {
         mFilters.add(filter);
 
         // register filter if Loader is already started
@@ -41,7 +45,7 @@ final class BroadcastReceiverLoaderHelper {
         }
     }
 
-    void setBroadcastReceiver(@Nullable BroadcastReceiver receiver) {
+    public void setBroadcastReceiver(@Nullable BroadcastReceiver receiver) {
         if (receiver == null) {
             receiver = new LoaderBroadcastReceiver(mLoader);
         }
@@ -58,13 +62,13 @@ final class BroadcastReceiverLoaderHelper {
         }
     }
 
-    void onStartLoading() {
+    public void onStartLoading() {
         synchronized (this) {
             registerReceiver(mReceiver);
         }
     }
 
-    void onAbandon() {
+    public void onAbandon() {
         synchronized (this) {
             unregisterReceiver(mReceiver);
         }
