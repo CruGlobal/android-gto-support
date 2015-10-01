@@ -105,10 +105,12 @@ public class DaoCursorBroadcastReceiverLoader<T> extends CursorBroadcastReceiver
         return projection != null ? projection : mDao.getFullProjection(mFrom);
     }
 
+    @Deprecated
     public void setWhere(@Nullable final String where, @Nullable final Object... args) {
         setWhere(where, args != null ? bindValues(args) : null);
     }
 
+    @Deprecated
     public void setWhere(@Nullable final String where, @Nullable final String... args) {
         setWhere(where != null ? Expression.raw(where, args) : null);
     }
