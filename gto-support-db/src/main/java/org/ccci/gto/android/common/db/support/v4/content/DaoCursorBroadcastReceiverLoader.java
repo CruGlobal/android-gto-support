@@ -51,12 +51,12 @@ public class DaoCursorBroadcastReceiverLoader<T> extends CursorBroadcastReceiver
             setDistinct(args.getBoolean(ARG_DISTINCT, false));
             setJoins(BundleUtils.getParcelableArray(args, ARG_JOINS, Join.class));
             setProjection(args.getStringArray(ARG_PROJECTION));
-            final Expression where = args.getParcelable(ARG_WHERE);
-            if (where != null) {
-                setWhere(where);
-            } else {
-                // we didn't have an Expression WHERE arg, maybe it's a string arg?
-                setWhere(args.getString(ARG_WHERE), args.getStringArray(ARG_WHERE_ARGS));
+            final Object where = args.get(ARG_WHERE);
+            if (where instanceof Expression) {
+                setWhere((Expression) where);
+            } else if (where instanceof String) {
+                // where wasn't an Expression, maybe it's a string?
+                setWhere((String) where, args.getStringArray(ARG_WHERE_ARGS));
             }
             setSortOrder(args.getString(ARG_ORDER_BY));
         } else {
