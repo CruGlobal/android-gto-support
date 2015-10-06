@@ -11,6 +11,7 @@ import java.util.Locale;
 import java.util.Map;
 
 public final class HttpHeaderUtils {
+    @NonNull
     public static Challenge parseChallenge(@NonNull final String challenge) {
         // separate the scheme from the params
         final String[] parts = challenge.trim().split("[ \t]", 2);
@@ -66,6 +67,7 @@ public final class HttpHeaderUtils {
             return mScheme;
         }
 
+        @NonNull
         public Collection<HeaderElement> getParameters() {
             return mParams.values();
         }
