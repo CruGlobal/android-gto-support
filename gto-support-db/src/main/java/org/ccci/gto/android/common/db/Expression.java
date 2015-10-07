@@ -109,17 +109,40 @@ public abstract class Expression implements Parcelable {
     }
 
     @NonNull
+    @Deprecated
     public static Literal literal(@NonNull final Object value) {
+        return bind(value);
+    }
+
+    @NonNull
+    @Deprecated
+    public static Literal literal(@NonNull final Number value) {
+        return bind(value);
+    }
+
+    @NonNull
+    @Deprecated
+    public static Literal literal(@NonNull final String value) {
+        return bind(value);
+    }
+
+    @NonNull
+    public static Literal bind() {
+        return new Literal((String) null, false);
+    }
+
+    @NonNull
+    public static Literal bind(@NonNull final Object value) {
         return new Literal(bindValues(value)[0], false);
     }
 
     @NonNull
-    public static Literal literal(@NonNull final Number value) {
+    public static Literal bind(@NonNull final Number value) {
         return new Literal(value, false);
     }
 
     @NonNull
-    public static Literal literal(@NonNull final String value) {
+    public static Literal bind(@NonNull final String value) {
         return new Literal(value, false);
     }
 
