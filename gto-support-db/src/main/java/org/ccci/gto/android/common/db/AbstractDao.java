@@ -344,6 +344,21 @@ public abstract class AbstractDao {
     }
 
     @WorkerThread
+    public final void delete(@NonNull final Class<?> clazz, @NonNull final Expression where) {
+        final String table = this.getTable(clazz);
+        final Pair<String, String[]> builtWhere = where.buildSql(this);
+        final SQLiteDatabase db = mDbHelper.getWritableDatabase();
+        final Transaction tx = new Transaction(db);
+        try {
+            tx.beginTransactionNonExclusive();
+            db.delete(table, builtWhere.first, builtWhere.second);
+            tx.setTransactionSuccessful();
+        } finally {
+            tx.endTransaction();
+        }
+    }
+
+    @WorkerThread
     public final void delete(@NonNull final Object obj) {
         final String table = this.getTable(obj.getClass());
         final Pair<String, String[]> where = this.getPrimaryKeyWhere(obj);
