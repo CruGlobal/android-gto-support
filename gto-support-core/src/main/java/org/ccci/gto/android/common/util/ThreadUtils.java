@@ -37,6 +37,7 @@ public final class ThreadUtils {
         return Looper.getMainLooper().getThread() == Thread.currentThread();
     }
 
+    @Deprecated
     public static final class GenericKey {
         @NonNull
         private final Object[] mKey;
