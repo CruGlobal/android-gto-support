@@ -28,7 +28,7 @@ afterEvaluate {
         }
     }
     if (project.plugins.hasPlugin('com.android.library')) {
-        apply plugin: 'android-maven'
+        apply plugin: 'com.github.dcendents.android-maven'
     }
     if (project.plugins.hasPlugin('com.android.application') || project.plugins.hasPlugin('com.android.library')) {
         task artifactSourcesJar(type: Jar) {
