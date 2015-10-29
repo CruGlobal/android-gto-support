@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="PicassoImageView">
+        <attr name="placeholder" format="reference"/>
+    </declare-styleable>
+</resources>
