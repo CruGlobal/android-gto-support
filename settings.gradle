@@ -1,1 +1,1 @@
-include ':gto-support-api', ':gto-support-core', ':gto-support-db', ':gto-support-holo', ':gto-support-newrelic', ':gto-support-recyclerview'
+include ':gto-support-api', ':gto-support-core', ':gto-support-db', ':gto-support-newrelic', ':gto-support-recyclerview'
