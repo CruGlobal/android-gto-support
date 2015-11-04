@@ -157,7 +157,17 @@ public abstract class Expression implements Parcelable {
     }
 
     @NonNull
+    public static Literal constant(@NonNull final Object value) {
+        return new Literal(bindValues(value)[0], true);
+    }
+
+    @NonNull
     public static Literal constant(@NonNull final Number value) {
+        return new Literal(value, true);
+    }
+
+    @NonNull
+    public static Literal constant(@NonNull final String value) {
         return new Literal(value, true);
     }
 
