@@ -243,17 +243,17 @@ public abstract class AbstractApi<R extends Request<C, S>, C extends ExecutionCo
     protected void onPrepareUri(@NonNull final Uri.Builder uri, @NonNull final R request)
             throws ApiException {
         // build the request uri
-        uri.appendEncodedPath(request.path);
+        uri.appendEncodedPath(request.mPath);
         if (request.params.size() > 0) {
             if (request.replaceParams) {
                 final List<String> keys = new ArrayList<>();
                 for (final Request.Parameter param : request.params) {
-                    keys.add(param.name);
+                    keys.add(param.mName);
                 }
                 UriUtils.removeQueryParams(uri, keys.toArray(new String[keys.size()]));
             }
             for (final Request.Parameter param : request.params) {
-                uri.appendQueryParameter(param.name, param.value);
+                uri.appendQueryParameter(param.mName, param.mValue);
             }
         }
     }
@@ -263,10 +263,10 @@ public abstract class AbstractApi<R extends Request<C, S>, C extends ExecutionCo
         // build base request object
         conn.setRequestMethod(request.method.toString());
         if (request.accept != null) {
-            conn.addRequestProperty("Accept", request.accept.type);
+            conn.addRequestProperty("Accept", request.accept.mType);
         }
-        if (request.contentType != null) {
-            conn.addRequestProperty("Content-Type", request.contentType.type);
+        if (request.mContentType != null) {
+            conn.addRequestProperty("Content-Type", request.mContentType.mType);
         }
         conn.setInstanceFollowRedirects(request.followRedirects);
     }
@@ -276,7 +276,7 @@ public abstract class AbstractApi<R extends Request<C, S>, C extends ExecutionCo
         // send data for POST/PUT requests
         if (request.method == Request.Method.POST || request.method == Request.Method.PUT) {
             conn.setDoOutput(true);
-            final byte[] data = request.content != null ? request.content : new byte[0];
+            final byte[] data = request.mContent != null ? request.mContent : new byte[0];
             conn.setFixedLengthStreamingMode(data.length);
             conn.setUseCaches(false);
             OutputStream out = null;
@@ -400,20 +400,20 @@ public abstract class AbstractApi<R extends Request<C, S>, C extends ExecutionCo
             APPLICATION_FORM_URLENCODED("application/x-www-form-urlencoded"), APPLICATION_JSON("application/json"),
             APPLICATION_XML("application/xml"), TEXT_PLAIN("text/plain");
 
-            final String type;
+            final String mType;
 
             MediaType(final String type) {
-                this.type = type;
+                mType = type;
             }
         }
 
         public static final class Parameter {
-            final String name;
-            final String value;
+            final String mName;
+            final String mValue;
 
             Parameter(@NonNull final String name, @NonNull final String value) {
-                this.name = name;
-                this.value = value;
+                mName = name;
+                mValue = value;
             }
         }
 
@@ -426,15 +426,15 @@ public abstract class AbstractApi<R extends Request<C, S>, C extends ExecutionCo
 
         // uri attributes
         @NonNull
-        final String path;
+        final String mPath;
         public final Collection<Parameter> params = new ArrayList<>();
         public boolean replaceParams = false;
 
         // POST/PUT data
         @Nullable
-        MediaType contentType = null;
+        MediaType mContentType = null;
         @Nullable
-        byte[] content = null;
+        byte[] mContent = null;
 
         // session attributes
         public boolean useSession = false;
@@ -445,12 +445,12 @@ public abstract class AbstractApi<R extends Request<C, S>, C extends ExecutionCo
         public boolean followRedirects = false;
 
         public Request(@NonNull final String path) {
-            this.path = path;
+            mPath = path;
         }
 
         public void setContent(@Nullable final MediaType type, @Nullable final byte[] data) {
-            this.contentType = type;
-            this.content = data;
+            mContentType = type;
+            mContent = data;
         }
 
         public void setContent(@Nullable final MediaType type, @Nullable final String data) {
