@@ -360,7 +360,7 @@ public abstract class Expression implements Parcelable {
 
         @NonNull
         @Override
-        public Raw args(@NonNull Object... args) {
+        public Raw args(@NonNull final Object... args) {
             return args(bindValues(args));
         }
 
