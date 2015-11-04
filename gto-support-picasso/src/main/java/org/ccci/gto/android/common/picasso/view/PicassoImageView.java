@@ -19,26 +19,32 @@ import org.ccci.gto.android.common.model.Dimension;
 import org.ccci.gto.android.common.picasso.R;
 import org.ccci.gto.android.common.picasso.ScaleTransformation;
 
+import java.io.File;
+
 public interface PicassoImageView {
     final class Helper {
         @NonNull
         private final ImageView mView;
+        @NonNull
+        private final Picasso mPicasso;
 
         @Nullable
         private Uri mPicassoUri;
+        @Nullable
+        private File mPicassoFile;
         @NonNull
         private Dimension mSize = new Dimension(0, 0);
         @DrawableRes
         private int mPlaceholderResId = INVALID_DRAWABLE_RES;
 
         public Helper(@NonNull final ImageView view) {
-            mView = view;
-            init(mView.getContext(), null, 0, 0);
+            this(view, null, 0, 0);
         }
 
         public Helper(@NonNull final ImageView view, @Nullable final AttributeSet attrs, final int defStyleAttr,
                       final int defStyleRes) {
             mView = view;
+            mPicasso = Picasso.with(mView.getContext());
             init(mView.getContext(), attrs, defStyleAttr, defStyleRes);
         }
 
@@ -51,7 +57,14 @@ public interface PicassoImageView {
         }
 
         public void setPicassoUri(@Nullable final Uri uri) {
+            mPicassoFile = null;
             mPicassoUri = uri;
+            triggerUpdate();
+        }
+
+        public void setPicassoFile(@Nullable final File file) {
+            mPicassoUri = null;
+            mPicassoFile = file;
             triggerUpdate();
         }
 
@@ -71,7 +84,15 @@ public interface PicassoImageView {
         }
 
         private void triggerUpdate() {
-            final RequestCreator update = Picasso.with(mView.getContext()).load(mPicassoUri);
+            // create base request
+            final RequestCreator update;
+            if (mPicassoFile != null) {
+                update = mPicasso.load(mPicassoFile);
+            } else {
+                update = mPicasso.load(mPicassoUri);
+            }
+
+            // set placeholder & any transform options
             if (mPlaceholderResId != INVALID_DRAWABLE_RES) {
                 update.placeholder(mPlaceholderResId);
             }
@@ -101,6 +122,8 @@ public interface PicassoImageView {
             }
         }
     }
+
+    void setPicassoFile(@Nullable File file);
 
     void setPicassoUri(@Nullable Uri uri);
 

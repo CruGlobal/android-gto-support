@@ -10,6 +10,8 @@ import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.widget.ImageView;
 
+import java.io.File;
+
 public class SimplePicassoImageView extends ImageView implements PicassoImageView {
     private boolean mInit = false;
     @NonNull
@@ -36,6 +38,11 @@ public class SimplePicassoImageView extends ImageView implements PicassoImageVie
         super(context, attrs, defStyleAttr, defStyleRes);
         mHelper = new Helper(this, attrs, defStyleAttr, defStyleRes);
         mInit = true;
+    }
+
+    @Override
+    public final void setPicassoFile(@Nullable final File file) {
+        mHelper.setPicassoFile(file);
     }
 
     @Override
