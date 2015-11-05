@@ -16,10 +16,8 @@ import org.ccci.gto.android.common.api.AbstractTheKeyApi.Session;
 import org.ccci.gto.android.common.util.IOUtils;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
-import java.net.URLEncoder;
 
 import me.thekey.android.TheKey;
 import me.thekey.android.TheKeySocketException;
@@ -215,12 +213,8 @@ public abstract class AbstractGtoSmxApi
         request.useSession = false;
         request.method = AbstractApi.Request.Method.POST;
         request.accept = AbstractApi.Request.MediaType.TEXT_PLAIN;
-        try {
-            request.setContent(MediaType.APPLICATION_FORM_URLENCODED,
-                               ("ticket=" + URLEncoder.encode(ticket, "UTF-8")).getBytes("UTF-8"));
-        } catch (final UnsupportedEncodingException e) {
-            throw new RuntimeException("unexpected error, UTF-8 encoding doesn't exist?", e);
-        }
+        request.setContentType(MediaType.FORM_URLENCODED);
+        request.form.add(param("ticket", ticket));
 
         // issue login request
         HttpURLConnection conn = null;
@@ -252,7 +246,8 @@ public abstract class AbstractGtoSmxApi
         request.useSession = false;
         request.method = AbstractApi.Request.Method.POST;
         request.accept = MediaType.TEXT_PLAIN;
-        request.setContent(MediaType.APPLICATION_FORM_URLENCODED, "guest=true");
+        request.setContentType(MediaType.FORM_URLENCODED);
+        request.form.add(param("guest", "true"));
 
         // issue login request
         HttpURLConnection conn = null;
