@@ -17,12 +17,6 @@ public final class IOUtils {
     private static final int DEFAULT_BUFFER_SIZE = 640 * 1024;
     private static final int EOF = -1;
 
-    /**
-     * Use Google Guava {@link com.google.common.io.Closer} instead, or try-with-resources if possible.
-     *
-     * @param handle
-     */
-    @Deprecated
     public static void closeQuietly(@Nullable final Closeable handle) {
         if (handle != null) {
             try {
