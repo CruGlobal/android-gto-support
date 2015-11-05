@@ -68,6 +68,11 @@ public abstract class Expression implements Parcelable {
     }
 
     @NonNull
+    public final Binary isNot(@NonNull final Expression expression) {
+        return binaryExpr(Binary.ISNOT, expression);
+    }
+
+    @NonNull
     public final Binary or(@NonNull final Expression expression) {
         return binaryExpr(Binary.OR, expression);
     }
