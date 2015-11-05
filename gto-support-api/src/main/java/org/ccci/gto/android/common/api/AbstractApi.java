@@ -9,23 +9,31 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.WorkerThread;
 
+import com.google.common.io.Closer;
+
 import org.ccci.gto.android.common.api.AbstractApi.ExecutionContext;
 import org.ccci.gto.android.common.api.AbstractApi.Request;
+import org.ccci.gto.android.common.api.AbstractApi.Request.MediaType;
+import org.ccci.gto.android.common.api.AbstractApi.Request.Parameter;
 import org.ccci.gto.android.common.api.AbstractApi.Session;
 import org.ccci.gto.android.common.util.IOUtils;
 import org.ccci.gto.android.common.util.UriUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.BufferedOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.UUID;
 
 public abstract class AbstractApi<R extends Request<C, S>, C extends ExecutionContext<S>, S extends Session> {
     private static final int DEFAULT_ATTEMPTS = 3;
@@ -154,18 +162,35 @@ public abstract class AbstractApi<R extends Request<C, S>, C extends ExecutionCo
     }
 
     @NonNull
-    protected final Request.Parameter param(@NonNull final String name, @NonNull final String value) {
-        return new Request.Parameter(name, value);
+    protected final Parameter param(@NonNull final String name, @NonNull final String value) {
+        return new Parameter(name, value);
     }
 
     @NonNull
-    protected final Request.Parameter param(@NonNull final String name, final int value) {
-        return new Request.Parameter(name, Integer.toString(value));
+    protected final Parameter param(@NonNull final String name, final int value) {
+        return new Parameter(name, Integer.toString(value));
     }
 
     @NonNull
-    protected final Request.Parameter param(@NonNull final String name, final boolean value) {
-        return new Request.Parameter(name, Boolean.toString(value));
+    protected final Parameter param(@NonNull final String name, final boolean value) {
+        return new Parameter(name, Boolean.toString(value));
+    }
+
+    @NonNull
+    protected final Parameter param(@NonNull final String name, @NonNull final File file) {
+        return param(name, file, null, null);
+    }
+
+    @NonNull
+    protected final Parameter param(@NonNull final String name, @NonNull final File file,
+                                    @Nullable final MediaType type) {
+        return param(name, file, null, type);
+    }
+
+    @NonNull
+    protected final Parameter param(@NonNull final String name, @NonNull final File file,
+                                    @Nullable final String fileName, @Nullable final MediaType type) {
+        return new Parameter(name, file, fileName, type);
     }
 
     /**
@@ -247,13 +272,15 @@ public abstract class AbstractApi<R extends Request<C, S>, C extends ExecutionCo
         if (request.params.size() > 0) {
             if (request.replaceParams) {
                 final List<String> keys = new ArrayList<>();
-                for (final Request.Parameter param : request.params) {
+                for (final Parameter param : request.params) {
                     keys.add(param.mName);
                 }
                 UriUtils.removeQueryParams(uri, keys.toArray(new String[keys.size()]));
             }
-            for (final Request.Parameter param : request.params) {
-                uri.appendQueryParameter(param.mName, param.mValue);
+            for (final Parameter param : request.params) {
+                if (param != null && param.mValue != null) {
+                    uri.appendQueryParameter(param.mName, param.mValue);
+                }
             }
         }
     }
@@ -275,18 +302,69 @@ public abstract class AbstractApi<R extends Request<C, S>, C extends ExecutionCo
             throws ApiException, IOException {
         // send data for POST/PUT requests
         if (request.method == Request.Method.POST || request.method == Request.Method.PUT) {
-            conn.setDoOutput(true);
-            final byte[] data = request.mContent != null ? request.mContent : new byte[0];
-            conn.setFixedLengthStreamingMode(data.length);
             conn.setUseCaches(false);
-            OutputStream out = null;
-            try {
-                out = conn.getOutputStream();
-                out.write(data);
-            } finally {
-                // XXX: don't use IOUtils.closeQuietly, we want exceptions thrown
-                if (out != null) {
-                    out.close();
+            conn.setDoOutput(true);
+
+            // handle multi-part forms
+            if (request.mContentType == MediaType.FORM_MULTIPART) {
+                final String boundary = "-------" + UUID.randomUUID().toString() + "-------";
+                conn.setRequestProperty("Content-Type", request.mContentType.mType + "; boundary=" + boundary);
+
+                final Closer closer = Closer.create();
+                try {
+                    final OutputStream out = closer.register(conn.getOutputStream());
+                    final BufferedOutputStream buf = closer.register(new BufferedOutputStream(out));
+                    final MultipartFormOutputWriter writer =
+                            closer.register(new MultipartFormOutputWriter(buf, boundary));
+
+                    // write all parameters
+                    for (final Parameter param : request.form) {
+                        if (param != null) {
+                            writer.writeParameter(param);
+                        }
+                    }
+
+                    // finish the Output
+                    writer.finish();
+                } catch (final Throwable t) {
+                    throw closer.rethrow(t);
+                } finally {
+                    closer.close();
+                }
+            } else {
+                // generate data to send
+                byte[] data = request.mContent;
+
+                // URL encoded form
+                if (data == null && request.mContentType == MediaType.FORM_URLENCODED) {
+                    final StringBuilder params = new StringBuilder();
+                    for (final Parameter param : request.form) {
+                        if (param != null && param.mValue != null) {
+                            if (params.length() > 0) {
+                                params.append('&');
+                            }
+                            params.append(URLEncoder.encode(param.mName, "UTF-8")).append('=')
+                                    .append(URLEncoder.encode(param.mValue, "UTF-8"));
+                        }
+                    }
+                    data = params.toString().getBytes("UTF-8");
+                }
+
+                // default data
+                if (data == null) {
+                    data = new byte[0];
+                }
+
+                // output data
+                conn.setFixedLengthStreamingMode(data.length);
+                final Closer closer = Closer.create();
+                try {
+                    final OutputStream out = closer.register(conn.getOutputStream());
+                    out.write(data);
+                } catch (final Throwable t) {
+                    throw closer.rethrow(t);
+                } finally {
+                    closer.close();
                 }
             }
         }
@@ -397,8 +475,15 @@ public abstract class AbstractApi<R extends Request<C, S>, C extends ExecutionCo
         public enum Method {GET, POST, PUT, DELETE}
 
         public enum MediaType {
-            APPLICATION_FORM_URLENCODED("application/x-www-form-urlencoded"), APPLICATION_JSON("application/json"),
-            APPLICATION_XML("application/xml"), TEXT_PLAIN("text/plain");
+            FORM_MULTIPART("multipart/form-data"), FORM_URLENCODED("application/x-www-form-urlencoded"),
+            APPLICATION_JSON("application/json"), APPLICATION_XML("application/xml"),
+            APPLICATION_OCTET_STREAM("application/octet-stream"), IMAGE_JPEG("image/jpeg"), TEXT_PLAIN("text/plain");
+
+            /**
+             * use MediaType.FORM_URLENCODED instead
+             */
+            @Deprecated
+            public static MediaType APPLICATION_FORM_URLENCODED = FORM_URLENCODED;
 
             final String mType;
 
@@ -408,12 +493,33 @@ public abstract class AbstractApi<R extends Request<C, S>, C extends ExecutionCo
         }
 
         public static final class Parameter {
+            @NonNull
             final String mName;
+            @Nullable
             final String mValue;
+
+            @Nullable
+            final File mFile;
+            @Nullable
+            final String mFileName;
+            @Nullable
+            final MediaType mType;
 
             Parameter(@NonNull final String name, @NonNull final String value) {
                 mName = name;
                 mValue = value;
+                mFile = null;
+                mFileName = null;
+                mType = null;
+            }
+
+            Parameter(@NonNull final String name, @NonNull final File file, @Nullable final String fileName,
+                      @Nullable final MediaType type) {
+                mName = name;
+                mValue = null;
+                mFile = file;
+                mFileName = fileName;
+                mType = type;
             }
         }
 
@@ -435,6 +541,7 @@ public abstract class AbstractApi<R extends Request<C, S>, C extends ExecutionCo
         MediaType mContentType = null;
         @Nullable
         byte[] mContent = null;
+        public final Collection<Parameter> form = new ArrayList<>();
 
         // session attributes
         public boolean useSession = false;
@@ -446,6 +553,10 @@ public abstract class AbstractApi<R extends Request<C, S>, C extends ExecutionCo
 
         public Request(@NonNull final String path) {
             mPath = path;
+        }
+
+        public void setContentType(@Nullable final MediaType type) {
+            mContentType = type;
         }
 
         public void setContent(@Nullable final MediaType type, @Nullable final byte[] data) {
