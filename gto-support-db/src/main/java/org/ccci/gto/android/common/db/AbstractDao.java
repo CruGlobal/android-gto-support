@@ -299,7 +299,7 @@ public abstract class AbstractDao {
     }
 
     @WorkerThread
-    public final <T> void update(@NonNull final T obj, @NonNull final String[] projection) {
+    public final <T> void update(@NonNull final T obj, @NonNull final String... projection) {
         @SuppressWarnings("unchecked")
         final Class<T> clazz = (Class<T>) obj.getClass();
         final String table = this.getTable(clazz);
@@ -324,7 +324,7 @@ public abstract class AbstractDao {
     }
 
     @WorkerThread
-    public final void updateOrInsert(@NonNull final Object obj, @NonNull final String[] projection) {
+    public final void updateOrInsert(@NonNull final Object obj, @NonNull final String... projection) {
         final Pair<String, String[]> where = this.getPrimaryKeyWhere(obj);
 
         final SQLiteDatabase db = mDbHelper.getWritableDatabase();
