@@ -172,6 +172,11 @@ public abstract class AbstractApi<R extends Request<C, S>, C extends ExecutionCo
     }
 
     @NonNull
+    protected final Parameter param(@NonNull final String name, final long value) {
+        return new Parameter(name, Long.toString(value));
+    }
+
+    @NonNull
     protected final Parameter param(@NonNull final String name, final boolean value) {
         return new Parameter(name, Boolean.toString(value));
     }
