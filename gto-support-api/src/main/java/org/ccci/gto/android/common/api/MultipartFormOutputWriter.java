@@ -60,8 +60,13 @@ final class MultipartFormOutputWriter implements Closeable {
         mOut.writeBytes(NEWLINE);
 
         // write content header
-        final String fileName =
-                param.mFileName != null ? param.mFileName : param.mFile != null ? param.mFile.getName() : "";
+        String fileName = param.mFileName;
+        if (fileName == null && param.mFile != null) {
+            fileName = param.mFile.getName();
+        }
+        if (fileName == null) {
+            fileName = "";
+        }
         mOut.writeBytes("Content-Disposition: form-data; name=\"" + param.mName + "\"; filename=\"" + fileName + "\"");
         mOut.writeBytes(NEWLINE);
         final MediaType type = param.mType != null ? param.mType : MediaType.APPLICATION_OCTET_STREAM;
