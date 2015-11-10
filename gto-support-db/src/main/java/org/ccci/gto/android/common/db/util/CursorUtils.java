@@ -78,6 +78,34 @@ public final class CursorUtils {
     }
 
     @Nullable
+    public static <E extends Enum<E>> E getEnum(@NonNull final Cursor c, @NonNull final String field,
+                                                final Class<E> clazz) {
+        return getEnum(c, field, clazz, null);
+    }
+
+    @Nullable
+    public static <E extends Enum<E>> E getEnum(@NonNull final Cursor c, @NonNull final String field,
+                                                final Class<E> clazz, @Nullable final E defValue) {
+        final String raw = getString(c, field, defValue != null ? defValue.toString() : null);
+
+        if (raw != null) {
+            try {
+                return Enum.valueOf(clazz, raw);
+            } catch (final Exception ignored) {
+            }
+        }
+
+        return defValue;
+    }
+
+    @NonNull
+    @SuppressWarnings("ConstantConditions")
+    public static <E extends Enum<E>> E getNonNullEnum(@NonNull final Cursor c, @NonNull final String field,
+                                                       final Class<E> clazz, @NonNull final E defValue) {
+        return getEnum(c, field, clazz, defValue);
+    }
+
+    @Nullable
     public static Locale getLocale(@NonNull final Cursor c, @NonNull final String field) {
         return getLocale(c, field, null);
     }
