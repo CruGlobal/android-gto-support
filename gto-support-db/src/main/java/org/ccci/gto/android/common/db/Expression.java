@@ -63,6 +63,16 @@ public abstract class Expression implements Parcelable {
     }
 
     @NonNull
+    public final Binary in(@NonNull final Expression... expressions) {
+        return new Binary(Binary.IN, ArrayUtils.merge(Expression.class, new Expression[] {this}, expressions));
+    }
+
+    @NonNull
+    public final Binary notIn(@NonNull final Expression... expressions) {
+        return new Binary(Binary.NOTIN, ArrayUtils.merge(Expression.class, new Expression[] {this}, expressions));
+    }
+
+    @NonNull
     public final Binary is(@NonNull final Expression expression) {
         return binaryExpr(Binary.IS, expression);
     }
@@ -174,6 +184,29 @@ public abstract class Expression implements Parcelable {
     @NonNull
     public static Literal constant(@NonNull final String value) {
         return new Literal(value, true);
+    }
+
+    @NonNull
+    public static Literal[] constants(@NonNull final Object... values) {
+        return constants(bindValues(values));
+    }
+
+    @NonNull
+    public static Literal[] constants(@NonNull final Number... values) {
+        final Literal[] constants = new Literal[values.length];
+        for (int i = 0; i < values.length; i++) {
+            constants[i] = constant(values[i]);
+        }
+        return constants;
+    }
+
+    @NonNull
+    public static Literal[] constants(@NonNull final String... values) {
+        final Literal[] constants = new Literal[values.length];
+        for (int i = 0; i < values.length; i++) {
+            constants[i] = constant(values[i]);
+        }
+        return constants;
     }
 
     @NonNull
@@ -437,6 +470,8 @@ public abstract class Expression implements Parcelable {
         static final String ISNOT = "IS NOT";
         static final String EQ = "==";
         static final String NE = "!=";
+        static final String IN = "IN";
+        static final String NOTIN = "NOT IN";
 
         @NonNull
         private final String mOp;
@@ -500,6 +535,10 @@ public abstract class Expression implements Parcelable {
                     return new Binary(ISNOT, mExprs);
                 case ISNOT:
                     return new Binary(IS, mExprs);
+                case IN:
+                    return new Binary(NOTIN, mExprs);
+                case NOTIN:
+                    return new Binary(IN, mExprs);
                 default:
                     return super.not();
             }
@@ -537,19 +576,38 @@ public abstract class Expression implements Parcelable {
         protected Pair<String, String[]> buildSql(@NonNull final AbstractDao dao) {
             // generate SQL if it hasn't been generated yet
             if (mSql == null) {
-                boolean first = true;
+                int i = 0;
                 final StringBuilder sql = new StringBuilder();
                 String[] args = NO_ARGS;
                 sql.append('(');
-                for (final Expression expr : mExprs) {
+
+                final boolean isIn = IN.equals(mOp) || NOTIN.equals(mOp);
+                if (isIn) {
+                    // "{mExpr[0]} IN ("
+                    final Pair<String, String[]> resp = mExprs[0].buildSql(dao);
+                    sql.append(resp.first);
+                    args = ArrayUtils.merge(String.class, args, resp.second);
+                    sql.append(' ').append(mOp).append(" (");
+                    i++;
+                }
+
+                // "{mExpr[i]} {mOp} {mExpr[i+1]} ..."
+                boolean first = true;
+                for (; i < mExprs.length; i++) {
+                    final Expression expr = mExprs[i];
                     if (!first) {
-                        sql.append(' ').append(mOp).append(' ');
+                        sql.append(' ').append(isIn ? ',' : mOp).append(' ');
                     }
                     final Pair<String, String[]> resp = expr.buildSql(dao);
                     sql.append(resp.first);
                     args = ArrayUtils.merge(String.class, args, resp.second);
                     first = false;
                 }
+
+                if (isIn) {
+                    sql.append(')');
+                }
+
                 sql.append(')');
                 mSql = Pair.create(sql.toString(), args);
             }
