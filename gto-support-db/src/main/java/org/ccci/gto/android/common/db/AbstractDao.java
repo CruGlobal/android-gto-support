@@ -256,12 +256,12 @@ public abstract class AbstractDao {
     }
 
     @WorkerThread
-    public final void insert(@NonNull final Object obj) {
-        this.insert(obj, SQLiteDatabase.CONFLICT_NONE);
+    public final long insert(@NonNull final Object obj) {
+        return insert(obj, SQLiteDatabase.CONFLICT_NONE);
     }
 
     @WorkerThread
-    public final <T> void insert(@NonNull final T obj, final int conflictAlgorithm) {
+    public final <T> long insert(@NonNull final T obj, final int conflictAlgorithm) {
         @SuppressWarnings("unchecked")
         final Class<T> clazz = (Class<T>) obj.getClass();
         final String table = getTable(clazz);
@@ -272,8 +272,9 @@ public abstract class AbstractDao {
         final Transaction tx = new Transaction(db);
         try {
             tx.beginTransactionNonExclusive();
-            db.insertWithOnConflict(table, null, values, conflictAlgorithm);
+            final long id = db.insertWithOnConflict(table, null, values, conflictAlgorithm);
             tx.setTransactionSuccessful();
+            return id;
         } finally {
             tx.endTransaction();
         }
