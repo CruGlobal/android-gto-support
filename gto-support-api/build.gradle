@@ -4,5 +4,5 @@ dependencies {
     compile project(':gto-support-core')
 
     compile 'com.google.guava:guava:18.0'
-    compile 'me.thekey.android:thekey-api:1.1.0'
+    compile 'me.thekey.android:thekey-api:1.1.1-SNAPSHOT'
 }
