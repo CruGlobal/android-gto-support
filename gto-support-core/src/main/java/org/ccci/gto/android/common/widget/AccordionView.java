@@ -7,6 +7,7 @@ import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.TimeInterpolator;
 import android.animation.ValueAnimator;
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.database.DataSetObservable;
@@ -603,6 +604,7 @@ public class AccordionView extends LinearLayout {
             }
 
             @Override
+            @SuppressLint("WrongConstant") // workaround https://code.google.com/p/android/issues/detail?id=182179
             public void onAnimationEnd(@NonNull final Animator animation) {
                 if (!mCanceled) {
                     mHolder.changeState(mTargetState);
