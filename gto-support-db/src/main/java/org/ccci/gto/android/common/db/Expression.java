@@ -58,6 +58,16 @@ public abstract class Expression implements Parcelable {
     }
 
     @NonNull
+    public final Binary eq(@NonNull final String constant) {
+        return eq(constant(constant));
+    }
+
+    @NonNull
+    public final Binary eq(@NonNull final Object constant) {
+        return eq(constant(constant));
+    }
+
+    @NonNull
     public final Binary eq(@NonNull final Expression expression) {
         return binaryExpr(Binary.EQ, expression);
     }
@@ -89,6 +99,16 @@ public abstract class Expression implements Parcelable {
 
     @NonNull
     public final Binary ne(@NonNull final Number constant) {
+        return ne(constant(constant));
+    }
+
+    @NonNull
+    public final Binary ne(@NonNull final String constant) {
+        return ne(constant(constant));
+    }
+
+    @NonNull
+    public final Binary ne(@NonNull final Object constant) {
         return ne(constant(constant));
     }
 
