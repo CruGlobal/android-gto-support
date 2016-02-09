@@ -58,12 +58,35 @@ public abstract class AbstractDao {
     }
 
     @NonNull
-    protected Pair<String, String[]> getPrimaryKeyWhere(@NonNull final Class<?> clazz, @NonNull final Object... key) {
-        throw new IllegalArgumentException("invalid class specified: " + clazz.getName());
+    protected Expression getPrimaryKeyWhere(@NonNull final Class<?> clazz, @NonNull final Object... key) {
+        // fallback to legacy getPrimaryKeyWhere() method
+        final Pair<String, String[]> raw = getPrimaryKeyWhereRaw(clazz, key);
+        return Expression.raw(raw.first, raw.second);
     }
 
     @NonNull
-    protected Pair<String, String[]> getPrimaryKeyWhere(@NonNull final Object obj) {
+    protected Expression getPrimaryKeyWhere(@NonNull final Object obj) {
+        // fallback to legacy getPrimaryKeyWhere() method
+        final Pair<String, String[]> raw = getPrimaryKeyWhereRaw(obj);
+        return Expression.raw(raw.first, raw.second);
+    }
+
+    /**
+     * @deprecated override {@link AbstractDao#getPrimaryKeyWhere(Class, Object...)} instead.
+     */
+    @NonNull
+    @Deprecated
+    protected Pair<String, String[]> getPrimaryKeyWhereRaw(@NonNull final Class<?> clazz,
+                                                           @NonNull final Object... key) {
+        throw new IllegalArgumentException("invalid class specified: " + clazz.getName());
+    }
+
+    /**
+     * @deprecated override {@link AbstractDao#getPrimaryKeyWhere(Object)} instead.
+     */
+    @NonNull
+    @Deprecated
+    protected Pair<String, String[]> getPrimaryKeyWhereRaw(@NonNull final Object obj) {
         throw new IllegalArgumentException("unsupported object");
     }
 
@@ -230,10 +253,16 @@ public abstract class AbstractDao {
     @Nullable
     @WorkerThread
     public final <T> T find(@NonNull final Class<T> clazz, @NonNull final Object... key) {
+        return find(clazz, getPrimaryKeyWhere(clazz, key));
+    }
+
+    @Nullable
+    @WorkerThread
+    private <T> T find(@NonNull final Class<T> clazz, @NonNull final Expression where) {
         // return the first record if it exists
         Cursor c = null;
         try {
-            c = getCursor(Query.select(clazz).where(getPrimaryKeyWhere(clazz, key)));
+            c = getCursor(Query.select(clazz).where(where));
             if (c.getCount() > 0) {
                 c.moveToFirst();
                 return this.getMapper(clazz).toObject(c);
@@ -252,7 +281,7 @@ public abstract class AbstractDao {
     @WorkerThread
     @SuppressWarnings("unchecked")
     public final <T> T refresh(@NonNull T obj) {
-        return find((Class<T>) obj.getClass(), getPrimaryKeyWhere(obj).second);
+        return find((Class<T>) obj.getClass(), getPrimaryKeyWhere(obj));
     }
 
     @WorkerThread
@@ -305,7 +334,7 @@ public abstract class AbstractDao {
         final Class<T> clazz = (Class<T>) obj.getClass();
         final String table = this.getTable(clazz);
         final ContentValues values = this.getMapper(clazz).toContentValues(obj, projection);
-        final Pair<String, String[]> where = this.getPrimaryKeyWhere(obj);
+        final Pair<String, String[]> where = this.getPrimaryKeyWhere(obj).buildSql(this);
 
         // execute update
         final SQLiteDatabase db = mDbHelper.getWritableDatabase();
@@ -326,13 +355,13 @@ public abstract class AbstractDao {
 
     @WorkerThread
     public final void updateOrInsert(@NonNull final Object obj, @NonNull final String... projection) {
-        final Pair<String, String[]> where = this.getPrimaryKeyWhere(obj);
+        final Expression where = this.getPrimaryKeyWhere(obj);
 
         final SQLiteDatabase db = mDbHelper.getWritableDatabase();
         final Transaction tx = new Transaction(db);
         try {
             tx.beginTransactionNonExclusive();
-            final Object existing = find(obj.getClass(), where.second);
+            final Object existing = find(obj.getClass(), where);
             if (existing != null) {
                 this.update(obj, projection);
             } else {
@@ -362,7 +391,7 @@ public abstract class AbstractDao {
     @WorkerThread
     public final void delete(@NonNull final Object obj) {
         final String table = this.getTable(obj.getClass());
-        final Pair<String, String[]> where = this.getPrimaryKeyWhere(obj);
+        final Pair<String, String[]> where = getPrimaryKeyWhere(obj).buildSql(this);
 
         final SQLiteDatabase db = mDbHelper.getWritableDatabase();
         final Transaction tx = new Transaction(db);
