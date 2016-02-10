@@ -423,6 +423,11 @@ public abstract class AbstractDao {
     }
 
     @NonNull
+    protected final Pair<String, String[]> compileExpression(@NonNull final Expression expression) {
+        return expression.buildSql(this);
+    }
+
+    @NonNull
     @WorkerThread
     public final Transaction newTransaction() {
         return new Transaction(mDbHelper.getWritableDatabase());
