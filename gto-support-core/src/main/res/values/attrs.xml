@@ -4,4 +4,9 @@
         <attr name="anchorView" format="reference"/>
         <attr name="affixingView" format="reference"/>
     </declare-styleable>
+    <declare-styleable name="RatioLayout">
+        <attr name="aspectRatio" format="float" />
+        <attr name="aspectRatioWidth" format="float" />
+        <attr name="aspectRatioHeight" format="float" />
+    </declare-styleable>
 </resources>
