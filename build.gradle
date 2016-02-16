@@ -11,7 +11,7 @@ buildscript {
 
 subprojects {
     group 'org.ccci.gto.android'
-    version '0.8.0-SNAPSHOT'
+    version '0.8.0'
 
     repositories {
         mavenLocal()
