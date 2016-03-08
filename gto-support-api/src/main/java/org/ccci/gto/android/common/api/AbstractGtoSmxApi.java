@@ -12,7 +12,6 @@ import android.support.annotation.WorkerThread;
 import org.ccci.gto.android.common.api.AbstractApi.Request.MediaType;
 import org.ccci.gto.android.common.api.AbstractGtoSmxApi.Request;
 import org.ccci.gto.android.common.api.AbstractTheKeyApi.ExecutionContext;
-import org.ccci.gto.android.common.api.AbstractTheKeyApi.Session;
 import org.ccci.gto.android.common.util.IOUtils;
 
 import java.io.IOException;
@@ -23,7 +22,7 @@ import me.thekey.android.TheKey;
 import me.thekey.android.TheKeySocketException;
 
 public abstract class AbstractGtoSmxApi
-        extends AbstractTheKeyApi<Request, ExecutionContext<Session>, Session> {
+        extends AbstractTheKeyApi<Request, ExecutionContext<TheKeySession>, TheKeySession> {
     private static final String PARAM_APPVERSION = "_appVersion";
 
     private final String appVersion;
@@ -80,14 +79,14 @@ public abstract class AbstractGtoSmxApi
 
     @Nullable
     @Override
-    protected final Session loadSession(@NonNull final SharedPreferences prefs, @NonNull final Request request) {
+    protected final TheKeySession loadSession(@NonNull final SharedPreferences prefs, @NonNull final Request request) {
         assert request.context != null;
-        return new Session(prefs, request.context.guid);
+        return new TheKeySession(prefs, request.context.guid);
     }
 
     @Nullable
     @Override
-    protected Session establishSession(@NonNull final Request request) throws ApiException {
+    protected TheKeySession establishSession(@NonNull final Request request) throws ApiException {
         assert request.context != null;
 
         // short-circuit if we don't have a guid to establish a session for
@@ -125,7 +124,7 @@ public abstract class AbstractGtoSmxApi
         }
 
         // create & return a session object
-        return sessionId != null ? new Session(sessionId, request.context.guid) : null;
+        return sessionId != null ? new TheKeySession(sessionId, request.context.guid) : null;
     }
 
     @Override
@@ -274,7 +273,7 @@ public abstract class AbstractGtoSmxApi
     /**
      * class that represents a request being sent to the api
      */
-    protected static class Request extends AbstractTheKeyApi.Request<ExecutionContext<Session>, Session> {
+    protected static class Request extends AbstractTheKeyApi.Request<ExecutionContext<TheKeySession>, TheKeySession> {
         public Request(@NonNull final String path) {
             super(path);
         }
