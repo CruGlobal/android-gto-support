@@ -180,7 +180,7 @@ public abstract class AbstractTheKeyApi<R extends Request<C, S>, C extends Execu
         return null;
     }
 
-    public static class Session extends AbstractApi.Session {
+    public static class Session extends org.ccci.gto.android.common.api.Session {
         @Nullable
         private final String guid;
 
@@ -204,7 +204,7 @@ public abstract class AbstractTheKeyApi<R extends Request<C, S>, C extends Execu
         }
 
         @Override
-        protected boolean isValid() {
+        public boolean isValid() {
             return super.isValid() && this.guid != null;
         }
 
