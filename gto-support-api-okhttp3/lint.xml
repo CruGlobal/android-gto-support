@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lint>
+    <issue id="InvalidPackage">
+        <ignore regexp="okio-([0-9]*\.?)*\.jar"/>
+        <ignore regexp="retrofit-([0-9]*\.?)*(-(beta[0-9]*))?\.jar"/>
+    </issue>
+</lint>
