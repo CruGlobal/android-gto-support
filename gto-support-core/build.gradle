@@ -1,5 +1,3 @@
-apply plugin: 'com.android.library'
-
 android {
     defaultConfig {
         consumerProguardFiles 'proguard-consumer.pro'

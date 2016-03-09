@@ -1,5 +1,3 @@
 dependencies {
     compile project(':gto-support-core')
-
-    compile 'com.squareup.picasso:picasso:2.5.2'
 }

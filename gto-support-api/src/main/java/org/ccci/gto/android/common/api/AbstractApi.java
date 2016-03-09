@@ -15,7 +15,6 @@ import org.ccci.gto.android.common.api.AbstractApi.ExecutionContext;
 import org.ccci.gto.android.common.api.AbstractApi.Request;
 import org.ccci.gto.android.common.api.AbstractApi.Request.MediaType;
 import org.ccci.gto.android.common.api.AbstractApi.Request.Parameter;
-import org.ccci.gto.android.common.api.AbstractApi.Session;
 import org.ccci.gto.android.common.util.IOUtils;
 import org.ccci.gto.android.common.util.UriUtils;
 import org.json.JSONArray;
@@ -37,7 +36,6 @@ import java.util.UUID;
 
 public abstract class AbstractApi<R extends Request<C, S>, C extends ExecutionContext<S>, S extends Session> {
     private static final int DEFAULT_ATTEMPTS = 3;
-    protected static final String PREF_SESSION_BASE_NAME = "session";
 
     protected final Object LOCK_SESSION = new Object();
 
@@ -398,65 +396,6 @@ public abstract class AbstractApi<R extends Request<C, S>, C extends ExecutionCo
     }
 
     /* END request lifecycle events */
-
-    /**
-     * Object representing an individual session for this API. Can be extended to track additional session data.
-     */
-    public static class Session {
-        @NonNull
-        private final String baseAttrName;
-
-        @Nullable
-        public final String id;
-
-        protected Session(@Nullable final String id) {
-            this(id, PREF_SESSION_BASE_NAME);
-        }
-
-        protected Session(@Nullable final String id, @Nullable final String baseAttrName) {
-            this.baseAttrName = baseAttrName != null ? baseAttrName : PREF_SESSION_BASE_NAME;
-            this.id = id;
-        }
-
-        protected Session(@NonNull final SharedPreferences prefs) {
-            this(prefs, null);
-        }
-
-        protected Session(@NonNull final SharedPreferences prefs, @Nullable final String baseAttrName) {
-            this.baseAttrName = baseAttrName != null ? baseAttrName : PREF_SESSION_BASE_NAME;
-            this.id = prefs.getString(getPrefAttrName("id"), null);
-        }
-
-        protected boolean isValid() {
-            return this.id != null;
-        }
-
-        @NonNull
-        protected final String getPrefAttrName(@NonNull final String type) {
-            return baseAttrName + "." + type;
-        }
-
-        protected void save(@NonNull final SharedPreferences.Editor prefs) {
-            prefs.putString(getPrefAttrName("id"), this.id);
-        }
-
-        protected void delete(@NonNull final SharedPreferences.Editor prefs) {
-            prefs.remove(getPrefAttrName("id"));
-        }
-
-        @Override
-        public boolean equals(final Object o) {
-            if (this == o) {
-                return true;
-            }
-            if (o == null || getClass() != o.getClass()) {
-                return false;
-            }
-
-            final Session that = (Session) o;
-            return !(id != null ? !id.equals(that.id) : that.id != null);
-        }
-    }
 
     /**
      * Object tracking the execution context data for processing a request.

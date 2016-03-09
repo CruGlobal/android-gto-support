@@ -12,16 +12,14 @@ import android.support.annotation.Nullable;
 
 import org.ccci.gto.android.common.api.AbstractTheKeyApi.ExecutionContext;
 import org.ccci.gto.android.common.api.AbstractTheKeyApi.Request;
-import org.ccci.gto.android.common.api.AbstractTheKeyApi.Session;
 import org.ccci.gto.android.common.util.HttpHeaderUtils;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
-import java.util.Locale;
 
 import me.thekey.android.TheKey;
 
-public abstract class AbstractTheKeyApi<R extends Request<C, S>, C extends ExecutionContext<S>, S extends Session>
+public abstract class AbstractTheKeyApi<R extends Request<C, S>, C extends ExecutionContext<S>, S extends TheKeySession>
         extends AbstractApi<R, C, S> {
     private static final String PREF_CACHED_SERVICE = "service";
 
@@ -180,54 +178,13 @@ public abstract class AbstractTheKeyApi<R extends Request<C, S>, C extends Execu
         return null;
     }
 
-    public static class Session extends AbstractApi.Session {
-        @Nullable
-        private final String guid;
-
-        protected Session(@Nullable final String id, @Nullable final String guid) {
-            this(id, guid, PREF_SESSION_BASE_NAME);
-        }
-
-        protected Session(@Nullable final String id, @Nullable final String guid, @NonNull final String baseAttrName) {
-            super(id, (guid != null ? guid.toUpperCase(Locale.US) + "." : "") + baseAttrName);
-            this.guid = guid != null ? guid.toUpperCase(Locale.US) : null;
-        }
-
-        protected Session(@NonNull final SharedPreferences prefs, @Nullable final String guid) {
-            this(prefs, guid, PREF_SESSION_BASE_NAME);
-        }
-
-        protected Session(@NonNull final SharedPreferences prefs, @Nullable final String guid,
-                          @NonNull final String baseAttrName) {
-            super(prefs, (guid != null ? guid.toUpperCase(Locale.US) + "." : "") + baseAttrName);
-            this.guid = guid != null ? guid.toUpperCase(Locale.US) : null;
-        }
-
-        @Override
-        protected boolean isValid() {
-            return super.isValid() && this.guid != null;
-        }
-
-        @Override
-        public boolean equals(final Object o) {
-            if (this == o) {
-                return true;
-            }
-            if (o == null || getClass() != o.getClass()) {
-                return false;
-            }
-
-            final Session that = (Session) o;
-            return super.equals(o) && !(guid != null ? !guid.equals(that.guid) : that.guid != null);
-        }
-    }
-
-    public static class ExecutionContext<S extends Session> extends AbstractApi.ExecutionContext<S> {
+    public static class ExecutionContext<S extends TheKeySession> extends AbstractApi.ExecutionContext<S> {
         @Nullable
         public String guid = null;
     }
 
-    public static class Request<C extends ExecutionContext<S>, S extends Session> extends AbstractApi.Request<C, S> {
+    public static class Request<C extends ExecutionContext<S>, S extends TheKeySession>
+            extends AbstractApi.Request<C, S> {
         public Request(@NonNull final String path) {
             super(path);
             // use sessions by default for The Key protected APIs

@@ -1,7 +1,6 @@
-apply plugin: 'com.android.library'
-
 dependencies {
     compile project(':gto-support-core')
+    compile project(':gto-support-api-base')
 
     compile 'com.google.guava:guava:18.0'
     compile 'me.thekey.android:thekey-api:1.1.1'
