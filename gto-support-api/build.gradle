@@ -1,5 +1,3 @@
-apply plugin: 'com.android.library'
-
 dependencies {
     compile project(':gto-support-core')
     compile project(':gto-support-api-base')
