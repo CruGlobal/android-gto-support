@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 
 import org.ccci.gto.android.common.db.util.CursorUtils;
 
+import java.math.BigDecimal;
 import java.util.Locale;
 
 public abstract class AbstractMapper<T> implements Mapper<T> {
@@ -62,6 +63,12 @@ public abstract class AbstractMapper<T> implements Mapper<T> {
     protected final String getNonNullString(@NonNull final Cursor c, @NonNull final String field,
                                             @NonNull final String defValue) {
         return CursorUtils.getNonNullString(c, field, defValue);
+    }
+
+    @Nullable
+    protected final BigDecimal getBigDecimal(@NonNull final Cursor c, @NonNull final String field,
+                                             @Nullable final BigDecimal defValue) {
+        return CursorUtils.getBigDecimal(c, field, defValue);
     }
 
     @Nullable

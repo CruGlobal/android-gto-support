@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 
 import org.ccci.gto.android.common.util.LocaleCompat;
 
+import java.math.BigDecimal;
 import java.util.Locale;
 
 public final class CursorUtils {
@@ -75,6 +76,19 @@ public final class CursorUtils {
                                           @NonNull final String defValue) {
         final String val = getString(c, field, defValue);
         return val != null ? val : defValue;
+    }
+
+    @Nullable
+    public static BigDecimal getBigDecimal(@NonNull final Cursor c, @NonNull final String field,
+                                           @Nullable final BigDecimal defValue) {
+        final String raw = getString(c, field, null);
+        if (raw != null) {
+            try {
+                return new BigDecimal(raw);
+            } catch (final Exception ignored) {
+            }
+        }
+        return defValue;
     }
 
     @Nullable

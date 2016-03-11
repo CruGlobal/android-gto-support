@@ -8,6 +8,7 @@ import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.WorkerThread;
+import android.support.v4.util.SimpleArrayMap;
 import android.util.Pair;
 
 import org.ccci.gto.android.common.util.ArrayUtils;
@@ -28,6 +29,7 @@ public abstract class AbstractDao {
 
     @NonNull
     private final SQLiteOpenHelper mDbHelper;
+    private final SimpleArrayMap<Class<?>, TableType> mTableTypes = new SimpleArrayMap<>();
 
     protected AbstractDao(@NonNull final SQLiteOpenHelper helper) {
         mDbHelper = helper;
@@ -43,13 +45,31 @@ public abstract class AbstractDao {
         return mDbHelper.getWritableDatabase();
     }
 
+    protected final <T> void registerType(@NonNull final Class<T> clazz, @NonNull final String table,
+                                          @Nullable final String[] projection, @Nullable final Mapper<T> mapper,
+                                          @Nullable final Expression pkWhere) {
+        mTableTypes.put(clazz, new TableType(table, projection, mapper, pkWhere));
+    }
+
     @NonNull
     protected String getTable(@NonNull final Class<?> clazz) {
+        // check for a registered type
+        final TableType type = mTableTypes.get(clazz);
+        if (type != null) {
+            return type.mTable;
+        }
+
         throw new IllegalArgumentException("invalid class specified: " + clazz.getName());
     }
 
     @NonNull
     public String[] getFullProjection(@NonNull final Class<?> clazz) {
+        // check for a registered type
+        final TableType type = mTableTypes.get(clazz);
+        if (type != null && type.mProjection != null) {
+            return type.mProjection;
+        }
+
         throw new IllegalArgumentException("invalid class specified: " + clazz.getName());
     }
 
@@ -60,6 +80,12 @@ public abstract class AbstractDao {
 
     @NonNull
     protected Expression getPrimaryKeyWhere(@NonNull final Class<?> clazz) {
+        // check for a registered type
+        final TableType type = mTableTypes.get(clazz);
+        if (type != null && type.mPrimaryWhere != null) {
+            return type.mPrimaryWhere;
+        }
+
         throw new IllegalArgumentException("invalid class specified: " + clazz.getName());
     }
 
@@ -109,7 +135,14 @@ public abstract class AbstractDao {
     }
 
     @NonNull
+    @SuppressWarnings("unchecked")
     protected <T> Mapper<T> getMapper(@NonNull final Class<T> clazz) {
+        // check for a registered type
+        final TableType type = mTableTypes.get(clazz);
+        if (type != null && type.mMapper != null) {
+            return (Mapper<T>) type.mMapper;
+        }
+
         throw new IllegalArgumentException("invalid class specified");
     }
 
@@ -437,5 +470,24 @@ public abstract class AbstractDao {
     @WorkerThread
     public final Transaction beginTransaction() {
         return newTransaction().beginTransaction();
+    }
+
+    private static final class TableType {
+        @NonNull
+        final String mTable;
+        @Nullable
+        final String[] mProjection;
+        @Nullable
+        final Mapper<?> mMapper;
+        @Nullable
+        final Expression mPrimaryWhere;
+
+        public TableType(@NonNull final String table, @Nullable final String[] projection,
+                         @Nullable final Mapper<?> mapper, @Nullable final Expression where) {
+            mTable = table;
+            mProjection = projection;
+            mMapper = mapper;
+            mPrimaryWhere = where;
+        }
     }
 }
