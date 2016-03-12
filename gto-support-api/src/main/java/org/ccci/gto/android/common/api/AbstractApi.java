@@ -423,12 +423,6 @@ public abstract class AbstractApi<R extends Request<C, S>, C extends ExecutionCo
             APPLICATION_JSON("application/json"), APPLICATION_XML("application/xml"),
             APPLICATION_OCTET_STREAM("application/octet-stream"), IMAGE_JPEG("image/jpeg"), TEXT_PLAIN("text/plain");
 
-            /**
-             * use MediaType.FORM_URLENCODED instead
-             */
-            @Deprecated
-            public static MediaType APPLICATION_FORM_URLENCODED = FORM_URLENCODED;
-
             final String mType;
 
             MediaType(final String type) {

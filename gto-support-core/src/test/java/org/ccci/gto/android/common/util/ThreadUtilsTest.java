@@ -1,13 +1,12 @@
 package org.ccci.gto.android.common.util;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-
-import org.ccci.gto.android.common.util.ThreadUtils.GenericKey;
 import org.junit.Test;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 
 public class ThreadUtilsTest {
     @Test
