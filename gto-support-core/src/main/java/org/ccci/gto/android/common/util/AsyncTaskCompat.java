@@ -11,35 +11,72 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 public class AsyncTaskCompat {
-    private static final Object LOCK_EXECUTOR = new Object();
-    private static Executor EXECUTOR;
+    private static final Compat COMPAT;
+    static {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
+            COMPAT = new FroyoCompat();
+        } else {
+            COMPAT = new HoneycombCompat();
+        }
+    }
 
-    @NonNull
-    @TargetApi(Build.VERSION_CODES.GINGERBREAD)
-    private static Executor getExecutor() {
-        synchronized (LOCK_EXECUTOR) {
-            if (EXECUTOR == null) {
-                EXECUTOR = Executors.newFixedThreadPool(1);
-                if (EXECUTOR instanceof ThreadPoolExecutor) {
-                    ((ThreadPoolExecutor) EXECUTOR).setKeepAliveTime(30, TimeUnit.SECONDS);
+    public static final Executor SERIAL_EXECUTOR = COMPAT.serialExecutor();
+
+    public static void execute(@NonNull final Runnable task) {
+        COMPAT.execute(task);
+    }
+
+    interface Compat {
+        void execute(@NonNull Runnable task);
+
+        @NonNull
+        Executor serialExecutor();
+    }
+
+    static class FroyoCompat implements Compat {
+        private Executor mExecutor;
+
+        @NonNull
+        @TargetApi(Build.VERSION_CODES.GINGERBREAD)
+        private synchronized Executor getExecutor() {
+            if (mExecutor == null) {
+                mExecutor = Executors.newFixedThreadPool(1);
+                if (mExecutor instanceof ThreadPoolExecutor) {
+                    ((ThreadPoolExecutor) mExecutor).setKeepAliveTime(30, TimeUnit.SECONDS);
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD) {
-                        ((ThreadPoolExecutor) EXECUTOR).allowCoreThreadTimeOut(true);
+                        ((ThreadPoolExecutor) mExecutor).allowCoreThreadTimeOut(true);
                     } else {
-                        ((ThreadPoolExecutor) EXECUTOR).setCorePoolSize(0);
+                        ((ThreadPoolExecutor) mExecutor).setCorePoolSize(0);
                     }
                 }
             }
 
-            return EXECUTOR;
+            return mExecutor;
+        }
+
+        @Override
+        public void execute(@NonNull final Runnable task) {
+            getExecutor().execute(task);
+        }
+
+        @NonNull
+        @Override
+        public Executor serialExecutor() {
+            return getExecutor();
         }
     }
 
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-    public static void execute(@NonNull final Runnable task) {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
-            getExecutor().execute(task);
-        } else {
+    static class HoneycombCompat extends FroyoCompat {
+        @Override
+        public void execute(@NonNull Runnable task) {
             AsyncTask.execute(task);
+        }
+
+        @NonNull
+        @Override
+        public Executor serialExecutor() {
+            return AsyncTask.SERIAL_EXECUTOR;
         }
     }
 }
