@@ -20,41 +20,38 @@ public class AsyncTaskCompat {
         }
     }
 
+    public static final Executor SERIAL_EXECUTOR = COMPAT.serialExecutor();
+
     public static void execute(@NonNull final Runnable task) {
         COMPAT.execute(task);
-    }
-
-    @NonNull
-    public static Executor SERIAL_EXECUTOR() {
-        return COMPAT.SERIAL_EXECUTOR();
     }
 
     interface Compat {
         void execute(@NonNull Runnable task);
 
         @NonNull
-        Executor SERIAL_EXECUTOR();
+        Executor serialExecutor();
     }
 
     static class FroyoCompat implements Compat {
-        private static Executor EXECUTOR;
+        private Executor mExecutor;
 
         @NonNull
         @TargetApi(Build.VERSION_CODES.GINGERBREAD)
-        private static synchronized Executor getExecutor() {
-            if (EXECUTOR == null) {
-                EXECUTOR = Executors.newFixedThreadPool(1);
-                if (EXECUTOR instanceof ThreadPoolExecutor) {
-                    ((ThreadPoolExecutor) EXECUTOR).setKeepAliveTime(30, TimeUnit.SECONDS);
+        private synchronized Executor getExecutor() {
+            if (mExecutor == null) {
+                mExecutor = Executors.newFixedThreadPool(1);
+                if (mExecutor instanceof ThreadPoolExecutor) {
+                    ((ThreadPoolExecutor) mExecutor).setKeepAliveTime(30, TimeUnit.SECONDS);
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD) {
-                        ((ThreadPoolExecutor) EXECUTOR).allowCoreThreadTimeOut(true);
+                        ((ThreadPoolExecutor) mExecutor).allowCoreThreadTimeOut(true);
                     } else {
-                        ((ThreadPoolExecutor) EXECUTOR).setCorePoolSize(0);
+                        ((ThreadPoolExecutor) mExecutor).setCorePoolSize(0);
                     }
                 }
             }
 
-            return EXECUTOR;
+            return mExecutor;
         }
 
         @Override
@@ -64,7 +61,7 @@ public class AsyncTaskCompat {
 
         @NonNull
         @Override
-        public Executor SERIAL_EXECUTOR() {
+        public Executor serialExecutor() {
             return getExecutor();
         }
     }
@@ -78,7 +75,7 @@ public class AsyncTaskCompat {
 
         @NonNull
         @Override
-        public Executor SERIAL_EXECUTOR() {
+        public Executor serialExecutor() {
             return AsyncTask.SERIAL_EXECUTOR;
         }
     }
