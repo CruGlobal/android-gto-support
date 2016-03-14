@@ -11,13 +11,37 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 public class AsyncTaskCompat {
-    private static final Object LOCK_EXECUTOR = new Object();
-    private static Executor EXECUTOR;
+    private static final Compat COMPAT;
+    static {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
+            COMPAT = new FroyoCompat();
+        } else {
+            COMPAT = new HoneycombCompat();
+        }
+    }
+
+    public static void execute(@NonNull final Runnable task) {
+        COMPAT.execute(task);
+    }
 
     @NonNull
-    @TargetApi(Build.VERSION_CODES.GINGERBREAD)
-    private static Executor getExecutor() {
-        synchronized (LOCK_EXECUTOR) {
+    public static Executor SERIAL_EXECUTOR() {
+        return COMPAT.SERIAL_EXECUTOR();
+    }
+
+    interface Compat {
+        void execute(@NonNull Runnable task);
+
+        @NonNull
+        Executor SERIAL_EXECUTOR();
+    }
+
+    static class FroyoCompat implements Compat {
+        private static Executor EXECUTOR;
+
+        @NonNull
+        @TargetApi(Build.VERSION_CODES.GINGERBREAD)
+        private static synchronized Executor getExecutor() {
             if (EXECUTOR == null) {
                 EXECUTOR = Executors.newFixedThreadPool(1);
                 if (EXECUTOR instanceof ThreadPoolExecutor) {
@@ -32,14 +56,30 @@ public class AsyncTaskCompat {
 
             return EXECUTOR;
         }
+
+        @Override
+        public void execute(@NonNull final Runnable task) {
+            getExecutor().execute(task);
+        }
+
+        @NonNull
+        @Override
+        public Executor SERIAL_EXECUTOR() {
+            return getExecutor();
+        }
     }
 
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-    public static void execute(@NonNull final Runnable task) {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
-            getExecutor().execute(task);
-        } else {
+    static class HoneycombCompat extends FroyoCompat {
+        @Override
+        public void execute(@NonNull Runnable task) {
             AsyncTask.execute(task);
+        }
+
+        @NonNull
+        @Override
+        public Executor SERIAL_EXECUTOR() {
+            return AsyncTask.SERIAL_EXECUTOR;
         }
     }
 }
