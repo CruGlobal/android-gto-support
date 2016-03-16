@@ -8,6 +8,7 @@ import android.support.annotation.Nullable;
 import org.ccci.gto.android.common.db.util.CursorUtils;
 
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.Locale;
 
 public abstract class AbstractMapper<T> implements Mapper<T> {
@@ -72,6 +73,16 @@ public abstract class AbstractMapper<T> implements Mapper<T> {
     }
 
     @Nullable
+    protected final Date getDate(@NonNull final Cursor c, @NonNull final String field) {
+        return CursorUtils.getDate(c, field);
+    }
+
+    @Nullable
+    protected final Date getDate(@NonNull final Cursor c, @NonNull final String field, @Nullable final Date defValue) {
+        return CursorUtils.getDate(c, field, defValue);
+    }
+
+    @Nullable
     protected final Locale getLocale(@NonNull final Cursor c, @NonNull final String field) {
         return CursorUtils.getLocale(c, field);
     }
@@ -86,6 +97,11 @@ public abstract class AbstractMapper<T> implements Mapper<T> {
     protected final Locale getNonNullLocale(@NonNull final Cursor c, @NonNull final String field,
                                             @NonNull final Locale defValue) {
         return CursorUtils.getNonNullLocale(c, field, defValue);
+    }
+
+    @Nullable
+    protected final Long serialize(@Nullable final Date date) {
+        return date != null ? date.getTime() : null;
     }
 
     @NonNull

@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import org.ccci.gto.android.common.util.LocaleCompat;
 
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.Locale;
 
 public final class CursorUtils {
@@ -85,6 +86,23 @@ public final class CursorUtils {
         if (raw != null) {
             try {
                 return new BigDecimal(raw);
+            } catch (final Exception ignored) {
+            }
+        }
+        return defValue;
+    }
+
+    @Nullable
+    public static Date getDate(@NonNull final Cursor c, @NonNull final String field) {
+        return getDate(c, field, null);
+    }
+
+    @Nullable
+    public static Date getDate(@NonNull final Cursor c, @NonNull final String field, @Nullable final Date defValue) {
+        final String raw = getString(c, field, null);
+        if (raw != null) {
+            try {
+                return new Date(Long.parseLong(raw));
             } catch (final Exception ignored) {
             }
         }
