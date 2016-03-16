@@ -9,6 +9,11 @@ buildscript {
     }
 }
 
+// define dependency versions for this project
+ext.deps = [
+    androidSupport: '23.2.1'
+]
+
 subprojects {
     apply plugin: 'com.android.library'
 
@@ -45,7 +50,7 @@ subprojects {
         }
 
         dependencies {
-            compile 'com.android.support:support-annotations:23.1.0'
+            compile 'com.android.support:support-annotations:' + deps.androidSupport
         }
     }
 
