@@ -1,2 +1,2 @@
-include ':gto-support-api-base', ':gto-support-api-okhttp3', ':gto-support-api', ':gto-support-core',
+include ':gto-support-api-base', ':gto-support-api-okhttp3', ':gto-support-api', ':gto-support-core', ':gto-support-eventbus',
         ':gto-support-db', ':gto-support-newrelic', ':gto-support-picasso', ':gto-support-recyclerview'
