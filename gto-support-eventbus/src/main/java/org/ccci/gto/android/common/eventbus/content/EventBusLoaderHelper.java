@@ -18,11 +18,7 @@ public class EventBusLoaderHelper {
     @NonNull
     private Object mEventBusListener;
 
-    public EventBusLoaderHelper(@NonNull final Loader loader, @NonNull final Object listener) {
-        this(loader, listener, null);
-    }
-
-    public EventBusLoaderHelper(@NonNull final Loader loader, @NonNull final Object listener,
+    public EventBusLoaderHelper(@NonNull final Loader loader, @Nullable final Object listener,
                                 @Nullable final EventBus eventBus) {
         mLoader = loader;
         setEventBusListener(listener);
@@ -34,7 +30,11 @@ public class EventBusLoaderHelper {
         }
     }
 
-    public void setEventBusListener(@NonNull Object listener) {
+    public void setEventBusListener(@Nullable Object listener) {
+        if(listener == null) {
+            listener = mLoader;
+        }
+
         synchronized (this) {
             // Register the new listener and unregister the old listener.
             // We overlap registrations to not drop broadcasts

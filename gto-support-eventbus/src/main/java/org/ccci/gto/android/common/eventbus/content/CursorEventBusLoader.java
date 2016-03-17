@@ -6,18 +6,25 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.CursorLoader;
 
+import org.greenrobot.eventbus.EventBus;
+
 public abstract class CursorEventBusLoader extends CursorLoader
         implements EventBusLoaderHelper.Interface {
     @NonNull
     private final EventBusLoaderHelper mHelper;
 
     public CursorEventBusLoader(@NonNull final Context context) {
-        this(context, this);
+        this(context, null, null);
     }
 
-    public CursorEventBusLoader(@NonNull final Context context, @NonNull final Object listener) {
+    public CursorEventBusLoader(@NonNull final Context context, @Nullable Object listener) {
+        this(context, listener, null);
+    }
+
+    public CursorEventBusLoader(@NonNull final Context context, @Nullable Object listener,
+                                @Nullable EventBus eventBus) {
         super(context);
-        mHelper = new EventBusLoaderHelper(this, listener);
+        mHelper = new EventBusLoaderHelper(this, listener, eventBus);
     }
 
     /* BEGIN lifecycle */
@@ -37,7 +44,7 @@ public abstract class CursorEventBusLoader extends CursorLoader
     /* END lifecycle */
 
     @Override
-    public void setEventBusListener(@NonNull Object listener) {
+    public void setEventBusListener(@Nullable Object listener) {
         mHelper.setEventBusListener(listener);
     }
 
