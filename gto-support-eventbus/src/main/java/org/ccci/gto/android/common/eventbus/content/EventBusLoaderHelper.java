@@ -7,6 +7,10 @@ import android.support.annotation.Nullable;
 import org.greenrobot.eventbus.EventBus;
 
 public class EventBusLoaderHelper {
+    public interface Interface {
+        void setEventBusListener(@NonNull Object listener);
+    }
+
     @NonNull
     private final EventBus mEventBusInstance;
     @NonNull
