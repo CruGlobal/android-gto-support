@@ -14,9 +14,6 @@ public abstract class EventBusSubscriber {
 
     @MainThread
     protected final void triggerLoad() {
-        // don't trigger a load when the loader has been abandoned
-        if (!mLoader.isAbandoned()) {
-            mLoader.onContentChanged();
-        }
+        mLoader.onContentChanged();
     }
 }

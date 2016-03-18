@@ -2,6 +2,7 @@ package org.ccci.gto.android.common.eventbus.content;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.CursorLoader;
@@ -33,6 +34,7 @@ public abstract class CursorEventBusLoader extends CursorLoader
     /* BEGIN lifecycle */
 
     @Override
+    @MainThread
     protected void onStartLoading() {
         super.onStartLoading();
         mHelper.onStartLoading();
