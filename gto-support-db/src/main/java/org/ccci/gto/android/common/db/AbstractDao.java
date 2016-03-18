@@ -216,9 +216,10 @@ public abstract class AbstractDao {
     @WorkerThread
     public final <T> Cursor getCursor(@NonNull final Class<T> clazz, @NonNull final Join<T, ?>[] joins,
                                       @NonNull final String[] projection, @Nullable final String whereClause,
-                                      @Nullable final String[] whereArgs, @Nullable String orderBy) {
+                                      @Nullable final String[] whereArgs, @Nullable String orderBy,
+                                      @Nullable final String groupBy) {
         return getCursor(
-                Query.select(clazz).joins(joins).projection(projection).where(whereClause, whereArgs).orderBy(orderBy));
+                Query.select(clazz).joins(joins).projection(projection).where(whereClause, whereArgs).orderBy(orderBy).groupBy(groupBy));
     }
 
     @NonNull
@@ -227,6 +228,7 @@ public abstract class AbstractDao {
         // prefix projection and orderBy when we have joins
         String[] projection = query.mProjection != null ? query.mProjection : getFullProjection(query.mTable.mType);
         String orderBy = query.mOrderBy;
+        String groupBy = query.mGroupBy;
         if (query.mJoins.length > 0) {
             final String prefix = query.mTable.sqlPrefix(this);
 
@@ -239,6 +241,10 @@ public abstract class AbstractDao {
             // prefix an un-prefixed orderBy field
             if (orderBy != null && !orderBy.contains(".")) {
                 orderBy = prefix + orderBy;
+            }
+
+            if(groupBy != null && !groupBy.contains(".")) {
+                groupBy = prefix + groupBy;
             }
         }
 
@@ -253,7 +259,7 @@ public abstract class AbstractDao {
 
         // execute actual query
         final Cursor c = mDbHelper.getReadableDatabase()
-                .query(query.mDistinct, tables, projection, where.first, args, null, null, orderBy, null);
+                .query(query.mDistinct, tables, projection, where.first, args, groupBy, null, orderBy, null);
 
         c.moveToPosition(-1);
         return c;
