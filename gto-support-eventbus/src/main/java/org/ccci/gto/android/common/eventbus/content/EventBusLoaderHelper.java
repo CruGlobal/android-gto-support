@@ -54,7 +54,7 @@ public class EventBusLoaderHelper {
         }
     }
 
-    public void onAbandon() {
+    public void onReset() {
         synchronized (this) {
             unregisterListener(mEventBusListener);
         }
