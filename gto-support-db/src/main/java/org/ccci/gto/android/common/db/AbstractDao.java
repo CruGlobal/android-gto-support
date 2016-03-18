@@ -216,10 +216,9 @@ public abstract class AbstractDao {
     @WorkerThread
     public final <T> Cursor getCursor(@NonNull final Class<T> clazz, @NonNull final Join<T, ?>[] joins,
                                       @NonNull final String[] projection, @Nullable final String whereClause,
-                                      @Nullable final String[] whereArgs, @Nullable String orderBy,
-                                      @Nullable final String groupBy) {
+                                      @Nullable final String[] whereArgs, @Nullable String orderBy) {
         return getCursor(
-                Query.select(clazz).joins(joins).projection(projection).where(whereClause, whereArgs).orderBy(orderBy).groupBy(groupBy));
+                Query.select(clazz).joins(joins).projection(projection).where(whereClause, whereArgs).orderBy(orderBy));
     }
 
     @NonNull
