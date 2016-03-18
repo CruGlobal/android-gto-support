@@ -9,6 +9,10 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.CursorLoader;
 
+/**
+ * @deprecated this should be handled by manually including the LoaderHelpers you want to utilize in your own Loader
+ */
+@Deprecated
 public abstract class CursorBroadcastReceiverSharedPreferencesChangeLoader extends CursorLoader
         implements BroadcastReceiverLoaderHelper.Interface, SharedPreferencesChangeLoaderHelper.Interface {
     private final BroadcastReceiverLoaderHelper mHelper1;
@@ -39,6 +43,13 @@ public abstract class CursorBroadcastReceiverSharedPreferencesChangeLoader exten
         super.onAbandon();
         mHelper1.onAbandon();
         mHelper2.onAbandon();
+    }
+
+    @Override
+    protected void onReset() {
+        super.onReset();
+        mHelper1.onReset();
+        mHelper2.onReset();
     }
 
     /* END lifecycle */

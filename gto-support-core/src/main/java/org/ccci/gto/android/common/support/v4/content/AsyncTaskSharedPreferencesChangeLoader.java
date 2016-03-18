@@ -50,6 +50,12 @@ public abstract class AsyncTaskSharedPreferencesChangeLoader<D> extends AsyncTas
         mHelper.onAbandon();
     }
 
+    @Override
+    protected void onReset() {
+        super.onReset();
+        mHelper.onReset();
+    }
+
     /* END lifecycle */
 
     @Override

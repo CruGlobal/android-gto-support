@@ -74,6 +74,12 @@ public final class BroadcastReceiverLoaderHelper {
         }
     }
 
+    public void onReset() {
+        synchronized (this) {
+            unregisterReceiver(mReceiver);
+        }
+    }
+
     private synchronized void registerReceiver(@NonNull final BroadcastReceiver receiver) {
         for (final IntentFilter filter : mFilters) {
             mLocalBroadcastManager.registerReceiver(receiver, filter);
