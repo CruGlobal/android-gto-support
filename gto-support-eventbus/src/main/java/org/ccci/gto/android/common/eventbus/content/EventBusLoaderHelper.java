@@ -1,14 +1,19 @@
 package org.ccci.gto.android.common.eventbus.content;
 
-import android.support.v4.content.Loader;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.content.Loader;
 
 import org.greenrobot.eventbus.EventBus;
 
-public class EventBusLoaderHelper {
+import java.util.ArrayList;
+import java.util.List;
+
+public final class EventBusLoaderHelper {
     public interface Interface {
-        void setEventBusListener(@NonNull Object listener);
+        void addEventBusSubscriber(@NonNull EventBusSubscriber subscriber);
+
+        void removeEventBusSubscriber(@NonNull EventBusSubscriber subscriber);
     }
 
     @NonNull
@@ -16,12 +21,10 @@ public class EventBusLoaderHelper {
     @NonNull
     private final Loader mLoader;
     @NonNull
-    private Object mEventBusListener;
+    private final List<EventBusSubscriber> mSubscribers = new ArrayList<>();
 
-    public EventBusLoaderHelper(@NonNull final Loader loader, @Nullable final Object listener,
-                                @Nullable final EventBus eventBus) {
+    public EventBusLoaderHelper(@NonNull final Loader loader, @Nullable final EventBus eventBus) {
         mLoader = loader;
-        setEventBusListener(listener);
 
         if(eventBus != null) {
             mEventBusInstance = eventBus;
@@ -30,41 +33,45 @@ public class EventBusLoaderHelper {
         }
     }
 
-    public void setEventBusListener(@Nullable Object listener) {
-        if(listener == null) {
-            listener = mLoader;
-        }
+    public synchronized void addEventBusSubscriber(@NonNull final EventBusSubscriber subscriber) {
+        mSubscribers.add(subscriber);
+        registerSubscriber(subscriber);
+    }
 
-        synchronized (this) {
-            // Register the new listener and unregister the old listener.
-            // We overlap registrations to not drop broadcasts
-            if (mLoader.isStarted()) {
-                registerListener(listener);
-                unregisterListener(mEventBusListener);
-            }
-
-            // save new listener
-            mEventBusListener = listener;
-        }
+    public synchronized void removeEventBusSubscriber(@NonNull final EventBusSubscriber subscriber) {
+        mSubscribers.remove(subscriber);
+        unregisterSubscriber(subscriber);
     }
 
     public void onStartLoading() {
         synchronized (this) {
-            registerListener(mEventBusListener);
+            for (final EventBusSubscriber subscriber : mSubscribers) {
+                registerSubscriber(subscriber);
+            }
         }
     }
 
-    public void unregister() {
-        synchronized (this) {
-            unregisterListener(mEventBusListener);
+    public void onAbandon() {
+        unregisterSubscribers();
+    }
+
+    public void onReset() {
+        unregisterSubscribers();
+    }
+
+    private synchronized void unregisterSubscribers() {
+        for (final EventBusSubscriber subscriber : mSubscribers) {
+            unregisterSubscriber(subscriber);
         }
     }
 
-    private synchronized void registerListener(Object listener) {
-        mEventBusInstance.register(listener);
+    private synchronized void registerSubscriber(EventBusSubscriber listener) {
+        if (mLoader.isStarted() && !mLoader.isAbandoned()) {
+            mEventBusInstance.register(listener);
+        }
     }
 
-    private synchronized void unregisterListener(Object listener) {
+    private synchronized void unregisterSubscriber(EventBusSubscriber listener) {
         if(mEventBusInstance.isRegistered(listener)) {
             mEventBusInstance.unregister(listener);
         }

@@ -17,14 +17,17 @@ public abstract class CursorEventBusLoader extends CursorLoader
         this(context, null, null);
     }
 
-    public CursorEventBusLoader(@NonNull final Context context, @Nullable Object listener) {
-        this(context, listener, null);
+    public CursorEventBusLoader(@NonNull final Context context, @Nullable EventBusSubscriber subscriber) {
+        this(context, subscriber, null);
     }
 
-    public CursorEventBusLoader(@NonNull final Context context, @Nullable Object listener,
+    public CursorEventBusLoader(@NonNull final Context context, @Nullable EventBusSubscriber subscriber,
                                 @Nullable EventBus eventBus) {
         super(context);
-        mHelper = new EventBusLoaderHelper(this, listener, eventBus);
+        mHelper = new EventBusLoaderHelper(this, eventBus);
+        if (subscriber != null) {
+            mHelper.addEventBusSubscriber(subscriber);
+        }
     }
 
     /* BEGIN lifecycle */
@@ -38,20 +41,25 @@ public abstract class CursorEventBusLoader extends CursorLoader
     @Override
     protected void onAbandon() {
         super.onAbandon();
-        mHelper.unregister();
+        mHelper.onAbandon();
     }
 
     @Override
     protected void onReset() {
         super.onReset();
-        mHelper.unregister();
+        mHelper.onReset();
     }
 
     /* END lifecycle */
 
     @Override
-    public void setEventBusListener(@Nullable Object listener) {
-        mHelper.setEventBusListener(listener);
+    public void addEventBusSubscriber(@NonNull final EventBusSubscriber subscriber) {
+        mHelper.addEventBusSubscriber(subscriber);
+    }
+
+    @Override
+    public void removeEventBusSubscriber(@NonNull final EventBusSubscriber subscriber) {
+        mHelper.removeEventBusSubscriber(subscriber);
     }
 
     @Nullable
