@@ -54,7 +54,7 @@ public class EventBusLoaderHelper {
         }
     }
 
-    public void onReset() {
+    public void unregister() {
         synchronized (this) {
             unregisterListener(mEventBusListener);
         }
@@ -65,6 +65,8 @@ public class EventBusLoaderHelper {
     }
 
     private synchronized void unregisterListener(Object listener) {
-        mEventBusInstance.unregister(listener);
+        if(mEventBusInstance.isRegistered(listener)) {
+            mEventBusInstance.unregister(listener);
+        }
     }
 }

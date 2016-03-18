@@ -36,9 +36,15 @@ public abstract class CursorEventBusLoader extends CursorLoader
     }
 
     @Override
+    protected void onAbandon() {
+        super.onAbandon();
+        mHelper.unregister();
+    }
+
+    @Override
     protected void onReset() {
         super.onReset();
-        mHelper.onReset();
+        mHelper.unregister();
     }
 
     /* END lifecycle */
