@@ -8,5 +8,5 @@ dependencies {
     compile 'com.android.support:support-v4:' + deps.androidSupport
 
     testCompile 'junit:junit:4.12'
-    testCompile 'com.google.guava:guava:18.0'
+    testCompile 'com.google.guava:guava:' + deps.guava
 }
