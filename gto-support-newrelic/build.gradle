@@ -1,3 +1,0 @@
-dependencies {
-    compile 'com.newrelic.agent.android:android-agent:4.265.0'
-}
