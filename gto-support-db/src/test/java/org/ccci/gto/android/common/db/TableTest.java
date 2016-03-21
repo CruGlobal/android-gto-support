@@ -1,11 +1,9 @@
 package org.ccci.gto.android.common.db;
 
+import org.junit.Test;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
-
-import android.support.annotation.NonNull;
-
-import org.junit.Test;
 
 public class TableTest {
     private final TestDao dao = new TestDao();
@@ -36,18 +34,8 @@ public class TableTest {
         @SuppressWarnings("ConstantConditions")
         protected TestDao() {
             super(null);
-        }
-
-        @NonNull
-        @Override
-        protected String getTable(@NonNull final Class<?> clazz) {
-            if (Obj1.class.equals(clazz)) {
-                return Obj1.TABLE_NAME;
-            } else if (Obj2.class.equals(clazz)) {
-                return Obj2.TABLE_NAME;
-            } else {
-                return super.getTable(clazz);
-            }
+            registerType(Obj1.class, Obj1.TABLE_NAME, null, null, null);
+            registerType(Obj2.class, Obj2.TABLE_NAME, null, null, null);
         }
     }
 }
