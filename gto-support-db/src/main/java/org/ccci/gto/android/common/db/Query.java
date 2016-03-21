@@ -23,12 +23,12 @@ public final class Query<T> {
     @Nullable
     final String mGroupBy;
     @Nullable
-    final String mHaving;
+    final Expression mHaving;
 
     @SuppressWarnings("unchecked")
     private Query(@NonNull final Table<T> table, final boolean distinct, @Nullable final Join<T, ?>[] joins,
                   @Nullable final String[] projection, @Nullable final Expression where,
-                  @Nullable final String orderBy, @Nullable final String groupBy, @Nullable final String having) {
+                  @Nullable final String orderBy, @Nullable final String groupBy, @Nullable final Expression having) {
         mTable = table;
         mDistinct = distinct;
         mJoins = joins != null ? joins : Join.NO_JOINS;
@@ -109,7 +109,7 @@ public final class Query<T> {
     }
 
     @NonNull
-    public Query<T> having(@Nullable final String having) {
+    public Query<T> having(@Nullable final Expression having) {
         return new Query<>(mTable, mDistinct, mJoins, mProjection, mWhere, mOrderBy, mGroupBy, having);
     }
 
@@ -129,5 +129,10 @@ public final class Query<T> {
     @NonNull
     final Pair<String, String[]> buildSqlWhere(@NonNull final AbstractDao dao) {
         return mWhere != null ? mWhere.buildSql(dao) : Pair.<String, String[]>create(null, null);
+    }
+
+    @NonNull
+    final Pair<String, String[]> buildSqlHaving(@NonNull final AbstractDao dao) {
+        return mHaving != null ? mHaving.buildSql(dao) : Pair.<String, String[]>create(null, null);
     }
 }
