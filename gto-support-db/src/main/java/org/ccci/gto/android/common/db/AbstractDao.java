@@ -9,6 +9,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.WorkerThread;
 import android.support.v4.util.SimpleArrayMap;
+import android.text.TextUtils;
 import android.util.Pair;
 
 import org.ccci.gto.android.common.util.ArrayUtils;
@@ -238,18 +239,10 @@ public abstract class AbstractDao {
                 projection[i] = projection[i].contains(".") ? projection[i] : prefix + projection[i];
             }
 
-            // prefix an un-prefixed orderBy field
-            if (orderBy != null && !orderBy.contains(".")) {
-                orderBy = prefix + orderBy;
-            }
-
-            if(groupBy != null && !groupBy.contains(".")) {
-                groupBy = prefix + groupBy;
-            }
-
-            if(having != null && !having.contains(".")) {
-                having = prefix + having;
-            }
+            // prefix un-prefixed clauses
+            addPrefixToFields(orderBy, prefix);
+            addPrefixToFields(groupBy, prefix);
+            addPrefixToFields(having, prefix);
         }
 
         // generate "FROM {}" SQL
@@ -267,6 +260,19 @@ public abstract class AbstractDao {
 
         c.moveToPosition(-1);
         return c;
+    }
+
+    String addPrefixToFields(String clause, String prefix) {
+        // If there is more than one field in the clause, add the prefix to each field
+        if(clause.contains(",")) {
+            String[] fields = clause.split(",");
+
+            for(int i = 0; i < fields.length; i++) {
+                fields[i] = prefix + fields[i].trim();
+            }
+            return TextUtils.join(",", fields);
+        }
+        return prefix + clause;
     }
 
     /**
