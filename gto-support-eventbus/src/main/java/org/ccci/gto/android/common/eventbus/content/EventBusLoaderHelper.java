@@ -1,5 +1,6 @@
 package org.ccci.gto.android.common.eventbus.content;
 
+import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.Loader;
@@ -23,6 +24,8 @@ public final class EventBusLoaderHelper {
     @NonNull
     private final List<EventBusSubscriber> mSubscribers = new ArrayList<>();
 
+    private boolean mRegistered = false;
+
     public EventBusLoaderHelper(@NonNull final Loader loader, @Nullable final EventBus eventBus) {
         mLoader = loader;
 
@@ -43,10 +46,16 @@ public final class EventBusLoaderHelper {
         unregisterSubscriber(subscriber);
     }
 
+    @MainThread
     public void onStartLoading() {
         synchronized (this) {
-            for (final EventBusSubscriber subscriber : mSubscribers) {
-                registerSubscriber(subscriber);
+            // register all subscribers if they aren't already registered
+            if (!mRegistered) {
+                mRegistered = true;
+
+                for (final EventBusSubscriber subscriber : mSubscribers) {
+                    registerSubscriber(subscriber);
+                }
             }
         }
     }
@@ -63,17 +72,17 @@ public final class EventBusLoaderHelper {
         for (final EventBusSubscriber subscriber : mSubscribers) {
             unregisterSubscriber(subscriber);
         }
+
+        mRegistered = false;
     }
 
     private synchronized void registerSubscriber(EventBusSubscriber listener) {
-        if (mLoader.isStarted() && !mLoader.isAbandoned()) {
+        if (mRegistered) {
             mEventBusInstance.register(listener);
         }
     }
 
     private synchronized void unregisterSubscriber(EventBusSubscriber listener) {
-        if(mEventBusInstance.isRegistered(listener)) {
-            mEventBusInstance.unregister(listener);
-        }
+        mEventBusInstance.unregister(listener);
     }
 }

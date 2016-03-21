@@ -37,6 +37,10 @@ public final class SharedPreferencesChangeLoaderHelper {
         mPrefs.unregisterOnSharedPreferenceChangeListener(mChangeListener);
     }
 
+    public void onReset() {
+        mPrefs.unregisterOnSharedPreferenceChangeListener(mChangeListener);
+    }
+
     /* END lifecycle */
 
     public void addPreferenceKey(@Nullable final String key) {

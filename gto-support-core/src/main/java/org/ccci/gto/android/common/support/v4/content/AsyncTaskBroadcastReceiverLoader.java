@@ -42,6 +42,12 @@ public abstract class AsyncTaskBroadcastReceiverLoader<D> extends AsyncTaskLoade
         mHelper.onAbandon();
     }
 
+    @Override
+    protected void onReset() {
+        super.onReset();
+        mHelper.onReset();
+    }
+
     /* END lifecycle */
 
     @Override

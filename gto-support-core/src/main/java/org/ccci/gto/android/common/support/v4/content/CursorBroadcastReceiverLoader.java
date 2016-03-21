@@ -32,6 +32,12 @@ public abstract class CursorBroadcastReceiverLoader extends CursorLoader
         mHelper.onAbandon();
     }
 
+    @Override
+    protected void onReset() {
+        super.onReset();
+        mHelper.onReset();
+    }
+
     /* END lifecycle */
 
     @Override
