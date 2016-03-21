@@ -2,6 +2,12 @@ language: android
 sudo: false
 jdk:
   - oraclejdk8
+env:
+  global:
+    # wait up to 10 minutes for adb to connect to emulator
+    - ADB_INSTALL_TIMEOUT=10
+  matrix:
+    - ANDROID_TARGET=android-15 ANDROID_ABI=armeabi-v7a
 
 android:
   components:
@@ -10,6 +16,12 @@ android:
     - build-tools-23.0.1
     - android-23
     - extra-android-m2repository
+
+    # additional SDKs needed for emulator testing
+    - android-14
+
+    # system images for testing
+    - sys-img-armeabi-v7a-android-15
 
 before_cache:
   - rm -f $HOME/.gradle/caches/modules-2/modules-2.lock
@@ -21,8 +33,21 @@ cache:
     - $HOME/.gradle/native
     - $HOME/.gradle/wrapper
 
+# Emulator Management: Create, Start and Wait
+before_script:
+  - echo no | android create avd --force -n test -t $ANDROID_TARGET --abi $ANDROID_ABI
+  - emulator -avd test -no-skin -no-audio -no-window &
+
+# gradle options
+#  --parallel   : build/test multiple subprojects simultaneously
+#  --continue   : continue processing on an error to try and capture all errors
+#  --stacktrace : output stacktraces for failures to aid in debugging
 script:
-  - ./gradlew build --parallel
+  - ./gradlew build --parallel --continue --stacktrace
+  - android-wait-for-emulator
+  - adb devices
+  - adb shell input keyevent 82 &
+  - ./gradlew connectedAndroidTest --parallel --continue --stacktrace
 
 notifications:
   email: false
