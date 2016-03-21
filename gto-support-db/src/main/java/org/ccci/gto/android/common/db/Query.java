@@ -22,11 +22,13 @@ public final class Query<T> {
     final Expression mWhere;
     @Nullable
     final String mGroupBy;
+    @Nullable
+    final String mHaving;
 
     @SuppressWarnings("unchecked")
     private Query(@NonNull final Table<T> table, final boolean distinct, @Nullable final Join<T, ?>[] joins,
                   @Nullable final String[] projection, @Nullable final Expression where,
-                  @Nullable final String orderBy, @Nullable final String groupBy) {
+                  @Nullable final String orderBy, @Nullable final String groupBy, @Nullable final String having) {
         mTable = table;
         mDistinct = distinct;
         mJoins = joins != null ? joins : Join.NO_JOINS;
@@ -34,6 +36,7 @@ public final class Query<T> {
         mOrderBy = orderBy;
         mWhere = where;
         mGroupBy = groupBy;
+        mHaving = having;
     }
 
     @NonNull
@@ -43,34 +46,37 @@ public final class Query<T> {
 
     @NonNull
     public static <T> Query<T> select(@NonNull final Table<T> table) {
-        return new Query<>(table, false, null, null, null, null, null);
+        return new Query<>(table, false, null, null, null, null, null, null);
     }
 
     @NonNull
     public Query<T> distinct(final boolean distinct) {
-        return new Query<>(mTable, distinct, mJoins, mProjection, mWhere, mOrderBy, mGroupBy);
+        return new Query<>(mTable, distinct, mJoins, mProjection, mWhere, mOrderBy, mGroupBy, mHaving);
     }
 
     @NonNull
     @SuppressWarnings("unchecked")
     public Query<T> join(@NonNull final Join<T, ?>... joins) {
         return new Query<>(mTable, mDistinct, ArrayUtils.merge(Join.class, mJoins, joins), mProjection, mWhere,
-                           mOrderBy, mGroupBy);
+                           mOrderBy, mGroupBy, mHaving);
     }
 
     @NonNull
     public Query<T> joins(@NonNull final Join<T, ?>... joins) {
-        return new Query<>(mTable, mDistinct, joins, mProjection, mWhere, mOrderBy, mGroupBy);
+        return new Query<>(mTable, mDistinct, joins, mProjection, mWhere, mOrderBy, mGroupBy,
+                           mHaving);
     }
 
     @NonNull
     public Query<T> projection(@Nullable final String... projection) {
-        return new Query<>(mTable, mDistinct, mJoins, projection, mWhere, mOrderBy, mGroupBy);
+        return new Query<>(mTable, mDistinct, mJoins, projection, mWhere, mOrderBy, mGroupBy,
+                           mHaving);
     }
 
     @NonNull
     public Query<T> where(@Nullable final Expression where) {
-        return new Query<>(mTable, mDistinct, mJoins, mProjection, where, mOrderBy, mGroupBy);
+        return new Query<>(mTable, mDistinct, mJoins, mProjection, where, mOrderBy, mGroupBy,
+                           mHaving);
     }
 
     @NonNull
@@ -78,7 +84,7 @@ public final class Query<T> {
     Query<T> where(@Nullable final Pair<String, String[]> where) {
         return new Query<>(mTable, mDistinct, mJoins, mProjection,
                            where != null ? Expression.raw(where.first, where.second) : null,
-                           mOrderBy, mGroupBy);
+                           mOrderBy, mGroupBy, mHaving);
     }
 
     @NonNull
@@ -89,17 +95,22 @@ public final class Query<T> {
     @NonNull
     public Query<T> where(@Nullable final String where, @Nullable final String... args) {
         return new Query<>(mTable, mDistinct, mJoins, mProjection, where != null ? Expression.raw(where, args) : null,
-                           mOrderBy, mGroupBy);
+                           mOrderBy, mGroupBy, mHaving);
     }
 
     @NonNull
     public Query<T> orderBy(@Nullable final String orderBy) {
-        return new Query<>(mTable, mDistinct, mJoins, mProjection, mWhere, orderBy, mGroupBy);
+        return new Query<>(mTable, mDistinct, mJoins, mProjection, mWhere, orderBy, mGroupBy, mHaving);
     }
 
     @NonNull
     public Query<T> groupBy(@Nullable final String groupBy) {
-        return new Query<>(mTable, mDistinct, mJoins, mProjection, mWhere, mOrderBy, groupBy);
+        return new Query<>(mTable, mDistinct, mJoins, mProjection, mWhere, mOrderBy, groupBy, mHaving);
+    }
+
+    @NonNull
+    public Query<T> having(@Nullable final String having) {
+        return new Query<>(mTable, mDistinct, mJoins, mProjection, mWhere, mOrderBy, mGroupBy, having);
     }
 
     @NonNull

@@ -228,6 +228,7 @@ public abstract class AbstractDao {
         String[] projection = query.mProjection != null ? query.mProjection : getFullProjection(query.mTable.mType);
         String orderBy = query.mOrderBy;
         String groupBy = query.mGroupBy;
+        String having = query.mHaving;
         if (query.mJoins.length > 0) {
             final String prefix = query.mTable.sqlPrefix(this);
 
@@ -245,6 +246,10 @@ public abstract class AbstractDao {
             if(groupBy != null && !groupBy.contains(".")) {
                 groupBy = prefix + groupBy;
             }
+
+            if(having != null && !having.contains(".")) {
+                having = prefix + having;
+            }
         }
 
         // generate "FROM {}" SQL
@@ -258,7 +263,7 @@ public abstract class AbstractDao {
 
         // execute actual query
         final Cursor c = mDbHelper.getReadableDatabase()
-                .query(query.mDistinct, tables, projection, where.first, args, groupBy, null, orderBy, null);
+                .query(query.mDistinct, tables, projection, where.first, args, groupBy, having, orderBy, null);
 
         c.moveToPosition(-1);
         return c;
