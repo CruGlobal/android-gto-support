@@ -4,7 +4,10 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.NonNull;
 
+import org.ccci.gto.android.common.db.Expression.Field;
 import org.ccci.gto.android.common.db.model.Root;
+
+import static org.ccci.gto.android.common.db.Expression.field;
 
 public class TestDao extends AbstractDao {
     TestDao(@NonNull final Context context) {
@@ -18,10 +21,14 @@ public class TestDao extends AbstractDao {
             static final Table<Root> TABLE = Table.forClass(Root.class);
 
             static final String COLUMN_ID = _ID;
+            static final String COLUMN_TEST = "test";
 
             static final String SQL_COLUMN_ID = COLUMN_ID + " INTEGER PRIMARY KEY";
+            static final String SQL_COLUMN_TEST = COLUMN_TEST + " TEXT";
 
-            static final String SQL_CREATE_TABLE = create(TABLE_NAME, SQL_COLUMN_ID);
+            static final Field FIELD_TEST = field(TABLE, COLUMN_TEST);
+
+            static final String SQL_CREATE_TABLE = create(TABLE_NAME, SQL_COLUMN_ID, SQL_COLUMN_TEST);
         }
     }
 
