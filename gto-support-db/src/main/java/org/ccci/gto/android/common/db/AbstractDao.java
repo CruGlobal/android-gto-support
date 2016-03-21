@@ -229,7 +229,7 @@ public abstract class AbstractDao {
         String[] projection = query.mProjection != null ? query.mProjection : getFullProjection(query.mTable.mType);
         String orderBy = query.mOrderBy;
         String groupBy = query.mGroupBy;
-        String having = query.mHaving;
+
         if (query.mJoins.length > 0) {
             final String prefix = query.mTable.sqlPrefix(this);
 
@@ -242,7 +242,6 @@ public abstract class AbstractDao {
             // prefix un-prefixed clauses
             addPrefixToFields(orderBy, prefix);
             addPrefixToFields(groupBy, prefix);
-            addPrefixToFields(having, prefix);
         }
 
         // generate "FROM {}" SQL
@@ -254,9 +253,13 @@ public abstract class AbstractDao {
         final Pair<String, String[]> where = query.buildSqlWhere(this);
         args = ArrayUtils.merge(String.class, args, where.second);
 
+        // generate "HAVING {}" SQL
+        final Pair<String, String[]> having = query.buildSqlHaving(this);
+        args = ArrayUtils.merge(String.class, args, having.second);
+
         // execute actual query
         final Cursor c = mDbHelper.getReadableDatabase()
-                .query(query.mDistinct, tables, projection, where.first, args, groupBy, having, orderBy, null);
+                .query(query.mDistinct, tables, projection, where.first, args, groupBy, having.first, orderBy, null);
 
         c.moveToPosition(-1);
         return c;
