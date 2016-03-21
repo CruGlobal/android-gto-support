@@ -50,5 +50,8 @@ script:
   - adb shell input keyevent 82 &
   - ./gradlew connectedAndroidTest -PdisablePreDex --parallel --continue --stacktrace
 
+after_failure:
+  - cat /home/travis/build/CruGlobal/android-gto-support/*/build/outputs/lint-results.xml
+
 notifications:
   email: false
