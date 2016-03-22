@@ -117,6 +117,51 @@ public class AbstractDaoTest extends InstrumentationTestCase {
         assertThat(CursorUtils.getString(cursor, RootTable.COLUMN_TEST), is("2"));
     }
 
+    @Test
+    public void testAddPrefixToSingleField() {
+        final TestDao dao = getDao();
+        String prefix = RootTable.TABLE_NAME + ".";
+
+        String editedClause = dao.addPrefixToFields(RootTable.COLUMN_ID, prefix);
+
+        assertThat(editedClause, is("root._id"));
+    }
+
+    @Test
+    public void testAddPrefixToMultipleFields() {
+        final TestDao dao = getDao();
+        String prefix = RootTable.TABLE_NAME + ".";
+
+        String editedClause = dao.addPrefixToFields(RootTable.COLUMN_ID + "," + RootTable.COLUMN_TEST,
+                prefix);
+
+        assertThat(editedClause, is("root._id,root.test"));
+    }
+
+    @Test
+    public void testAddPrefixToMultipleFieldsSomePrefixed() {
+        final TestDao dao = getDao();
+        String prefix = RootTable.TABLE_NAME + ".";
+
+        String editedClause = dao.addPrefixToFields(
+                prefix + RootTable.COLUMN_ID + "," + RootTable.COLUMN_TEST,
+                prefix);
+
+        assertThat(editedClause, is("root._id,root.test"));
+    }
+
+    @Test
+    public void testAddPrefixToMultipleFieldsAllPrefixed() {
+        final TestDao dao = getDao();
+        String prefix = RootTable.TABLE_NAME + ".";
+
+        String editedClause = dao.addPrefixToFields(
+                prefix + RootTable.COLUMN_ID + "," + prefix + RootTable.COLUMN_TEST,
+                prefix);
+
+        assertThat(editedClause, is("root._id,root.test"));
+    }
+
     @Override
     protected void tearDown() throws Exception {
         final TestDao dao = getDao();
