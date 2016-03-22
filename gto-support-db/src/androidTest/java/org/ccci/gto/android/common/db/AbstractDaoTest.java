@@ -1,5 +1,6 @@
 package org.ccci.gto.android.common.db;
 
+import android.database.Cursor;
 import android.support.test.runner.AndroidJUnit4;
 import android.test.InstrumentationTestCase;
 
@@ -21,5 +22,14 @@ public class AbstractDaoTest extends InstrumentationTestCase {
     public void testGetTable() throws Exception {
         final TestDao dao = getDao();
         assertThat(dao.getTable(Root.class), is(RootTable.TABLE_NAME));
+    }
+
+    @Test
+    public void testGetCursor() {
+        final TestDao dao = getDao();
+        final Cursor cursor = dao.getCursor(Query.select(Root.class));
+
+        assertThat(cursor.getColumnName(0), is("_id"));
+        assertThat(cursor.getColumnName(1), is("test"));
     }
 }

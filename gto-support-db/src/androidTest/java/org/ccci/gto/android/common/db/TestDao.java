@@ -12,7 +12,8 @@ import static org.ccci.gto.android.common.db.Expression.field;
 public class TestDao extends AbstractDao {
     TestDao(@NonNull final Context context) {
         super(new TestDatabase(context));
-        registerType(Root.class, TestContract.RootTable.TABLE_NAME, null, null, null);
+        registerType(Root.class, TestContract.RootTable.TABLE_NAME,
+                     TestContract.RootTable.PROJECTION_ALL, null, null);
     }
 
     static class TestContract extends BaseContract {
@@ -22,6 +23,8 @@ public class TestDao extends AbstractDao {
 
             static final String COLUMN_ID = _ID;
             static final String COLUMN_TEST = "test";
+
+            static final String[] PROJECTION_ALL = {COLUMN_ID, COLUMN_TEST};
 
             static final String SQL_COLUMN_ID = COLUMN_ID + " INTEGER PRIMARY KEY";
             static final String SQL_COLUMN_TEST = COLUMN_TEST + " TEXT";
