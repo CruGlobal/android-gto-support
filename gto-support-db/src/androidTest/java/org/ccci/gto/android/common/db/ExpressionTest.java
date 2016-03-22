@@ -29,8 +29,8 @@ public class ExpressionTest extends InstrumentationTestCase {
     public void testNotEqualsSql() {
         final TestDao dao = getDao();
 
-        Expression notEqualsExpression = RootTable.FIELD_TEST.not().eq("1");
-        assertThat(notEqualsExpression.buildSql(dao).first, is("(NOT (root.test) == ?)"));
+        Expression notEqualsExpression = RootTable.FIELD_TEST.ne("1");
+        assertThat(notEqualsExpression.buildSql(dao).first, is("(root.test != ?)"));
     }
 
     @Test
