@@ -14,11 +14,21 @@ import static org.ccci.gto.android.common.db.Expression.bind;
 import static org.ccci.gto.android.common.db.Expression.field;
 
 public class TestDao extends AbstractDao {
-    TestDao(@NonNull final Context context) {
-        super(new TestDatabase(context));
+    private TestDao(@NonNull final Context context) {
+        super(TestDatabase.getInstance(context));
         registerType(Root.class, TestContract.RootTable.TABLE_NAME,
                      TestContract.RootTable.PROJECTION_ALL, new RootMapper(),
                      TestContract.RootTable.SQL_WHERE_PRIMARY_KEY);
+    }
+
+    private static TestDao INSTANCE;
+    static TestDao getInstance(@NonNull final Context context) {
+        synchronized (TestDao.class) {
+            if (INSTANCE == null) {
+                INSTANCE = new TestDao(context.getApplicationContext());
+            }
+            return INSTANCE;
+        }
     }
 
     @NonNull
@@ -50,12 +60,24 @@ public class TestDao extends AbstractDao {
             static final Expression SQL_WHERE_ANY = FIELD_ID.ne(-1);
 
             static final String SQL_CREATE_TABLE = create(TABLE_NAME, SQL_COLUMN_ID, SQL_COLUMN_TEST);
+            static final String SQL_DELETE_TABLE = drop(TABLE_NAME);
         }
     }
 
-    public static class TestDatabase extends WalSQLiteOpenHelper {
-        TestDatabase(@NonNull final Context context) {
+    private static class TestDatabase extends WalSQLiteOpenHelper {
+        private TestDatabase(@NonNull final Context context) {
             super(context, "test_db", null, 1);
+            resetDatabase(getWritableDatabase());
+        }
+
+        private static TestDatabase INSTANCE;
+        static TestDatabase getInstance(@NonNull final Context context) {
+            synchronized (TestDatabase.class) {
+                if (INSTANCE == null) {
+                    INSTANCE = new TestDatabase(context.getApplicationContext());
+                }
+                return INSTANCE;
+            }
         }
 
         @Override
@@ -66,6 +88,20 @@ public class TestDao extends AbstractDao {
         @Override
         public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
             throw new IllegalStateException("onUpgrade should no be triggered");
+        }
+
+        private void resetDatabase(final SQLiteDatabase db) {
+            try {
+                db.beginTransaction();
+
+                db.execSQL(TestContract.RootTable.SQL_DELETE_TABLE);
+
+                onCreate(db);
+
+                db.setTransactionSuccessful();
+            } finally {
+                db.endTransaction();
+            }
         }
     }
 

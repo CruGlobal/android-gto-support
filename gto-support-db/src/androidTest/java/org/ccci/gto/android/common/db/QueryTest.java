@@ -14,7 +14,7 @@ import static org.junit.Assert.assertThat;
 @RunWith(AndroidJUnit4.class)
 public class QueryTest extends InstrumentationTestCase {
     private TestDao getDao() {
-        return new TestDao(getInstrumentation().getContext());
+        return TestDao.getInstance(getInstrumentation().getContext());
     }
 
     @Test

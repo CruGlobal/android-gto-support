@@ -16,7 +16,7 @@ import static org.junit.Assert.assertThat;
 @RunWith(AndroidJUnit4.class)
 public class AbstractDaoTest extends InstrumentationTestCase {
     private TestDao getDao() {
-        return new TestDao(getInstrumentation().getContext());
+        return TestDao.getInstance(getInstrumentation().getContext());
     }
 
     @Test

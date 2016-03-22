@@ -14,7 +14,7 @@ import static org.junit.Assert.assertThat;
 public class ExpressionTest extends InstrumentationTestCase {
 
     private TestDao getDao() {
-        return new TestDao(getInstrumentation().getContext());
+        return TestDao.getInstance(getInstrumentation().getContext());
     }
 
     @Test
