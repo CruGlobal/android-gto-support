@@ -11,6 +11,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.not;
 import static org.junit.Assert.assertThat;
 
 @RunWith(AndroidJUnit4.class)
@@ -30,8 +31,8 @@ public class AbstractDaoTest extends InstrumentationTestCase {
         final TestDao dao = getDao();
         final Cursor cursor = dao.getCursor(Query.select(Root.class));
 
-        assertThat(cursor.getColumnName(0), is("_id"));
-        assertThat(cursor.getColumnName(1), is("test"));
+        assertThat(cursor.getColumnIndex(RootTable.COLUMN_ID), is(not(-1)));
+        assertThat(cursor.getColumnIndex(RootTable.COLUMN_TEST), is(not(-1)));
     }
 
     @Test
