@@ -1,14 +1,17 @@
 package org.ccci.gto.android.common.db;
 
-import static org.ccci.gto.android.common.db.AbstractDao.bindValues;
-
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Pair;
 
+import org.ccci.gto.android.common.db.Expression.Field;
 import org.ccci.gto.android.common.util.ArrayUtils;
 
+import static org.ccci.gto.android.common.db.AbstractDao.bindValues;
+
 public final class Query<T> {
+    private static final Field[] NO_FIELDS = new Field[0];
+
     @NonNull
     final Table<T> mTable;
     final boolean mDistinct;
@@ -20,17 +23,23 @@ public final class Query<T> {
     final String mOrderBy;
     @Nullable
     final Expression mWhere;
+    @NonNull
+    final Field[] mGroupBy;
+    @Nullable
+    final Expression mHaving;
 
     @SuppressWarnings("unchecked")
     private Query(@NonNull final Table<T> table, final boolean distinct, @Nullable final Join<T, ?>[] joins,
                   @Nullable final String[] projection, @Nullable final Expression where,
-                  @Nullable final String orderBy) {
+                  @Nullable final String orderBy, @Nullable final Field[] groupBy, @Nullable final Expression having) {
         mTable = table;
         mDistinct = distinct;
         mJoins = joins != null ? joins : Join.NO_JOINS;
         mProjection = projection != null && projection.length > 0 ? projection : null;
         mOrderBy = orderBy;
         mWhere = where;
+        mGroupBy = groupBy != null ? groupBy : NO_FIELDS;
+        mHaving = having;
     }
 
     @NonNull
@@ -40,41 +49,45 @@ public final class Query<T> {
 
     @NonNull
     public static <T> Query<T> select(@NonNull final Table<T> table) {
-        return new Query<>(table, false, null, null, null, null);
+        return new Query<>(table, false, null, null, null, null, null, null);
     }
 
     @NonNull
     public Query<T> distinct(final boolean distinct) {
-        return new Query<>(mTable, distinct, mJoins, mProjection, mWhere, mOrderBy);
+        return new Query<>(mTable, distinct, mJoins, mProjection, mWhere, mOrderBy, mGroupBy, mHaving);
     }
 
     @NonNull
     @SuppressWarnings("unchecked")
     public Query<T> join(@NonNull final Join<T, ?>... joins) {
         return new Query<>(mTable, mDistinct, ArrayUtils.merge(Join.class, mJoins, joins), mProjection, mWhere,
-                           mOrderBy);
+                           mOrderBy, mGroupBy, mHaving);
     }
 
     @NonNull
     public Query<T> joins(@NonNull final Join<T, ?>... joins) {
-        return new Query<>(mTable, mDistinct, joins, mProjection, mWhere, mOrderBy);
+        return new Query<>(mTable, mDistinct, joins, mProjection, mWhere, mOrderBy, mGroupBy,
+                           mHaving);
     }
 
     @NonNull
     public Query<T> projection(@Nullable final String... projection) {
-        return new Query<>(mTable, mDistinct, mJoins, projection, mWhere, mOrderBy);
+        return new Query<>(mTable, mDistinct, mJoins, projection, mWhere, mOrderBy, mGroupBy,
+                           mHaving);
     }
 
     @NonNull
     public Query<T> where(@Nullable final Expression where) {
-        return new Query<>(mTable, mDistinct, mJoins, mProjection, where, mOrderBy);
+        return new Query<>(mTable, mDistinct, mJoins, mProjection, where, mOrderBy, mGroupBy,
+                           mHaving);
     }
 
     @NonNull
     @Deprecated
     Query<T> where(@Nullable final Pair<String, String[]> where) {
         return new Query<>(mTable, mDistinct, mJoins, mProjection,
-                           where != null ? Expression.raw(where.first, where.second) : null, mOrderBy);
+                           where != null ? Expression.raw(where.first, where.second) : null,
+                           mOrderBy, mGroupBy, mHaving);
     }
 
     @NonNull
@@ -85,12 +98,22 @@ public final class Query<T> {
     @NonNull
     public Query<T> where(@Nullable final String where, @Nullable final String... args) {
         return new Query<>(mTable, mDistinct, mJoins, mProjection, where != null ? Expression.raw(where, args) : null,
-                           mOrderBy);
+                           mOrderBy, mGroupBy, mHaving);
     }
 
     @NonNull
     public Query<T> orderBy(@Nullable final String orderBy) {
-        return new Query<>(mTable, mDistinct, mJoins, mProjection, mWhere, orderBy);
+        return new Query<>(mTable, mDistinct, mJoins, mProjection, mWhere, orderBy, mGroupBy, mHaving);
+    }
+
+    @NonNull
+    public Query<T> groupBy(@NonNull final Field... groupBy) {
+        return new Query<>(mTable, mDistinct, mJoins, mProjection, mWhere, mOrderBy, groupBy, mHaving);
+    }
+
+    @NonNull
+    public Query<T> having(@Nullable final Expression having) {
+        return new Query<>(mTable, mDistinct, mJoins, mProjection, mWhere, mOrderBy, mGroupBy, having);
     }
 
     @NonNull
@@ -109,5 +132,10 @@ public final class Query<T> {
     @NonNull
     final Pair<String, String[]> buildSqlWhere(@NonNull final AbstractDao dao) {
         return mWhere != null ? mWhere.buildSql(dao) : Pair.<String, String[]>create(null, null);
+    }
+
+    @NonNull
+    final Pair<String, String[]> buildSqlHaving(@NonNull final AbstractDao dao) {
+        return mHaving != null ? mHaving.buildSql(dao) : Pair.<String, String[]>create(null, null);
     }
 }

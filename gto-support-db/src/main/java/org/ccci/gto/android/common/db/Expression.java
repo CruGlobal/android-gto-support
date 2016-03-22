@@ -1,7 +1,5 @@
 package org.ccci.gto.android.common.db;
 
-import static org.ccci.gto.android.common.db.AbstractDao.bindValues;
-
 import android.annotation.TargetApi;
 import android.os.Build;
 import android.os.Parcel;
@@ -13,6 +11,8 @@ import android.util.Pair;
 import org.ccci.gto.android.common.compat.ArraysCompat;
 import org.ccci.gto.android.common.compat.os.ParcelCompat;
 import org.ccci.gto.android.common.util.ArrayUtils;
+
+import static org.ccci.gto.android.common.db.AbstractDao.bindValues;
 
 public abstract class Expression implements Parcelable {
     public static final Literal NULL = new Literal((String) null, true);
@@ -355,6 +355,46 @@ public abstract class Expression implements Parcelable {
         Field(@NonNull final Parcel in, @Nullable final ClassLoader loader) {
             mTable = in.readParcelable(loader);
             mName = in.readString();
+        }
+
+        @NonNull
+        public Aggregate count() {
+            return new Aggregate(Aggregate.COUNT, false, this);
+        }
+
+        @NonNull
+        public Aggregate count(final boolean distinct) {
+            return new Aggregate(Aggregate.COUNT, distinct, this);
+        }
+
+        @NonNull
+        public Aggregate max() {
+            return new Aggregate(Aggregate.MAX, false, this);
+        }
+
+        @NonNull
+        public Aggregate max(final boolean distinct) {
+            return new Aggregate(Aggregate.MAX, distinct, this);
+        }
+
+        @NonNull
+        public Aggregate min() {
+            return new Aggregate(Aggregate.MIN, false, this);
+        }
+
+        @NonNull
+        public Aggregate min(final boolean distinct) {
+            return new Aggregate(Aggregate.MIN, distinct, this);
+        }
+
+        @NonNull
+        public Aggregate sum() {
+            return new Aggregate(Aggregate.SUM, false, this);
+        }
+
+        @NonNull
+        public Aggregate sum(final boolean distinct) {
+            return new Aggregate(Aggregate.SUM, distinct, this);
         }
 
         @NonNull
@@ -757,6 +797,105 @@ public abstract class Expression implements Parcelable {
             @Override
             public Unary createFromParcel(@NonNull final Parcel in, @Nullable final ClassLoader loader) {
                 return new Unary(in, loader);
+            }
+        }
+    }
+
+    public static class Aggregate extends Expression {
+        static final String COUNT = "COUNT";
+        static final String MAX = "MAX";
+        static final String MIN = "MIN";
+        static final String SUM = "SUM";
+
+        @NonNull
+        private final String mOp;
+        @NonNull
+        private final Field mField;
+        private final boolean mDistinct;
+
+        @Nullable
+        private transient Pair<String, String[]> mSql;
+
+        Aggregate(@NonNull final String op, final boolean distinct,
+                  @NonNull final Field field) {
+            mOp = op;
+            mField = field;
+            mDistinct = distinct;
+        }
+
+        Aggregate(@NonNull final Parcel in, @Nullable final ClassLoader loader) {
+            mOp = in.readString();
+            mField = in.readParcelable(loader);
+            mDistinct = false;
+        }
+
+        @NonNull
+        public Aggregate distinct(final boolean distinct) {
+            return new Aggregate(mOp, distinct, mField);
+        }
+
+        @Override
+        protected int numOfArgs() {
+            return mField.numOfArgs();
+        }
+
+        @NonNull
+        @Override
+        public Expression args(@NonNull final String... args) {
+            return mField.args(args);
+        }
+
+        @NonNull
+        @Override
+        protected Pair<String, String[]> buildSql(@NonNull final AbstractDao dao) {
+            // generate SQL if it hasn't been generated yet
+            if (mSql == null) {
+                final StringBuilder sql = new StringBuilder(mOp).append(" (");
+                String[] args = NO_ARGS;
+                final Pair<String, String[]> resp = mField.buildSql(dao);
+
+                // {mOp} (DISTINCT {mExpr})
+                if(mDistinct) {
+                    sql.append("DISTINCT ");
+                }
+                sql.append(resp.first);
+                args = ArrayUtils.merge(String.class, args, resp.second);
+                sql.append(')');
+                mSql = Pair.create(sql.toString(), args);
+            }
+
+            return mSql;
+        }
+
+        @Override
+        public void writeToParcel(final Parcel out, final int flags) {
+            super.writeToParcel(out, flags);
+            out.writeString(mOp);
+            out.writeParcelable(mField, 0);
+        }
+
+        public static final Creator<Aggregate> CREATOR =
+        Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB_MR2 ? new HoneycombMR1AggregateExpressionCreator() :
+                new AggregateExpressionCreator();
+
+        private static class HoneycombMR1AggregateExpressionCreator implements Creator<Aggregate> {
+            @Override
+            public Aggregate createFromParcel(@NonNull final Parcel in) {
+                return new Aggregate(in, null);
+            }
+
+            @Override
+            public Aggregate[] newArray(final int size) {
+                return new Aggregate[size];
+            }
+        }
+
+        @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
+        private static class AggregateExpressionCreator extends HoneycombMR1AggregateExpressionCreator
+                implements ClassLoaderCreator<Aggregate> {
+            @Override
+            public Aggregate createFromParcel(@NonNull final Parcel in, @Nullable final ClassLoader loader) {
+                return new Aggregate(in, loader);
             }
         }
     }
