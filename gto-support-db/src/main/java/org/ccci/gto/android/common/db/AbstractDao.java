@@ -266,16 +266,23 @@ public abstract class AbstractDao {
     }
 
     String addPrefixToFields(String clause, String prefix) {
-        // If there is more than one field in the clause, add the prefix to each field
-        if(clause.contains(",")) {
-            String[] fields = clause.split(",");
+        if (clause != null) {
+            // If there is more than one field in the clause, add the prefix to each field
+            if (clause.contains(",")) {
+                String[] fields = clause.split(",");
 
-            for(int i = 0; i < fields.length; i++) {
-                fields[i] = prefix + fields[i].trim();
+                for (int i = 0; i < fields.length; i++) {
+                    if(!fields[i].contains(".")) {
+                        fields[i] = prefix + fields[i].trim();
+                    }
+                }
+                return TextUtils.join(",", fields);
             }
-            return TextUtils.join(",", fields);
+            if(!clause.contains(".")) {
+                return prefix + clause;
+            }
         }
-        return prefix + clause;
+        return null;
     }
 
     /**
