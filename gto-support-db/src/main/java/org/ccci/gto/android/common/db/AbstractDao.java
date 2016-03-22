@@ -240,8 +240,8 @@ public abstract class AbstractDao {
             }
 
             // prefix un-prefixed clauses
-            addPrefixToFields(orderBy, prefix);
-            addPrefixToFields(groupBy, prefix);
+            orderBy = addPrefixToFields(orderBy, prefix);
+            groupBy = addPrefixToFields(groupBy, prefix);
         }
 
         // generate "FROM {}" SQL
