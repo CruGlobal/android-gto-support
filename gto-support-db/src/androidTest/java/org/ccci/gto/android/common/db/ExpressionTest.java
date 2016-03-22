@@ -32,4 +32,20 @@ public class ExpressionTest extends InstrumentationTestCase {
         Expression notEqualsExpression = RootTable.FIELD_TEST.not().eq("1");
         assertThat(notEqualsExpression.buildSql(dao).first, is("(NOT (root.test) == ?)"));
     }
+
+    @Test
+    public void testCount() {
+        final TestDao dao = getDao();
+
+        Expression countExpression = RootTable.FIELD_TEST.count();
+        assertThat(countExpression.buildSql(dao).first, is("COUNT (root.test)"));
+    }
+
+    @Test
+    public void testCountInHaving() {
+        final TestDao dao = getDao();
+
+        Expression countExpression = RootTable.FIELD_TEST.count().eq(1);
+        assertThat(countExpression.buildSql(dao).first, is("(COUNT (root.test) == 1)"));
+    }
 }
