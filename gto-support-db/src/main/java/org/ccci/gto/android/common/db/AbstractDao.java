@@ -427,10 +427,17 @@ public abstract class AbstractDao {
         }
     }
 
+    /**
+     * Delete all objects that match the provided where clause. Sending a null where clause will delete all objects.
+     *
+     * @param clazz The Class of the objects to be deleted
+     * @param where An expression describing which objects to delete. Null indicates all objects should be deleted.
+     */
     @WorkerThread
-    public final void delete(@NonNull final Class<?> clazz, @NonNull final Expression where) {
+    public final void delete(@NonNull final Class<?> clazz, @Nullable final Expression where) {
         final String table = this.getTable(clazz);
-        final Pair<String, String[]> builtWhere = where.buildSql(this);
+        final Pair<String, String[]> builtWhere =
+                where != null ? where.buildSql(this) : Pair.<String, String[]>create(null, null);
         final SQLiteDatabase db = mDbHelper.getWritableDatabase();
         final Transaction tx = new Transaction(db);
         try {
