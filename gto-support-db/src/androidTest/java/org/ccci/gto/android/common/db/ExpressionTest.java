@@ -6,7 +6,7 @@ import android.test.InstrumentationTestCase;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import static org.ccci.gto.android.common.db.TestDao.TestContract.RootTable;
+import static org.ccci.gto.android.common.db.Contract.RootTable;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 

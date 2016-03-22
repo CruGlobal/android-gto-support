@@ -1,24 +1,18 @@
 package org.ccci.gto.android.common.db;
 
-import android.content.ContentValues;
 import android.content.Context;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
-import org.ccci.gto.android.common.db.Expression.Field;
+import org.ccci.gto.android.common.db.Contract.RootTable;
 import org.ccci.gto.android.common.db.model.Root;
-import org.ccci.gto.android.common.db.util.CursorUtils;
-
-import static org.ccci.gto.android.common.db.Expression.bind;
-import static org.ccci.gto.android.common.db.Expression.field;
 
 public class TestDao extends AbstractDao {
-    private TestDao(@NonNull final Context context) {
-        super(TestDatabase.getInstance(context));
-        registerType(Root.class, TestContract.RootTable.TABLE_NAME,
-                     TestContract.RootTable.PROJECTION_ALL, new RootMapper(),
-                     TestContract.RootTable.SQL_WHERE_PRIMARY_KEY);
+    private TestDao(@Nullable final Context context) {
+        //noinspection ConstantConditions
+        super(context != null ? TestDatabase.getInstance(context) : null);
+        registerType(Root.class, RootTable.TABLE_NAME, RootTable.PROJECTION_ALL, new RootMapper(),
+                     RootTable.SQL_WHERE_PRIMARY_KEY);
     }
 
     private static TestDao INSTANCE;
@@ -31,6 +25,10 @@ public class TestDao extends AbstractDao {
         }
     }
 
+    static TestDao mock() {
+        return new TestDao(null);
+    }
+
     @NonNull
     @Override
     protected Expression getPrimaryKeyWhere(@NonNull final Object obj) {
@@ -38,104 +36,5 @@ public class TestDao extends AbstractDao {
             return getPrimaryKeyWhere(Root.class, ((Root) obj).id);
         }
         return super.getPrimaryKeyWhere(obj);
-    }
-
-    static class TestContract extends BaseContract {
-        static class RootTable implements Base {
-            static final String TABLE_NAME = "root";
-            static final Table<Root> TABLE = Table.forClass(Root.class);
-
-            static final String COLUMN_ID = _ID;
-            static final String COLUMN_TEST = "test";
-
-            static final String[] PROJECTION_ALL = {COLUMN_ID, COLUMN_TEST};
-
-            static final String SQL_COLUMN_ID = COLUMN_ID + " INTEGER PRIMARY KEY";
-            static final String SQL_COLUMN_TEST = COLUMN_TEST + " TEXT";
-
-            static final Field FIELD_ID = field(TABLE, COLUMN_ID);
-            static final Field FIELD_TEST = field(TABLE, COLUMN_TEST);
-
-            static final Expression SQL_WHERE_PRIMARY_KEY = FIELD_ID.eq(bind());
-
-            static final String SQL_CREATE_TABLE = create(TABLE_NAME, SQL_COLUMN_ID, SQL_COLUMN_TEST);
-            static final String SQL_DELETE_TABLE = drop(TABLE_NAME);
-        }
-    }
-
-    private static class TestDatabase extends WalSQLiteOpenHelper {
-        private TestDatabase(@NonNull final Context context) {
-            super(context, "test_db", null, 1);
-            resetDatabase(getWritableDatabase());
-        }
-
-        private static TestDatabase INSTANCE;
-        static TestDatabase getInstance(@NonNull final Context context) {
-            synchronized (TestDatabase.class) {
-                if (INSTANCE == null) {
-                    INSTANCE = new TestDatabase(context.getApplicationContext());
-                }
-                return INSTANCE;
-            }
-        }
-
-        @Override
-        public void onCreate(SQLiteDatabase db) {
-            db.execSQL(TestContract.RootTable.SQL_CREATE_TABLE);
-        }
-
-        @Override
-        public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-            throw new IllegalStateException("onUpgrade should no be triggered");
-        }
-
-        private void resetDatabase(final SQLiteDatabase db) {
-            try {
-                db.beginTransaction();
-
-                db.execSQL(TestContract.RootTable.SQL_DELETE_TABLE);
-
-                onCreate(db);
-
-                db.setTransactionSuccessful();
-            } finally {
-                db.endTransaction();
-            }
-        }
-    }
-
-    public class RootMapper extends AbstractMapper<Root> {
-
-        @Override
-        protected void mapField(@NonNull ContentValues values, @NonNull String field, @NonNull Root obj) {
-            switch(field) {
-                case TestContract.RootTable.COLUMN_ID:
-                    values.put(field, obj.id);
-                    break;
-                case TestContract.RootTable.COLUMN_TEST:
-                    values.put(field, obj.test);
-                    break;
-                default:
-                    super.mapField(values, field, obj);
-                    break;
-            }
-        }
-
-        @NonNull
-        @Override
-        protected Root newObject(@NonNull Cursor c) {
-            return new Root();
-        }
-
-        @NonNull
-        @Override
-        public Root toObject(@NonNull Cursor c) {
-            Root root = super.toObject(c);
-
-            root.id = CursorUtils.getLong(c, TestContract.RootTable.COLUMN_ID);
-            root.test = CursorUtils.getString(c, TestContract.RootTable.COLUMN_TEST);
-
-            return root;
-        }
     }
 }

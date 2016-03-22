@@ -4,7 +4,7 @@ import android.database.Cursor;
 import android.support.test.runner.AndroidJUnit4;
 import android.test.InstrumentationTestCase;
 
-import org.ccci.gto.android.common.db.TestDao.TestContract.RootTable;
+import org.ccci.gto.android.common.db.Contract.RootTable;
 import org.ccci.gto.android.common.db.model.Root;
 import org.ccci.gto.android.common.db.util.CursorUtils;
 import org.junit.Test;
