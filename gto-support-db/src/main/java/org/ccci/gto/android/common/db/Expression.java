@@ -133,46 +133,6 @@ public abstract class Expression implements Parcelable {
     }
 
     @NonNull
-    public Aggregate count() {
-        return new Aggregate(Aggregate.COUNT, this);
-    }
-
-    @NonNull
-    public Aggregate count(@NonNull final Expression expression) {
-        return new Aggregate(Aggregate.COUNT, expression);
-    }
-
-    @NonNull
-    public Aggregate max() {
-        return new Aggregate(Aggregate.MAX, this);
-    }
-
-    @NonNull
-    public Aggregate max(@NonNull final Expression expression) {
-        return new Aggregate(Aggregate.MAX, expression);
-    }
-
-    @NonNull
-    public Aggregate min() {
-        return new Aggregate(Aggregate.MIN, this);
-    }
-
-    @NonNull
-    public Aggregate min(@NonNull final Expression expression) {
-        return new Aggregate(Aggregate.MIN, expression);
-    }
-
-    @NonNull
-    public Aggregate sum() {
-        return new Aggregate(Aggregate.SUM, this);
-    }
-
-    @NonNull
-    public Aggregate sum(@NonNull final Expression expression) {
-        return new Aggregate(Aggregate.SUM, expression);
-    }
-
-    @NonNull
     public Raw toRaw(@NonNull final AbstractDao dao) {
         final Pair<String, String[]> sql = buildSql(dao);
         return raw(sql.first, sql.second);
@@ -395,6 +355,46 @@ public abstract class Expression implements Parcelable {
         Field(@NonNull final Parcel in, @Nullable final ClassLoader loader) {
             mTable = in.readParcelable(loader);
             mName = in.readString();
+        }
+
+        @NonNull
+        public Aggregate count() {
+            return new Aggregate(Aggregate.COUNT, false, this);
+        }
+
+        @NonNull
+        public Aggregate count(final boolean distinct) {
+            return new Aggregate(Aggregate.COUNT, distinct, this);
+        }
+
+        @NonNull
+        public Aggregate max() {
+            return new Aggregate(Aggregate.MAX, false, this);
+        }
+
+        @NonNull
+        public Aggregate max(final boolean distinct) {
+            return new Aggregate(Aggregate.MAX, distinct, this);
+        }
+
+        @NonNull
+        public Aggregate min() {
+            return new Aggregate(Aggregate.MIN, false, this);
+        }
+
+        @NonNull
+        public Aggregate min(final boolean distinct) {
+            return new Aggregate(Aggregate.MIN, distinct, this);
+        }
+
+        @NonNull
+        public Aggregate sum() {
+            return new Aggregate(Aggregate.SUM, false, this);
+        }
+
+        @NonNull
+        public Aggregate sum(final boolean distinct) {
+            return new Aggregate(Aggregate.SUM, distinct, this);
         }
 
         @NonNull
@@ -810,30 +810,34 @@ public abstract class Expression implements Parcelable {
         @NonNull
         private final String mOp;
         @NonNull
-        private final Expression mExpr;
+        private final Field mField;
+        private final boolean mDistinct;
 
         @Nullable
         private transient Pair<String, String[]> mSql;
 
-        Aggregate(@NonNull final String op, @NonNull final Expression expr) {
+        Aggregate(@NonNull final String op, final boolean distinct,
+                  @NonNull final Field field) {
             mOp = op;
-            mExpr = expr;
+            mField = field;
+            mDistinct = distinct;
         }
 
         Aggregate(@NonNull final Parcel in, @Nullable final ClassLoader loader) {
             mOp = in.readString();
-            mExpr = in.readParcelable(loader);
+            mField = in.readParcelable(loader);
+            mDistinct = false;
         }
 
         @Override
         protected int numOfArgs() {
-            return mExpr.numOfArgs();
+            return mField.numOfArgs();
         }
 
         @NonNull
         @Override
         public Expression args(@NonNull final String... args) {
-            return mExpr.args(args);
+            return mField.args(args);
         }
 
         @NonNull
@@ -843,7 +847,12 @@ public abstract class Expression implements Parcelable {
             if (mSql == null) {
                 final StringBuilder sql = new StringBuilder(mOp).append(" (");
                 String[] args = NO_ARGS;
-                final Pair<String, String[]> resp = mExpr.buildSql(dao);
+                final Pair<String, String[]> resp = mField.buildSql(dao);
+
+                // {mOp} (DISTINCT {mExpr})
+                if(mDistinct) {
+                    sql.append("DISTINCT ");
+                }
                 sql.append(resp.first);
                 args = ArrayUtils.merge(String.class, args, resp.second);
                 sql.append(')');
@@ -857,7 +866,7 @@ public abstract class Expression implements Parcelable {
         public void writeToParcel(final Parcel out, final int flags) {
             super.writeToParcel(out, flags);
             out.writeString(mOp);
-            out.writeParcelable(mExpr, 0);
+            out.writeParcelable(mField, 0);
         }
 
         public static final Creator<Aggregate> CREATOR =
