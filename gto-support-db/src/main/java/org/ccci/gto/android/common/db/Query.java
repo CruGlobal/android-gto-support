@@ -1,14 +1,17 @@
 package org.ccci.gto.android.common.db;
 
-import static org.ccci.gto.android.common.db.AbstractDao.bindValues;
-
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Pair;
 
+import org.ccci.gto.android.common.db.Expression.Field;
 import org.ccci.gto.android.common.util.ArrayUtils;
 
+import static org.ccci.gto.android.common.db.AbstractDao.bindValues;
+
 public final class Query<T> {
+    private static final Field[] NO_FIELDS = new Field[0];
+
     @NonNull
     final Table<T> mTable;
     final boolean mDistinct;
@@ -20,22 +23,22 @@ public final class Query<T> {
     final String mOrderBy;
     @Nullable
     final Expression mWhere;
-    @Nullable
-    final String mGroupBy;
+    @NonNull
+    final Field[] mGroupBy;
     @Nullable
     final Expression mHaving;
 
     @SuppressWarnings("unchecked")
     private Query(@NonNull final Table<T> table, final boolean distinct, @Nullable final Join<T, ?>[] joins,
                   @Nullable final String[] projection, @Nullable final Expression where,
-                  @Nullable final String orderBy, @Nullable final String groupBy, @Nullable final Expression having) {
+                  @Nullable final String orderBy, @Nullable final Field[] groupBy, @Nullable final Expression having) {
         mTable = table;
         mDistinct = distinct;
         mJoins = joins != null ? joins : Join.NO_JOINS;
         mProjection = projection != null && projection.length > 0 ? projection : null;
         mOrderBy = orderBy;
         mWhere = where;
-        mGroupBy = groupBy;
+        mGroupBy = groupBy != null ? groupBy : NO_FIELDS;
         mHaving = having;
     }
 
@@ -104,7 +107,7 @@ public final class Query<T> {
     }
 
     @NonNull
-    public Query<T> groupBy(@Nullable final String groupBy) {
+    public Query<T> groupBy(@NonNull final Field... groupBy) {
         return new Query<>(mTable, mDistinct, mJoins, mProjection, mWhere, mOrderBy, groupBy, mHaving);
     }
 

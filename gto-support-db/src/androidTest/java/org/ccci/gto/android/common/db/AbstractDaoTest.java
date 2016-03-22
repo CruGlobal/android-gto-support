@@ -78,8 +78,7 @@ public class AbstractDaoTest extends InstrumentationTestCase {
         insertRow(dao, 4, "2");
         insertRow(dao, 5, "3");
 
-        Cursor cursor = dao.getCursor(
-            Query.select(Root.class).groupBy(RootTable.COLUMN_TEST));
+        Cursor cursor = dao.getCursor(Query.select(Root.class).groupBy(RootTable.FIELD_TEST));
 
         assertThat(cursor.getCount(), is(3));
 
@@ -107,8 +106,7 @@ public class AbstractDaoTest extends InstrumentationTestCase {
         insertRow(dao, 5, "3");
 
         Expression max = RootTable.FIELD_ID.max().eq(3);
-        Cursor cursor = dao.getCursor(
-                Query.select(Root.class).groupBy(RootTable.COLUMN_ID).having(max));
+        Cursor cursor = dao.getCursor(Query.select(Root.class).groupBy(RootTable.FIELD_ID).having(max));
 
         assertThat(cursor.getCount(), is(1));
 
