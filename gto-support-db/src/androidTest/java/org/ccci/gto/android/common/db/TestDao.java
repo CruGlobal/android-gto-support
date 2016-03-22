@@ -57,7 +57,6 @@ public class TestDao extends AbstractDao {
             static final Field FIELD_TEST = field(TABLE, COLUMN_TEST);
 
             static final Expression SQL_WHERE_PRIMARY_KEY = FIELD_ID.eq(bind());
-            static final Expression SQL_WHERE_ANY = FIELD_ID.ne(-1);
 
             static final String SQL_CREATE_TABLE = create(TABLE_NAME, SQL_COLUMN_ID, SQL_COLUMN_TEST);
             static final String SQL_DELETE_TABLE = drop(TABLE_NAME);

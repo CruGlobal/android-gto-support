@@ -163,7 +163,7 @@ public class AbstractDaoTest extends InstrumentationTestCase {
     @Override
     protected void tearDown() throws Exception {
         final TestDao dao = getDao();
-        dao.delete(Root.class, RootTable.SQL_WHERE_ANY);
+        dao.delete(Root.class, null);
         super.tearDown();
     }
 }
