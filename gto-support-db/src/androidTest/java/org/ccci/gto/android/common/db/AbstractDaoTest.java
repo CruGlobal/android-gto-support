@@ -6,6 +6,7 @@ import android.test.InstrumentationTestCase;
 
 import org.ccci.gto.android.common.db.TestDao.TestContract.RootTable;
 import org.ccci.gto.android.common.db.model.Root;
+import org.ccci.gto.android.common.db.util.CursorUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -50,6 +51,69 @@ public class AbstractDaoTest extends InstrumentationTestCase {
         testRoot.test = test;
 
         dao.insert(testRoot);
+    }
+
+    @Test
+    public void testWhere() {
+        final TestDao dao = getDao();
+
+        insertRow(dao, 1, "1");
+        insertRow(dao, 2, "2");
+
+        Cursor cursor = dao.getCursor(
+            Query.select(Root.class).where(RootTable.SQL_WHERE_PRIMARY_KEY.args(2)));
+        cursor.moveToFirst();
+
+        assertThat(CursorUtils.getString(cursor, RootTable.COLUMN_TEST), is("2"));
+    }
+
+    @Test
+    public void testGroupBy() {
+        final TestDao dao = getDao();
+
+        insertRow(dao, 1, "1");
+        insertRow(dao, 2, "2");
+        insertRow(dao, 3, "2");
+        insertRow(dao, 4, "2");
+        insertRow(dao, 5, "3");
+
+        Cursor cursor = dao.getCursor(
+            Query.select(Root.class).groupBy(RootTable.COLUMN_TEST));
+
+        assertThat(cursor.getCount(), is(3));
+
+        cursor.moveToFirst();
+
+        assertThat(CursorUtils.getString(cursor, RootTable.COLUMN_TEST), is("1"));
+
+        cursor.moveToNext();
+
+        assertThat(CursorUtils.getString(cursor, RootTable.COLUMN_TEST), is("2"));
+
+        cursor.moveToNext();
+
+        assertThat(CursorUtils.getString(cursor, RootTable.COLUMN_TEST), is("3"));
+    }
+
+    @Test
+    public void testHaving() {
+        final TestDao dao = getDao();
+
+        insertRow(dao, 1, "1");
+        insertRow(dao, 2, "2");
+        insertRow(dao, 3, "2");
+        insertRow(dao, 4, "2");
+        insertRow(dao, 5, "3");
+
+        Expression max = RootTable.FIELD_ID.max().eq(3);
+        Cursor cursor = dao.getCursor(
+                Query.select(Root.class).groupBy(RootTable.COLUMN_ID).having(max));
+
+        assertThat(cursor.getCount(), is(1));
+
+        cursor.moveToFirst();
+
+        assertThat(CursorUtils.getString(cursor, RootTable.COLUMN_TEST), is("2"));
     }
 
     @Override
