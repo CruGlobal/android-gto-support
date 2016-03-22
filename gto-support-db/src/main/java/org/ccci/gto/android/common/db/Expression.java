@@ -1,7 +1,5 @@
 package org.ccci.gto.android.common.db;
 
-import static org.ccci.gto.android.common.db.AbstractDao.bindValues;
-
 import android.annotation.TargetApi;
 import android.os.Build;
 import android.os.Parcel;
@@ -13,6 +11,8 @@ import android.util.Pair;
 import org.ccci.gto.android.common.compat.ArraysCompat;
 import org.ccci.gto.android.common.compat.os.ParcelCompat;
 import org.ccci.gto.android.common.util.ArrayUtils;
+
+import static org.ccci.gto.android.common.db.AbstractDao.bindValues;
 
 public abstract class Expression implements Parcelable {
     public static final Literal NULL = new Literal((String) null, true);
@@ -827,6 +827,11 @@ public abstract class Expression implements Parcelable {
             mOp = in.readString();
             mField = in.readParcelable(loader);
             mDistinct = false;
+        }
+
+        @NonNull
+        public Aggregate distinct(final boolean distinct) {
+            return new Aggregate(mOp, distinct, mField);
         }
 
         @Override

@@ -12,6 +12,7 @@ import android.support.v4.util.SimpleArrayMap;
 import android.text.TextUtils;
 import android.util.Pair;
 
+import org.ccci.gto.android.common.db.Expression.Field;
 import org.ccci.gto.android.common.util.ArrayUtils;
 import org.ccci.gto.android.common.util.LocaleCompat;
 
@@ -228,7 +229,6 @@ public abstract class AbstractDao {
         // prefix projection and orderBy when we have joins
         String[] projection = query.mProjection != null ? query.mProjection : getFullProjection(query.mTable.mType);
         String orderBy = query.mOrderBy;
-        String groupBy = query.mGroupBy;
 
         if (query.mJoins.length > 0) {
             final String prefix = query.mTable.sqlPrefix(this);
@@ -241,7 +241,6 @@ public abstract class AbstractDao {
 
             // prefix un-prefixed clauses
             orderBy = addPrefixToFields(orderBy, prefix);
-            groupBy = addPrefixToFields(groupBy, prefix);
         }
 
         // generate "FROM {}" SQL
@@ -253,13 +252,31 @@ public abstract class AbstractDao {
         final Pair<String, String[]> where = query.buildSqlWhere(this);
         args = ArrayUtils.merge(String.class, args, where.second);
 
-        // generate "HAVING {}" SQL
-        final Pair<String, String[]> having = query.buildSqlHaving(this);
-        args = ArrayUtils.merge(String.class, args, having.second);
+        // handle GROUP BY {} HAVING {}
+        String groupBy = null;
+        String having = null;
+        if (query.mGroupBy.length > 0) {
+            // generate "GROUP BY {}" SQL
+            final StringBuilder groupByBuilder = new StringBuilder();
+            boolean firstTime = true;
+            for (final Field field : query.mGroupBy) {
+                if (!firstTime) {
+                    groupByBuilder.append(',');
+                }
+                groupByBuilder.append(field.buildSql(this).first);
+                firstTime = false;
+            }
+            groupBy = groupByBuilder.toString();
+
+            // generate "HAVING {}" SQL
+            final Pair<String, String[]> havingRaw = query.buildSqlHaving(this);
+            having = havingRaw.first;
+            args = ArrayUtils.merge(String.class, args, havingRaw.second);
+        }
 
         // execute actual query
         final Cursor c = mDbHelper.getReadableDatabase()
-                .query(query.mDistinct, tables, projection, where.first, args, groupBy, having.first, orderBy, null);
+                .query(query.mDistinct, tables, projection, where.first, args, groupBy, having, orderBy, null);
 
         c.moveToPosition(-1);
         return c;
