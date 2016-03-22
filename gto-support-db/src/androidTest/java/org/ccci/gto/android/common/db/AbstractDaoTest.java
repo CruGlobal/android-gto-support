@@ -32,4 +32,30 @@ public class AbstractDaoTest extends InstrumentationTestCase {
         assertThat(cursor.getColumnName(0), is("_id"));
         assertThat(cursor.getColumnName(1), is("test"));
     }
+
+    @Test
+    public void testInsert() {
+        final TestDao dao = getDao();
+
+        insertRow(dao, 1, "1");
+
+        Root foundRoot = dao.find(Root.class, 1);
+        assertNotNull(foundRoot);
+        assertThat(foundRoot.test, is("1"));
+    }
+
+    private void insertRow(TestDao dao, int id, String test) {
+        Root testRoot = new Root();
+        testRoot.id = id;
+        testRoot.test = test;
+
+        dao.insert(testRoot);
+    }
+
+    @Override
+    protected void tearDown() throws Exception {
+        final TestDao dao = getDao();
+        dao.delete(Root.class, RootTable.SQL_WHERE_ANY);
+        super.tearDown();
+    }
 }
