@@ -20,7 +20,7 @@ public class TestDao extends AbstractDao {
     }
 
     private static TestDao INSTANCE;
-    static TestDao getInstance(@NonNull final Context context) {
+    public static TestDao getInstance(@NonNull final Context context) {
         synchronized (TestDao.class) {
             if (INSTANCE == null) {
                 INSTANCE = new TestDao(context.getApplicationContext());
