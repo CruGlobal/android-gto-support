@@ -58,14 +58,16 @@ public final class Query<T> {
     }
 
     @NonNull
+    @SafeVarargs
     @SuppressWarnings("unchecked")
-    public Query<T> join(@NonNull final Join<T, ?>... joins) {
+    public final Query<T> join(@NonNull final Join<T, ?>... joins) {
         return new Query<>(mTable, mDistinct, ArrayUtils.merge(Join.class, mJoins, joins), mProjection, mWhere,
                            mOrderBy, mGroupBy, mHaving);
     }
 
     @NonNull
-    public Query<T> joins(@NonNull final Join<T, ?>... joins) {
+    @SafeVarargs
+    public final Query<T> joins(@NonNull final Join<T, ?>... joins) {
         return new Query<>(mTable, mDistinct, joins, mProjection, mWhere, mOrderBy, mGroupBy,
                            mHaving);
     }
