@@ -65,18 +65,27 @@ public final class CursorUtils {
         return getString(c, field, null);
     }
 
+    /**
+     * @param c        The Cursor we are fetching the value from
+     * @param column   The column we are requesting the value of
+     * @param defValue The default value to return when the column doesn't exist or is null
+     * @return the value for the specified column in the current row of the specified Cursor. Or the default value
+     * if the column is null or non-existant
+     */
     @Nullable
-    public static String getString(@NonNull final Cursor c, @NonNull final String field,
+    public static String getString(@NonNull final Cursor c, @NonNull final String column,
                                    @Nullable final String defValue) {
-        final int index = c.getColumnIndex(field);
-        return index != -1 ? c.getString(index) : defValue;
+        final int index = c.getColumnIndex(column);
+        final String value = index != -1 ? c.getString(index) : null;
+        return value != null ? value : defValue;
     }
 
     @NonNull
     public static String getNonNullString(@NonNull final Cursor c, @NonNull final String field,
                                           @NonNull final String defValue) {
-        final String val = getString(c, field, defValue);
-        return val != null ? val : defValue;
+        // if defValue is @NonNull, then getString() will return @NonNull
+        //noinspection ConstantConditions
+        return getString(c, field, defValue);
     }
 
     @Nullable
