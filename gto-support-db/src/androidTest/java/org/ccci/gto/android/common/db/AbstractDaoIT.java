@@ -19,7 +19,7 @@ import static org.hamcrest.CoreMatchers.not;
 import static org.junit.Assert.assertThat;
 
 @RunWith(AndroidJUnit4.class)
-public class AbstractDaoTest extends InstrumentationTestCase {
+public class AbstractDaoIT extends InstrumentationTestCase {
     private TestDao getDao() {
         return TestDao.getInstance(getInstrumentation().getContext());
     }
@@ -176,51 +176,6 @@ public class AbstractDaoTest extends InstrumentationTestCase {
         assertNull(refresh);
         refresh = dao.refresh(conflict);
         assertNull(refresh);
-    }
-
-    @Test
-    public void testAddPrefixToSingleField() {
-        final TestDao dao = getDao();
-        String prefix = RootTable.TABLE_NAME + ".";
-
-        String editedClause = dao.addPrefixToFields(RootTable.COLUMN_ID, prefix);
-
-        assertThat(editedClause, is("root._id"));
-    }
-
-    @Test
-    public void testAddPrefixToMultipleFields() {
-        final TestDao dao = getDao();
-        String prefix = RootTable.TABLE_NAME + ".";
-
-        String editedClause = dao.addPrefixToFields(RootTable.COLUMN_ID + "," + RootTable.COLUMN_TEST,
-                prefix);
-
-        assertThat(editedClause, is("root._id,root.test"));
-    }
-
-    @Test
-    public void testAddPrefixToMultipleFieldsSomePrefixed() {
-        final TestDao dao = getDao();
-        String prefix = RootTable.TABLE_NAME + ".";
-
-        String editedClause = dao.addPrefixToFields(
-                prefix + RootTable.COLUMN_ID + "," + RootTable.COLUMN_TEST,
-                prefix);
-
-        assertThat(editedClause, is("root._id,root.test"));
-    }
-
-    @Test
-    public void testAddPrefixToMultipleFieldsAllPrefixed() {
-        final TestDao dao = getDao();
-        String prefix = RootTable.TABLE_NAME + ".";
-
-        String editedClause = dao.addPrefixToFields(
-                prefix + RootTable.COLUMN_ID + "," + prefix + RootTable.COLUMN_TEST,
-                prefix);
-
-        assertThat(editedClause, is("root._id,root.test"));
     }
 
     @Override
