@@ -1,15 +1,19 @@
 package org.ccci.gto.android.common.db;
 
 import android.database.Cursor;
+import android.database.sqlite.SQLiteConstraintException;
 import android.support.test.runner.AndroidJUnit4;
 import android.test.InstrumentationTestCase;
 
+import org.ccci.gto.android.common.db.Contract.CompoundTable;
 import org.ccci.gto.android.common.db.Contract.RootTable;
+import org.ccci.gto.android.common.db.model.Compound;
 import org.ccci.gto.android.common.db.model.Root;
 import org.ccci.gto.android.common.db.util.CursorUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import static org.hamcrest.CoreMatchers.allOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.junit.Assert.assertThat;
@@ -39,44 +43,37 @@ public class AbstractDaoTest extends InstrumentationTestCase {
     public void testInsert() {
         final TestDao dao = getDao();
 
-        insertRow(dao, 1, "1");
+        dao.insert(new Root(1, "1"));
 
         Root foundRoot = dao.find(Root.class, 1);
         assertNotNull(foundRoot);
         assertThat(foundRoot.test, is("1"));
     }
 
-    private void insertRow(TestDao dao, int id, String test) {
-        Root testRoot = new Root();
-        testRoot.id = id;
-        testRoot.test = test;
-
-        dao.insert(testRoot);
-    }
-
     @Test
     public void testWhere() {
         final TestDao dao = getDao();
 
-        insertRow(dao, 1, "1");
-        insertRow(dao, 2, "2");
+        dao.insert(new Root(1, "1"));
+        dao.insert(new Root(2, "2"));
 
-        Cursor cursor = dao.getCursor(
-            Query.select(Root.class).where(RootTable.SQL_WHERE_PRIMARY_KEY.args(2)));
+        Cursor cursor = dao.getCursor(Query.select(Root.class).where(RootTable.SQL_WHERE_PRIMARY_KEY.args(2)));
         cursor.moveToFirst();
 
         assertThat(CursorUtils.getString(cursor, RootTable.COLUMN_TEST), is("2"));
+
+        cursor.close();
     }
 
     @Test
     public void testGroupBy() {
         final TestDao dao = getDao();
 
-        insertRow(dao, 1, "1");
-        insertRow(dao, 2, "2");
-        insertRow(dao, 3, "2");
-        insertRow(dao, 4, "2");
-        insertRow(dao, 5, "3");
+        dao.insert(new Root(1, "1"));
+        dao.insert(new Root(2, "2"));
+        dao.insert(new Root(3, "2"));
+        dao.insert(new Root(4, "2"));
+        dao.insert(new Root(5, "3"));
 
         Cursor cursor = dao.getCursor(Query.select(Root.class).groupBy(RootTable.FIELD_TEST));
 
@@ -93,17 +90,19 @@ public class AbstractDaoTest extends InstrumentationTestCase {
         cursor.moveToNext();
 
         assertThat(CursorUtils.getString(cursor, RootTable.COLUMN_TEST), is("3"));
+
+        cursor.close();
     }
 
     @Test
     public void testHaving() {
         final TestDao dao = getDao();
 
-        insertRow(dao, 1, "1");
-        insertRow(dao, 2, "2");
-        insertRow(dao, 3, "2");
-        insertRow(dao, 4, "2");
-        insertRow(dao, 5, "3");
+        dao.insert(new Root(1, "1"));
+        dao.insert(new Root(2, "2"));
+        dao.insert(new Root(3, "2"));
+        dao.insert(new Root(4, "2"));
+        dao.insert(new Root(5, "3"));
 
         Expression max = RootTable.FIELD_ID.max().eq(3);
         Cursor cursor = dao.getCursor(Query.select(Root.class).groupBy(RootTable.FIELD_ID).having(max));
@@ -113,6 +112,70 @@ public class AbstractDaoTest extends InstrumentationTestCase {
         cursor.moveToFirst();
 
         assertThat(CursorUtils.getString(cursor, RootTable.COLUMN_TEST), is("2"));
+
+        cursor.close();
+    }
+
+    @Test
+    public void testCompoundKey() throws Exception {
+        final TestDao dao = getDao();
+
+        // create object
+        final Compound orig = new Compound("1", "2", "orig", "orig");
+        dao.insert(orig);
+
+        // test refresh
+        Compound refresh = dao.refresh(orig);
+        assertNotNull(refresh);
+        assertThat(refresh.id1, is(orig.id1));
+        assertThat(refresh.id2, is(orig.id2));
+        assertThat(refresh.data1, is(orig.data1));
+        assertThat(refresh.data2, is(orig.data2));
+
+        // test update
+        final Compound update = new Compound("1", "2", "update", "update");
+        dao.update(update);
+        refresh = dao.refresh(orig);
+        assertNotNull(refresh);
+        assertThat(refresh.id1, allOf(is(orig.id1), is(update.id1)));
+        assertThat(refresh.id2, allOf(is(orig.id2), is(update.id2)));
+        assertThat(refresh.data1, allOf(is(not(orig.data1)), is(update.data1)));
+        assertThat(refresh.data2, allOf(is(not(orig.data2)), is(update.data2)));
+
+        // test partial update
+        dao.update(orig);
+        dao.update(update, CompoundTable.COLUMN_DATA1);
+        refresh = dao.refresh(orig);
+        assertNotNull(refresh);
+        assertThat(refresh.id1, allOf(is(orig.id1), is(update.id1)));
+        assertThat(refresh.id2, allOf(is(orig.id2), is(update.id2)));
+        assertThat(refresh.data1, allOf(is(not(orig.data1)), is(update.data1)));
+        assertThat(refresh.data2, allOf(is(orig.data2), is(not(update.data2))));
+
+        // test PK conflict
+        dao.update(orig);
+        final Compound conflict = new Compound("1", "2", "conflict", "conflict");
+        try {
+            dao.insert(conflict);
+            fail();
+        } catch (final SQLiteConstraintException expected) {
+            // expected conflict, should be original
+            refresh = dao.refresh(conflict);
+            assertNotNull(refresh);
+            assertThat(refresh.id1, is(orig.id1));
+            assertThat(refresh.id2, is(orig.id2));
+            assertThat(refresh.data1, is(orig.data1));
+            assertThat(refresh.data2, is(orig.data2));
+        }
+
+        // test deletion
+        dao.delete(orig);
+        refresh = dao.refresh(orig);
+        assertNull(refresh);
+        refresh = dao.refresh(update);
+        assertNull(refresh);
+        refresh = dao.refresh(conflict);
+        assertNull(refresh);
     }
 
     @Test
