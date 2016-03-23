@@ -57,9 +57,7 @@ public class CursorUtilsIT extends InstrumentationTestCase {
 
     @Override
     protected void tearDown() throws Exception {
-        final TestDao dao = getDao();
-        dao.delete(Root.class, null);
-        dao.delete(Compound.class, null);
+        getDao().reset();
         super.tearDown();
     }
 }

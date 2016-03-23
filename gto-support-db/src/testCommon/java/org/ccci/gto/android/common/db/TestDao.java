@@ -43,4 +43,9 @@ public class TestDao extends AbstractDao {
         }
         return super.getPrimaryKeyWhere(obj);
     }
+
+    public void reset() {
+        delete(Root.class, null);
+        delete(Compound.class, null);
+    }
 }
