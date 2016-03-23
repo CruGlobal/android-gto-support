@@ -1,5 +1,17 @@
+android {
+    sourceSets {
+        test {
+            java.srcDir 'src/testCommon/java'
+        }
+
+        androidTest {
+            java.srcDir 'src/testCommon/java'
+        }
+    }
+}
+
 dependencies {
     compile project(':gto-support-core')
 
-    testCompile 'junit:junit:4.12'
+    testCompile project(':gto-support-testing')
 }
