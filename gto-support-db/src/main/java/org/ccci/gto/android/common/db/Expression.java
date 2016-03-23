@@ -143,14 +143,22 @@ public abstract class Expression implements Parcelable {
         return new Field(null, name);
     }
 
+    /**
+     * @deprecated use {@link Table#field(String)} instead
+     */
     @NonNull
+    @Deprecated
     public static Field field(@NonNull final Table<?> table, @NonNull final String name) {
         return new Field(table, name);
     }
 
+    /**
+     * @deprecated use {@link Table#forClass(Class)} and {@link Table#field(String)} instead
+     */
     @NonNull
+    @Deprecated
     public static Field field(@NonNull final Class<?> type, @NonNull final String name) {
-        return field(Table.forClass(type), name);
+        return Table.forClass(type).field(name);
     }
 
     @NonNull
