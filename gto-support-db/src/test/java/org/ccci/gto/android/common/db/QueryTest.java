@@ -1,20 +1,30 @@
 package org.ccci.gto.android.common.db;
 
-import android.support.test.runner.AndroidJUnit4;
-import android.test.InstrumentationTestCase;
+import android.text.TextUtils;
 import android.util.Pair;
 
 import org.ccci.gto.android.common.db.Contract.RootTable;
+import org.ccci.gto.android.common.testing.CommonMocks;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
-@RunWith(AndroidJUnit4.class)
-public class QueryTest extends InstrumentationTestCase {
+@RunWith(PowerMockRunner.class)
+@PrepareForTest({Pair.class, TextUtils.class})
+public class QueryTest {
     private TestDao getDao() {
-        return TestDao.getInstance(getInstrumentation().getContext());
+        return TestDao.mock();
+    }
+
+    @Before
+    public void setup() throws Exception {
+        CommonMocks.mockPair();
+        CommonMocks.mockTextUtils();
     }
 
     @Test
