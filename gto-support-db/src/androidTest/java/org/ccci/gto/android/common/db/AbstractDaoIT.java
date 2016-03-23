@@ -51,7 +51,7 @@ public class AbstractDaoIT extends InstrumentationTestCase {
     }
 
     @Test
-    public void testWhere() {
+    public void testGetCursorWhere() {
         final TestDao dao = getDao();
 
         dao.insert(new Root(1, "1"));
@@ -66,7 +66,7 @@ public class AbstractDaoIT extends InstrumentationTestCase {
     }
 
     @Test
-    public void testGroupBy() {
+    public void testGetCursorGroupBy() {
         final TestDao dao = getDao();
 
         dao.insert(new Root(1, "1"));
@@ -95,7 +95,7 @@ public class AbstractDaoIT extends InstrumentationTestCase {
     }
 
     @Test
-    public void testHaving() {
+    public void testGetCursorHaving() {
         final TestDao dao = getDao();
 
         dao.insert(new Root(1, "1"));
