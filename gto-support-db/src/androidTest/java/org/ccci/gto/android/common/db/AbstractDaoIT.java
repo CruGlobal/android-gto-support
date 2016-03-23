@@ -51,6 +51,30 @@ public class AbstractDaoIT extends InstrumentationTestCase {
     }
 
     @Test
+    public void testInsertPrimaryKeyConflictCompoundKey() throws Exception {
+        final TestDao dao = getDao();
+
+        // create object
+        final Compound orig = new Compound("1", "2", "orig", "orig");
+        dao.insert(orig);
+
+        // test PK conflict
+        final Compound conflict = new Compound("1", "2", "conflict", "conflict");
+        try {
+            dao.insert(conflict);
+            fail("There should have been a PK conflict");
+        } catch (final SQLiteConstraintException expected) {
+            // expected conflict, should be original
+            final Compound refresh = dao.refresh(conflict);
+            assertNotNull(refresh);
+            assertThat(refresh.id1, is(orig.id1));
+            assertThat(refresh.id2, is(orig.id2));
+            assertThat(refresh.data1, allOf(is(orig.data1), is(not(conflict.data1))));
+            assertThat(refresh.data2, allOf(is(orig.data2), is(not(conflict.data2))));
+        }
+    }
+
+    @Test
     public void testGetCursorWhere() {
         final TestDao dao = getDao();
 
@@ -117,7 +141,7 @@ public class AbstractDaoIT extends InstrumentationTestCase {
     }
 
     @Test
-    public void testCompoundKey() throws Exception {
+    public void testRefreshCompoundKey() throws Exception {
         final TestDao dao = getDao();
 
         // create object
@@ -125,56 +149,65 @@ public class AbstractDaoIT extends InstrumentationTestCase {
         dao.insert(orig);
 
         // test refresh
-        Compound refresh = dao.refresh(orig);
+        final Compound refresh = dao.refresh(orig);
         assertNotNull(refresh);
         assertThat(refresh.id1, is(orig.id1));
         assertThat(refresh.id2, is(orig.id2));
         assertThat(refresh.data1, is(orig.data1));
         assertThat(refresh.data2, is(orig.data2));
+    }
+
+    @Test
+    public void testUpdateCompoundKey() throws Exception {
+        final TestDao dao = getDao();
+
+        // create object
+        final Compound orig = new Compound("1", "2", "orig", "orig");
+        dao.insert(orig);
 
         // test update
         final Compound update = new Compound("1", "2", "update", "update");
         dao.update(update);
-        refresh = dao.refresh(orig);
+        final Compound refresh = dao.refresh(orig);
         assertNotNull(refresh);
         assertThat(refresh.id1, allOf(is(orig.id1), is(update.id1)));
         assertThat(refresh.id2, allOf(is(orig.id2), is(update.id2)));
         assertThat(refresh.data1, allOf(is(not(orig.data1)), is(update.data1)));
         assertThat(refresh.data2, allOf(is(not(orig.data2)), is(update.data2)));
+    }
+
+    @Test
+    public void testUpdatePartialCompoundKey() throws Exception {
+        final TestDao dao = getDao();
+
+        // create object
+        final Compound orig = new Compound("1", "2", "orig", "orig");
+        dao.insert(orig);
 
         // test partial update
-        dao.update(orig);
+        final Compound update = new Compound("1", "2", "update", "update");
         dao.update(update, CompoundTable.COLUMN_DATA1);
-        refresh = dao.refresh(orig);
+        final Compound refresh = dao.refresh(orig);
         assertNotNull(refresh);
         assertThat(refresh.id1, allOf(is(orig.id1), is(update.id1)));
         assertThat(refresh.id2, allOf(is(orig.id2), is(update.id2)));
         assertThat(refresh.data1, allOf(is(not(orig.data1)), is(update.data1)));
         assertThat(refresh.data2, allOf(is(orig.data2), is(not(update.data2))));
+    }
 
-        // test PK conflict
-        dao.update(orig);
-        final Compound conflict = new Compound("1", "2", "conflict", "conflict");
-        try {
-            dao.insert(conflict);
-            fail();
-        } catch (final SQLiteConstraintException expected) {
-            // expected conflict, should be original
-            refresh = dao.refresh(conflict);
-            assertNotNull(refresh);
-            assertThat(refresh.id1, is(orig.id1));
-            assertThat(refresh.id2, is(orig.id2));
-            assertThat(refresh.data1, is(orig.data1));
-            assertThat(refresh.data2, is(orig.data2));
-        }
+    @Test
+    public void testDeleteCompoundKey() throws Exception {
+        final TestDao dao = getDao();
+
+        // create object
+        final Compound orig = new Compound("1", "2", "orig", "orig");
+        dao.insert(orig);
+        Compound refresh = dao.refresh(orig);
+        assertNotNull(refresh);
 
         // test deletion
         dao.delete(orig);
         refresh = dao.refresh(orig);
-        assertNull(refresh);
-        refresh = dao.refresh(update);
-        assertNull(refresh);
-        refresh = dao.refresh(conflict);
         assertNull(refresh);
     }
 
@@ -182,6 +215,7 @@ public class AbstractDaoIT extends InstrumentationTestCase {
     protected void tearDown() throws Exception {
         final TestDao dao = getDao();
         dao.delete(Root.class, null);
+        dao.delete(Compound.class, null);
         super.tearDown();
     }
 }
