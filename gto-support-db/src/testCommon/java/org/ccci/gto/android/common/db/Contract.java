@@ -5,7 +5,6 @@ import org.ccci.gto.android.common.db.model.Compound;
 import org.ccci.gto.android.common.db.model.Root;
 
 import static org.ccci.gto.android.common.db.Expression.bind;
-import static org.ccci.gto.android.common.db.Expression.field;
 
 public class Contract extends BaseContract {
     public static class RootTable implements Base {
@@ -15,8 +14,8 @@ public class Contract extends BaseContract {
         public static final String COLUMN_ID = _ID;
         public static final String COLUMN_TEST = "test";
 
-        public static final Field FIELD_ID = field(TABLE, COLUMN_ID);
-        static final Field FIELD_TEST = field(TABLE, COLUMN_TEST);
+        public static final Field FIELD_ID = TABLE.field(COLUMN_ID);
+        static final Field FIELD_TEST = TABLE.field(COLUMN_TEST);
 
         static final String[] PROJECTION_ALL = {COLUMN_ID, COLUMN_TEST};
 
@@ -38,8 +37,8 @@ public class Contract extends BaseContract {
         static final String COLUMN_DATA1 = "data1";
         static final String COLUMN_DATA2 = "data2";
 
-        static final Field FIELD_ID1 = field(TABLE, COLUMN_ID1);
-        static final Field FIELD_ID2 = field(TABLE, COLUMN_ID2);
+        static final Field FIELD_ID1 = TABLE.field(COLUMN_ID1);
+        static final Field FIELD_ID2 = TABLE.field(COLUMN_ID2);
 
         static final String[] PROJECTION_ALL = {COLUMN_ID1, COLUMN_ID2, COLUMN_DATA1, COLUMN_DATA2};
 

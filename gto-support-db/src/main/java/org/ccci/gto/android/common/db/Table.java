@@ -7,6 +7,8 @@ import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import org.ccci.gto.android.common.db.Expression.Field;
+
 public final class Table<T> implements Parcelable {
     @NonNull
     final Class<T> mType;
@@ -31,6 +33,10 @@ public final class Table<T> implements Parcelable {
     @NonNull
     public final Table<T> as(@Nullable final String alias) {
         return new Table<>(mType, alias);
+    }
+
+    public final Field field(@NonNull final String field) {
+        return new Field(this, field);
     }
 
     @SuppressWarnings("unchecked")
