@@ -2,26 +2,30 @@ package org.ccci.gto.android.common.db;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteConstraintException;
+import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
-import android.test.InstrumentationTestCase;
 
 import org.ccci.gto.android.common.db.Contract.CompoundTable;
 import org.ccci.gto.android.common.db.Contract.RootTable;
 import org.ccci.gto.android.common.db.model.Compound;
 import org.ccci.gto.android.common.db.model.Root;
 import org.ccci.gto.android.common.db.util.CursorUtils;
+import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import static org.hamcrest.CoreMatchers.allOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 
 @RunWith(AndroidJUnit4.class)
-public class AbstractDaoIT extends InstrumentationTestCase {
+public class AbstractDaoIT {
     private TestDao getDao() {
-        return TestDao.getInstance(getInstrumentation().getContext());
+        return TestDao.getInstance(InstrumentationRegistry.getContext());
     }
 
     @Test
@@ -211,9 +215,8 @@ public class AbstractDaoIT extends InstrumentationTestCase {
         assertNull(refresh);
     }
 
-    @Override
-    protected void tearDown() throws Exception {
+    @After
+    public void reset() throws Exception {
         getDao().reset();
-        super.tearDown();
     }
 }

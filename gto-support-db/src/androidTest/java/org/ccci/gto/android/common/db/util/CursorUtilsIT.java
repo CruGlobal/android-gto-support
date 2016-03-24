@@ -1,14 +1,14 @@
 package org.ccci.gto.android.common.db.util;
 
 import android.database.Cursor;
+import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
-import android.test.InstrumentationTestCase;
 
 import org.ccci.gto.android.common.db.Contract.RootTable;
 import org.ccci.gto.android.common.db.Query;
 import org.ccci.gto.android.common.db.TestDao;
-import org.ccci.gto.android.common.db.model.Compound;
 import org.ccci.gto.android.common.db.model.Root;
+import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -17,9 +17,9 @@ import static org.hamcrest.CoreMatchers.not;
 import static org.junit.Assert.assertThat;
 
 @RunWith(AndroidJUnit4.class)
-public class CursorUtilsIT extends InstrumentationTestCase {
+public class CursorUtilsIT {
     private TestDao getDao() {
-        return TestDao.getInstance(getInstrumentation().getContext());
+        return TestDao.getInstance(InstrumentationRegistry.getContext());
     }
 
     @Test
@@ -55,9 +55,8 @@ public class CursorUtilsIT extends InstrumentationTestCase {
         c.close();
     }
 
-    @Override
-    protected void tearDown() throws Exception {
+    @After
+    public void reset() throws Exception {
         getDao().reset();
-        super.tearDown();
     }
 }
