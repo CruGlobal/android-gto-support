@@ -13,6 +13,7 @@ buildscript {
 ext.deps = [
         androidSupport       : '23.2.1',
         androidTestingSupport: '0.5',
+        gson                 : '2.6.1',
         guava                : '19.0',
         junit                : '4.12'
 ]
