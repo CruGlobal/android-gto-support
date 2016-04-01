@@ -7,6 +7,8 @@ import android.os.Build;
 import android.os.IBinder;
 import android.support.annotation.WorkerThread;
 
+import org.ccci.gto.android.common.concurrent.NamedThreadFactory;
+
 import java.util.Comparator;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Callable;
@@ -17,10 +19,8 @@ import java.util.concurrent.FutureTask;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.PriorityBlockingQueue;
 import java.util.concurrent.RunnableFuture;
-import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public abstract class ThreadedIntentService extends Service {
     public static final String EXTRA_PRIORITY = ThreadedIntentService.class.getName() + ".EXTRA_PRIORITY";
@@ -103,16 +103,9 @@ public abstract class ThreadedIntentService extends Service {
     private Executor defaultExecutor() {
         // create the defaultExecutor if it doesn't exist yet
         if (mDefaultExecutor == null) {
-            final ThreadFactory factory = new ThreadFactory() {
-                private final AtomicInteger mCount = new AtomicInteger(1);
-
-                @Override
-                public Thread newThread(final Runnable r) {
-                    return new Thread(r, mName + " #" + mCount.getAndIncrement());
-                }
-            };
             final BlockingQueue<Runnable> queue = new PriorityBlockingQueue<>(1, new IntentPriorityComparator());
-            mDefaultExecutor = new ThreadPoolExecutor(mPoolSize, mPoolSize, 10, TimeUnit.SECONDS, queue, factory);
+            mDefaultExecutor = new ThreadPoolExecutor(mPoolSize, mPoolSize, 10, TimeUnit.SECONDS, queue,
+                                                      new NamedThreadFactory(mName));
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD) {
                 mDefaultExecutor.allowCoreThreadTimeOut(true);
             } else {

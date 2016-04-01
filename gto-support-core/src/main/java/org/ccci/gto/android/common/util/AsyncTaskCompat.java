@@ -14,7 +14,7 @@ public class AsyncTaskCompat {
     private static final Compat COMPAT;
     static {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
-            COMPAT = new FroyoCompat();
+            COMPAT = new GingerbreadCompat();
         } else {
             COMPAT = new HoneycombCompat();
         }
@@ -33,21 +33,16 @@ public class AsyncTaskCompat {
         Executor serialExecutor();
     }
 
-    static class FroyoCompat implements Compat {
+    static class GingerbreadCompat implements Compat {
         private Executor mExecutor;
 
         @NonNull
-        @TargetApi(Build.VERSION_CODES.GINGERBREAD)
         private synchronized Executor getExecutor() {
             if (mExecutor == null) {
                 mExecutor = Executors.newFixedThreadPool(1);
                 if (mExecutor instanceof ThreadPoolExecutor) {
                     ((ThreadPoolExecutor) mExecutor).setKeepAliveTime(30, TimeUnit.SECONDS);
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD) {
-                        ((ThreadPoolExecutor) mExecutor).allowCoreThreadTimeOut(true);
-                    } else {
-                        ((ThreadPoolExecutor) mExecutor).setCorePoolSize(0);
-                    }
+                    ((ThreadPoolExecutor) mExecutor).allowCoreThreadTimeOut(true);
                 }
             }
 
@@ -67,7 +62,7 @@ public class AsyncTaskCompat {
     }
 
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-    static class HoneycombCompat extends FroyoCompat {
+    static class HoneycombCompat extends GingerbreadCompat {
         @Override
         public void execute(@NonNull Runnable task) {
             AsyncTask.execute(task);
