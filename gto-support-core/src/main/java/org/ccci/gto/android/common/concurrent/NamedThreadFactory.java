@@ -14,8 +14,9 @@ public class NamedThreadFactory implements ThreadFactory {
         mName = name;
     }
 
+    @NonNull
     @Override
-    public Thread newThread(final Runnable r) {
+    public Thread newThread(@NonNull final Runnable r) {
         return new Thread(r, mName + " #" + mCount.getAndIncrement());
     }
 }
