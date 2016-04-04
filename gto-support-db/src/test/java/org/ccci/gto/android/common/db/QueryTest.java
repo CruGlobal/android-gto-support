@@ -12,6 +12,8 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.core.AnyOf.anyOf;
 import static org.junit.Assert.assertThat;
 
 @RunWith(PowerMockRunner.class)
@@ -33,5 +35,14 @@ public class QueryTest {
         Query query = Query.select(RootTable.class).groupBy(RootTable.FIELD_TEST).having(having);
         Pair<String, String[]> sqlPair = query.buildSqlHaving(getDao());
         assertThat(sqlPair.first, is("(COUNT (root.test) == 1)"));
+    }
+
+    @Test
+    public void verifyLimitSql() {
+        final Query<RootTable> query = Query.select(RootTable.class);
+        assertThat(query.limit(null).buildSqlLimit(), nullValue());
+        assertThat(query.limit(null).offset(10).buildSqlLimit(), nullValue());
+        assertThat(query.limit(5).offset(null).buildSqlLimit(), is("5"));
+        assertThat(query.limit(5).offset(15).buildSqlLimit(), anyOf(is("5 OFFSET 15"), is("15,5")));
     }
 }

@@ -14,9 +14,12 @@ import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.util.List;
+
 import static org.hamcrest.CoreMatchers.allOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
@@ -142,6 +145,19 @@ public class AbstractDaoIT {
         assertThat(CursorUtils.getString(cursor, RootTable.COLUMN_TEST), is("2"));
 
         cursor.close();
+    }
+
+    @Test
+    public void verifyGetWithLimit() {
+        final TestDao dao = getDao();
+
+        dao.insert(new Root(1, "1"));
+        dao.insert(new Root(2, "2"));
+        dao.insert(new Root(3, "3"));
+
+        final List<Root> objs = dao.get(Query.select(Root.class).orderBy(RootTable.COLUMN_ID).limit(1).offset(1));
+        assertEquals(1, objs.size());
+        assertEquals(2, objs.get(0).id);
     }
 
     @Test

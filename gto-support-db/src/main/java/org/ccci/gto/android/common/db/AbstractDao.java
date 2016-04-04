@@ -274,9 +274,12 @@ public abstract class AbstractDao {
             args = ArrayUtils.merge(String.class, args, havingRaw.second);
         }
 
+        // generate "LIMIT {}" SQL
+        final String limit = query.buildSqlLimit();
+
         // execute actual query
         final Cursor c = mDbHelper.getReadableDatabase()
-                .query(query.mDistinct, tables, projection, where.first, args, groupBy, having, orderBy, null);
+                .query(query.mDistinct, tables, projection, where.first, args, groupBy, having, orderBy, limit);
 
         c.moveToPosition(-1);
         return c;
