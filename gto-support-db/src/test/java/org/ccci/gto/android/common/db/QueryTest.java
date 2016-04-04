@@ -32,7 +32,7 @@ public class QueryTest {
     @Test
     public void testHavingSql() {
         Expression having = RootTable.FIELD_TEST.count().eq(1);
-        Query query = Query.select(RootTable.class).groupBy(RootTable.FIELD_TEST).having(having);
+        Query<RootTable> query = Query.select(RootTable.class).groupBy(RootTable.FIELD_TEST).having(having);
         Pair<String, String[]> sqlPair = query.buildSqlHaving(getDao());
         assertThat(sqlPair.first, is("(COUNT (root.test) == 1)"));
     }
