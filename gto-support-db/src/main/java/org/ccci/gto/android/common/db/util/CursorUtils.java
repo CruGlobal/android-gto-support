@@ -55,9 +55,16 @@ public final class CursorUtils {
         return getLong(c, field, 0);
     }
 
+    /**
+     * @param c        The Cursor we are fetching the value from
+     * @param field    The column we are requesting the value of
+     * @param defValue The default value to return when the column doesn't exist, is invalid, or is null
+     * @return the value for the specified column in the current row of the specified Cursor. Or the default value
+     * if the column is invalid, null or non-existant
+     */
     public static long getLong(@NonNull final Cursor c, @NonNull final String field, final long defValue) {
         final int index = c.getColumnIndex(field);
-        return index != -1 ? c.getLong(index) : defValue;
+        return index != -1 && !c.isNull(index) ? c.getLong(index) : defValue;
     }
 
     @Nullable
