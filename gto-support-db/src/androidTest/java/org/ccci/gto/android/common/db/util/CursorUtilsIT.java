@@ -9,6 +9,7 @@ import org.ccci.gto.android.common.db.Query;
 import org.ccci.gto.android.common.db.TestDao;
 import org.ccci.gto.android.common.db.model.Root;
 import org.junit.After;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -81,6 +82,25 @@ public class CursorUtilsIT {
         c.moveToPosition(1);
         assertThat(CursorUtils.getLong(c, RootTable.COLUMN_ID), is(2L));
         assertThat(CursorUtils.getLong(c, RootTable.COLUMN_TEST, defValue), is(not(defValue)));
+        c.close();
+    }
+
+    // XXX: currently disabled because we don't support invalid values being returned from the database. We really
+    // XXX: should support this at some point though.
+    @Test
+    @Ignore
+    public void verifyGetLongInvalidValue() throws Exception {
+        final TestDao dao = getDao();
+        final long defValue = 9;
+
+        // create a test object
+        dao.insert(new Root(1, "a"));
+
+        final Cursor c = dao.getCursor(Query.select(Root.class).orderBy(RootTable.COLUMN_ID));
+        c.moveToPosition(0);
+        assertThat(CursorUtils.getLong(c, RootTable.COLUMN_ID), is(1L));
+        assertThat("invalid column value should return default value",
+                   CursorUtils.getLong(c, RootTable.COLUMN_TEST, defValue), is(defValue));
         c.close();
     }
 
