@@ -1,5 +1,6 @@
 package org.ccci.gto.android.common.db.async;
 
+import android.database.Cursor;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.support.annotation.NonNull;
 
@@ -25,6 +26,22 @@ public abstract class AbstractAsyncDao extends AbstractDao {
             public void run() {
                 try {
                     future.set(get(query));
+                } catch (final Throwable t) {
+                    future.setException(t);
+                }
+            }
+        });
+        return future;
+    }
+
+    @NonNull
+    public final ListenableFuture<Cursor> getCursorAsync(@NonNull final Query<?> query) {
+        final SettableFuture<Cursor> future = SettableFuture.create();
+        AsyncTaskCompat.THREAD_POOL_EXECUTOR.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    future.set(getCursor(query));
                 } catch (final Throwable t) {
                     future.setException(t);
                 }
