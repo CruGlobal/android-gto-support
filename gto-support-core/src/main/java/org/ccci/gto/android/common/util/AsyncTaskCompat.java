@@ -5,6 +5,8 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.support.annotation.NonNull;
 
+import org.ccci.gto.android.common.concurrent.NamedThreadFactory;
+
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -21,6 +23,7 @@ public class AsyncTaskCompat {
     }
 
     public static final Executor SERIAL_EXECUTOR = COMPAT.serialExecutor();
+    public static final Executor THREAD_POOL_EXECUTOR = COMPAT.threadPoolExecutor();
 
     public static void execute(@NonNull final Runnable task) {
         COMPAT.execute(task);
@@ -31,6 +34,9 @@ public class AsyncTaskCompat {
 
         @NonNull
         Executor serialExecutor();
+
+        @NonNull
+        Executor threadPoolExecutor();
     }
 
     static class GingerbreadCompat implements Compat {
@@ -39,7 +45,7 @@ public class AsyncTaskCompat {
         @NonNull
         private synchronized Executor getExecutor() {
             if (mExecutor == null) {
-                mExecutor = Executors.newFixedThreadPool(1);
+                mExecutor = Executors.newFixedThreadPool(1, new NamedThreadFactory("AsyncTaskCompat"));
                 if (mExecutor instanceof ThreadPoolExecutor) {
                     ((ThreadPoolExecutor) mExecutor).setKeepAliveTime(30, TimeUnit.SECONDS);
                     ((ThreadPoolExecutor) mExecutor).allowCoreThreadTimeOut(true);
@@ -59,6 +65,12 @@ public class AsyncTaskCompat {
         public Executor serialExecutor() {
             return getExecutor();
         }
+
+        @NonNull
+        @Override
+        public Executor threadPoolExecutor() {
+            return getExecutor();
+        }
     }
 
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
@@ -72,6 +84,12 @@ public class AsyncTaskCompat {
         @Override
         public Executor serialExecutor() {
             return AsyncTask.SERIAL_EXECUTOR;
+        }
+
+        @NonNull
+        @Override
+        public Executor threadPoolExecutor() {
+            return AsyncTask.THREAD_POOL_EXECUTOR;
         }
     }
 }

@@ -7,7 +7,10 @@ import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.SettableFuture;
 
 import org.ccci.gto.android.common.db.AbstractDao;
+import org.ccci.gto.android.common.db.Query;
 import org.ccci.gto.android.common.util.AsyncTaskCompat;
+
+import java.util.List;
 
 public abstract class AbstractAsyncDao extends AbstractDao {
     protected AbstractAsyncDao(@NonNull final SQLiteOpenHelper helper) {
@@ -15,14 +18,30 @@ public abstract class AbstractAsyncDao extends AbstractDao {
     }
 
     @NonNull
+    public final <T> ListenableFuture<List<T>> getAsync(@NonNull final Query<T> query) {
+        final SettableFuture<List<T>> future = SettableFuture.create();
+        AsyncTaskCompat.THREAD_POOL_EXECUTOR.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    future.set(get(query));
+                } catch (final Throwable t) {
+                    future.setException(t);
+                }
+            }
+        });
+        return future;
+    }
+
+    @NonNull
     public final <T> ListenableFuture<T> findAsync(@NonNull final Class<T> clazz, @NonNull final Object... key) {
         final SettableFuture<T> future = SettableFuture.create();
-        AsyncTaskCompat.execute(new Runnable() {
+        AsyncTaskCompat.THREAD_POOL_EXECUTOR.execute(new Runnable() {
             @Override
             public void run() {
                 try {
                     future.set(find(clazz, key));
-                } catch (Throwable t) {
+                } catch (final Throwable t) {
                     future.setException(t);
                 }
             }
@@ -38,13 +57,13 @@ public abstract class AbstractAsyncDao extends AbstractDao {
     @NonNull
     public final <T> ListenableFuture<?> updateAsync(@NonNull final T obj, @NonNull final String... projection) {
         final SettableFuture<?> future = SettableFuture.create();
-        AsyncTaskCompat.execute(new Runnable() {
+        AsyncTaskCompat.THREAD_POOL_EXECUTOR.execute(new Runnable() {
             @Override
             public void run() {
                 try {
                     update(obj, projection);
                     future.set(null);
-                } catch (Throwable t) {
+                } catch (final Throwable t) {
                     future.setException(t);
                 }
             }
