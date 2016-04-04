@@ -1,6 +1,7 @@
 package org.ccci.gto.android.common.db.async;
 
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.support.annotation.NonNull;
 
@@ -67,12 +68,33 @@ public abstract class AbstractAsyncDao extends AbstractDao {
     }
 
     @NonNull
-    public final <T> ListenableFuture<?> updateAsync(@NonNull final T obj) {
+    public final ListenableFuture<Long> insertAsync(@NonNull final Object obj) {
+        return insertAsync(obj, SQLiteDatabase.CONFLICT_NONE);
+    }
+
+    @NonNull
+    public final ListenableFuture<Long> insertAsync(@NonNull final Object obj, final int conflictAlgorithm) {
+        final SettableFuture<Long> future = SettableFuture.create();
+        AsyncTaskCompat.THREAD_POOL_EXECUTOR.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    future.set(insert(obj, conflictAlgorithm));
+                } catch (final Throwable t) {
+                    future.setException(t);
+                }
+            }
+        });
+        return future;
+    }
+
+    @NonNull
+    public final ListenableFuture<?> updateAsync(@NonNull final Object obj) {
         return updateAsync(obj, getFullProjection(obj.getClass()));
     }
 
     @NonNull
-    public final <T> ListenableFuture<?> updateAsync(@NonNull final T obj, @NonNull final String... projection) {
+    public final ListenableFuture<?> updateAsync(@NonNull final Object obj, @NonNull final String... projection) {
         final SettableFuture<?> future = SettableFuture.create();
         AsyncTaskCompat.THREAD_POOL_EXECUTOR.execute(new Runnable() {
             @Override
