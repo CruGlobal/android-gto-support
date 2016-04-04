@@ -59,30 +59,33 @@ public class CursorUtilsIT {
     @Test
     public void verifyGetLongDefaultValue() throws Exception {
         final TestDao dao = getDao();
-        final long defValue = 9;
 
         // create a few objects
         dao.insert(new Root(1, null));
         dao.insert(new Root(2, "2"));
 
-        // test default when field isn't present
-        Cursor c = dao.getCursor(Query.select(Root.class).projection(RootTable.COLUMN_ID).orderBy(RootTable.COLUMN_ID));
-        c.moveToPosition(-1);
-        while (c.moveToNext()) {
-            assertThat(CursorUtils.getLong(c, RootTable.COLUMN_TEST, defValue), is(defValue));
-        }
-        c.close();
+        // try a few different default values
+        for (final Long defValue : new Long[] {null, 0L, 9L}) {
+            // test default when field isn't present
+            Cursor c = dao.getCursor(
+                    Query.select(Root.class).projection(RootTable.COLUMN_ID).orderBy(RootTable.COLUMN_ID));
+            c.moveToPosition(-1);
+            while (c.moveToNext()) {
+                assertThat(CursorUtils.getLong(c, RootTable.COLUMN_TEST, defValue), is(defValue));
+            }
+            c.close();
 
-        // test default when field is present
-        c = dao.getCursor(Query.select(Root.class).orderBy(RootTable.COLUMN_ID));
-        c.moveToPosition(0);
-        assertThat(CursorUtils.getLong(c, RootTable.COLUMN_ID), is(1L));
-        assertThat("null column value should return default value",
-                   CursorUtils.getLong(c, RootTable.COLUMN_TEST, defValue), is(defValue));
-        c.moveToPosition(1);
-        assertThat(CursorUtils.getLong(c, RootTable.COLUMN_ID), is(2L));
-        assertThat(CursorUtils.getLong(c, RootTable.COLUMN_TEST, defValue), is(not(defValue)));
-        c.close();
+            // test default when field is present
+            c = dao.getCursor(Query.select(Root.class).orderBy(RootTable.COLUMN_ID));
+            c.moveToPosition(0);
+            assertThat(CursorUtils.getLong(c, RootTable.COLUMN_ID), is(1L));
+            assertThat("null column value should return default value",
+                       CursorUtils.getLong(c, RootTable.COLUMN_TEST, defValue), is(defValue));
+            c.moveToPosition(1);
+            assertThat(CursorUtils.getLong(c, RootTable.COLUMN_ID), is(2L));
+            assertThat(CursorUtils.getLong(c, RootTable.COLUMN_TEST, defValue), is(2L));
+            c.close();
+        }
     }
 
     // XXX: currently disabled because we don't support invalid values being returned from the database. We really

@@ -52,7 +52,9 @@ public final class CursorUtils {
     }
 
     public static long getLong(@NonNull final Cursor c, @NonNull final String field) {
-        return getLong(c, field, 0);
+        // if defValue is @NonNull, then getLong() will return @NonNull
+        //noinspection ConstantConditions
+        return getLong(c, field, 0L);
     }
 
     /**
@@ -62,9 +64,14 @@ public final class CursorUtils {
      * @return the value for the specified column in the current row of the specified Cursor. Or the default value
      * if the column is invalid, null or non-existant
      */
-    public static long getLong(@NonNull final Cursor c, @NonNull final String field, final long defValue) {
+    @Nullable
+    public static Long getLong(@NonNull final Cursor c, @NonNull final String field, @Nullable final Long defValue) {
         final int index = c.getColumnIndex(field);
-        return index != -1 && !c.isNull(index) ? c.getLong(index) : defValue;
+        if (index == -1 || c.isNull(index)) {
+            return defValue;
+        }
+
+        return c.getLong(index);
     }
 
     @Nullable
