@@ -225,7 +225,7 @@ public abstract class AbstractDao {
 
     @NonNull
     @WorkerThread
-    public final <T> Cursor getCursor(@NonNull final Query<T> query) {
+    public final Cursor getCursor(@NonNull final Query<?> query) {
         // prefix projection and orderBy when we have joins
         String[] projection = query.mProjection != null ? query.mProjection : getFullProjection(query.mTable.mType);
         String orderBy = query.mOrderBy;
