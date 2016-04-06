@@ -45,7 +45,8 @@ public abstract class AbstractMapper<T> implements Mapper<T> {
         return CursorUtils.getLong(c, field);
     }
 
-    protected final long getLong(@NonNull final Cursor c, @NonNull final String field, final long defValue) {
+    @Nullable
+    protected final Long getLong(@NonNull final Cursor c, @NonNull final String field, @Nullable final Long defValue) {
         return CursorUtils.getLong(c, field, defValue);
     }
 
