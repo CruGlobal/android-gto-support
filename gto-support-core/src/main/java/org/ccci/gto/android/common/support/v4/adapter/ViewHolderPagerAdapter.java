@@ -1,6 +1,7 @@
 package org.ccci.gto.android.common.support.v4.adapter;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.view.PagerAdapter;
 import android.util.SparseArray;
 import android.view.View;
@@ -13,11 +14,10 @@ public abstract class ViewHolderPagerAdapter<VH extends ViewHolderPagerAdapter.V
 
     private final SparseArray<VH> mActive = new SparseArray<>();
     private final LinkedList<VH> mRecycled = new LinkedList<>();
+    @Nullable
+    private VH mCurrent;
 
     private boolean mHasStableIds = false;
-
-    public ViewHolderPagerAdapter() {
-    }
 
     public void setHasStableIds(final boolean hasStableIds) {
         mHasStableIds = hasStableIds;
@@ -49,6 +49,7 @@ public abstract class ViewHolderPagerAdapter<VH extends ViewHolderPagerAdapter.V
         return view == ((ViewHolder) holder).mView;
     }
 
+    @NonNull
     @Override
     public final VH instantiateItem(@NonNull final ViewGroup container, final int position) {
         // recycle or create ViewHolder
@@ -66,6 +67,18 @@ public abstract class ViewHolderPagerAdapter<VH extends ViewHolderPagerAdapter.V
 
         // return this ViewHolder
         return holder;
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public final void setPrimaryItem(@NonNull final ViewGroup container, final int position,
+                                     @Nullable final Object holder) {
+        mCurrent = (VH) holder;
+    }
+
+    @Nullable
+    public final VH getPrimaryItem() {
+        return mCurrent;
     }
 
     @Override
