@@ -195,7 +195,8 @@ public abstract class AbstractApi<R extends Request<C, S>, C extends ExecutionCo
     }
 
     /**
-     * creates a new ExecutionContext object. This needs to be overridden when a subclass overrides the ExecutionContext.
+     * Creates a new ExecutionContext object. This needs to be overridden when a subclass overrides the
+     * ExecutionContext.
      *
      * @return
      */

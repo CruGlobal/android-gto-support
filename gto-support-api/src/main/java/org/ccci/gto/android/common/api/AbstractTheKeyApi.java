@@ -1,7 +1,5 @@
 package org.ccci.gto.android.common.api;
 
-import static java.net.HttpURLConnection.HTTP_UNAUTHORIZED;
-
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.Uri;
@@ -16,6 +14,8 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 
 import me.thekey.android.TheKey;
+
+import static java.net.HttpURLConnection.HTTP_UNAUTHORIZED;
 
 public abstract class AbstractTheKeyApi<R extends Request<C, S>, C extends ExecutionContext<S>, S extends TheKeySession>
         extends AbstractApi<R, C, S> {
@@ -161,7 +161,7 @@ public abstract class AbstractTheKeyApi<R extends Request<C, S>, C extends Execu
             if (auth != null) {
                 // is this a CAS WWW-Authenticate challenge
                 final HttpHeaderUtils.Challenge challenge = HttpHeaderUtils.parseChallenge(auth);
-                if (challenge.getScheme().equals("CAS")) {
+                if ("CAS".equals(challenge.getScheme())) {
                     return challenge;
                 }
             }
