@@ -1,9 +1,7 @@
 package org.ccci.gto.android.common.app;
 
-import android.annotation.TargetApi;
 import android.app.Service;
 import android.content.Intent;
-import android.os.Build;
 import android.os.IBinder;
 import android.support.annotation.WorkerThread;
 
@@ -99,18 +97,13 @@ public abstract class ThreadedIntentService extends Service {
         mRedelivery = enabled;
     }
 
-    @TargetApi(Build.VERSION_CODES.GINGERBREAD)
     private Executor defaultExecutor() {
         // create the defaultExecutor if it doesn't exist yet
         if (mDefaultExecutor == null) {
             final BlockingQueue<Runnable> queue = new PriorityBlockingQueue<>(1, new IntentPriorityComparator());
             mDefaultExecutor = new ThreadPoolExecutor(mPoolSize, mPoolSize, 10, TimeUnit.SECONDS, queue,
                                                       new NamedThreadFactory(mName));
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD) {
-                mDefaultExecutor.allowCoreThreadTimeOut(true);
-            } else {
-                mDefaultExecutor.setCorePoolSize(0);
-            }
+            mDefaultExecutor.allowCoreThreadTimeOut(true);
         }
 
         return mDefaultExecutor;

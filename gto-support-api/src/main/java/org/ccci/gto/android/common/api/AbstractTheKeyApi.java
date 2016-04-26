@@ -2,11 +2,9 @@ package org.ccci.gto.android.common.api;
 
 import static java.net.HttpURLConnection.HTTP_UNAUTHORIZED;
 
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.Uri;
-import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
@@ -101,16 +99,10 @@ public abstract class AbstractTheKeyApi<R extends Request<C, S>, C extends Execu
         return this.getPrefs().getString(PREF_CACHED_SERVICE, null);
     }
 
-    @TargetApi(Build.VERSION_CODES.GINGERBREAD)
     protected final void setCachedService(@Nullable final String service) {
         final SharedPreferences.Editor prefs = this.getPrefs().edit();
         prefs.putString(PREF_CACHED_SERVICE, service);
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD) {
-            prefs.apply();
-        } else {
-            prefs.commit();
-        }
+        prefs.apply();
     }
 
     @NonNull

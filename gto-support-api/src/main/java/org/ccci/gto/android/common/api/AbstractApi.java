@@ -1,10 +1,8 @@
 package org.ccci.gto.android.common.api;
 
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.Uri;
-import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.WorkerThread;
@@ -228,33 +226,23 @@ public abstract class AbstractApi<R extends Request<C, S>, C extends ExecutionCo
         return null;
     }
 
-    @TargetApi(Build.VERSION_CODES.GINGERBREAD)
     private void saveSession(@NonNull final S session) {
         final SharedPreferences.Editor prefs = this.getPrefs().edit();
         session.save(prefs);
 
         synchronized (LOCK_SESSION) {
             // store updates
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD) {
-                prefs.apply();
-            } else {
-                prefs.commit();
-            }
+            prefs.apply();
         }
     }
 
-    @TargetApi(Build.VERSION_CODES.GINGERBREAD)
     private void deleteSession(@NonNull final S session) {
         final SharedPreferences.Editor prefs = this.getPrefs().edit();
         session.delete(prefs);
 
         synchronized (LOCK_SESSION) {
             // store updates
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD) {
-                prefs.apply();
-            } else {
-                prefs.commit();
-            }
+            prefs.apply();
         }
     }
 
