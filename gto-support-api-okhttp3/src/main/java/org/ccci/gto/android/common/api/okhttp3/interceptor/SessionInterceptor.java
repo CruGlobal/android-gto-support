@@ -1,9 +1,7 @@
 package org.ccci.gto.android.common.api.okhttp3.interceptor;
 
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
@@ -105,7 +103,6 @@ public abstract class SessionInterceptor<S extends Session> implements Intercept
         return null;
     }
 
-    @TargetApi(Build.VERSION_CODES.GINGERBREAD)
     private void saveSession(@NonNull final S session) {
         final SharedPreferences.Editor prefs = this.getPrefs().edit();
         session.save(prefs);
@@ -115,7 +112,6 @@ public abstract class SessionInterceptor<S extends Session> implements Intercept
         }
     }
 
-    @TargetApi(Build.VERSION_CODES.GINGERBREAD)
     private void deleteSession(@NonNull final S session) {
         final SharedPreferences.Editor prefs = getPrefs().edit();
         session.delete(prefs);
