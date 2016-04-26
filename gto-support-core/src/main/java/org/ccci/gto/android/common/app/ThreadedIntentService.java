@@ -127,7 +127,7 @@ public abstract class ThreadedIntentService extends Service {
                     if (cause instanceof RuntimeException) {
                         throw (RuntimeException) cause;
                     } else {
-                        throw new RuntimeException(e);
+                        throw new RuntimeException(cause);
                     }
                 }
             }

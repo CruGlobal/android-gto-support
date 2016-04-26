@@ -41,7 +41,7 @@ public class MultiKeyLruCache<K, V> extends LruCache<K, V> {
     public void trimToSize(final int maxSize) {
         // we need to loop until size gap stabilizes
         int gap = -1;
-        while(mSizeGap != gap) {
+        while (mSizeGap != gap) {
             gap = mSizeGap;
             super.trimToSize(maxSize + mSizeGap);
         }

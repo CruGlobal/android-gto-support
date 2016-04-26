@@ -51,7 +51,8 @@ public final class BroadcastReceiverLoaderHelper {
         }
 
         synchronized (this) {
-            // register the new receiver and unregister the old receiver. we overlap registrations to not drop broadcasts
+            // register the new receiver and unregister the old receiver. we overlap registrations to not drop
+            // broadcasts
             if (mLoader.isStarted()) {
                 registerReceiver(receiver);
                 unregisterReceiver(mReceiver);

@@ -292,13 +292,13 @@ public abstract class AbstractDao {
                 String[] fields = clause.split(",");
 
                 for (int i = 0; i < fields.length; i++) {
-                    if(!fields[i].contains(".")) {
+                    if (!fields[i].contains(".")) {
                         fields[i] = prefix + fields[i].trim();
                     }
                 }
                 return TextUtils.join(",", fields);
             }
-            if(!clause.contains(".")) {
+            if (!clause.contains(".")) {
                 return prefix + clause;
             }
         }

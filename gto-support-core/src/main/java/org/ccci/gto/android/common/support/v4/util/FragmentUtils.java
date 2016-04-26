@@ -32,12 +32,12 @@ public final class FragmentUtils {
 
     public static <T> T getListener(final Fragment fragment, final Class<T> clazz) {
         final Fragment frag = fragment.getParentFragment();
-        if(clazz.isInstance(frag)) {
+        if (clazz.isInstance(frag)) {
             return clazz.cast(frag);
         }
 
         final FragmentActivity activity = fragment.getActivity();
-        if(clazz.isInstance(activity)) {
+        if (clazz.isInstance(activity)) {
             return clazz.cast(activity);
         }
 
