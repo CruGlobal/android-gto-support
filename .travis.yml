@@ -18,11 +18,11 @@ android:
   components:
     - platform-tools
     - tools
-    - build-tools-23.0.1
+    - build-tools-23.0.3
     - android-23
     - extra-android-m2repository
 
-    # system images for testing
+    # system image for testing
     - sys-img-$ANDROID_ABI-$ANDROID_TARGET
 
 before_cache:
