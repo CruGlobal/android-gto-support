@@ -65,6 +65,8 @@ public class ChildViewPager extends ViewPager {
                     this.intercept = false;
                 }
                 break;
+            default:
+                // do nothing
         }
 
         return super.onInterceptTouchEvent(ev);
@@ -116,6 +118,8 @@ public class ChildViewPager extends ViewPager {
                         }
                     }
                     break;
+                default:
+                    // do nothing
             }
         }
 

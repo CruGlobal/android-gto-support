@@ -11,7 +11,7 @@ import android.widget.ScrollView;
 import org.ccci.gto.android.common.R;
 
 public class AffixingScrollView extends ScrollView {
-    private final static int INVALID_RESOURCE = -1;
+    private static final int INVALID_RESOURCE = -1;
 
     @IdRes
     private int mAffixingId = INVALID_RESOURCE;

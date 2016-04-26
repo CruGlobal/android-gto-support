@@ -49,8 +49,8 @@ public class SwipeRefreshLayoutBroadcastReceiverHelper {
 
         // register new receivers if we are already receiving broadcasts
         if (mReceiving) {
-            if(mLocalBroadcastManager != null) {
-                for(final IntentFilter filter : filters) {
+            if (mLocalBroadcastManager != null) {
+                for (final IntentFilter filter : filters) {
                     mLocalBroadcastManager.registerReceiver(mStartReceiver, filter);
                 }
             }
@@ -62,8 +62,8 @@ public class SwipeRefreshLayoutBroadcastReceiverHelper {
 
         // register new receivers if we are already receiving broadcasts
         if (mReceiving) {
-            if(mLocalBroadcastManager != null) {
-                for(final IntentFilter filter : filters) {
+            if (mLocalBroadcastManager != null) {
+                for (final IntentFilter filter : filters) {
                     mLocalBroadcastManager.registerReceiver(mFinishReceiver, filter);
                 }
             }
@@ -91,9 +91,9 @@ public class SwipeRefreshLayoutBroadcastReceiverHelper {
     }
 
     public void stopReceiving() {
-        if(mReceiving) {
+        if (mReceiving) {
             // unregister receivers from LocalBroadcastManager
-            if(mLocalBroadcastManager != null) {
+            if (mLocalBroadcastManager != null) {
                 mLocalBroadcastManager.unregisterReceiver(mStartReceiver);
                 mLocalBroadcastManager.unregisterReceiver(mFinishReceiver);
                 mLocalBroadcastManager = null;
