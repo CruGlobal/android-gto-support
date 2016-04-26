@@ -6,21 +6,26 @@ env:
   global:
     # wait up to 10 minutes for adb to connect to emulator
     - ADB_INSTALL_TIMEOUT=10
+    - DEPLOY_USERNAME=travis-android-gto-support
+    - secure: "hZZ5kMqY/ZLCpsKX25SUni57Pz2r2P2zlmM6Tg1WNLfhNty4jqn9WIcGtjfuXTdqMcB4lLvQ6hnqodAoxQZmuk/8sTQjtckwXyY3c1D7GQWwB3wdtsV8kPDc9O9OOcNNc96hTtMHsBNI4WxE4GxqtB1QICGbnH0p+JZcFdX4n5o="
   matrix:
     - ANDROID_TARGET=android-15 ANDROID_ABI=armeabi-v7a
     - ANDROID_TARGET=android-21 ANDROID_ABI=armeabi-v7a
+    - ANDROID_TARGET=android-23 ANDROID_ABI=armeabi-v7a DEPLOY_SNAPSHOT=true
+branches:
+  only:
+    - master
 
 android:
   components:
     - platform-tools
     - tools
-    - build-tools-23.0.1
+    - build-tools-23.0.3
     - android-23
     - extra-android-m2repository
 
-    # system images for testing
-    - sys-img-armeabi-v7a-android-15
-    - sys-img-armeabi-v7a-android-21
+    # system image for testing
+    - sys-img-$ANDROID_ABI-$ANDROID_TARGET
 
 before_cache:
   - rm -f $HOME/.gradle/caches/modules-2/modules-2.lock
@@ -51,6 +56,20 @@ script:
 
 after_failure:
   - cat /home/travis/build/CruGlobal/android-gto-support/*/build/outputs/lint-results.xml
+
+before_deploy:
+  - echo gcxMavenRepositoryUsername=$DEPLOY_USERNAME >> $HOME/.gradle/gradle.properties
+  - echo gcxMavenRepositoryPassword=$DEPLOY_PASSWORD >> $HOME/.gradle/gradle.properties
+
+deploy:
+  provider: script
+  skip_cleanup: true
+  script: ./gradlew uploadArchives --parallel
+  on:
+    repo: CruGlobal/android-gto-support
+    branch: master
+    jdk: oraclejdk8
+    condition: $DEPLOY_SNAPSHOT = true
 
 notifications:
   email: false
