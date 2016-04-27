@@ -1,8 +1,5 @@
 package org.ccci.gto.android.common.widget;
 
-import static org.ccci.gto.android.common.widget.AccordionView.Adapter.POSITION_NONE;
-import static org.ccci.gto.android.common.widget.AccordionView.Adapter.POSITION_UNCHANGED;
-
 import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.TimeInterpolator;
@@ -30,6 +27,9 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
 import java.util.List;
+
+import static org.ccci.gto.android.common.widget.AccordionView.Adapter.POSITION_NONE;
+import static org.ccci.gto.android.common.widget.AccordionView.Adapter.POSITION_UNCHANGED;
 
 public class AccordionView extends LinearLayout {
     public static final int STATE_CLOSED = 0;
@@ -461,6 +461,11 @@ public class AccordionView extends LinearLayout {
                         case STATE_OPEN:
                             outerLp.height = mLastKnownHeight;
                             break;
+                        case STATE_CLOSING:
+                            // already closing, do nothing
+                        case STATE_OPENING:
+                        default:
+                            // do nothing
                     }
                     outerLp.weight = 0;
                     break;
@@ -479,9 +484,16 @@ public class AccordionView extends LinearLayout {
                         case STATE_CLOSED:
                             outerLp.height = 0;
                             break;
+                        case STATE_OPENING:
+                            // already opening, do nothing
+                        case STATE_CLOSING:
+                        default:
+                            // do nothing
                     }
                     outerLp.weight = 0;
                     break;
+                default:
+                    throw new IllegalStateException("Invalid state specified for Accordion.ViewHolder");
             }
 
             // set updated LayoutParams, this triggers a fresh layout
