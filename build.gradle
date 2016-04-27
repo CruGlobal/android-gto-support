@@ -68,6 +68,9 @@ subprojects {
 
     // configure checkstyle
     apply plugin: 'checkstyle'
+    checkstyle {
+        toolVersion '6.17'
+    }
     task checkstyle(type: Checkstyle) {
         configFile rootProject.file('checkstyle.xml')
         source 'src'
@@ -83,6 +86,7 @@ subprojects {
         }
     }
 
+    // configure maven uploadArchives task
     apply from: "$rootProject.projectDir/maven_publish.gradle"
     afterEvaluate { project ->
         artifacts {
