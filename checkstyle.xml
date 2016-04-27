@@ -3,6 +3,8 @@
     "-//Puppy Crawl//DTD Check Configuration 1.2//EN"
     "http://www.puppycrawl.com/dtds/configuration_1_2.dtd">
 <module name="Checker">
+    <module name="SuppressWarningsFilter"/>
+
     <module name="NewlineAtEndOfFile"/>
     <module name="FileLength"/>
     <module name="FileTabCharacter"/>
@@ -34,6 +36,11 @@
         <!--module name="JavadocType"/-->
         <!--module name="JavadocVariable"/-->
         <!--module name="JavadocStyle"/-->
+
+
+        <!--Checks for Annotations. -->
+        <!-- See http://checkstyle.sf.net/config_annotation.html -->
+        <module name="SuppressWarningsHolder"/>
 
 
         <!-- Checks for Naming Conventions.                  -->

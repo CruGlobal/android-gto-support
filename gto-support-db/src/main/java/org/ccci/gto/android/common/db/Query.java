@@ -32,7 +32,7 @@ public final class Query<T> {
     @Nullable
     final Integer mOffset;
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked", "checkstyle:parameternumber"})
     private Query(@NonNull final Table<T> table, final boolean distinct, @Nullable final Join<T, ?>[] joins,
                   @Nullable final String[] projection, @Nullable final Expression where,
                   @Nullable final String orderBy, @Nullable final Field[] groupBy, @Nullable final Expression having,
