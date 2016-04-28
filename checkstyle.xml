@@ -41,6 +41,8 @@
         <!--Checks for Annotations. -->
         <!-- See http://checkstyle.sf.net/config_annotation.html -->
         <module name="SuppressWarningsHolder"/>
+        <module name="MissingDeprecated"/>
+        <module name="MissingOverride"/>
 
 
         <!-- Checks for Naming Conventions.                  -->
