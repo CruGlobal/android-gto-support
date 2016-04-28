@@ -23,11 +23,11 @@ public class TableTest {
     }
 
     static class Obj1 {
-        final static String TABLE_NAME = "Table1";
+        static final String TABLE_NAME = "Table1";
     }
 
     static class Obj2 {
-        final static String TABLE_NAME = "Table2";
+        static final String TABLE_NAME = "Table2";
     }
 
     private static class TestDao extends AbstractDao {

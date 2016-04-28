@@ -626,7 +626,7 @@ public class AccordionView extends LinearLayout {
 
         private static final class DefaultOpeningAnimatorListener extends AnimatorListener
                 implements ValueAnimator.AnimatorUpdateListener {
-            public DefaultOpeningAnimatorListener(@NonNull final ViewHolder holder) {
+            DefaultOpeningAnimatorListener(@NonNull final ViewHolder holder) {
                 super(holder, STATE_OPEN);
             }
 
@@ -642,7 +642,7 @@ public class AccordionView extends LinearLayout {
 
         private static final class DefaultClosingAnimatorListener extends AnimatorListener
                 implements ValueAnimator.AnimatorUpdateListener {
-            public DefaultClosingAnimatorListener(@NonNull final ViewHolder holder) {
+            DefaultClosingAnimatorListener(@NonNull final ViewHolder holder) {
                 super(holder, STATE_CLOSED);
             }
 
