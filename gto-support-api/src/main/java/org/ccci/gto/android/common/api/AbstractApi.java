@@ -405,7 +405,9 @@ public abstract class AbstractApi<R extends Request<C, S>, C extends ExecutionCo
      * @param <C> The ExecutionContext type being used for this request
      */
     public static class Request<C extends ExecutionContext<S>, S extends Session> {
-        public enum Method {GET, POST, PUT, DELETE}
+        public enum Method {
+            GET, POST, PUT, DELETE
+        }
 
         public enum MediaType {
             FORM_MULTIPART("multipart/form-data"), FORM_URLENCODED("application/x-www-form-urlencoded"),
