@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
+import java.util.Arrays;
 import java.util.Locale;
 
 public class TheKeySession extends Session {
@@ -46,5 +47,10 @@ public class TheKeySession extends Session {
 
         final TheKeySession that = (TheKeySession) o;
         return super.equals(o) && TextUtils.equals(mGuid, that.mGuid);
+    }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode() * 31 + Arrays.hashCode(new Object[] {mGuid});
     }
 }

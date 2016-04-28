@@ -33,7 +33,7 @@ public class SQLiteOpenHelperCompatIT {
         int mConfigure = 0;
         int mOpen = 0;
 
-        public TestDbHelper(Context context) {
+        TestDbHelper(Context context) {
             super(context, "SQLiteOpenHelperCompatIT", null, 1);
         }
 

@@ -111,8 +111,8 @@ public abstract class ThreadedIntentService extends Service {
 
     void cleanDoneTasks() {
         synchronized (mTasks) {
-            Future<Integer> task;
-            while ((task = mTasks.peek()) != null && task.isDone()) {
+            Future<Integer> task = mTasks.peek();
+            while (task != null && task.isDone()) {
                 final Future<Integer> task2 = mTasks.remove();
                 try {
                     stopSelf(task2.get());
@@ -130,6 +130,8 @@ public abstract class ThreadedIntentService extends Service {
                         throw new RuntimeException(cause);
                     }
                 }
+
+                task = mTasks.peek();
             }
         }
     }

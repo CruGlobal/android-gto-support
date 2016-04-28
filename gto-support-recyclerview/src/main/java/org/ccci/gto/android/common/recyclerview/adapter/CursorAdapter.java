@@ -19,7 +19,7 @@ public abstract class CursorAdapter<VH extends RecyclerView.ViewHolder> extends 
         final Cursor old = swapCursor(cursor);
 
         // close old Cursor if it differs from the new Cursor
-        if(old != null && old != cursor) {
+        if (old != null && old != cursor) {
             old.close();
         }
     }

@@ -29,7 +29,7 @@ public final class EventBusLoaderHelper {
     public EventBusLoaderHelper(@NonNull final Loader loader, @Nullable final EventBus eventBus) {
         mLoader = loader;
 
-        if(eventBus != null) {
+        if (eventBus != null) {
             mEventBusInstance = eventBus;
         } else {
             mEventBusInstance = EventBus.getDefault();

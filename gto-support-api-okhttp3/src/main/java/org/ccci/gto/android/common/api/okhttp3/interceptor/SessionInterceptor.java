@@ -15,7 +15,7 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 public abstract class SessionInterceptor<S extends Session> implements Interceptor {
-    protected final Object LOCK_SESSION = new Object();
+    protected final Object mLockSession = new Object();
 
     @NonNull
     protected final Context mContext;
@@ -40,7 +40,7 @@ public abstract class SessionInterceptor<S extends Session> implements Intercept
     public final Response intercept(@NonNull final Chain chain) throws IOException {
         // get the session, establish a session if one doesn't exist or if we have a stale session
         S session;
-        synchronized (LOCK_SESSION) {
+        synchronized (mLockSession) {
             session = loadSession();
             if (session == null) {
                 session = establishSession();
@@ -63,7 +63,7 @@ public abstract class SessionInterceptor<S extends Session> implements Intercept
         // make sure the response is valid
         if (isSessionInvalid(response)) {
             // reset the session
-            synchronized (LOCK_SESSION) {
+            synchronized (mLockSession) {
                 // only reset if this is still the same session
                 final S active = loadSession();
                 if (active != null && active.equals(session)) {
@@ -87,7 +87,7 @@ public abstract class SessionInterceptor<S extends Session> implements Intercept
         // load a pre-existing session
         final SharedPreferences prefs = this.getPrefs();
         final S session;
-        synchronized (LOCK_SESSION) {
+        synchronized (mLockSession) {
             session = loadSession(prefs);
         }
 
@@ -107,7 +107,7 @@ public abstract class SessionInterceptor<S extends Session> implements Intercept
         final SharedPreferences.Editor prefs = this.getPrefs().edit();
         session.save(prefs);
 
-        synchronized (LOCK_SESSION) {
+        synchronized (mLockSession) {
             prefs.apply();
         }
     }
@@ -116,7 +116,7 @@ public abstract class SessionInterceptor<S extends Session> implements Intercept
         final SharedPreferences.Editor prefs = getPrefs().edit();
         session.delete(prefs);
 
-        synchronized (LOCK_SESSION) {
+        synchronized (mLockSession) {
             prefs.apply();
         }
     }

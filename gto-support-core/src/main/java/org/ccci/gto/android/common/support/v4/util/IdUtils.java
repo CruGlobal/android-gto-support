@@ -8,7 +8,7 @@ import java.util.Map;
 
 public class IdUtils {
     // no need to use AtomicLong because it is only referenced in blocks synchronized on IDS_REVERSE
-    private static volatile long NEXT_ID = 1;
+    private static volatile long sNextId = 1;
     private static final LongSparseArray<Object> IDS = new LongSparseArray<>();
     private static final Map<Object, Long> IDS_REVERSE = new HashMap<>();
 
@@ -32,7 +32,7 @@ public class IdUtils {
         synchronized (IDS_REVERSE) {
             Long rawId = IDS_REVERSE.get(id);
             if (rawId == null) {
-                rawId = NEXT_ID++;
+                rawId = sNextId++;
                 synchronized (IDS) {
                     IDS.put(rawId, id);
                 }

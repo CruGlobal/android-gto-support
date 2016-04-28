@@ -538,8 +538,8 @@ public abstract class AbstractDao {
         @Nullable
         final Expression mPrimaryWhere;
 
-        public TableType(@NonNull final String table, @Nullable final String[] projection,
-                         @Nullable final Mapper<?> mapper, @Nullable final Expression where) {
+        TableType(@NonNull final String table, @Nullable final String[] projection, @Nullable final Mapper<?> mapper,
+                  @Nullable final Expression where) {
             mTable = table;
             mProjection = projection;
             mMapper = mapper;

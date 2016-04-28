@@ -4,6 +4,7 @@ import android.provider.BaseColumns;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
+@SuppressWarnings("checkstyle:InterfaceIsType")
 public abstract class BaseContract {
     public interface Base extends BaseColumns {
         String COLUMN_ROWID = _ID;

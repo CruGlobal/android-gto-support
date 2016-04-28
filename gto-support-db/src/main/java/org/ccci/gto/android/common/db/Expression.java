@@ -577,6 +577,7 @@ public abstract class Expression implements Parcelable {
 
         @NonNull
         @Override
+        @SuppressWarnings("checkstyle:MissingSwitchDefault")
         protected Binary binaryExpr(@NonNull final String op, @NonNull final Expression expression) {
             // chain binary expressions together when possible
             switch (mOp) {
@@ -864,7 +865,7 @@ public abstract class Expression implements Parcelable {
                 final Pair<String, String[]> resp = mField.buildSql(dao);
 
                 // {mOp} (DISTINCT {mExpr})
-                if(mDistinct) {
+                if (mDistinct) {
                     sql.append("DISTINCT ");
                 }
                 sql.append(resp.first);
