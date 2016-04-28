@@ -88,6 +88,9 @@ public final class Query<T> {
         return new Query<>(mTable, mDistinct, mJoins, mProjection, where, mOrderBy, mGroupBy, mHaving, mLimit, mOffset);
     }
 
+    /**
+     * @deprecated Since v0.9.0, use {@link Query#where(Expression)} instead.
+     */
     @NonNull
     @Deprecated
     Query<T> where(@Nullable final Pair<String, String[]> where) {
@@ -130,7 +133,7 @@ public final class Query<T> {
     }
 
     @NonNull
-    final Pair<String, String[]> buildSqlFrom(@NonNull final AbstractDao dao) {
+    Pair<String, String[]> buildSqlFrom(@NonNull final AbstractDao dao) {
         // joins need to be passed appended to the table name
         final StringBuilder sb = new StringBuilder(mTable.sqlTable(dao));
         String[] args = null;
@@ -143,17 +146,17 @@ public final class Query<T> {
     }
 
     @NonNull
-    final Pair<String, String[]> buildSqlWhere(@NonNull final AbstractDao dao) {
+    Pair<String, String[]> buildSqlWhere(@NonNull final AbstractDao dao) {
         return mWhere != null ? mWhere.buildSql(dao) : Pair.<String, String[]>create(null, null);
     }
 
     @NonNull
-    final Pair<String, String[]> buildSqlHaving(@NonNull final AbstractDao dao) {
+    Pair<String, String[]> buildSqlHaving(@NonNull final AbstractDao dao) {
         return mHaving != null ? mHaving.buildSql(dao) : Pair.<String, String[]>create(null, null);
     }
 
     @Nullable
-    final String buildSqlLimit() {
+    String buildSqlLimit() {
         if (mLimit != null) {
             final StringBuilder sb = new StringBuilder();
 //            // XXX: not supported by Android

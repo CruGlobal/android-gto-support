@@ -1,13 +1,5 @@
 package org.ccci.gto.android.common.db.support.v4.content;
 
-import static org.ccci.gto.android.common.db.AbstractDao.ARG_DISTINCT;
-import static org.ccci.gto.android.common.db.AbstractDao.ARG_JOINS;
-import static org.ccci.gto.android.common.db.AbstractDao.ARG_ORDER_BY;
-import static org.ccci.gto.android.common.db.AbstractDao.ARG_PROJECTION;
-import static org.ccci.gto.android.common.db.AbstractDao.ARG_WHERE;
-import static org.ccci.gto.android.common.db.AbstractDao.ARG_WHERE_ARGS;
-import static org.ccci.gto.android.common.db.AbstractDao.bindValues;
-
 import android.content.Context;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -21,6 +13,14 @@ import org.ccci.gto.android.common.db.Query;
 import org.ccci.gto.android.common.db.Table;
 import org.ccci.gto.android.common.support.v4.content.CursorBroadcastReceiverLoader;
 import org.ccci.gto.android.common.util.BundleUtils;
+
+import static org.ccci.gto.android.common.db.AbstractDao.ARG_DISTINCT;
+import static org.ccci.gto.android.common.db.AbstractDao.ARG_JOINS;
+import static org.ccci.gto.android.common.db.AbstractDao.ARG_ORDER_BY;
+import static org.ccci.gto.android.common.db.AbstractDao.ARG_PROJECTION;
+import static org.ccci.gto.android.common.db.AbstractDao.ARG_WHERE;
+import static org.ccci.gto.android.common.db.AbstractDao.ARG_WHERE_ARGS;
+import static org.ccci.gto.android.common.db.AbstractDao.bindValues;
 
 public class DaoCursorBroadcastReceiverLoader<T> extends CursorBroadcastReceiverLoader {
     @NonNull
@@ -105,11 +105,17 @@ public class DaoCursorBroadcastReceiverLoader<T> extends CursorBroadcastReceiver
         return projection != null ? projection : mDao.getFullProjection(mFrom);
     }
 
+    /**
+     * @deprecated Since v0.9.0, use {@link DaoCursorBroadcastReceiverLoader#setWhere(Expression)} instead.
+     */
     @Deprecated
     public void setWhere(@Nullable final String where, @Nullable final Object... args) {
         setWhere(where, args != null ? bindValues(args) : null);
     }
 
+    /**
+     * @deprecated Since v0.9.0, use {@link DaoCursorBroadcastReceiverLoader#setWhere(Expression)} instead.
+     */
     @Deprecated
     public void setWhere(@Nullable final String where, @Nullable final String... args) {
         setWhere(where != null ? Expression.raw(where, args) : null);
