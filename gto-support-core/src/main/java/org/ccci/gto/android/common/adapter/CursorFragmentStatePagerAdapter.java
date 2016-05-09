@@ -54,14 +54,15 @@ public abstract class CursorFragmentStatePagerAdapter extends FragmentStatePager
     @Override
     public int getItemPosition(final Object object) {
         final Fragment fragment = (Fragment) object;
-        final Bundle args;
-        if (this.c != null && this.idColumn != -1 && (args = fragment.getArguments()) != null &&
-                args.containsKey(ARG_ID)) {
-            // find the position based on the id
-            this.generateIdIndex();
-            final Integer position = this.idIndex.get(args.getLong(ARG_ID, -1));
-            if (position != null) {
-                return position;
+        if (this.c != null && this.idColumn != -1) {
+            final Bundle args = fragment.getArguments();
+            if (args != null && args.containsKey(ARG_ID)) {
+                // find the position based on the id
+                this.generateIdIndex();
+                final Integer position = this.idIndex.get(args.getLong(ARG_ID, -1));
+                if (position != null) {
+                    return position;
+                }
             }
         }
 

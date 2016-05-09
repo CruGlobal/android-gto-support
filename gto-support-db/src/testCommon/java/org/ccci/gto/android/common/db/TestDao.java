@@ -19,16 +19,17 @@ public class TestDao extends AbstractDao {
                      CompoundTable.SQL_WHERE_PRIMARY_KEY);
     }
 
-    private static TestDao INSTANCE;
+    private static TestDao sInstance;
     public static TestDao getInstance(@NonNull final Context context) {
         synchronized (TestDao.class) {
-            if (INSTANCE == null) {
-                INSTANCE = new TestDao(context.getApplicationContext());
+            if (sInstance == null) {
+                sInstance = new TestDao(context.getApplicationContext());
             }
-            return INSTANCE;
+            return sInstance;
         }
     }
 
+    @NonNull
     static TestDao mock() {
         return new TestDao(null);
     }
@@ -36,7 +37,7 @@ public class TestDao extends AbstractDao {
     @NonNull
     @Override
     protected Expression getPrimaryKeyWhere(@NonNull final Object obj) {
-        if(obj instanceof Root) {
+        if (obj instanceof Root) {
             return getPrimaryKeyWhere(Root.class, ((Root) obj).id);
         } else if (obj instanceof Compound) {
             return getPrimaryKeyWhere(Compound.class, ((Compound) obj).id1, ((Compound) obj).id2);

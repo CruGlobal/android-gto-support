@@ -75,7 +75,7 @@ public class StateAwareVideoView extends VideoView {
         }
     }
 
-    public static abstract class SimplePlaybackListener implements PlaybackListener {
+    public abstract static class SimplePlaybackListener implements PlaybackListener {
         @Override
         public void onStart(final StateAwareVideoView view) {
         }

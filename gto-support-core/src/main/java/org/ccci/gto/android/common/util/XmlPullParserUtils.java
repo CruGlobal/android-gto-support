@@ -48,6 +48,8 @@ public class XmlPullParserUtils {
                 case XmlPullParser.END_TAG:
                     depth--;
                     break;
+                default:
+                    // do nothing
             }
         }
     }

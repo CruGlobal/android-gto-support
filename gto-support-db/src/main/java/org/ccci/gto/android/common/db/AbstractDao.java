@@ -26,6 +26,9 @@ public abstract class AbstractDao {
     public static final String ARG_JOINS = AbstractDao.class.getName() + ".ARG_JOINS";
     public static final String ARG_PROJECTION = AbstractDao.class.getName() + ".ARG_PROJECTION";
     public static final String ARG_WHERE = AbstractDao.class.getName() + ".ARG_WHERE";
+    /**
+     * @deprecated Since v0.9.0, use {@link AbstractDao#ARG_WHERE} with an {@link Expression} object instead.
+     */
     @Deprecated
     public static final String ARG_WHERE_ARGS = AbstractDao.class.getName() + ".ARG_WHERE_ARGS";
     public static final String ARG_ORDER_BY = AbstractDao.class.getName() + ".ARG_ORDER_BY";
@@ -181,6 +184,9 @@ public abstract class AbstractDao {
         return getCursor(Query.select(clazz).where(whereClause, whereBindValues).orderBy(orderBy));
     }
 
+    /**
+     * @deprecated Since v0.9.0, use {@link AbstractDao#getCursor(Query)} instead.
+     */
     @NonNull
     @Deprecated
     @WorkerThread
@@ -191,6 +197,9 @@ public abstract class AbstractDao {
                 Query.select(clazz).projection(projection).where(whereClause, whereBindValues).orderBy(orderBy));
     }
 
+    /**
+     * @deprecated Since v0.9.0, use {@link AbstractDao#getCursor(Query)} instead.
+     */
     @NonNull
     @Deprecated
     @WorkerThread
@@ -201,6 +210,9 @@ public abstract class AbstractDao {
                                  .orderBy(orderBy));
     }
 
+    /**
+     * @deprecated Since v0.9.0, use {@link AbstractDao#getCursor(Query)} instead.
+     */
     @NonNull
     @Deprecated
     @WorkerThread
@@ -213,6 +225,9 @@ public abstract class AbstractDao {
                         .orderBy(orderBy));
     }
 
+    /**
+     * @deprecated Since v0.9.0, use {@link AbstractDao#getCursor(Query)} instead.
+     */
     @NonNull
     @Deprecated
     @WorkerThread
@@ -292,13 +307,13 @@ public abstract class AbstractDao {
                 String[] fields = clause.split(",");
 
                 for (int i = 0; i < fields.length; i++) {
-                    if(!fields[i].contains(".")) {
+                    if (!fields[i].contains(".")) {
                         fields[i] = prefix + fields[i].trim();
                     }
                 }
                 return TextUtils.join(",", fields);
             }
-            if(!clause.contains(".")) {
+            if (!clause.contains(".")) {
                 return prefix + clause;
             }
         }
@@ -538,8 +553,8 @@ public abstract class AbstractDao {
         @Nullable
         final Expression mPrimaryWhere;
 
-        public TableType(@NonNull final String table, @Nullable final String[] projection,
-                         @Nullable final Mapper<?> mapper, @Nullable final Expression where) {
+        TableType(@NonNull final String table, @Nullable final String[] projection, @Nullable final Mapper<?> mapper,
+                  @Nullable final Expression where) {
             mTable = table;
             mProjection = projection;
             mMapper = mapper;

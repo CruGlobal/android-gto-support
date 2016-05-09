@@ -35,7 +35,7 @@ import java.util.UUID;
 public abstract class AbstractApi<R extends Request<C, S>, C extends ExecutionContext<S>, S extends Session> {
     private static final int DEFAULT_ATTEMPTS = 3;
 
-    protected final Object LOCK_SESSION = new Object();
+    protected final Object mLockSession = new Object();
 
     @NonNull
     protected final Context mContext;
@@ -93,7 +93,7 @@ public abstract class AbstractApi<R extends Request<C, S>, C extends ExecutionCo
                     onPrepareSession(request);
 
                     // get the session, establish a session if one doesn't exist or if we have a stale session
-                    synchronized (LOCK_SESSION) {
+                    synchronized (mLockSession) {
                         request.context.session = loadSession(request);
                         if (request.context.session == null) {
                             request.context.session = establishSession(request);
@@ -195,7 +195,8 @@ public abstract class AbstractApi<R extends Request<C, S>, C extends ExecutionCo
     }
 
     /**
-     * creates a new ExecutionContext object. This needs to be overridden when a subclass overrides the ExecutionContext.
+     * Creates a new ExecutionContext object. This needs to be overridden when a subclass overrides the
+     * ExecutionContext.
      *
      * @return
      */
@@ -210,7 +211,7 @@ public abstract class AbstractApi<R extends Request<C, S>, C extends ExecutionCo
         // load a pre-existing session
         final SharedPreferences prefs = this.getPrefs();
         final S session;
-        synchronized (LOCK_SESSION) {
+        synchronized (mLockSession) {
             session = this.loadSession(prefs, request);
         }
 
@@ -230,7 +231,7 @@ public abstract class AbstractApi<R extends Request<C, S>, C extends ExecutionCo
         final SharedPreferences.Editor prefs = this.getPrefs().edit();
         session.save(prefs);
 
-        synchronized (LOCK_SESSION) {
+        synchronized (mLockSession) {
             // store updates
             prefs.apply();
         }
@@ -240,7 +241,7 @@ public abstract class AbstractApi<R extends Request<C, S>, C extends ExecutionCo
         final SharedPreferences.Editor prefs = this.getPrefs().edit();
         session.delete(prefs);
 
-        synchronized (LOCK_SESSION) {
+        synchronized (mLockSession) {
             // store updates
             prefs.apply();
         }
@@ -366,7 +367,7 @@ public abstract class AbstractApi<R extends Request<C, S>, C extends ExecutionCo
         // check for an invalid session
         if (request.useSession && this.isSessionInvalid(conn, request)) {
             // reset the session
-            synchronized (LOCK_SESSION) {
+            synchronized (mLockSession) {
                 // only reset if this is still the same session
                 final S active = loadSession(request);
                 final S invalid = request.context != null ? request.context.session : null;
@@ -404,7 +405,9 @@ public abstract class AbstractApi<R extends Request<C, S>, C extends ExecutionCo
      * @param <C> The ExecutionContext type being used for this request
      */
     public static class Request<C extends ExecutionContext<S>, S extends Session> {
-        public enum Method {GET, POST, PUT, DELETE}
+        public enum Method {
+            GET, POST, PUT, DELETE
+        }
 
         public enum MediaType {
             FORM_MULTIPART("multipart/form-data"), FORM_URLENCODED("application/x-www-form-urlencoded"),

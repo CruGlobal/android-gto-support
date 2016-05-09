@@ -42,10 +42,10 @@ public class RepeatingClickTouchListener implements View.OnTouchListener {
 
                 // never consume cancel events
                 return false;
+            default:
+                // we don't handle the event, so don't consume it
+                return false;
         }
-
-        // we didn't handle the event, so don't consume it
-        return false;
     }
 
     private Pair<View, Runnable> createTask(final View v) {
@@ -54,9 +54,9 @@ public class RepeatingClickTouchListener implements View.OnTouchListener {
             public void run() {
                 // Perform the present repetition of the click action provided by the user
                 // in setOnClickListener().
-                if(v.isPressed()) {
+                if (v.isPressed()) {
                     // perform haptic feedback on first fired click event (long press)
-                    if(!fired) {
+                    if (!fired) {
                         v.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
                     }
 
@@ -73,7 +73,7 @@ public class RepeatingClickTouchListener implements View.OnTouchListener {
     }
 
     public void resetTask() {
-        if(this.task != null) {
+        if (this.task != null) {
             //Cancel any repetition in progress.
             this.task.first.removeCallbacks(this.task.second);
 

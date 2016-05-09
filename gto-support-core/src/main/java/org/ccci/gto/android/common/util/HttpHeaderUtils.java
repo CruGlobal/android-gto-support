@@ -229,9 +229,9 @@ public final class HttpHeaderUtils {
                 i2--;
             }
             // Strip away quotes if necessary
-            if (((i2 - i1) >= 2)
-                    && (buffer.charAt(i1) == '"')
-                    && (buffer.charAt(i2 - 1) == '"')) {
+            if (((i2 - i1) >= 2) &&
+                    (buffer.charAt(i1) == '"') &&
+                    (buffer.charAt(i2 - 1) == '"')) {
                 i1++;
                 i2--;
             }

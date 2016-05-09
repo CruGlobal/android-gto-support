@@ -22,7 +22,7 @@ public class SwipeRefreshLayoutBroadcastReceiverHelper {
     private final BroadcastReceiver mStartReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(final Context context, final Intent intent) {
-            if(mRefreshLayout != null) {
+            if (mRefreshLayout != null) {
                 mRefreshLayout.setRefreshing(true);
             }
         }
@@ -30,14 +30,14 @@ public class SwipeRefreshLayoutBroadcastReceiverHelper {
     private final BroadcastReceiver mFinishReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(final Context context, final Intent intent) {
-            if(mRefreshLayout != null) {
+            if (mRefreshLayout != null) {
                 mRefreshLayout.setRefreshing(false);
             }
         }
     };
 
     public void setRefreshLayout(final SwipeRefreshLayout layout) {
-        if(mReceiving) {
+        if (mReceiving) {
             throw new IllegalStateException("can't set a refresh layout while receiving broadcasts");
         }
 
@@ -48,9 +48,9 @@ public class SwipeRefreshLayoutBroadcastReceiverHelper {
         mStartFilters.addAll(Arrays.asList(filters));
 
         // register new receivers if we are already receiving broadcasts
-        if(mReceiving) {
-            if(mLocalBroadcastManager != null) {
-                for(final IntentFilter filter : filters) {
+        if (mReceiving) {
+            if (mLocalBroadcastManager != null) {
+                for (final IntentFilter filter : filters) {
                     mLocalBroadcastManager.registerReceiver(mStartReceiver, filter);
                 }
             }
@@ -61,9 +61,9 @@ public class SwipeRefreshLayoutBroadcastReceiverHelper {
         mFinishFilters.addAll(Arrays.asList(filters));
 
         // register new receivers if we are already receiving broadcasts
-        if(mReceiving) {
-            if(mLocalBroadcastManager != null) {
-                for(final IntentFilter filter : filters) {
+        if (mReceiving) {
+            if (mLocalBroadcastManager != null) {
+                for (final IntentFilter filter : filters) {
                     mLocalBroadcastManager.registerReceiver(mFinishReceiver, filter);
                 }
             }
@@ -71,8 +71,8 @@ public class SwipeRefreshLayoutBroadcastReceiverHelper {
     }
 
     public void startReceiving(final LocalBroadcastManager bm) {
-        if(!mReceiving) {
-            if(mRefreshLayout == null) {
+        if (!mReceiving) {
+            if (mRefreshLayout == null) {
                 throw new IllegalStateException("can't start receiving without a refresh layout");
             }
 
@@ -81,19 +81,19 @@ public class SwipeRefreshLayoutBroadcastReceiverHelper {
 
             // start listening for broadcasts
             mLocalBroadcastManager = bm;
-            for(final IntentFilter filter : mStartFilters) {
+            for (final IntentFilter filter : mStartFilters) {
                 mLocalBroadcastManager.registerReceiver(mStartReceiver, filter);
             }
-            for(final IntentFilter filter : mFinishFilters) {
+            for (final IntentFilter filter : mFinishFilters) {
                 mLocalBroadcastManager.registerReceiver(mFinishReceiver, filter);
             }
         }
     }
 
     public void stopReceiving() {
-        if(mReceiving) {
+        if (mReceiving) {
             // unregister receivers from LocalBroadcastManager
-            if(mLocalBroadcastManager != null) {
+            if (mLocalBroadcastManager != null) {
                 mLocalBroadcastManager.unregisterReceiver(mStartReceiver);
                 mLocalBroadcastManager.unregisterReceiver(mFinishReceiver);
                 mLocalBroadcastManager = null;

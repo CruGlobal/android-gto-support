@@ -5,6 +5,8 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
+import java.util.Arrays;
+
 /**
  * Object representing an individual session for this API. Can be extended to track additional session data.
  */
@@ -63,5 +65,10 @@ public class Session {
 
         final Session that = (Session) o;
         return TextUtils.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Arrays.hashCode(new Object[] {id});
     }
 }

@@ -162,18 +162,27 @@ public abstract class Expression implements Parcelable {
         return Table.forClass(type).field(name);
     }
 
+    /**
+     * @deprecated Since v0.9.0, use {@link Expression#bind(Object)} instead.
+     */
     @NonNull
     @Deprecated
     public static Literal literal(@NonNull final Object value) {
         return bind(value);
     }
 
+    /**
+     * @deprecated Since v0.9.0, use {@link Expression#bind(Number)} instead.
+     */
     @NonNull
     @Deprecated
     public static Literal literal(@NonNull final Number value) {
         return bind(value);
     }
 
+    /**
+     * @deprecated Since v0.9.0, use {@link Expression#bind(String)} instead.
+     */
     @NonNull
     @Deprecated
     public static Literal literal(@NonNull final String value) {
@@ -577,6 +586,7 @@ public abstract class Expression implements Parcelable {
 
         @NonNull
         @Override
+        @SuppressWarnings("checkstyle:MissingSwitchDefault")
         protected Binary binaryExpr(@NonNull final String op, @NonNull final Expression expression) {
             // chain binary expressions together when possible
             switch (mOp) {
@@ -864,7 +874,7 @@ public abstract class Expression implements Parcelable {
                 final Pair<String, String[]> resp = mField.buildSql(dao);
 
                 // {mOp} (DISTINCT {mExpr})
-                if(mDistinct) {
+                if (mDistinct) {
                     sql.append("DISTINCT ");
                 }
                 sql.append(resp.first);

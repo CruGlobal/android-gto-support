@@ -31,11 +31,12 @@ public final class Table<T> implements Parcelable {
     }
 
     @NonNull
-    public final Table<T> as(@Nullable final String alias) {
+    public Table<T> as(@Nullable final String alias) {
         return new Table<>(mType, alias);
     }
 
-    public final Field field(@NonNull final String field) {
+    @NonNull
+    public Field field(@NonNull final String field) {
         return new Field(this, field);
     }
 
@@ -50,7 +51,7 @@ public final class Table<T> implements Parcelable {
     }
 
     @NonNull
-    final String sqlTable(@NonNull final AbstractDao dao) {
+    String sqlTable(@NonNull final AbstractDao dao) {
         // build the name if we haven't built it already
         if (mSqlTable == null) {
             final StringBuilder sql = new StringBuilder(dao.getTable(mType));
@@ -64,7 +65,7 @@ public final class Table<T> implements Parcelable {
     }
 
     @NonNull
-    final String sqlPrefix(@NonNull final AbstractDao dao) {
+    String sqlPrefix(@NonNull final AbstractDao dao) {
         if (mSqlPrefix == null) {
             mSqlPrefix = (mAlias != null ? mAlias : dao.getTable(mType)) + ".";
         }

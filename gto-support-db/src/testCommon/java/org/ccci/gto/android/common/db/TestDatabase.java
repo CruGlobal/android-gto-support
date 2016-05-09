@@ -13,13 +13,13 @@ class TestDatabase extends WalSQLiteOpenHelper {
         resetDatabase(getWritableDatabase());
     }
 
-    private static TestDatabase INSTANCE;
+    private static TestDatabase sInstance;
     static TestDatabase getInstance(@NonNull final Context context) {
         synchronized (TestDatabase.class) {
-            if (INSTANCE == null) {
-                INSTANCE = new TestDatabase(context.getApplicationContext());
+            if (sInstance == null) {
+                sInstance = new TestDatabase(context.getApplicationContext());
             }
-            return INSTANCE;
+            return sInstance;
         }
     }
 

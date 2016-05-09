@@ -1,7 +1,5 @@
 package org.ccci.gto.android.common.db;
 
-import static org.ccci.gto.android.common.db.AbstractDao.bindValues;
-
 import android.annotation.TargetApi;
 import android.os.Build;
 import android.os.Parcel;
@@ -11,6 +9,8 @@ import android.support.annotation.Nullable;
 import android.util.Pair;
 
 import org.ccci.gto.android.common.util.ArrayUtils;
+
+import static org.ccci.gto.android.common.db.AbstractDao.bindValues;
 
 public final class Join<S, T> implements Parcelable {
     public static final Join[] NO_JOINS = new Join[0];
@@ -50,24 +50,36 @@ public final class Join<S, T> implements Parcelable {
         mOn = in.readParcelable(loader);
     }
 
+    /**
+     * @deprecated Since v0.9.0, use {@link Join#create(Table, Table)} instead.
+     */
     @NonNull
     @Deprecated
     public static <S, T> Join<S, T> create(@NonNull final Class<S> source, @NonNull final Class<T> target) {
         return create(Table.forClass(target));
     }
 
+    /**
+     * @deprecated Since v0.9.0, use {@link Join#create(Table, Table)} instead.
+     */
     @NonNull
     @Deprecated
     public static <S, T> Join<S, T> create(@NonNull final Class<S> source, @NonNull final Table<T> target) {
         return create(target);
     }
 
+    /**
+     * @deprecated Since v0.9.0, use {@link Join#create(Table, Table)} instead.
+     */
     @NonNull
     @Deprecated
     public static <S, T> Join<S, T> create(@NonNull final Table<S> source, @NonNull final Class<T> target) {
         return create(Table.forClass(target));
     }
 
+    /**
+     * @deprecated Since v0.9.0, use {@link Join#create(Table)} instead.
+     */
     @NonNull
     @Deprecated
     public static <S, T> Join<S, T> create(@NonNull final Class<T> target) {
@@ -85,56 +97,68 @@ public final class Join<S, T> implements Parcelable {
     }
 
     @NonNull
-    public final Join<S, T> type(@Nullable final String type) {
+    public Join<S, T> type(@Nullable final String type) {
         return new Join<>(mBase, mTarget, type, mOn);
     }
 
     @NonNull
-    public final Join<S, T> on(@Nullable final Expression on) {
+    public Join<S, T> on(@Nullable final Expression on) {
         return new Join<>(mBase, mTarget, mType, on);
     }
 
     @NonNull
-    public final Join<S, T> andOn(@NonNull final Expression on) {
+    public Join<S, T> andOn(@NonNull final Expression on) {
         return new Join<>(mBase, mTarget, mType, mOn != null ? mOn.and(on) : on);
     }
 
+    /**
+     * @deprecated Since v0.9.0, use {@link Join#on(Expression)} instead.
+     */
     @NonNull
     @Deprecated
-    public final Join<S, T> on(@Nullable final String on, @NonNull final Object... args) {
+    public Join<S, T> on(@Nullable final String on, @NonNull final Object... args) {
         return on(on, bindValues(args));
     }
 
+    /**
+     * @deprecated Since v0.9.0, use {@link Join#on(Expression)} instead.
+     */
     @NonNull
     @Deprecated
-    public final Join<S, T> on(@Nullable final String on, @NonNull final String... args) {
+    public Join<S, T> on(@Nullable final String on, @NonNull final String... args) {
         return new Join<>(mBase, mTarget, mType, on != null ? Expression.raw(on, args) : null);
     }
 
+    /**
+     * @deprecated Since v0.9.0, use {@link Join#andOn(Expression)} instead.
+     */
     @NonNull
     @Deprecated
-    public final Join<S, T> andOn(@NonNull final String on, @NonNull final Object... args) {
+    public Join<S, T> andOn(@NonNull final String on, @NonNull final Object... args) {
         return andOn(on, bindValues(args));
     }
 
+    /**
+     * @deprecated Since v0.9.0, use {@link Join#andOn(Expression)} instead.
+     */
     @NonNull
     @Deprecated
-    public final Join<S, T> andOn(@NonNull final String on, @NonNull final String... args) {
+    public Join<S, T> andOn(@NonNull final String on, @NonNull final String... args) {
         return andOn(Expression.raw(on, args));
     }
 
     @NonNull
-    public final <T2> Join<S, T2> join(final Class<T2> target) {
+    public <T2> Join<S, T2> join(final Class<T2> target) {
         return join(Table.forClass(target));
     }
 
     @NonNull
-    public final <T2> Join<S, T2> join(final Table<T2> target) {
+    public <T2> Join<S, T2> join(final Table<T2> target) {
         return new Join<>(this, target, null, null);
     }
 
     @NonNull
-    final Pair<String, String[]> buildSql(@NonNull final AbstractDao dao) {
+    Pair<String, String[]> buildSql(@NonNull final AbstractDao dao) {
         // build join if we haven't built it already
         if (mSqlJoin == null) {
             final Pair<String, String[]> base = mBase != null ? mBase.buildSql(dao) : Pair.create("", (String[]) null);
