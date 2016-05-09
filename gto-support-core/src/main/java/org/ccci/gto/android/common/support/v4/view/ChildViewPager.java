@@ -73,6 +73,7 @@ public class ChildViewPager extends ViewPager {
     }
 
     @Override
+    @SuppressWarnings("checkstyle:RightCurly")
     public boolean onTouchEvent(final MotionEvent ev) {
         // attempt to determine focus
         if (this.intercept && !this.focusDetermined) {

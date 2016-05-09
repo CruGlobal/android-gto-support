@@ -1,10 +1,5 @@
 package org.ccci.gto.android.common.widget;
 
-import static android.view.View.MeasureSpec.AT_MOST;
-import static android.view.View.MeasureSpec.EXACTLY;
-import static android.view.View.MeasureSpec.UNSPECIFIED;
-import static android.view.View.MeasureSpec.makeMeasureSpec;
-
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -13,6 +8,11 @@ import android.util.AttributeSet;
 import android.widget.FrameLayout;
 
 import org.ccci.gto.android.common.R;
+
+import static android.view.View.MeasureSpec.AT_MOST;
+import static android.view.View.MeasureSpec.EXACTLY;
+import static android.view.View.MeasureSpec.UNSPECIFIED;
+import static android.view.View.MeasureSpec.makeMeasureSpec;
 
 public class RatioLayout extends FrameLayout {
     private float mAspectRatio = 0.0f;
@@ -50,6 +50,7 @@ public class RatioLayout extends FrameLayout {
     }
 
     @Override
+    @SuppressWarnings("checkstyle:RightCurly")
     protected void onMeasure(final int widthMeasureSpec, final int heightMeasureSpec) {
         if (mAspectRatio > 0.0f) {
             // get the measurement spec components
