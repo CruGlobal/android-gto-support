@@ -11,7 +11,7 @@ buildscript {
 
 // define dependency versions for this project
 ext.deps = [
-        androidSupport       : '23.2.1',
+        androidSupport       : '23.3.0',
         androidTestingSupport: '0.5',
         gson                 : '2.6.1',
         guava                : '19.0',
