@@ -17,6 +17,13 @@ public class AccountManagerCompat {
         }
     }
 
+    /**
+     * MANAGE_ACCOUNTS permission is needed for API levels 9-21.
+     * AUTHENTICATE_ACCOUNTS permission is needed for API level 22.
+     *
+     * @param manager The AccountManager
+     * @param account the account being removed
+     */
     @RequiresPermission(allOf = {
             "android.permission.AUTHENTICATE_ACCOUNTS",
             "android.permission.MANAGE_ACCOUNTS"
