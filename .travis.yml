@@ -55,7 +55,7 @@ script:
   - ./gradlew connectedAndroidTest -PdisablePreDex --continue --stacktrace
 
 after_failure:
-  - cat /home/travis/build/CruGlobal/android-gto-support/*/build/outputs/lint-results.xml
+  - cat /home/travis/build/CruGlobal/android-gto-support/*/build/outputs/lint-results-*.xml
 
 before_deploy:
   - echo gcxMavenRepositoryUsername=$DEPLOY_USERNAME >> $HOME/.gradle/gradle.properties
