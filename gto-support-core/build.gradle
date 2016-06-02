@@ -9,4 +9,5 @@ dependencies {
 
     testCompile 'junit:junit:4.12'
     testCompile 'com.google.guava:guava:' + deps.guava
+    androidTestCompile 'org.hamcrest:hamcrest-library:1.3'
 }
