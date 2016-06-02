@@ -63,7 +63,7 @@ public class AccountManagerCompat {
     static class ImmediateAccountManagerFuture<V> implements AccountManagerFuture<V> {
         private final V mValue;
 
-        public ImmediateAccountManagerFuture(V value) {
+        ImmediateAccountManagerFuture(final V value) {
             mValue = value;
         }
 
