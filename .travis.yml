@@ -4,8 +4,9 @@ jdk:
   - oraclejdk8
 env:
   global:
+    - GRADLE_OPTS="-Xmx2048m"
     # wait up to 10 minutes for adb to connect to emulator
-    - ADB_INSTALL_TIMEOUT=10
+    - ADB_INSTALL_TIMEOUT=20
     - DEPLOY_USERNAME=travis-android-gto-support
     - secure: "hZZ5kMqY/ZLCpsKX25SUni57Pz2r2P2zlmM6Tg1WNLfhNty4jqn9WIcGtjfuXTdqMcB4lLvQ6hnqodAoxQZmuk/8sTQjtckwXyY3c1D7GQWwB3wdtsV8kPDc9O9OOcNNc96hTtMHsBNI4WxE4GxqtB1QICGbnH0p+JZcFdX4n5o="
   matrix:
