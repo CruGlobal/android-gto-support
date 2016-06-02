@@ -35,12 +35,12 @@ public class AccountManagerCompatTest {
         assertThat(Arrays.asList(accountManager.getAccountsByType(ACCOUNT_TYPE)), hasItems(ACCOUNT_1, ACCOUNT_2));
 
         // delete 1 of the accounts
-        AccountManagerCompat.removeAccountExplicitly(accountManager, ACCOUNT_1);
+        AccountManagerCompat.removeAccountExplicitly(accountManager, ACCOUNT_1).getResult();
         assertThat(Arrays.asList(accountManager.getAccountsByType(ACCOUNT_TYPE)),
                    allOf(not(hasItem(ACCOUNT_1)), hasItem(ACCOUNT_2)));
 
         // delete remaining account
-        AccountManagerCompat.removeAccountExplicitly(accountManager, ACCOUNT_2);
+        AccountManagerCompat.removeAccountExplicitly(accountManager, ACCOUNT_2).getResult();
         assertThat(Arrays.asList(accountManager.getAccountsByType(ACCOUNT_TYPE)), is(empty()));
     }
 }

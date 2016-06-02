@@ -2,10 +2,13 @@ package org.ccci.gto.android.common.accounts;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
+import android.accounts.AccountManagerFuture;
 import android.annotation.TargetApi;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresPermission;
+
+import java.util.concurrent.TimeUnit;
 
 public class AccountManagerCompat {
     private static final Compat COMPAT;
@@ -28,19 +31,22 @@ public class AccountManagerCompat {
             "android.permission.AUTHENTICATE_ACCOUNTS",
             "android.permission.MANAGE_ACCOUNTS"
     }, conditional = true)
-    public static void removeAccountExplicitly(@NonNull final AccountManager manager, @NonNull final Account account) {
-        COMPAT.removeAccountExplicitly(manager, account);
+    public static AccountManagerFuture<Boolean> removeAccountExplicitly(@NonNull final AccountManager manager,
+                                                                        @NonNull final Account account) {
+        return COMPAT.removeAccountExplicitly(manager, account);
     }
 
     interface Compat {
-        void removeAccountExplicitly(@NonNull AccountManager manager, @NonNull Account account);
+        AccountManagerFuture<Boolean> removeAccountExplicitly(@NonNull AccountManager manager,
+                                                              @NonNull Account account);
     }
 
     static class GingerbreadCompat implements Compat {
         @Override
         @RequiresPermission(value = "android.permission.MANAGE_ACCOUNTS")
-        public void removeAccountExplicitly(@NonNull final AccountManager manager, @NonNull final Account account) {
-            manager.removeAccount(account, null, null);
+        public AccountManagerFuture<Boolean> removeAccountExplicitly(@NonNull final AccountManager manager,
+                                                                     @NonNull final Account account) {
+            return manager.removeAccount(account, null, null);
         }
     }
 
@@ -48,8 +54,42 @@ public class AccountManagerCompat {
     static class LollipopMR1Compat extends GingerbreadCompat {
         @Override
         @RequiresPermission(value = "android.permission.AUTHENTICATE_ACCOUNTS", conditional = true)
-        public void removeAccountExplicitly(@NonNull final AccountManager manager, @NonNull final Account account) {
-            manager.removeAccountExplicitly(account);
+        public AccountManagerFuture<Boolean> removeAccountExplicitly(@NonNull final AccountManager manager,
+                                                                     @NonNull final Account account) {
+            return new ImmediateAccountManagerFuture<>(manager.removeAccountExplicitly(account));
+        }
+    }
+
+    static class ImmediateAccountManagerFuture<V> implements AccountManagerFuture<V> {
+        private final V mValue;
+
+        public ImmediateAccountManagerFuture(V value) {
+            mValue = value;
+        }
+
+        @Override
+        public boolean cancel(final boolean mayInterruptIfRunning) {
+            return false;
+        }
+
+        @Override
+        public boolean isCancelled() {
+            return false;
+        }
+
+        @Override
+        public boolean isDone() {
+            return true;
+        }
+
+        @Override
+        public V getResult() {
+            return mValue;
+        }
+
+        @Override
+        public V getResult(long timeout, TimeUnit unit) {
+            return mValue;
         }
     }
 }
