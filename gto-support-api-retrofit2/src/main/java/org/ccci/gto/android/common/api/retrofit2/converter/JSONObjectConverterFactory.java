@@ -1,7 +1,5 @@
 package org.ccci.gto.android.common.api.retrofit2.converter;
 
-import android.support.annotation.NonNull;
-
 import org.ccci.gto.android.common.api.retrofit2.converter.JSONObjectConverters.JSONArrayResponseBodyConverter;
 import org.ccci.gto.android.common.api.retrofit2.converter.JSONObjectConverters.JSONObjectRequestBodyConverter;
 import org.ccci.gto.android.common.api.retrofit2.converter.JSONObjectConverters.JSONObjectResponseBodyConverter;
@@ -16,13 +14,8 @@ import okhttp3.ResponseBody;
 import retrofit2.Converter;
 import retrofit2.Retrofit;
 
-public class JSONObjectConverterFactory extends Converter.Factory {
-    @NonNull
-    public static JSONObjectConverterFactory create() {
-        return new JSONObjectConverterFactory();
-    }
-
-    private JSONObjectConverterFactory() {}
+public final class JSONObjectConverterFactory extends Converter.Factory {
+    public JSONObjectConverterFactory() {}
 
     @Override
     public Converter<?, RequestBody> requestBodyConverter(Type type, Annotation[] parameterAnnotations,
