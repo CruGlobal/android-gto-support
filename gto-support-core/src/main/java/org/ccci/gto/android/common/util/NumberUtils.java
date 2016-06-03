@@ -14,4 +14,16 @@ public class NumberUtils {
 
         return defaultValue;
     }
+
+    @Nullable
+    public static Long toLong(@Nullable final String raw, @Nullable final Long defaultValue) {
+        if (raw != null) {
+            try {
+                return Long.valueOf(raw);
+            } catch (final NumberFormatException ignored) {
+            }
+        }
+
+        return defaultValue;
+    }
 }
