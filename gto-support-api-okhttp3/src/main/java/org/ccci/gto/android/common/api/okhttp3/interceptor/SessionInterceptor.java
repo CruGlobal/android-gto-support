@@ -107,7 +107,7 @@ public abstract class SessionInterceptor<S extends Session> implements Intercept
         return null;
     }
 
-    private void saveSession(@NonNull final S session) {
+    protected final void saveSession(@NonNull final S session) {
         final SharedPreferences.Editor prefs = this.getPrefs().edit();
         session.save(prefs);
 
