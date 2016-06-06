@@ -2,6 +2,7 @@ package org.ccci.gto.android.common.api.okhttp3.interceptor;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
@@ -57,9 +58,15 @@ public abstract class SessionInterceptor<S extends Session> implements Intercept
             throw new InvalidSessionApiException();
         }
 
-        // process request
-        final Response response = chain.proceed(attachSession(chain.request(), session));
+        // process request & response
+        return processResponse(chain.proceed(attachSession(chain.request(), session)), session);
+    }
 
+    @NonNull
+    protected abstract Request attachSession(@NonNull Request request, @NonNull S session);
+
+    @CallSuper
+    protected Response processResponse(@NonNull final Response response, @NonNull S session) throws IOException {
         // make sure the response is valid
         if (isSessionInvalid(response)) {
             // reset the session
@@ -74,9 +81,6 @@ public abstract class SessionInterceptor<S extends Session> implements Intercept
 
         return response;
     }
-
-    @NonNull
-    protected abstract Request attachSession(@NonNull Request request, @NonNull S session);
 
     protected boolean isSessionInvalid(@NonNull final Response response) throws IOException {
         return false;
