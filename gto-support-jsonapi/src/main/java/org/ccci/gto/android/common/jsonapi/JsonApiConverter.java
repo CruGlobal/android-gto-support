@@ -16,8 +16,10 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import static org.ccci.gto.android.common.jsonapi.model.JsonApiObject.JSON_DATA;
 import static org.ccci.gto.android.common.jsonapi.model.JsonApiObject.JSON_DATA_ATTRIBUTES;
@@ -25,6 +27,7 @@ import static org.ccci.gto.android.common.jsonapi.model.JsonApiObject.JSON_DATA_
 import static org.ccci.gto.android.common.jsonapi.model.JsonApiObject.JSON_DATA_TYPE;
 
 public class JsonApiConverter {
+    private final Set<Class<?>> mSupportedClasses = new HashSet<>();
     private final Map<String, Class<?>> mTypes = new HashMap<>();
     private final Map<Class<?>, List<Field>> mFields = new HashMap<>();
 
@@ -43,9 +46,14 @@ public class JsonApiConverter {
             }
 
             // store this type
+            mSupportedClasses.add(c);
             mTypes.put(type, c);
             mFields.put(c, getFields(c));
         }
+    }
+
+    public boolean supports(@NonNull final Class<?> c) {
+        return mSupportedClasses.contains(c);
     }
 
     @NonNull

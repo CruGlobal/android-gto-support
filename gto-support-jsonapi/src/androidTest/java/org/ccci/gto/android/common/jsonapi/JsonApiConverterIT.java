@@ -32,6 +32,15 @@ public class JsonApiConverterIT {
     }
 
     @Test
+    public void verifySupports() throws Exception {
+        final JsonApiConverter converter = new JsonApiConverter(ModelSimple.class, ModelAttributes.class);
+
+        assertThat(converter.supports(ModelSimple.class), is(true));
+        assertThat(converter.supports(ModelAttributes.class), is(true));
+        assertThat(converter.supports(Object.class), is(false));
+    }
+
+    @Test
     public void verifyToJsonSimple() throws Exception {
         final JsonApiConverter converter = new JsonApiConverter(ModelSimple.class);
 

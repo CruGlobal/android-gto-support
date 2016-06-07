@@ -45,7 +45,7 @@ public class JsonApiConverterFactory extends Converter.Factory {
             return new JsonApiObjectResponseBodyConverter<>(dataType);
         } else if (List.class.isAssignableFrom(c)) {
             // TODO
-        } else if (true /* && mConverter.supports(c) */) {
+        } else if (mConverter.supports(c)) {
             // TODO
         }
 
