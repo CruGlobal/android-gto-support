@@ -50,6 +50,9 @@ subprojects {
                 testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
             }
 
+            adbOptions {
+               timeOutInMs 60000
+            }
             compileOptions {
                 sourceCompatibility JavaVersion.VERSION_1_7
                 targetCompatibility JavaVersion.VERSION_1_7
