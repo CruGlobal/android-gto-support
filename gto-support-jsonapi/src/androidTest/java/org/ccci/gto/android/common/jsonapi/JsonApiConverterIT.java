@@ -10,6 +10,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import static net.javacrumbs.jsonunit.JsonMatchers.jsonNodeAbsent;
+import static net.javacrumbs.jsonunit.JsonMatchers.jsonNodePresent;
 import static net.javacrumbs.jsonunit.JsonMatchers.jsonPartEquals;
 import static net.javacrumbs.jsonunit.fluent.JsonFluentAssert.assertThatJson;
 import static org.hamcrest.CoreMatchers.allOf;
@@ -46,6 +47,15 @@ public class JsonApiConverterIT {
         assertThat(json2, jsonPartEquals("data[0].id", obj0.mId));
         assertThat(json2, jsonPartEquals("data[1].type", ModelSimple.TYPE));
         assertThat(json2, jsonPartEquals("data[1].id", obj1.mId));
+    }
+
+    @Test
+    public void verifyToJsonSingleResourceNull() throws Exception {
+        final JsonApiConverter converter = new JsonApiConverter();
+
+        final String json = converter.toJson(JsonApiObject.single(null));
+        assertThat(json, jsonNodePresent("data"));
+        assertThatJson(json).node("data").isEqualTo(null);
     }
 
     @Test

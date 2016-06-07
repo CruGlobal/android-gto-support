@@ -19,6 +19,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static org.ccci.gto.android.common.jsonapi.model.JsonApiObject.JSON_DATA;
 import static org.ccci.gto.android.common.jsonapi.model.JsonApiObject.JSON_DATA_ATTRIBUTES;
 import static org.ccci.gto.android.common.jsonapi.model.JsonApiObject.JSON_DATA_ID;
 import static org.ccci.gto.android.common.jsonapi.model.JsonApiObject.JSON_DATA_TYPE;
@@ -52,13 +53,18 @@ public class JsonApiConverter {
         try {
             final JSONObject json = new JSONObject();
             if (obj.isSingle()) {
-                json.put(JsonApiObject.JSON_DATA, toJson(obj.getDataSingle()));
+                final Object resource = obj.getDataSingle();
+                if (resource == null) {
+                    json.put(JSON_DATA, JSONObject.NULL);
+                } else {
+                    json.put(JSON_DATA, toJson(resource));
+                }
             } else {
                 final JSONArray dataArr = new JSONArray();
                 for (final Object resource : obj.getData()) {
                     dataArr.put(toJson(resource));
                 }
-                json.put(JsonApiObject.JSON_DATA, dataArr);
+                json.put(JSON_DATA, dataArr);
             }
 
             return json.toString();
