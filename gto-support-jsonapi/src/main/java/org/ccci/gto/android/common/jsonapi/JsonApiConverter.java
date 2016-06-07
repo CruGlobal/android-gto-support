@@ -3,6 +3,7 @@ package org.ccci.gto.android.common.jsonapi;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import org.ccci.gto.android.common.jsonapi.annotation.JsonApiAttribute;
 import org.ccci.gto.android.common.jsonapi.annotation.JsonApiId;
 import org.ccci.gto.android.common.jsonapi.annotation.JsonApiIgnore;
 import org.ccci.gto.android.common.jsonapi.annotation.JsonApiType;
@@ -17,6 +18,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static org.ccci.gto.android.common.jsonapi.model.JsonApiObject.JSON_DATA_ATTRIBUTES;
+import static org.ccci.gto.android.common.jsonapi.model.JsonApiObject.JSON_DATA_ID;
+import static org.ccci.gto.android.common.jsonapi.model.JsonApiObject.JSON_DATA_TYPE;
 
 public class JsonApiConverter {
     private final Map<String, Class<?>> mTypes = new HashMap<>();
@@ -75,12 +80,14 @@ public class JsonApiConverter {
 
         // create base object
         final JSONObject json = new JSONObject();
-        json.put(JsonApiObject.JSON_DATA_TYPE, type);
         final JSONObject attributes = new JSONObject();
-        json.put(JsonApiObject.JSON_DATA_ATTRIBUTES, attributes);
+        json.put(JSON_DATA_TYPE, type);
+        json.put(JSON_DATA_ATTRIBUTES, attributes);
 
         // attach all fields
         for (final Field field : mFields.get(clazz)) {
+            final JsonApiAttribute attr = field.getAnnotation(JsonApiAttribute.class);
+
             Object value;
             try {
                 value = field.get(resource);
@@ -95,7 +102,12 @@ public class JsonApiConverter {
 
             // handle id fields
             if (field.getAnnotation(JsonApiId.class) != null) {
-                json.put(JsonApiObject.JSON_DATA_ID, value);
+                json.put(JSON_DATA_ID, value);
+            }
+            // everything else is a regular attribute
+            else {
+                final String name = attr != null && attr.name().length() > 0 ? attr.name() : field.getName();
+                attributes.put(name, value);
             }
         }
 
