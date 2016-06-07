@@ -74,6 +74,7 @@ public class JsonApiConverter {
     }
 
     @NonNull
+    @SuppressWarnings("checkstyle:RightCurly")
     public <T> JsonApiObject<T> fromJson(@NonNull final String json, @NonNull final Class<T> clazz)
             throws JSONException {
         final JSONObject jsonObject = new JSONObject(json);
@@ -153,6 +154,7 @@ public class JsonApiConverter {
     }
 
     @Nullable
+    @SuppressWarnings("checkstyle:RightCurly")
     private Object fromJson(@Nullable final JSONObject json) {
         if (json == null) {
             return null;
