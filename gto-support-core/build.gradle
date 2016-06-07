@@ -7,7 +7,7 @@ android {
 dependencies {
     compile 'com.android.support:support-v4:' + deps.androidSupport
 
-    testCompile 'junit:junit:4.12'
+    testCompile 'junit:junit:' + deps.junit
     testCompile 'com.google.guava:guava:' + deps.guava
     androidTestCompile 'org.hamcrest:hamcrest-library:1.3'
 }
