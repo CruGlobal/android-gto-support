@@ -14,6 +14,9 @@ import static net.javacrumbs.jsonunit.JsonMatchers.jsonNodePresent;
 import static net.javacrumbs.jsonunit.JsonMatchers.jsonPartEquals;
 import static net.javacrumbs.jsonunit.fluent.JsonFluentAssert.assertThatJson;
 import static org.hamcrest.CoreMatchers.allOf;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
 
 @RunWith(AndroidJUnit4.class)
@@ -32,15 +35,13 @@ public class JsonApiConverterIT {
     public void verifyToJsonSimple() throws Exception {
         final JsonApiConverter converter = new JsonApiConverter(ModelSimple.class);
 
-        final ModelSimple obj0 = new ModelSimple();
-        obj0.mId = 99;
+        final ModelSimple obj0 = new ModelSimple(99);
         final String json = converter.toJson(JsonApiObject.single(obj0));
         assertThatJson(json).node("data").isObject();
         assertThat(json, jsonPartEquals("data.type", ModelSimple.TYPE));
         assertThat(json, jsonPartEquals("data.id", obj0.mId));
 
-        final ModelSimple obj1 = new ModelSimple();
-        obj1.mId = 42;
+        final ModelSimple obj1 = new ModelSimple(42);
         final String json2 = converter.toJson(JsonApiObject.of(obj0, obj1));
         assertThatJson(json2).node("data").isArray();
         assertThat(json2, jsonPartEquals("data[0].type", ModelSimple.TYPE));
@@ -76,6 +77,45 @@ public class JsonApiConverterIT {
 
     }
 
+    @Test
+    public void verifyFromJsonSimple() throws Exception {
+        final JsonApiConverter converter = new JsonApiConverter(ModelSimple.class);
+
+        final ModelSimple source = new ModelSimple(99);
+        final JsonApiObject<ModelSimple> output =
+                converter.fromJson(converter.toJson(JsonApiObject.single(source)), ModelSimple.class);
+        assertThat(output.isSingle(), is(true));
+        assertThat(output.getDataSingle(), is(not(nullValue())));
+        assertThat(output.getDataSingle().mId, is(99));
+    }
+
+    @Test
+    public void verifyFromJsonAttributes() throws Exception {
+        final JsonApiConverter converter = new JsonApiConverter(ModelAttributes.class);
+
+        final ModelAttributes source = new ModelAttributes();
+        source.mId = 19;
+        source.transientAttr = "tneisnart";
+        source.attrStr1 = "1rtSrtta";
+        source.attrInt1 = 2;
+        source.attrBool1 = false;
+        source.attrAnn1 = "1nnArtta";
+        source.ann2 = "2nnArtta";
+        final JsonApiObject<ModelAttributes> output =
+                converter.fromJson(converter.toJson(JsonApiObject.single(source)), ModelAttributes.class);
+        assertThat(output.isSingle(), is(true));
+        final ModelAttributes target = output.getDataSingle();
+        assertThat(target, is(not(nullValue())));
+        assertThat(target.mId, is(source.mId));
+        assertThat(target.transientAttr, is("transient"));
+        assertThat(target.finalAttr, is("final"));
+        assertThat(target.attrStr1, is(source.attrStr1));
+        assertThat(target.attrInt1, is(source.attrInt1));
+        assertThat(target.attrBool1, is(source.attrBool1));
+        assertThat(target.attrAnn1, is(source.attrAnn1));
+        assertThat(target.ann2, is(source.ann2));
+    }
+
     public static final class ModelNoType {}
 
     @JsonApiType("type")
@@ -90,6 +130,12 @@ public class JsonApiConverterIT {
 
         @JsonApiId
         int mId;
+
+        public ModelSimple() {}
+
+        public ModelSimple(final int id) {
+            mId = id;
+        }
     }
 
     @JsonApiType(ModelAttributes.TYPE)

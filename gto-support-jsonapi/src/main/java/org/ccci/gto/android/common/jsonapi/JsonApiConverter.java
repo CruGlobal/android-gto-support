@@ -73,6 +73,37 @@ public class JsonApiConverter {
         }
     }
 
+    @NonNull
+    public <T> JsonApiObject<T> fromJson(@NonNull final String json, @NonNull final Class<T> clazz)
+            throws JSONException {
+        final JSONObject jsonObject = new JSONObject(json);
+        final JsonApiObject<T> output;
+        if (jsonObject.has(JSON_DATA)) {
+            // {data: []}
+            if (jsonObject.optJSONArray(JSON_DATA) != null) {
+                final JSONArray data = jsonObject.optJSONArray(JSON_DATA);
+                output = JsonApiObject.of();
+                for (int i = 0; i < data.length(); i++) {
+                    final Object resource = fromJson(data.optJSONObject(i));
+                    if (clazz.isInstance(resource)) {
+                        output.addData(clazz.cast(resource));
+                    }
+                }
+            }
+            // {data: null} or {data: {}}
+            else {
+                output = JsonApiObject.single(null);
+                final Object resource = fromJson(jsonObject.optJSONObject(JSON_DATA));
+                if (clazz.isInstance(resource)) {
+                    output.setData(clazz.cast(resource));
+                }
+            }
+        } else {
+            throw new UnsupportedOperationException();
+        }
+        return output;
+    }
+
     @Nullable
     @SuppressWarnings("checkstyle:RightCurly")
     private JSONObject toJson(@Nullable final Object resource) throws JSONException {
@@ -122,6 +153,48 @@ public class JsonApiConverter {
     }
 
     @Nullable
+    private Object fromJson(@Nullable final JSONObject json) {
+        if (json == null) {
+            return null;
+        }
+
+        // determine the type
+        final Class<?> type = mTypes.get(json.optString(JSON_DATA_TYPE));
+        if (type == null) {
+            return null;
+        }
+
+        // create an instance of this type
+        final Object instance;
+        try {
+            instance = type.newInstance();
+        } catch (final Exception e) {
+            return null;
+        }
+
+        // populate fields
+        final JSONObject attributes = json.optJSONObject(JSON_DATA_ATTRIBUTES);
+        for (final Field field : mFields.get(type)) {
+            try {
+                // handle id fields
+                if (field.getAnnotation(JsonApiId.class) != null) {
+                    setField(instance, field, json, JSON_DATA_ID);
+                }
+                // anything else is an attribute
+                else {
+                    final JsonApiAttribute attr = field.getAnnotation(JsonApiAttribute.class);
+                    final String name = attr != null && attr.name().length() > 0 ? attr.name() : field.getName();
+                    setField(instance, field, attributes, name);
+                }
+            } catch (final JSONException | IllegalAccessException ignored) {
+            }
+        }
+
+        // return the object
+        return instance;
+    }
+
+    @Nullable
     private String getType(@NonNull final Class<?> clazz) {
         final JsonApiType type = clazz.getAnnotation(JsonApiType.class);
         return type != null ? type.value() : null;
@@ -153,5 +226,21 @@ public class JsonApiConverter {
         }
 
         return fields;
+    }
+
+    private void setField(@NonNull final Object obj, @NonNull final Field field, @NonNull final JSONObject json,
+                          @NonNull final String name) throws JSONException, IllegalAccessException {
+        final Class<?> fieldType = field.getType();
+        if (fieldType.isAssignableFrom(String.class)) {
+            field.set(obj, json.getString(name));
+        } else if (fieldType.isAssignableFrom(Double.class)) {
+            field.set(obj, json.getDouble(name));
+        } else if (fieldType.isAssignableFrom(Integer.class) || fieldType.isAssignableFrom(int.class)) {
+            field.set(obj, json.getInt(name));
+        } else if (fieldType.isAssignableFrom(Long.class) || fieldType.isAssignableFrom(long.class)) {
+            field.set(obj, json.getLong(name));
+        } else if (fieldType.isAssignableFrom(Boolean.class) || fieldType.isAssignableFrom(boolean.class)) {
+            field.set(obj, json.getBoolean(name));
+        }
     }
 }
