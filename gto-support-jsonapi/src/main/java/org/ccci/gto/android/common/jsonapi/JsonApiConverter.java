@@ -74,6 +74,7 @@ public class JsonApiConverter {
     }
 
     @Nullable
+    @SuppressWarnings("checkstyle:RightCurly")
     private JSONObject toJson(@Nullable final Object resource) throws JSONException {
         if (resource == null) {
             return null;
