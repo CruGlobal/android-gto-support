@@ -7,6 +7,7 @@ import org.ccci.gto.android.common.jsonapi.annotation.JsonApiAttribute;
 import org.ccci.gto.android.common.jsonapi.annotation.JsonApiId;
 import org.ccci.gto.android.common.jsonapi.annotation.JsonApiIgnore;
 import org.ccci.gto.android.common.jsonapi.annotation.JsonApiType;
+import org.ccci.gto.android.common.jsonapi.converter.TypeConverter;
 import org.ccci.gto.android.common.jsonapi.model.JsonApiObject;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -30,6 +31,7 @@ import static org.ccci.gto.android.common.jsonapi.model.JsonApiObject.JSON_DATA_
 public final class JsonApiConverter {
     public static final class Builder {
         private final List<Class<?>> mClasses = new ArrayList<>();
+        private final List<TypeConverter<?>> mConverters = new ArrayList<>();
 
         @NonNull
         public Builder addClasses(@NonNull final Class<?>... classes) {
@@ -38,16 +40,25 @@ public final class JsonApiConverter {
         }
 
         @NonNull
+        public Builder addConverters(@NonNull final TypeConverter<?>... converters) {
+            mConverters.addAll(Arrays.asList(converters));
+            return this;
+        }
+
+        @NonNull
         public JsonApiConverter build() {
-            return new JsonApiConverter(mClasses);
+            return new JsonApiConverter(mClasses, mConverters);
         }
     }
 
+    private final List<TypeConverter<?>> mConverters = new ArrayList<>();
     private final Set<Class<?>> mSupportedClasses = new HashSet<>();
     private final Map<String, Class<?>> mTypes = new HashMap<>();
     private final Map<Class<?>, List<Field>> mFields = new HashMap<>();
 
-    private JsonApiConverter(@NonNull final List<Class<?>> classes) {
+    private JsonApiConverter(@NonNull final List<Class<?>> classes, @NonNull final List<TypeConverter<?>> converters) {
+        mConverters.addAll(converters);
+
         for (final Class<?> c : classes) {
             // throw an exception if the provided class is not a valid JsonApiType
             final String type = getType(c);
@@ -81,12 +92,12 @@ public final class JsonApiConverter {
                 if (resource == null) {
                     json.put(JSON_DATA, JSONObject.NULL);
                 } else {
-                    json.put(JSON_DATA, toJson(resource));
+                    json.put(JSON_DATA, resourceToJson(resource));
                 }
             } else {
                 final JSONArray dataArr = new JSONArray();
                 for (final Object resource : obj.getData()) {
-                    dataArr.put(toJson(resource));
+                    dataArr.put(resourceToJson(resource));
                 }
                 json.put(JSON_DATA, dataArr);
             }
@@ -131,7 +142,7 @@ public final class JsonApiConverter {
 
     @Nullable
     @SuppressWarnings("checkstyle:RightCurly")
-    private JSONObject toJson(@Nullable final Object resource) throws JSONException {
+    private JSONObject resourceToJson(@Nullable final Object resource) throws JSONException {
         if (resource == null) {
             return null;
         }
@@ -201,16 +212,18 @@ public final class JsonApiConverter {
         // populate fields
         final JSONObject attributes = json.optJSONObject(JSON_DATA_ATTRIBUTES);
         for (final Field field : mFields.get(type)) {
+            final Class<?> fieldType = field.getType();
+
             try {
                 // handle id fields
                 if (field.getAnnotation(JsonApiId.class) != null) {
-                    setField(instance, field, json, JSON_DATA_ID);
+                    field.set(instance, convertFromJSONObject(json, JSON_DATA_ID, fieldType));
                 }
                 // anything else is an attribute
                 else {
                     final JsonApiAttribute attr = field.getAnnotation(JsonApiAttribute.class);
                     final String name = attr != null && attr.name().length() > 0 ? attr.name() : field.getName();
-                    setField(instance, field, attributes, name);
+                    field.set(instance, convertFromJSONObject(attributes, name, fieldType));
                 }
             } catch (final JSONException | IllegalAccessException ignored) {
             }
@@ -238,7 +251,13 @@ public final class JsonApiConverter {
                 if (Modifier.isStatic(modifiers) || Modifier.isTransient(modifiers)) {
                     continue;
                 }
+                // skip ignored fields
                 if (field.getAnnotation(JsonApiIgnore.class) != null) {
+                    continue;
+                }
+                // skip fields we don't support
+                final Class<?> fieldClass = field.getType();
+                if (!isSupportedType(fieldClass) && !supports(fieldClass)) {
                     continue;
                 }
 
@@ -254,19 +273,62 @@ public final class JsonApiConverter {
         return fields;
     }
 
-    private void setField(@NonNull final Object obj, @NonNull final Field field, @NonNull final JSONObject json,
-                          @NonNull final String name) throws JSONException, IllegalAccessException {
-        final Class<?> fieldType = field.getType();
-        if (fieldType.isAssignableFrom(String.class)) {
-            field.set(obj, json.getString(name));
-        } else if (fieldType.isAssignableFrom(Double.class)) {
-            field.set(obj, json.getDouble(name));
-        } else if (fieldType.isAssignableFrom(Integer.class) || fieldType.isAssignableFrom(int.class)) {
-            field.set(obj, json.getInt(name));
-        } else if (fieldType.isAssignableFrom(Long.class) || fieldType.isAssignableFrom(long.class)) {
-            field.set(obj, json.getLong(name));
-        } else if (fieldType.isAssignableFrom(Boolean.class) || fieldType.isAssignableFrom(boolean.class)) {
-            field.set(obj, json.getBoolean(name));
+    private boolean isSupportedType(@NonNull final Class<?> type) {
+        // check configured TypeConverters
+        for (final TypeConverter<?> converter : mConverters) {
+            if (converter.supports(type)) {
+                return true;
+            }
         }
+
+        // is it a native type?
+        return type.isAssignableFrom(boolean.class) || type.isAssignableFrom(double.class) ||
+                type.isAssignableFrom(int.class) || type.isAssignableFrom(long.class) ||
+                type.isAssignableFrom(Boolean.class) || type.isAssignableFrom(Double.class) ||
+                type.isAssignableFrom(Integer.class) || type.isAssignableFrom(Long.class) ||
+                type.isAssignableFrom(String.class);
+    }
+
+    @Nullable
+    private Object convertFromJSONObject(@NonNull final JSONObject json, @NonNull final String name,
+                                         @NonNull final Class<?> type) throws JSONException, IllegalAccessException {
+        // utilize configured TypeConverters first
+        for (final TypeConverter<?> converter : mConverters) {
+            if (converter.supports(type)) {
+                return converter.fromString(json.optString(name, null));
+            }
+        }
+
+        // handle native types
+        if (type.isAssignableFrom(double.class)) {
+            return json.getDouble(name);
+        } else if (type.isAssignableFrom(int.class)) {
+            return json.getInt(name);
+        } else if (type.isAssignableFrom(long.class)) {
+            return json.getLong(name);
+        } else if (type.isAssignableFrom(boolean.class)) {
+            return json.getBoolean(name);
+        } else if (type.isAssignableFrom(Boolean.class) || type.isAssignableFrom(Double.class) ||
+                type.isAssignableFrom(Integer.class) || type.isAssignableFrom(Long.class) ||
+                type.isAssignableFrom(String.class)) {
+            final String value = json.optString(name, null);
+            try {
+                if (type.isAssignableFrom(Boolean.class)) {
+                    return Boolean.valueOf(value);
+                } else if (type.isAssignableFrom(Double.class)) {
+                    return Double.valueOf(value);
+                } else if (type.isAssignableFrom(Integer.class)) {
+                    return Integer.valueOf(value);
+                } else if (type.isAssignableFrom(Long.class)) {
+                    return Long.valueOf(value);
+                } else if (type.isAssignableFrom(String.class)) {
+                    return value;
+                }
+            } catch (final Exception e) {
+                return null;
+            }
+        }
+
+        return null;
     }
 }
