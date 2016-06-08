@@ -108,10 +108,12 @@ public class JsonApiConverterIT {
         assertThatJson(json).node("data").isObject();
         assertThat(json, jsonPartEquals("data.type", ModelParent.TYPE));
         assertThat(json, jsonNodeAbsent("data.attributes.favorite"));
-        assertThatJson(json)
-                .node("data.relationships.favorite.type").isEqualTo(ModelChild.TYPE)
-                .node("data.relationships.favorite.id").isEqualTo(parent.favorite.mId)
-                .node("data.relationships.favorite.attributes").isAbsent();
+        assertThat(json, jsonNodeAbsent("data.attributes.children"));
+        assertThat(json, jsonPartEquals("data.relationships.favorite.type", ModelChild.TYPE));
+        assertThat(json, jsonPartEquals("data.relationships.favorite.id", parent.favorite.mId));
+        assertThat(json, jsonNodeAbsent("data.relationships.favorite.attributes"));
+        assertThatJson(json).node("data.relationships.children").isArray().ofLength(2);
+        assertThatJson(json).node("included").isArray().ofLength(2);
     }
 
     @Test
@@ -199,9 +201,10 @@ public class JsonApiConverterIT {
     public static final class ModelParent extends ModelBase {
         static final String TYPE = "parent";
 
-        ModelChild favorite;
-
         List<ModelChild> children = new ArrayList<>();
+
+        // everyone has a favorite child
+        ModelChild favorite;
     }
 
     @JsonApiType(ModelChild.TYPE)

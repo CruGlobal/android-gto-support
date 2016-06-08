@@ -15,8 +15,11 @@ import org.json.JSONObject;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -81,7 +84,7 @@ public final class JsonApiConverter {
         }
     }
 
-    public boolean supports(@NonNull final Class<?> c) {
+    public boolean supports(@Nullable final Class<?> c) {
         return mSupportedClasses.contains(c);
     }
 
@@ -167,10 +170,12 @@ public final class JsonApiConverter {
         final JSONObject relationships = new JSONObject();
         json.put(JSON_DATA_TYPE, type);
 
-        // attach all fields
+        // process all fields
         for (final Field field : mFields.get(clazz)) {
-            // is this a relationship?
             final Class<?> fieldType = field.getType();
+            final Class<?> fieldCollectionType = getFieldCollectionType(field.getGenericType());
+
+            // is this a relationship?
             if (supports(fieldType)) {
                 try {
                     final JSONObject relatedObj = resourceToJson(field.get(resource), related);
@@ -185,6 +190,27 @@ public final class JsonApiConverter {
                     }
                 } catch (final IllegalAccessException ignored) {
                 }
+                continue;
+            } else if (supports(fieldCollectionType)) {
+                final JSONArray objs = new JSONArray();
+                try {
+                    final Collection col = (Collection) field.get(resource);
+                    if (col != null) {
+                        for (final Object obj : col) {
+                            final JSONObject relatedObj = resourceToJson(obj, related);
+                            if (relatedObj != null) {
+                                final String relatedType = relatedObj.optString(JSON_DATA_TYPE, null);
+                                final String relatedId = relatedObj.optString(JSON_DATA_ID, null);
+                                if (relatedType != null && relatedId != null) {
+                                    related.put(new ObjKey(relatedType, relatedId), relatedObj);
+                                    objs.put(new JSONObject(relatedObj, new String[] {JSON_DATA_TYPE, JSON_DATA_ID}));
+                                }
+                            }
+                        }
+                    }
+                } catch (final IllegalAccessException ignored) {
+                }
+                relationships.put(getFieldName(field), objs);
                 continue;
             }
 
@@ -279,17 +305,19 @@ public final class JsonApiConverter {
             for (final Field field : type.getDeclaredFields()) {
                 final int modifiers = field.getModifiers();
 
-                // skip static and transient fields
-                if (Modifier.isStatic(modifiers) || Modifier.isTransient(modifiers)) {
-                    continue;
-                }
                 // skip ignored fields
                 if (field.getAnnotation(JsonApiIgnore.class) != null) {
                     continue;
                 }
+                // skip static and transient fields
+                if (Modifier.isStatic(modifiers) || Modifier.isTransient(modifiers)) {
+                    continue;
+                }
+
                 // skip fields we don't support
-                final Class<?> fieldClass = field.getType();
-                if (!isSupportedType(fieldClass) && !supports(fieldClass)) {
+                final Class<?> fieldType = field.getType();
+                final Class<?> fieldCollectionType = getFieldCollectionType(field.getGenericType());
+                if (!isSupportedType(fieldType) && !supports(fieldType) && !supports(fieldCollectionType)) {
                     continue;
                 }
 
@@ -303,6 +331,16 @@ public final class JsonApiConverter {
         }
 
         return fields;
+    }
+
+    @Nullable
+    private Class<?> getFieldCollectionType(@NonNull final Type fieldType) {
+        if (Collection.class.isAssignableFrom(JsonApiUtils.getRawType(fieldType))) {
+            if (fieldType instanceof ParameterizedType) {
+                return JsonApiUtils.getRawType(((ParameterizedType) fieldType).getActualTypeArguments()[0]);
+            }
+        }
+        return null;
     }
 
     @NonNull
