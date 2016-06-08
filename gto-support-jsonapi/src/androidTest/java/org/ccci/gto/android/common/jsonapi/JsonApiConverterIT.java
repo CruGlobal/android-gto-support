@@ -9,6 +9,9 @@ import org.ccci.gto.android.common.jsonapi.model.JsonApiObject;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static net.javacrumbs.jsonunit.JsonMatchers.jsonNodeAbsent;
 import static net.javacrumbs.jsonunit.JsonMatchers.jsonNodePresent;
 import static net.javacrumbs.jsonunit.JsonMatchers.jsonPartEquals;
@@ -85,6 +88,30 @@ public class JsonApiConverterIT {
         assertThat(json, allOf(jsonNodeAbsent("data.attributes.transientAttr"),
                                jsonNodeAbsent("data.attributes.staticAttr")));
 
+    }
+
+    @Test
+    public void verifyToJsonRelationships() throws Exception {
+        final JsonApiConverter converter =
+                new JsonApiConverter.Builder().addClasses(ModelParent.class, ModelChild.class).build();
+
+        final ModelParent parent = new ModelParent();
+        parent.mId = 1;
+        parent.favorite = new ModelChild();
+        parent.favorite.mId = 11;
+        parent.children.add(parent.favorite);
+        final ModelChild child2 = new ModelChild();
+        child2.mId = 20;
+        parent.children.add(child2);
+
+        final String json = converter.toJson(JsonApiObject.single(parent));
+        assertThatJson(json).node("data").isObject();
+        assertThat(json, jsonPartEquals("data.type", ModelParent.TYPE));
+        assertThat(json, jsonNodeAbsent("data.attributes.favorite"));
+        assertThatJson(json)
+                .node("data.relationships.favorite.type").isEqualTo(ModelChild.TYPE)
+                .node("data.relationships.favorite.id").isEqualTo(parent.favorite.mId)
+                .node("data.relationships.favorite.attributes").isAbsent();
     }
 
     @Test
@@ -166,5 +193,19 @@ public class JsonApiConverterIT {
         String attrAnn1 = "attrAnn1";
         @JsonApiAttribute(name = "attrAnn2")
         String ann2 = "attrAnn2";
+    }
+
+    @JsonApiType(ModelParent.TYPE)
+    public static final class ModelParent extends ModelBase {
+        static final String TYPE = "parent";
+
+        ModelChild favorite;
+
+        List<ModelChild> children = new ArrayList<>();
+    }
+
+    @JsonApiType(ModelChild.TYPE)
+    public static final class ModelChild extends ModelBase {
+        static final String TYPE = "child";
     }
 }

@@ -26,7 +26,9 @@ import java.util.Set;
 import static org.ccci.gto.android.common.jsonapi.model.JsonApiObject.JSON_DATA;
 import static org.ccci.gto.android.common.jsonapi.model.JsonApiObject.JSON_DATA_ATTRIBUTES;
 import static org.ccci.gto.android.common.jsonapi.model.JsonApiObject.JSON_DATA_ID;
+import static org.ccci.gto.android.common.jsonapi.model.JsonApiObject.JSON_DATA_RELATIONSHIPS;
 import static org.ccci.gto.android.common.jsonapi.model.JsonApiObject.JSON_DATA_TYPE;
+import static org.ccci.gto.android.common.jsonapi.model.JsonApiObject.JSON_INCLUDED;
 
 public final class JsonApiConverter {
     public static final class Builder {
@@ -58,6 +60,7 @@ public final class JsonApiConverter {
 
     private JsonApiConverter(@NonNull final List<Class<?>> classes, @NonNull final List<TypeConverter<?>> converters) {
         mConverters.addAll(converters);
+        mSupportedClasses.addAll(classes);
 
         for (final Class<?> c : classes) {
             // throw an exception if the provided class is not a valid JsonApiType
@@ -73,7 +76,6 @@ public final class JsonApiConverter {
             }
 
             // store this type
-            mSupportedClasses.add(c);
             mTypes.put(type, c);
             mFields.put(c, getFields(c));
         }
@@ -87,19 +89,25 @@ public final class JsonApiConverter {
     public String toJson(@NonNull final JsonApiObject<?> obj) {
         try {
             final JSONObject json = new JSONObject();
+            final Map<ObjKey, JSONObject> related = new HashMap<>();
             if (obj.isSingle()) {
                 final Object resource = obj.getDataSingle();
                 if (resource == null) {
                     json.put(JSON_DATA, JSONObject.NULL);
                 } else {
-                    json.put(JSON_DATA, resourceToJson(resource));
+                    json.put(JSON_DATA, resourceToJson(resource, related));
                 }
             } else {
                 final JSONArray dataArr = new JSONArray();
                 for (final Object resource : obj.getData()) {
-                    dataArr.put(resourceToJson(resource));
+                    dataArr.put(resourceToJson(resource, related));
                 }
                 json.put(JSON_DATA, dataArr);
+            }
+
+            // include related objects if there are any
+            if (related.size() > 0) {
+                json.put(JSON_INCLUDED, new JSONArray(related.values()));
             }
 
             return json.toString();
@@ -142,7 +150,8 @@ public final class JsonApiConverter {
 
     @Nullable
     @SuppressWarnings("checkstyle:RightCurly")
-    private JSONObject resourceToJson(@Nullable final Object resource) throws JSONException {
+    private JSONObject resourceToJson(@Nullable final Object resource, @NonNull final Map<ObjKey, JSONObject> related)
+            throws JSONException {
         if (resource == null) {
             return null;
         }
@@ -155,12 +164,29 @@ public final class JsonApiConverter {
         // create base object
         final JSONObject json = new JSONObject();
         final JSONObject attributes = new JSONObject();
+        final JSONObject relationships = new JSONObject();
         json.put(JSON_DATA_TYPE, type);
-        json.put(JSON_DATA_ATTRIBUTES, attributes);
 
         // attach all fields
         for (final Field field : mFields.get(clazz)) {
-            final JsonApiAttribute attr = field.getAnnotation(JsonApiAttribute.class);
+            // is this a relationship?
+            final Class<?> fieldType = field.getType();
+            if (supports(fieldType)) {
+                try {
+                    final JSONObject relatedObj = resourceToJson(field.get(resource), related);
+                    if (relatedObj != null) {
+                        final String relatedType = relatedObj.optString(JSON_DATA_TYPE, null);
+                        final String relatedId = relatedObj.optString(JSON_DATA_ID, null);
+                        if (relatedType != null && relatedId != null) {
+                            related.put(new ObjKey(relatedType, relatedId), relatedObj);
+                            relationships.put(getFieldName(field),
+                                              new JSONObject(relatedObj, new String[] {JSON_DATA_TYPE, JSON_DATA_ID}));
+                        }
+                    }
+                } catch (final IllegalAccessException ignored) {
+                }
+                continue;
+            }
 
             Object value;
             try {
@@ -180,9 +206,17 @@ public final class JsonApiConverter {
             }
             // everything else is a regular attribute
             else {
-                final String name = attr != null && attr.name().length() > 0 ? attr.name() : field.getName();
-                attributes.put(name, value);
+                attributes.put(getFieldName(field), value);
             }
+        }
+
+        // attach attributes
+        if (attributes.length() > 0) {
+            json.put(JSON_DATA_ATTRIBUTES, attributes);
+        }
+        // attach relationships
+        if (relationships.length() > 0) {
+            json.put(JSON_DATA_RELATIONSHIPS, relationships);
         }
 
         return json;
@@ -221,9 +255,7 @@ public final class JsonApiConverter {
                 }
                 // anything else is an attribute
                 else {
-                    final JsonApiAttribute attr = field.getAnnotation(JsonApiAttribute.class);
-                    final String name = attr != null && attr.name().length() > 0 ? attr.name() : field.getName();
-                    field.set(instance, convertFromJSONObject(attributes, name, fieldType));
+                    field.set(instance, convertFromJSONObject(attributes, getFieldName(field), fieldType));
                 }
             } catch (final JSONException | IllegalAccessException ignored) {
             }
@@ -271,6 +303,12 @@ public final class JsonApiConverter {
         }
 
         return fields;
+    }
+
+    @NonNull
+    private String getFieldName(@NonNull final Field field) {
+        final JsonApiAttribute attr = field.getAnnotation(JsonApiAttribute.class);
+        return attr != null && attr.name().length() > 0 ? attr.name() : field.getName();
     }
 
     private boolean isSupportedType(@NonNull final Class<?> type) {
@@ -349,5 +387,35 @@ public final class JsonApiConverter {
         }
 
         return null;
+    }
+
+    static final class ObjKey {
+        @NonNull
+        final String mType;
+        @NonNull
+        final String mId;
+
+        public ObjKey(@NonNull final String type, @NonNull final String id) {
+            mType = type;
+            mId = id;
+        }
+
+        @Override
+        public boolean equals(final Object o) {
+            if (this == o) {
+                return true;
+            }
+            if (!(o instanceof ObjKey)) {
+                return false;
+            }
+
+            final ObjKey that = (ObjKey) o;
+            return mType.equals(that.mType) && mId.equals(that.mId);
+        }
+
+        @Override
+        public int hashCode() {
+            return Arrays.hashCode(new Object[] {mType, mId});
+        }
     }
 }

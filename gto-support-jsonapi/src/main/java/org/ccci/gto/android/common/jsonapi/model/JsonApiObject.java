@@ -14,6 +14,8 @@ public final class JsonApiObject<T> {
     public static final String JSON_DATA_TYPE = "type";
     public static final String JSON_DATA_ID = "id";
     public static final String JSON_DATA_ATTRIBUTES = "attributes";
+    public static final String JSON_DATA_RELATIONSHIPS = "relationships";
+    public static final String JSON_INCLUDED = "included";
 
     private final boolean mSingle;
 
