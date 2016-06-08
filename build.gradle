@@ -52,7 +52,7 @@ subprojects {
             }
 
             adbOptions {
-               timeOutInMs 60000
+               timeOutInMs 120000
             }
             dexOptions {
                 preDexLibraries !project.hasProperty('disablePreDex')
