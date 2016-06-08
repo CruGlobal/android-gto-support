@@ -12,11 +12,14 @@ import org.junit.runner.RunWith;
 import java.util.ArrayList;
 import java.util.List;
 
+import static net.javacrumbs.jsonunit.JsonMatchers.jsonEquals;
 import static net.javacrumbs.jsonunit.JsonMatchers.jsonNodeAbsent;
 import static net.javacrumbs.jsonunit.JsonMatchers.jsonNodePresent;
 import static net.javacrumbs.jsonunit.JsonMatchers.jsonPartEquals;
+import static net.javacrumbs.jsonunit.core.Option.IGNORING_EXTRA_FIELDS;
 import static net.javacrumbs.jsonunit.fluent.JsonFluentAssert.assertThatJson;
 import static org.hamcrest.CoreMatchers.allOf;
+import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.nullValue;
@@ -97,10 +100,10 @@ public class JsonApiConverterIT {
 
         final ModelParent parent = new ModelParent();
         parent.mId = 1;
-        parent.favorite = new ModelChild();
+        parent.favorite = new ModelChild("Daniel");
         parent.favorite.mId = 11;
         parent.children.add(parent.favorite);
-        final ModelChild child2 = new ModelChild();
+        final ModelChild child2 = new ModelChild("Hey You");
         child2.mId = 20;
         parent.children.add(child2);
 
@@ -114,6 +117,10 @@ public class JsonApiConverterIT {
         assertThat(json, jsonNodeAbsent("data.relationships.favorite.attributes"));
         assertThatJson(json).node("data.relationships.children").isArray().ofLength(2);
         assertThatJson(json).node("included").isArray().ofLength(2);
+        assertThatJson(json).node("included").matches(
+                hasItem(jsonEquals("{type:'child',id:11,attributes:{name:'Daniel'}}").when(IGNORING_EXTRA_FIELDS)));
+        assertThatJson(json).node("included").matches(
+                hasItem(jsonEquals("{type:'child',id:20,attributes:{name:'Hey You'}}").when(IGNORING_EXTRA_FIELDS)));
     }
 
     @Test
@@ -234,5 +241,13 @@ public class JsonApiConverterIT {
     @JsonApiType(ModelChild.TYPE)
     public static final class ModelChild extends ModelBase {
         static final String TYPE = "child";
+
+        String name;
+
+        public ModelChild() {}
+
+        public ModelChild(final String name) {
+            this.name = name;
+        }
     }
 }
