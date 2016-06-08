@@ -3,6 +3,7 @@ package org.ccci.gto.android.common.jsonapi.retrofit2;
 import android.support.annotation.NonNull;
 
 import org.ccci.gto.android.common.jsonapi.JsonApiConverter;
+import org.ccci.gto.android.common.jsonapi.JsonApiUtils;
 import org.ccci.gto.android.common.jsonapi.model.JsonApiObject;
 import org.json.JSONException;
 
@@ -14,7 +15,6 @@ import java.util.List;
 
 import okhttp3.ResponseBody;
 import retrofit2.Converter;
-import retrofit2.JsonApiUtils;
 import retrofit2.Retrofit;
 
 public class JsonApiConverterFactory extends Converter.Factory {
