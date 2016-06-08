@@ -179,14 +179,11 @@ public final class JsonApiConverter {
             if (supports(fieldType)) {
                 try {
                     final JSONObject relatedObj = resourceToJson(field.get(resource), related);
-                    if (relatedObj != null) {
-                        final String relatedType = relatedObj.optString(JSON_DATA_TYPE, null);
-                        final String relatedId = relatedObj.optString(JSON_DATA_ID, null);
-                        if (relatedType != null && relatedId != null) {
-                            related.put(new ObjKey(relatedType, relatedId), relatedObj);
-                            relationships.put(getFieldName(field),
-                                              new JSONObject(relatedObj, new String[] {JSON_DATA_TYPE, JSON_DATA_ID}));
-                        }
+                    final ObjKey key = ObjKey.create(relatedObj);
+                    if (key != null) {
+                        related.put(key, relatedObj);
+                        relationships.put(getFieldName(field),
+                                          new JSONObject(relatedObj, new String[] {JSON_DATA_TYPE, JSON_DATA_ID}));
                     }
                 } catch (final IllegalAccessException ignored) {
                 }
@@ -198,13 +195,10 @@ public final class JsonApiConverter {
                     if (col != null) {
                         for (final Object obj : col) {
                             final JSONObject relatedObj = resourceToJson(obj, related);
-                            if (relatedObj != null) {
-                                final String relatedType = relatedObj.optString(JSON_DATA_TYPE, null);
-                                final String relatedId = relatedObj.optString(JSON_DATA_ID, null);
-                                if (relatedType != null && relatedId != null) {
-                                    related.put(new ObjKey(relatedType, relatedId), relatedObj);
-                                    objs.put(new JSONObject(relatedObj, new String[] {JSON_DATA_TYPE, JSON_DATA_ID}));
-                                }
+                            final ObjKey key = ObjKey.create(relatedObj);
+                            if (key != null) {
+                                related.put(key, relatedObj);
+                                objs.put(new JSONObject(relatedObj, new String[] {JSON_DATA_TYPE, JSON_DATA_ID}));
                             }
                         }
                     }
@@ -433,9 +427,22 @@ public final class JsonApiConverter {
         @NonNull
         final String mId;
 
-        public ObjKey(@NonNull final String type, @NonNull final String id) {
+        ObjKey(@NonNull final String type, @NonNull final String id) {
             mType = type;
             mId = id;
+        }
+
+        @Nullable
+        static ObjKey create(@Nullable final JSONObject json) {
+            if (json != null) {
+                final String type = json.optString(JSON_DATA_TYPE, null);
+                final String id = json.optString(JSON_DATA_ID, null);
+                if (type != null && id != null) {
+                    return new ObjKey(type, id);
+                }
+            }
+
+            return null;
         }
 
         @Override
