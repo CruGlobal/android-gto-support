@@ -164,7 +164,7 @@ public final class JsonApiConverter {
 
             Object value;
             try {
-                value = field.get(resource);
+                value = convertToJsonValue(field.get(resource));
             } catch (final IllegalAccessException e) {
                 value = null;
             }
@@ -287,6 +287,25 @@ public final class JsonApiConverter {
                 type.isAssignableFrom(Boolean.class) || type.isAssignableFrom(Double.class) ||
                 type.isAssignableFrom(Integer.class) || type.isAssignableFrom(Long.class) ||
                 type.isAssignableFrom(String.class);
+    }
+
+    @Nullable
+    private Object convertToJsonValue(@Nullable final Object raw) {
+        if (raw == null) {
+            return null;
+        }
+
+        final Class<?> type = raw.getClass();
+
+        // utilize configured TypeConverters first
+        for (final TypeConverter converter : mConverters) {
+            if (converter.supports(type)) {
+                return converter.toString(raw);
+            }
+        }
+
+        // just return native types
+        return raw;
     }
 
     @Nullable
