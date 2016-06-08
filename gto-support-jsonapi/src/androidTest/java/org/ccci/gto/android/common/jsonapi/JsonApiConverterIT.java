@@ -134,7 +134,7 @@ public class JsonApiConverterIT {
     @JsonApiType("type")
     public static final class ModelDuplicateType2 {}
 
-    public static abstract class ModelBase {
+    public abstract static class ModelBase {
         @JsonApiId
         int mId;
     }
