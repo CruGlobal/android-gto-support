@@ -134,12 +134,14 @@ public class JsonApiConverterIT {
     @JsonApiType("type")
     public static final class ModelDuplicateType2 {}
 
-    @JsonApiType(ModelSimple.TYPE)
-    public static final class ModelSimple {
-        static final String TYPE = "simple";
-
+    public static abstract class ModelBase {
         @JsonApiId
         int mId;
+    }
+
+    @JsonApiType(ModelSimple.TYPE)
+    public static final class ModelSimple extends ModelBase {
+        static final String TYPE = "simple";
 
         public ModelSimple() {}
 
@@ -149,11 +151,8 @@ public class JsonApiConverterIT {
     }
 
     @JsonApiType(ModelAttributes.TYPE)
-    public static final class ModelAttributes {
+    public static final class ModelAttributes extends ModelBase {
         static final String TYPE = "attrs";
-
-        @JsonApiId
-        int mId = 5;
 
         transient String transientAttr = "transient";
         static String staticAttr = "static";
