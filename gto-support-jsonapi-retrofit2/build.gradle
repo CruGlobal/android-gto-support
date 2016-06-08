@@ -1,0 +1,5 @@
+dependencies {
+    compile project(':gto-support-jsonapi')
+
+    compile 'com.squareup.retrofit2:retrofit:' + deps.retrofit2
+}

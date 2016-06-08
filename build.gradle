@@ -52,11 +52,7 @@ subprojects {
             }
 
             adbOptions {
-               timeOutInMs 60000
-            }
-            compileOptions {
-                sourceCompatibility JavaVersion.VERSION_1_7
-                targetCompatibility JavaVersion.VERSION_1_7
+               timeOutInMs 120000
             }
             dexOptions {
                 preDexLibraries !project.hasProperty('disablePreDex')
@@ -74,7 +70,7 @@ subprojects {
     // configure checkstyle
     apply plugin: 'checkstyle'
     checkstyle {
-        toolVersion '6.17'
+        toolVersion '6.19'
     }
     task checkstyle(type: Checkstyle) {
         configFile rootProject.file('checkstyle.xml')
