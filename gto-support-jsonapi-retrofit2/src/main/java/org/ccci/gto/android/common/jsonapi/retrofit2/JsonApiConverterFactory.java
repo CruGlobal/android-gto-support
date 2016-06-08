@@ -6,7 +6,6 @@ import org.ccci.gto.android.common.jsonapi.JsonApiConverter;
 import org.ccci.gto.android.common.jsonapi.model.JsonApiObject;
 import org.json.JSONException;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.ParameterizedType;
@@ -67,19 +66,9 @@ public class JsonApiConverterFactory extends Converter.Factory {
         @Override
         public JsonApiObject<T> convert(final ResponseBody value) throws IOException {
             try {
-                final BufferedReader reader = new BufferedReader(value.charStream());
-                final StringBuilder builder = new StringBuilder();
-
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    builder.append(line);
-                }
-
-                return mConverter.fromJson(builder.toString(), mDataType);
+                return mConverter.fromJson(value.string(), mDataType);
             } catch (final JSONException e) {
                 throw new IOException("Error parsing JSON", e);
-            } finally {
-                value.charStream().close();
             }
         }
     }
