@@ -23,17 +23,18 @@ import static org.junit.Assert.assertThat;
 public class JsonApiConverterIT {
     @Test(expected = IllegalArgumentException.class)
     public void verifyConverterNoType() throws Exception {
-        new JsonApiConverter(ModelNoType.class);
+        new JsonApiConverter.Builder().addClasses(ModelNoType.class).build();
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void verifyConverterDuplicateTypes() throws Exception {
-        new JsonApiConverter(ModelDuplicateType1.class, ModelDuplicateType2.class);
+        new JsonApiConverter.Builder().addClasses(ModelDuplicateType1.class, ModelDuplicateType2.class).build();
     }
 
     @Test
     public void verifySupports() throws Exception {
-        final JsonApiConverter converter = new JsonApiConverter(ModelSimple.class, ModelAttributes.class);
+        final JsonApiConverter converter =
+                new JsonApiConverter.Builder().addClasses(ModelSimple.class, ModelAttributes.class).build();
 
         assertThat(converter.supports(ModelSimple.class), is(true));
         assertThat(converter.supports(ModelAttributes.class), is(true));
@@ -42,7 +43,7 @@ public class JsonApiConverterIT {
 
     @Test
     public void verifyToJsonSimple() throws Exception {
-        final JsonApiConverter converter = new JsonApiConverter(ModelSimple.class);
+        final JsonApiConverter converter = new JsonApiConverter.Builder().addClasses(ModelSimple.class).build();
 
         final ModelSimple obj0 = new ModelSimple(99);
         final String json = converter.toJson(JsonApiObject.single(obj0));
@@ -61,7 +62,7 @@ public class JsonApiConverterIT {
 
     @Test
     public void verifyToJsonSingleResourceNull() throws Exception {
-        final JsonApiConverter converter = new JsonApiConverter();
+        final JsonApiConverter converter = new JsonApiConverter.Builder().build();
 
         final String json = converter.toJson(JsonApiObject.single(null));
         assertThat(json, jsonNodePresent("data"));
@@ -70,7 +71,7 @@ public class JsonApiConverterIT {
 
     @Test
     public void verifyToJsonAttributes() throws Exception {
-        final JsonApiConverter converter = new JsonApiConverter(ModelAttributes.class);
+        final JsonApiConverter converter = new JsonApiConverter.Builder().addClasses(ModelAttributes.class).build();
 
         final String json = converter.toJson(JsonApiObject.single(new ModelAttributes()));
         assertThatJson(json).node("data").isObject();
@@ -88,7 +89,7 @@ public class JsonApiConverterIT {
 
     @Test
     public void verifyFromJsonSimple() throws Exception {
-        final JsonApiConverter converter = new JsonApiConverter(ModelSimple.class);
+        final JsonApiConverter converter = new JsonApiConverter.Builder().addClasses(ModelSimple.class).build();
 
         final ModelSimple source = new ModelSimple(99);
         final JsonApiObject<ModelSimple> output =
@@ -100,7 +101,7 @@ public class JsonApiConverterIT {
 
     @Test
     public void verifyFromJsonAttributes() throws Exception {
-        final JsonApiConverter converter = new JsonApiConverter(ModelAttributes.class);
+        final JsonApiConverter converter = new JsonApiConverter.Builder().addClasses(ModelAttributes.class).build();
 
         final ModelAttributes source = new ModelAttributes();
         source.mId = 19;

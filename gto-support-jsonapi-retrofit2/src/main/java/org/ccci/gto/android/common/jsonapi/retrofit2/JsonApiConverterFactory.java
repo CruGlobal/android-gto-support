@@ -22,13 +22,18 @@ public class JsonApiConverterFactory extends Converter.Factory {
     @NonNull
     private final JsonApiConverter mConverter;
 
-    private JsonApiConverterFactory(@NonNull final Class<?>... classes) {
-        mConverter = new JsonApiConverter(classes);
+    private JsonApiConverterFactory(@NonNull final JsonApiConverter converter) {
+        mConverter = converter;
+    }
+
+    @NonNull
+    public static JsonApiConverterFactory create(@NonNull final JsonApiConverter converter) {
+        return new JsonApiConverterFactory(converter);
     }
 
     @NonNull
     public static JsonApiConverterFactory create(@NonNull final Class<?>... classes) {
-        return new JsonApiConverterFactory(classes);
+        return new JsonApiConverterFactory(new JsonApiConverter.Builder().addClasses(classes).build());
     }
 
     @Override

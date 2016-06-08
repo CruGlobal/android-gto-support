@@ -15,6 +15,7 @@ import org.json.JSONObject;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -26,12 +27,27 @@ import static org.ccci.gto.android.common.jsonapi.model.JsonApiObject.JSON_DATA_
 import static org.ccci.gto.android.common.jsonapi.model.JsonApiObject.JSON_DATA_ID;
 import static org.ccci.gto.android.common.jsonapi.model.JsonApiObject.JSON_DATA_TYPE;
 
-public class JsonApiConverter {
+public final class JsonApiConverter {
+    public static final class Builder {
+        private final List<Class<?>> mClasses = new ArrayList<>();
+
+        @NonNull
+        public Builder addClasses(@NonNull final Class<?>... classes) {
+            mClasses.addAll(Arrays.asList(classes));
+            return this;
+        }
+
+        @NonNull
+        public JsonApiConverter build() {
+            return new JsonApiConverter(mClasses);
+        }
+    }
+
     private final Set<Class<?>> mSupportedClasses = new HashSet<>();
     private final Map<String, Class<?>> mTypes = new HashMap<>();
     private final Map<Class<?>, List<Field>> mFields = new HashMap<>();
 
-    public JsonApiConverter(@NonNull final Class<?>... classes) {
+    private JsonApiConverter(@NonNull final List<Class<?>> classes) {
         for (final Class<?> c : classes) {
             // throw an exception if the provided class is not a valid JsonApiType
             final String type = getType(c);
