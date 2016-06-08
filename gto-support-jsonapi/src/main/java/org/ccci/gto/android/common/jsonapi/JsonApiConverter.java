@@ -61,7 +61,7 @@ public final class JsonApiConverter {
 
         for (final Class<?> c : classes) {
             // throw an exception if the provided class is not a valid JsonApiType
-            final String type = getType(c);
+            final String type = getResourceType(c);
             if (type == null) {
                 throw new IllegalArgumentException("Class " + c + " is not a valid @JsonApiType");
             }
@@ -120,7 +120,7 @@ public final class JsonApiConverter {
                 final JSONArray data = jsonObject.optJSONArray(JSON_DATA);
                 output = JsonApiObject.of();
                 for (int i = 0; i < data.length(); i++) {
-                    final Object resource = fromJson(data.optJSONObject(i));
+                    final Object resource = resourceFromJson(data.optJSONObject(i));
                     if (clazz.isInstance(resource)) {
                         output.addData(clazz.cast(resource));
                     }
@@ -129,7 +129,7 @@ public final class JsonApiConverter {
             // {data: null} or {data: {}}
             else {
                 output = JsonApiObject.single(null);
-                final Object resource = fromJson(jsonObject.optJSONObject(JSON_DATA));
+                final Object resource = resourceFromJson(jsonObject.optJSONObject(JSON_DATA));
                 if (clazz.isInstance(resource)) {
                     output.setData(clazz.cast(resource));
                 }
@@ -147,7 +147,7 @@ public final class JsonApiConverter {
             return null;
         }
         final Class<?> clazz = resource.getClass();
-        final String type = getType(clazz);
+        final String type = getResourceType(clazz);
         if (!clazz.equals(mTypes.get(type))) {
             throw new IllegalArgumentException(clazz + " is not a valid JsonApi resource type for this converter");
         }
@@ -190,7 +190,7 @@ public final class JsonApiConverter {
 
     @Nullable
     @SuppressWarnings("checkstyle:RightCurly")
-    private Object fromJson(@Nullable final JSONObject json) {
+    private Object resourceFromJson(@Nullable final JSONObject json) {
         if (json == null) {
             return null;
         }
@@ -234,7 +234,7 @@ public final class JsonApiConverter {
     }
 
     @Nullable
-    private String getType(@NonNull final Class<?> clazz) {
+    private String getResourceType(@NonNull final Class<?> clazz) {
         final JsonApiType type = clazz.getAnnotation(JsonApiType.class);
         return type != null ? type.value() : null;
     }
