@@ -155,6 +155,30 @@ public class JsonApiConverterIT {
         assertThat(target.ann2, is(source.ann2));
     }
 
+    @Test
+    public void verifyFromJsonRelationships() throws Exception {
+        final JsonApiConverter converter =
+                new JsonApiConverter.Builder().addClasses(ModelParent.class, ModelChild.class).build();
+
+        final ModelParent parent = new ModelParent();
+        parent.mId = 1;
+        parent.favorite = new ModelChild();
+        parent.favorite.mId = 11;
+        parent.children.add(parent.favorite);
+        final ModelChild child2 = new ModelChild();
+        child2.mId = 20;
+        parent.children.add(child2);
+
+        final JsonApiObject<ModelParent> output =
+                converter.fromJson(converter.toJson(JsonApiObject.single(parent)), ModelParent.class);
+        assertThat(output.isSingle(), is(true));
+        final ModelParent target = output.getDataSingle();
+        assertThat(target, is(not(nullValue())));
+        assertThat(target.mId, is(parent.mId));
+        assertThat(target.favorite, is(not(nullValue())));
+        assertThat(target.favorite.mId, is(parent.favorite.mId));
+    }
+
     public static final class ModelNoType {}
 
     @JsonApiType("type")

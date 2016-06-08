@@ -265,6 +265,7 @@ public final class JsonApiConverter {
 
         // populate fields
         final JSONObject attributes = json.optJSONObject(JSON_DATA_ATTRIBUTES);
+        final JSONObject relationships = json.optJSONObject(JSON_DATA_RELATIONSHIPS);
         for (final Field field : mFields.get(type)) {
             final Class<?> fieldType = field.getType();
 
@@ -273,9 +274,17 @@ public final class JsonApiConverter {
                 if (field.getAnnotation(JsonApiId.class) != null) {
                     field.set(instance, convertFromJSONObject(json, JSON_DATA_ID, fieldType));
                 }
+                // handle relationships
+                else if (supports(fieldType)) {
+                    if (relationships != null) {
+                        field.set(instance, resourceFromJson(relationships.optJSONObject(getFieldName(field))));
+                    }
+                }
                 // anything else is an attribute
                 else {
-                    field.set(instance, convertFromJSONObject(attributes, getFieldName(field), fieldType));
+                    if (attributes != null) {
+                        field.set(instance, convertFromJSONObject(attributes, getFieldName(field), fieldType));
+                    }
                 }
             } catch (final JSONException | IllegalAccessException ignored) {
             }
