@@ -11,7 +11,7 @@ buildscript {
 
 // define dependency versions for this project
 ext.deps = [
-        androidSupport       : '23.4.0',
+        androidSupport       : '24.0.0',
         androidTestingSupport: '0.5',
         facebookStetho       : '1.4.1',
         gson                 : '2.6.2',
@@ -45,12 +45,12 @@ subprojects {
 
     beforeEvaluate {
         android {
-            compileSdkVersion 23
-            buildToolsVersion "23.0.3"
+            compileSdkVersion 24
+            buildToolsVersion "24"
 
             defaultConfig {
                 minSdkVersion 9
-                targetSdkVersion 23
+                targetSdkVersion 24
 
                 testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
             }
