@@ -67,11 +67,14 @@ public final class CursorUtils {
     @Nullable
     public static Long getLong(@NonNull final Cursor c, @NonNull final String field, @Nullable final Long defValue) {
         final int index = c.getColumnIndex(field);
-        if (index == -1 || c.isNull(index)) {
-            return defValue;
+        if (index != -1 && !c.isNull(index)) {
+            try {
+                return Long.parseLong(c.getString(index));
+            } catch (final NumberFormatException ignored) {
+            }
         }
 
-        return c.getLong(index);
+        return defValue;
     }
 
     @Nullable
