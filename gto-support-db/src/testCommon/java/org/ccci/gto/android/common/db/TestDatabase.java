@@ -4,6 +4,7 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.NonNull;
 
+import org.ccci.gto.android.common.db.CommonTables.LastSyncTable;
 import org.ccci.gto.android.common.db.Contract.CompoundTable;
 import org.ccci.gto.android.common.db.Contract.RootTable;
 
@@ -27,6 +28,7 @@ class TestDatabase extends WalSQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(RootTable.SQL_CREATE_TABLE);
         db.execSQL(CompoundTable.SQL_CREATE_TABLE);
+        db.execSQL(LastSyncTable.SQL_CREATE_TABLE);
     }
 
     @Override
@@ -40,6 +42,7 @@ class TestDatabase extends WalSQLiteOpenHelper {
 
             db.execSQL(RootTable.SQL_DELETE_TABLE);
             db.execSQL(CompoundTable.SQL_DELETE_TABLE);
+            db.execSQL(LastSyncTable.SQL_DELETE_TABLE);
 
             onCreate(db);
 
