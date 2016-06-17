@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import static java.util.Collections.singletonMap;
 import static org.ccci.gto.android.common.jsonapi.model.JsonApiObject.JSON_DATA;
 import static org.ccci.gto.android.common.jsonapi.model.JsonApiObject.JSON_DATA_ATTRIBUTES;
 import static org.ccci.gto.android.common.jsonapi.model.JsonApiObject.JSON_DATA_ID;
@@ -196,8 +197,9 @@ public final class JsonApiConverter {
                     final ObjKey key = ObjKey.create(relatedObj);
                     if (key != null) {
                         related.put(key, relatedObj);
-                        relationships.put(getFieldName(field),
-                                          new JSONObject(relatedObj, new String[] {JSON_DATA_TYPE, JSON_DATA_ID}));
+                        final JSONObject reference =
+                                new JSONObject(relatedObj, new String[] {JSON_DATA_TYPE, JSON_DATA_ID});
+                        relationships.put(getFieldName(field), new JSONObject(singletonMap(JSON_DATA, reference)));
                     }
                 } catch (final IllegalAccessException ignored) {
                 }
@@ -218,7 +220,7 @@ public final class JsonApiConverter {
                     }
                 } catch (final IllegalAccessException ignored) {
                 }
-                relationships.put(getFieldName(field), objs);
+                relationships.put(getFieldName(field), new JSONObject(singletonMap(JSON_DATA, objs)));
                 continue;
             }
 
@@ -327,9 +329,10 @@ public final class JsonApiConverter {
                 // handle relationships
                 else if (supports(fieldType)) {
                     if (relationships != null) {
-                        field.set(instance,
-                                  resourceFromJson(relationships.optJSONObject(getFieldName(field)), fieldType,
-                                                   objects));
+                        final JSONObject related = relationships.optJSONObject(getFieldName(field));
+                        if (related != null) {
+                            field.set(instance, resourceFromJson(related.optJSONObject(JSON_DATA), fieldType, objects));
+                        }
                     }
                 }
                 // anything else is an attribute

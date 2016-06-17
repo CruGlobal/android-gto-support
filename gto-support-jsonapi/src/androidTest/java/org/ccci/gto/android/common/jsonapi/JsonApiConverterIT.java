@@ -116,10 +116,10 @@ public class JsonApiConverterIT {
         assertThat(json, jsonPartEquals("data.type", ModelParent.TYPE));
         assertThat(json, jsonNodeAbsent("data.attributes.favorite"));
         assertThat(json, jsonNodeAbsent("data.attributes.children"));
-        assertThat(json, jsonPartEquals("data.relationships.favorite.type", ModelChild.TYPE));
-        assertThat(json, jsonPartEquals("data.relationships.favorite.id", parent.favorite.mId));
-        assertThat(json, jsonNodeAbsent("data.relationships.favorite.attributes"));
-        assertThatJson(json).node("data.relationships.children").isArray().ofLength(2);
+        assertThat(json, jsonPartEquals("data.relationships.favorite.data.type", ModelChild.TYPE));
+        assertThat(json, jsonPartEquals("data.relationships.favorite.data.id", parent.favorite.mId));
+        assertThat(json, jsonNodeAbsent("data.relationships.favorite.data.attributes"));
+        assertThatJson(json).node("data.relationships.children.data").isArray().ofLength(2);
         assertThatJson(json).node("included").isArray().ofLength(2);
         assertThatJson(json).node("included").matches(
                 hasItem(jsonEquals("{type:'child',id:11,attributes:{name:'Daniel'}}").when(IGNORING_EXTRA_FIELDS)));
