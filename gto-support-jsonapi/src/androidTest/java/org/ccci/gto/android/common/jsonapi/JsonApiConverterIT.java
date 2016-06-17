@@ -6,10 +6,12 @@ import org.ccci.gto.android.common.jsonapi.annotation.JsonApiAttribute;
 import org.ccci.gto.android.common.jsonapi.annotation.JsonApiId;
 import org.ccci.gto.android.common.jsonapi.annotation.JsonApiType;
 import org.ccci.gto.android.common.jsonapi.model.JsonApiObject;
+import org.json.JSONObject;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static net.javacrumbs.jsonunit.JsonMatchers.jsonEquals;
@@ -121,6 +123,27 @@ public class JsonApiConverterIT {
                 hasItem(jsonEquals("{type:'child',id:11,attributes:{name:'Daniel'}}").when(IGNORING_EXTRA_FIELDS)));
         assertThatJson(json).node("included").matches(
                 hasItem(jsonEquals("{type:'child',id:20,attributes:{name:'Hey You'}}").when(IGNORING_EXTRA_FIELDS)));
+    }
+
+    @Test
+    public void verifyToJsonMetaNull() throws Exception {
+        final JsonApiConverter converter = new JsonApiConverter.Builder().build();
+
+        final JsonApiObject<?> obj = JsonApiObject.of();
+        obj.setRawMeta(null);
+        final String json = converter.toJson(obj);
+        assertThat(json, jsonNodeAbsent("meta"));
+    }
+
+    @Test
+    public void verifyToJsonMeta() throws Exception {
+        final JsonApiConverter converter = new JsonApiConverter.Builder().build();
+
+        final JsonApiObject<?> obj = JsonApiObject.of();
+        obj.setRawMeta(new JSONObject(Collections.singletonMap("attr", "value")));
+        final String json = converter.toJson(obj);
+        assertThat(json, jsonNodePresent("meta"));
+        assertThat(json, jsonPartEquals("meta.attr", "value"));
     }
 
     @Test
