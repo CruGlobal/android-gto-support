@@ -9,7 +9,6 @@ import org.ccci.gto.android.common.db.Query;
 import org.ccci.gto.android.common.db.TestDao;
 import org.ccci.gto.android.common.db.model.Root;
 import org.junit.After;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -88,10 +87,7 @@ public class CursorUtilsIT {
         }
     }
 
-    // XXX: currently disabled because we don't support invalid values being returned from the database. We really
-    // XXX: should support this at some point though.
     @Test
-    @Ignore
     public void verifyGetLongInvalidValue() throws Exception {
         final TestDao dao = getDao();
         final long defValue = 9;

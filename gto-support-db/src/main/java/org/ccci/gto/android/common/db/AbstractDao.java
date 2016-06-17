@@ -12,6 +12,7 @@ import android.support.v4.util.SimpleArrayMap;
 import android.text.TextUtils;
 import android.util.Pair;
 
+import org.ccci.gto.android.common.db.CommonTables.LastSyncTable;
 import org.ccci.gto.android.common.db.Expression.Field;
 import org.ccci.gto.android.common.util.ArrayUtils;
 import org.ccci.gto.android.common.util.LocaleCompat;
@@ -20,6 +21,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+
+import static org.ccci.gto.android.common.db.util.CursorUtils.getLong;
 
 public abstract class AbstractDao {
     public static final String ARG_DISTINCT = AbstractDao.class.getName() + ".ARG_DISTINCT";
@@ -39,6 +42,8 @@ public abstract class AbstractDao {
 
     protected AbstractDao(@NonNull final SQLiteOpenHelper helper) {
         mDbHelper = helper;
+
+        registerType(LastSyncTable.class, LastSyncTable.TABLE_NAME, null, null, LastSyncTable.SQL_WHERE_PRIMARY_KEY);
     }
 
     @WorkerThread
@@ -524,6 +529,24 @@ public abstract class AbstractDao {
         } finally {
             tx.endTransaction();
         }
+    }
+
+    public long getLastSyncTime(@NonNull final Object... key) {
+        final Cursor c =
+                getCursor(Query.select(LastSyncTable.class).projection(LastSyncTable.COLUMN_LAST_SYNCED)
+                                  .where(LastSyncTable.SQL_WHERE_PRIMARY_KEY.args(TextUtils.join(":", key))));
+        if (c.moveToFirst()) {
+            return getLong(c, LastSyncTable.COLUMN_LAST_SYNCED, 0L);
+        }
+        return 0;
+    }
+
+    public void updateLastSyncTime(@NonNull final Object... key) {
+        // update the last sync time, we can replace since this is just a keyed timestamp
+        final ContentValues values = new ContentValues();
+        values.put(LastSyncTable.COLUMN_KEY, TextUtils.join(":", key));
+        values.put(LastSyncTable.COLUMN_LAST_SYNCED, System.currentTimeMillis());
+        getWritableDatabase().replace(getTable(LastSyncTable.class), null, values);
     }
 
     @NonNull
