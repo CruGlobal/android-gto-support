@@ -136,7 +136,7 @@ public final class JsonApiConverter {
         final JSONArray included = jsonObject.optJSONArray(JSON_INCLUDED);
         if (included != null) {
             //noinspection unchecked
-            resourcesFromJson(included, Collection.class, Object.class, objects);
+            resourcesFromJson(included, Object.class, Collection.class, objects);
         }
 
         final JsonApiObject<T> output;
@@ -146,7 +146,7 @@ public final class JsonApiConverter {
             if (dataArray != null) {
                 output = JsonApiObject.of();
                 //noinspection unchecked
-                output.setData(resourcesFromJson(dataArray, Collection.class, type, objects));
+                output.setData(resourcesFromJson(dataArray, type, Collection.class, objects));
             }
             // {data: null} or {data: {}}
             else {
@@ -259,9 +259,9 @@ public final class JsonApiConverter {
     }
 
     @NonNull
-    private <E, T extends Collection<E>> T resourcesFromJson(@NonNull final JSONArray json,
-                                                             @NonNull final Class<T> collectionType,
+    private <E, T extends Collection<E>> T resourcesFromJson(@Nullable final JSONArray json,
                                                              @NonNull final Class<E> type,
+                                                             @NonNull final Class<T> collectionType,
                                                              @NonNull final Map<ObjKey, Object> objects) {
         // create new collection
         final T resources = newCollection(collectionType);
@@ -269,10 +269,12 @@ public final class JsonApiConverter {
             throw new IllegalArgumentException("Invalid Collection Type: " + collectionType);
         }
 
-        for (int i = 0; i < json.length(); i++) {
-            final E resource = resourceFromJson(json.optJSONObject(i), type, objects);
-            if (resource != null) {
-                resources.add(resource);
+        if (json != null) {
+            for (int i = 0; i < json.length(); i++) {
+                final E resource = resourceFromJson(json.optJSONObject(i), type, objects);
+                if (resource != null) {
+                    resources.add(resource);
+                }
             }
         }
 
@@ -320,6 +322,7 @@ public final class JsonApiConverter {
         final JSONObject relationships = json.optJSONObject(JSON_DATA_RELATIONSHIPS);
         for (final Field field : mFields.get(type)) {
             final Class<?> fieldType = field.getType();
+            final Class<?> fieldCollectionType = getFieldCollectionType(field.getGenericType());
 
             try {
                 // handle id fields
@@ -333,6 +336,14 @@ public final class JsonApiConverter {
                         if (related != null) {
                             field.set(instance, resourceFromJson(related.optJSONObject(JSON_DATA), fieldType, objects));
                         }
+                    }
+                }
+                // handle collections of relationships
+                else if (supports(fieldCollectionType)) {
+                    final JSONObject related = relationships.optJSONObject(getFieldName(field));
+                    if (related != null) {
+                        field.set(instance, resourcesFromJson(related.optJSONArray(JSON_DATA), fieldCollectionType,
+                                                              (Class<? extends Collection>) fieldType, objects));
                     }
                 }
                 // anything else is an attribute
