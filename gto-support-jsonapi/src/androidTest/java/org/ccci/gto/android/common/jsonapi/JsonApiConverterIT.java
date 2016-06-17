@@ -25,6 +25,8 @@ import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.nullValue;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 
 @RunWith(AndroidJUnit4.class)
@@ -183,6 +185,27 @@ public class JsonApiConverterIT {
         assertThat(target.attrBool1, is(source.attrBool1));
         assertThat(target.attrAnn1, is(source.attrAnn1));
         assertThat(target.ann2, is(source.ann2));
+    }
+
+    @Test
+    public void verifyFromJsonMetaNull() throws Exception {
+        final JsonApiConverter converter = new JsonApiConverter.Builder().build();
+
+        final JsonApiObject<?> obj = JsonApiObject.of();
+        obj.setRawMeta(null);
+        final JsonApiObject<?> output = converter.fromJson(converter.toJson(obj), Object.class);
+        assertNull(output.getRawMeta());
+    }
+
+    @Test
+    public void verifyFromJsonMeta() throws Exception {
+        final JsonApiConverter converter = new JsonApiConverter.Builder().build();
+
+        final JsonApiObject<?> obj = JsonApiObject.of();
+        obj.setRawMeta(new JSONObject(Collections.singletonMap("attr", "value")));
+        final JsonApiObject<?> output = converter.fromJson(converter.toJson(obj), Object.class);
+        assertNotNull(output.getRawMeta());
+        assertThatJson(output.getRawMeta().toString()).isEqualTo(obj.getRawMeta().toString());
     }
 
     @Test
