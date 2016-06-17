@@ -129,6 +129,15 @@ public final class JsonApiConverter {
     public <T> JsonApiObject<T> fromJson(@NonNull final String json, @NonNull final Class<T> type)
             throws JSONException {
         final JSONObject jsonObject = new JSONObject(json);
+
+        // parse "included" objects
+        final Map<ObjKey, Object> objects = new HashMap<>();
+        final JSONArray included = jsonObject.optJSONArray(JSON_INCLUDED);
+        if (included != null) {
+            //noinspection unchecked
+            resourcesFromJson(included, Collection.class, Object.class, objects);
+        }
+
         final JsonApiObject<T> output;
         if (jsonObject.has(JSON_DATA)) {
             // {data: []}
@@ -136,12 +145,12 @@ public final class JsonApiConverter {
             if (dataArray != null) {
                 output = JsonApiObject.of();
                 //noinspection unchecked
-                output.setData(resourcesFromJson(dataArray, Collection.class, type));
+                output.setData(resourcesFromJson(dataArray, Collection.class, type, objects));
             }
             // {data: null} or {data: {}}
             else {
                 output = JsonApiObject.single(null);
-                final T resource = resourceFromJson(jsonObject.optJSONObject(JSON_DATA), type);
+                final T resource = resourceFromJson(jsonObject.optJSONObject(JSON_DATA), type, objects);
                 if (resource != null) {
                     output.setData(resource);
                 }
@@ -250,7 +259,8 @@ public final class JsonApiConverter {
     @NonNull
     private <E, T extends Collection<E>> T resourcesFromJson(@NonNull final JSONArray json,
                                                              @NonNull final Class<T> collectionType,
-                                                             @NonNull final Class<E> type) {
+                                                             @NonNull final Class<E> type,
+                                                             @NonNull final Map<ObjKey, Object> objects) {
         // create new collection
         final T resources = newCollection(collectionType);
         if (resources == null) {
@@ -258,7 +268,7 @@ public final class JsonApiConverter {
         }
 
         for (int i = 0; i < json.length(); i++) {
-            final E resource = resourceFromJson(json.optJSONObject(i), type);
+            final E resource = resourceFromJson(json.optJSONObject(i), type, objects);
             if (resource != null) {
                 resources.add(resource);
             }
@@ -269,24 +279,38 @@ public final class JsonApiConverter {
 
     @Nullable
     @SuppressWarnings("checkstyle:RightCurly")
-    private <E> E resourceFromJson(@Nullable final JSONObject json, @NonNull final Class<E> expectedType) {
+    private <E> E resourceFromJson(@Nullable final JSONObject json, @NonNull final Class<E> expectedType,
+                                   @NonNull final Map<ObjKey, Object> objects) {
         if (json == null) {
             return null;
         }
 
         // determine the type
-        final Class<?> type = mTypes.get(json.optString(JSON_DATA_TYPE));
+        final String rawType = json.optString(JSON_DATA_TYPE);
+        final Class<?> type = mTypes.get(rawType);
         if (type == null || !expectedType.isAssignableFrom(type)) {
             return null;
         }
 
-        // create an instance of this type
-        final E instance;
-        try {
+        // look for the referenced object first
+        final String rawId = json.optString(JSON_DATA_ID);
+        final ObjKey key = rawId != null && rawType != null ? new ObjKey(rawType, rawId) : null;
+        E instance = null;
+        if (key != null) {
             //noinspection unchecked
-            instance = (E) type.newInstance();
-        } catch (final Exception e) {
-            return null;
+            instance = (E) objects.get(key);
+        }
+        // no object found, create a new instance
+        if (instance == null) {
+            try {
+                //noinspection unchecked
+                instance = (E) type.newInstance();
+                if (key != null) {
+                    objects.put(key, instance);
+                }
+            } catch (final Exception e) {
+                return null;
+            }
         }
 
         // populate fields
@@ -304,7 +328,8 @@ public final class JsonApiConverter {
                 else if (supports(fieldType)) {
                     if (relationships != null) {
                         field.set(instance,
-                                  resourceFromJson(relationships.optJSONObject(getFieldName(field)), fieldType));
+                                  resourceFromJson(relationships.optJSONObject(getFieldName(field)), fieldType,
+                                                   objects));
                     }
                 }
                 // anything else is an attribute

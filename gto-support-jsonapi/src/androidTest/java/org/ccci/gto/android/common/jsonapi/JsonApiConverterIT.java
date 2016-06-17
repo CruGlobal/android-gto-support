@@ -215,10 +215,10 @@ public class JsonApiConverterIT {
 
         final ModelParent parent = new ModelParent();
         parent.mId = 1;
-        parent.favorite = new ModelChild();
+        parent.favorite = new ModelChild("Daniel");
         parent.favorite.mId = 11;
         parent.children.add(parent.favorite);
-        final ModelChild child2 = new ModelChild();
+        final ModelChild child2 = new ModelChild("Kid");
         child2.mId = 20;
         parent.children.add(child2);
 
@@ -230,6 +230,7 @@ public class JsonApiConverterIT {
         assertThat(target.mId, is(parent.mId));
         assertThat(target.favorite, is(not(nullValue())));
         assertThat(target.favorite.mId, is(parent.favorite.mId));
+        assertThat(target.favorite.name, is(parent.favorite.name));
     }
 
     public static final class ModelNoType {}
