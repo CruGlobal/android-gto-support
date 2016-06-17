@@ -23,7 +23,7 @@ public class CollectionUtilsTest {
 
     @Test
     public void verifyNewCollectionSupported() throws Exception {
-        for (final Class<?> type : ImmutableList
+        for (final Class<? extends Collection> type : ImmutableList
                 .of(Collection.class, List.class, ArrayList.class, LinkedList.class, Set.class, HashSet.class)) {
             assertTrue(type.isInstance(newCollection(type)));
         }
