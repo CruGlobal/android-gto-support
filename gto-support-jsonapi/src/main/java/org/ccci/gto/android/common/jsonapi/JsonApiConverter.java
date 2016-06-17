@@ -33,6 +33,7 @@ import static org.ccci.gto.android.common.jsonapi.model.JsonApiObject.JSON_DATA_
 import static org.ccci.gto.android.common.jsonapi.model.JsonApiObject.JSON_DATA_TYPE;
 import static org.ccci.gto.android.common.jsonapi.model.JsonApiObject.JSON_INCLUDED;
 import static org.ccci.gto.android.common.jsonapi.model.JsonApiObject.JSON_META;
+import static org.ccci.gto.android.common.util.CollectionUtils.newCollection;
 
 public final class JsonApiConverter {
     public static final class Builder {
@@ -125,28 +126,24 @@ public final class JsonApiConverter {
 
     @NonNull
     @SuppressWarnings("checkstyle:RightCurly")
-    public <T> JsonApiObject<T> fromJson(@NonNull final String json, @NonNull final Class<T> clazz)
+    public <T> JsonApiObject<T> fromJson(@NonNull final String json, @NonNull final Class<T> type)
             throws JSONException {
         final JSONObject jsonObject = new JSONObject(json);
         final JsonApiObject<T> output;
         if (jsonObject.has(JSON_DATA)) {
             // {data: []}
-            if (jsonObject.optJSONArray(JSON_DATA) != null) {
-                final JSONArray data = jsonObject.optJSONArray(JSON_DATA);
+            final JSONArray dataArray = jsonObject.optJSONArray(JSON_DATA);
+            if (dataArray != null) {
                 output = JsonApiObject.of();
-                for (int i = 0; i < data.length(); i++) {
-                    final Object resource = resourceFromJson(data.optJSONObject(i));
-                    if (clazz.isInstance(resource)) {
-                        output.addData(clazz.cast(resource));
-                    }
-                }
+                //noinspection unchecked
+                output.setData(resourcesFromJson(dataArray, Collection.class, type));
             }
             // {data: null} or {data: {}}
             else {
                 output = JsonApiObject.single(null);
-                final Object resource = resourceFromJson(jsonObject.optJSONObject(JSON_DATA));
-                if (clazz.isInstance(resource)) {
-                    output.setData(clazz.cast(resource));
+                final T resource = resourceFromJson(jsonObject.optJSONObject(JSON_DATA), type);
+                if (resource != null) {
+                    output.setData(resource);
                 }
             }
         } else {
@@ -250,23 +247,44 @@ public final class JsonApiConverter {
         return json;
     }
 
+    @NonNull
+    private <E, T extends Collection<E>> T resourcesFromJson(@NonNull final JSONArray json,
+                                                             @NonNull final Class<T> collectionType,
+                                                             @NonNull final Class<E> type) {
+        // create new collection
+        final T resources = newCollection(collectionType);
+        if (resources == null) {
+            throw new IllegalArgumentException("Invalid Collection Type: " + collectionType);
+        }
+
+        for (int i = 0; i < json.length(); i++) {
+            final E resource = resourceFromJson(json.optJSONObject(i), type);
+            if (resource != null) {
+                resources.add(resource);
+            }
+        }
+
+        return resources;
+    }
+
     @Nullable
     @SuppressWarnings("checkstyle:RightCurly")
-    private Object resourceFromJson(@Nullable final JSONObject json) {
+    private <E> E resourceFromJson(@Nullable final JSONObject json, @NonNull final Class<E> expectedType) {
         if (json == null) {
             return null;
         }
 
         // determine the type
         final Class<?> type = mTypes.get(json.optString(JSON_DATA_TYPE));
-        if (type == null) {
+        if (type == null || !expectedType.isAssignableFrom(type)) {
             return null;
         }
 
         // create an instance of this type
-        final Object instance;
+        final E instance;
         try {
-            instance = type.newInstance();
+            //noinspection unchecked
+            instance = (E) type.newInstance();
         } catch (final Exception e) {
             return null;
         }
@@ -285,7 +303,8 @@ public final class JsonApiConverter {
                 // handle relationships
                 else if (supports(fieldType)) {
                     if (relationships != null) {
-                        field.set(instance, resourceFromJson(relationships.optJSONObject(getFieldName(field))));
+                        field.set(instance,
+                                  resourceFromJson(relationships.optJSONObject(getFieldName(field)), fieldType));
                     }
                 }
                 // anything else is an attribute
