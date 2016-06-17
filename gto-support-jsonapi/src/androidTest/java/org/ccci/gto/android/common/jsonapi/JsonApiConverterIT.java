@@ -6,10 +6,12 @@ import org.ccci.gto.android.common.jsonapi.annotation.JsonApiAttribute;
 import org.ccci.gto.android.common.jsonapi.annotation.JsonApiId;
 import org.ccci.gto.android.common.jsonapi.annotation.JsonApiType;
 import org.ccci.gto.android.common.jsonapi.model.JsonApiObject;
+import org.json.JSONObject;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static net.javacrumbs.jsonunit.JsonMatchers.jsonEquals;
@@ -23,6 +25,8 @@ import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.nullValue;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 
 @RunWith(AndroidJUnit4.class)
@@ -124,6 +128,27 @@ public class JsonApiConverterIT {
     }
 
     @Test
+    public void verifyToJsonMetaNull() throws Exception {
+        final JsonApiConverter converter = new JsonApiConverter.Builder().build();
+
+        final JsonApiObject<?> obj = JsonApiObject.of();
+        obj.setRawMeta(null);
+        final String json = converter.toJson(obj);
+        assertThat(json, jsonNodeAbsent("meta"));
+    }
+
+    @Test
+    public void verifyToJsonMeta() throws Exception {
+        final JsonApiConverter converter = new JsonApiConverter.Builder().build();
+
+        final JsonApiObject<?> obj = JsonApiObject.of();
+        obj.setRawMeta(new JSONObject(Collections.singletonMap("attr", "value")));
+        final String json = converter.toJson(obj);
+        assertThat(json, jsonNodePresent("meta"));
+        assertThat(json, jsonPartEquals("meta.attr", "value"));
+    }
+
+    @Test
     public void verifyFromJsonSimple() throws Exception {
         final JsonApiConverter converter = new JsonApiConverter.Builder().addClasses(ModelSimple.class).build();
 
@@ -160,6 +185,27 @@ public class JsonApiConverterIT {
         assertThat(target.attrBool1, is(source.attrBool1));
         assertThat(target.attrAnn1, is(source.attrAnn1));
         assertThat(target.ann2, is(source.ann2));
+    }
+
+    @Test
+    public void verifyFromJsonMetaNull() throws Exception {
+        final JsonApiConverter converter = new JsonApiConverter.Builder().build();
+
+        final JsonApiObject<?> obj = JsonApiObject.of();
+        obj.setRawMeta(null);
+        final JsonApiObject<?> output = converter.fromJson(converter.toJson(obj), Object.class);
+        assertNull(output.getRawMeta());
+    }
+
+    @Test
+    public void verifyFromJsonMeta() throws Exception {
+        final JsonApiConverter converter = new JsonApiConverter.Builder().build();
+
+        final JsonApiObject<?> obj = JsonApiObject.of();
+        obj.setRawMeta(new JSONObject(Collections.singletonMap("attr", "value")));
+        final JsonApiObject<?> output = converter.fromJson(converter.toJson(obj), Object.class);
+        assertNotNull(output.getRawMeta());
+        assertThatJson(output.getRawMeta().toString()).isEqualTo(obj.getRawMeta().toString());
     }
 
     @Test

@@ -3,6 +3,8 @@ package org.ccci.gto.android.common.jsonapi.model;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -16,11 +18,15 @@ public final class JsonApiObject<T> {
     public static final String JSON_DATA_ATTRIBUTES = "attributes";
     public static final String JSON_DATA_RELATIONSHIPS = "relationships";
     public static final String JSON_INCLUDED = "included";
+    public static final String JSON_META = "meta";
 
     private final boolean mSingle;
 
     @NonNull
     private final List<T> mData = new ArrayList<>();
+
+    @Nullable
+    private JSONObject mRawMeta;
 
     private JsonApiObject(final boolean single) {
         mSingle = single;
@@ -66,5 +72,14 @@ public final class JsonApiObject<T> {
 
     public void addData(final T resource) {
         mData.add(resource);
+    }
+
+    @Nullable
+    public JSONObject getRawMeta() {
+        return mRawMeta;
+    }
+
+    public void setRawMeta(@Nullable final JSONObject meta) {
+        mRawMeta = meta;
     }
 }

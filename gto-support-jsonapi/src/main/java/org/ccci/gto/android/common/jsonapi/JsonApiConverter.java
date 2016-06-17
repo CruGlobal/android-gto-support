@@ -32,6 +32,7 @@ import static org.ccci.gto.android.common.jsonapi.model.JsonApiObject.JSON_DATA_
 import static org.ccci.gto.android.common.jsonapi.model.JsonApiObject.JSON_DATA_RELATIONSHIPS;
 import static org.ccci.gto.android.common.jsonapi.model.JsonApiObject.JSON_DATA_TYPE;
 import static org.ccci.gto.android.common.jsonapi.model.JsonApiObject.JSON_INCLUDED;
+import static org.ccci.gto.android.common.jsonapi.model.JsonApiObject.JSON_META;
 
 public final class JsonApiConverter {
     public static final class Builder {
@@ -113,6 +114,9 @@ public final class JsonApiConverter {
                 json.put(JSON_INCLUDED, new JSONArray(related.values()));
             }
 
+            // pass the JSONApi meta data as-is
+            json.put(JSON_META, obj.getRawMeta());
+
             return json.toString();
         } catch (final JSONException e) {
             throw new RuntimeException("Unexpected JSONException", e);
@@ -148,6 +152,10 @@ public final class JsonApiConverter {
         } else {
             throw new UnsupportedOperationException();
         }
+
+        // pass the JSONApi meta object back as-is
+        output.setRawMeta(jsonObject.optJSONObject(JSON_META));
+
         return output;
     }
 

@@ -14,5 +14,4 @@ dependencies {
     compile project(':gto-support-core')
 
     testCompile project(':gto-support-testing')
-    androidTestCompile 'org.hamcrest:hamcrest-library:1.3'
 }
