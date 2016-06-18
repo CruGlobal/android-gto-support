@@ -22,9 +22,11 @@ import static net.javacrumbs.jsonunit.core.Option.IGNORING_EXTRA_FIELDS;
 import static net.javacrumbs.jsonunit.fluent.JsonFluentAssert.assertThatJson;
 import static org.hamcrest.CoreMatchers.allOf;
 import static org.hamcrest.CoreMatchers.hasItem;
+import static org.hamcrest.CoreMatchers.hasItems;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.CoreMatchers.sameInstance;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
@@ -116,10 +118,10 @@ public class JsonApiConverterIT {
         assertThat(json, jsonPartEquals("data.type", ModelParent.TYPE));
         assertThat(json, jsonNodeAbsent("data.attributes.favorite"));
         assertThat(json, jsonNodeAbsent("data.attributes.children"));
-        assertThat(json, jsonPartEquals("data.relationships.favorite.type", ModelChild.TYPE));
-        assertThat(json, jsonPartEquals("data.relationships.favorite.id", parent.favorite.mId));
-        assertThat(json, jsonNodeAbsent("data.relationships.favorite.attributes"));
-        assertThatJson(json).node("data.relationships.children").isArray().ofLength(2);
+        assertThat(json, jsonPartEquals("data.relationships.favorite.data.type", ModelChild.TYPE));
+        assertThat(json, jsonPartEquals("data.relationships.favorite.data.id", parent.favorite.mId));
+        assertThat(json, jsonNodeAbsent("data.relationships.favorite.data.attributes"));
+        assertThatJson(json).node("data.relationships.children.data").isArray().ofLength(2);
         assertThatJson(json).node("included").isArray().ofLength(2);
         assertThatJson(json).node("included").matches(
                 hasItem(jsonEquals("{type:'child',id:11,attributes:{name:'Daniel'}}").when(IGNORING_EXTRA_FIELDS)));
@@ -215,10 +217,10 @@ public class JsonApiConverterIT {
 
         final ModelParent parent = new ModelParent();
         parent.mId = 1;
-        parent.favorite = new ModelChild();
+        parent.favorite = new ModelChild("Daniel");
         parent.favorite.mId = 11;
         parent.children.add(parent.favorite);
-        final ModelChild child2 = new ModelChild();
+        final ModelChild child2 = new ModelChild("Kid");
         child2.mId = 20;
         parent.children.add(child2);
 
@@ -230,6 +232,10 @@ public class JsonApiConverterIT {
         assertThat(target.mId, is(parent.mId));
         assertThat(target.favorite, is(not(nullValue())));
         assertThat(target.favorite.mId, is(parent.favorite.mId));
+        assertThat(target.favorite.name, is(parent.favorite.name));
+        assertThat(target.children.size(), is(2));
+        assertThat(target.children.get(0), is(sameInstance(target.favorite)));
+        assertThat(target.children, hasItems(parent.children.toArray(new ModelChild[0])));
     }
 
     public static final class ModelNoType {}
@@ -243,6 +249,25 @@ public class JsonApiConverterIT {
     public abstract static class ModelBase {
         @JsonApiId
         int mId;
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) {
+                return true;
+            }
+            if (o == null || getClass() != o.getClass()) {
+                return false;
+            }
+
+            final ModelBase modelBase = (ModelBase) o;
+
+            return mId == modelBase.mId;
+        }
+
+        @Override
+        public int hashCode() {
+            return mId;
+        }
     }
 
     @JsonApiType(ModelSimple.TYPE)
@@ -294,6 +319,30 @@ public class JsonApiConverterIT {
 
         public ModelChild(final String name) {
             this.name = name;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) {
+                return true;
+            }
+            if (o == null || getClass() != o.getClass()) {
+                return false;
+            }
+            if (!super.equals(o)) {
+                return false;
+            }
+
+            ModelChild that = (ModelChild) o;
+
+            return name != null ? name.equals(that.name) : that.name == null;
+        }
+
+        @Override
+        public int hashCode() {
+            int result = super.hashCode();
+            result = 31 * result + (name != null ? name.hashCode() : 0);
+            return result;
         }
     }
 }
