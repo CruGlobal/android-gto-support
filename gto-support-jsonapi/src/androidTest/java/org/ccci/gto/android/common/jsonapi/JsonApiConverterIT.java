@@ -238,6 +238,19 @@ public class JsonApiConverterIT {
         assertThat(target.children, hasItems(parent.children.toArray(new ModelChild[0])));
     }
 
+    @Test
+    public void verifyFromJsonRelationshipsMissingJson() throws Exception {
+        final JsonApiConverter converter =
+                new JsonApiConverter.Builder().addClasses(ModelParent.class, ModelChild.class).build();
+
+        final String raw = "{\"data\":{\"type\":\"parent\",\"id\":1}}";
+        final JsonApiObject<ModelParent> output = converter.fromJson(raw, ModelParent.class);
+        assertThat(output.isSingle(), is(true));
+        final ModelParent target = output.getDataSingle();
+        assertThat(target.mId, is(1));
+        assertThat(target.favorite, is(nullValue()));
+    }
+
     public static final class ModelNoType {}
 
     @JsonApiType("type")
