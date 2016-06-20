@@ -340,10 +340,12 @@ public final class JsonApiConverter {
                 }
                 // handle collections of relationships
                 else if (supports(fieldCollectionType)) {
-                    final JSONObject related = relationships.optJSONObject(getFieldName(field));
-                    if (related != null) {
-                        field.set(instance, resourcesFromJson(related.optJSONArray(JSON_DATA), fieldCollectionType,
-                                                              (Class<? extends Collection>) fieldType, objects));
+                    if (relationships != null) {
+                        final JSONObject related = relationships.optJSONObject(getFieldName(field));
+                        if (related != null) {
+                            field.set(instance, resourcesFromJson(related.optJSONArray(JSON_DATA), fieldCollectionType,
+                                                                  (Class<? extends Collection>) fieldType, objects));
+                        }
                     }
                 }
                 // anything else is an attribute
