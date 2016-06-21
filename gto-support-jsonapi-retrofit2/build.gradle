@@ -1,5 +1,8 @@
 dependencies {
     compile project(':gto-support-jsonapi')
 
+    compile 'com.google.guava:guava:' + deps.guava
     compile 'com.squareup.retrofit2:retrofit:' + deps.retrofit2
+
+    testCompile project(':gto-support-testing')
 }
