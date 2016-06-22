@@ -10,7 +10,8 @@ import android.support.annotation.Nullable;
 import android.support.v4.content.CursorLoader;
 
 /**
- * @deprecated this should be handled by manually including the LoaderHelpers you want to utilize in your own Loader
+ * @deprecated Since v0.9.0, this should be handled by manually including the LoaderHelpers you want to utilize in your
+ * own Loader
  */
 @Deprecated
 public abstract class CursorBroadcastReceiverSharedPreferencesChangeLoader extends CursorLoader
