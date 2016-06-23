@@ -1,16 +1,14 @@
 package org.ccci.gto.android.common.eventbus.content;
 
 import android.content.Context;
-import android.database.Cursor;
 import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.content.CursorLoader;
 
+import org.ccci.gto.android.common.support.v4.content.SimpleCursorLoader;
 import org.greenrobot.eventbus.EventBus;
 
-public abstract class CursorEventBusLoader extends CursorLoader
-        implements EventBusLoaderHelper.Interface {
+public abstract class CursorEventBusLoader extends SimpleCursorLoader implements EventBusLoaderHelper.Interface {
     @NonNull
     private final EventBusLoaderHelper mHelper;
 
@@ -63,17 +61,4 @@ public abstract class CursorEventBusLoader extends CursorLoader
     public void removeEventBusSubscriber(@NonNull final EventBusSubscriber subscriber) {
         mHelper.removeEventBusSubscriber(subscriber);
     }
-
-    @Nullable
-    @Override
-    public final Cursor loadInBackground() {
-        final Cursor c = this.getCursor();
-        if (c != null) {
-            c.getCount();
-        }
-        return c;
-    }
-
-    @Nullable
-    protected abstract Cursor getCursor();
 }
