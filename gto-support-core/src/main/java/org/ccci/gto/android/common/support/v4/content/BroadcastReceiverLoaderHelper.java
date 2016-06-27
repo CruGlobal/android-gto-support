@@ -63,6 +63,10 @@ public final class BroadcastReceiverLoaderHelper {
         }
     }
 
+    /**
+     * Callback to register the configured BroadcastReceiver callbacks. This should be triggered before any other events
+     * within {@link Loader#onStartLoading()}.
+     */
     public void onStartLoading() {
         synchronized (this) {
             registerReceiver(mReceiver);

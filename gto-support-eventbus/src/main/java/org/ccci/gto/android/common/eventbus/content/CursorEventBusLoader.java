@@ -34,8 +34,8 @@ public abstract class CursorEventBusLoader extends SimpleCursorLoader implements
     @Override
     @MainThread
     protected void onStartLoading() {
-        super.onStartLoading();
         mHelper.onStartLoading();
+        super.onStartLoading();
     }
 
     @Override
