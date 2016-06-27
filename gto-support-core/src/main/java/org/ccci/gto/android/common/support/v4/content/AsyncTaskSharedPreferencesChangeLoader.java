@@ -4,9 +4,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.content.AsyncTaskLoader;
 
-public abstract class AsyncTaskSharedPreferencesChangeLoader<D> extends AsyncTaskLoader<D>
+public abstract class AsyncTaskSharedPreferencesChangeLoader<D> extends CachingAsyncTaskLoader<D>
         implements SharedPreferencesChangeLoaderHelper.Interface {
     private final SharedPreferencesChangeLoaderHelper mHelper;
 
@@ -30,18 +29,8 @@ public abstract class AsyncTaskSharedPreferencesChangeLoader<D> extends AsyncTas
 
     @Override
     protected void onStartLoading() {
-        super.onStartLoading();
         mHelper.onStartLoading();
-
-        // deliver already loaded data
-        if (mData != null) {
-            deliverResult(mData);
-        }
-
-        // force a fresh load if needed
-        if (takeContentChanged() || mData == null) {
-            forceLoad();
-        }
+        super.onStartLoading();
     }
 
     @Override

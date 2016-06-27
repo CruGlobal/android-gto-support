@@ -46,6 +46,10 @@ public final class EventBusLoaderHelper {
         unregisterSubscriber(subscriber);
     }
 
+    /**
+     * Callback to register the configured EventBus callbacks. This should be triggered before any other events within
+     * {@link Loader#onStartLoading()}.
+     */
     @MainThread
     public void onStartLoading() {
         synchronized (this) {

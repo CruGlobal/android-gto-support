@@ -29,6 +29,10 @@ public final class SharedPreferencesChangeLoaderHelper {
 
     /* BEGIN lifecycle */
 
+    /**
+     * Callback to register the preference change listener. This should be triggered before any other events within
+     * {@link Loader#onStartLoading()}.
+     */
     public void onStartLoading() {
         mPrefs.registerOnSharedPreferenceChangeListener(mChangeListener);
     }

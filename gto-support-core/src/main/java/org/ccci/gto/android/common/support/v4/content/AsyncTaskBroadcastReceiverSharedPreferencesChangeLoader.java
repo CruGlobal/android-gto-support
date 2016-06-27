@@ -6,14 +6,13 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.content.AsyncTaskLoader;
 
 /**
  * @deprecated Since v0.9.0, this should be handled by manually including the LoaderHelpers you want to utilize in your
  * own Loader
  */
 @Deprecated
-public abstract class AsyncTaskBroadcastReceiverSharedPreferencesChangeLoader<D> extends AsyncTaskLoader<D>
+public abstract class AsyncTaskBroadcastReceiverSharedPreferencesChangeLoader<D> extends CachingAsyncTaskLoader<D>
         implements BroadcastReceiverLoaderHelper.Interface, SharedPreferencesChangeLoaderHelper.Interface {
     private final BroadcastReceiverLoaderHelper mHelper1;
     private final SharedPreferencesChangeLoaderHelper mHelper2;
@@ -36,19 +35,9 @@ public abstract class AsyncTaskBroadcastReceiverSharedPreferencesChangeLoader<D>
 
     @Override
     protected void onStartLoading() {
-        super.onStartLoading();
         mHelper1.onStartLoading();
         mHelper2.onStartLoading();
-
-        // deliver already loaded data
-        if (mData != null) {
-            deliverResult(mData);
-        }
-
-        // force a fresh load if needed
-        if (takeContentChanged() || mData == null) {
-            forceLoad();
-        }
+        super.onStartLoading();
     }
 
     @Override
