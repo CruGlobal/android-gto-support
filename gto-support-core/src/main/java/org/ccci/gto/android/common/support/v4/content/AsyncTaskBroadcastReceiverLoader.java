@@ -5,9 +5,8 @@ import android.content.Context;
 import android.content.IntentFilter;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.content.AsyncTaskLoader;
 
-public abstract class AsyncTaskBroadcastReceiverLoader<D> extends AsyncTaskLoader<D>
+public abstract class AsyncTaskBroadcastReceiverLoader<D> extends CachingAsyncTaskLoader<D>
         implements BroadcastReceiverLoaderHelper.Interface {
     private final BroadcastReceiverLoaderHelper mHelper;
 
@@ -22,18 +21,8 @@ public abstract class AsyncTaskBroadcastReceiverLoader<D> extends AsyncTaskLoade
 
     @Override
     protected void onStartLoading() {
-        super.onStartLoading();
         mHelper.onStartLoading();
-
-        // deliver already loaded data
-        if (mData != null) {
-            deliverResult(mData);
-        }
-
-        // force a fresh load if needed
-        if (takeContentChanged() || mData == null) {
-            forceLoad();
-        }
+        super.onStartLoading();
     }
 
     @Override

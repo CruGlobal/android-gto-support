@@ -20,8 +20,8 @@ public abstract class CursorBroadcastReceiverLoader extends SimpleCursorLoader
 
     @Override
     protected void onStartLoading() {
-        super.onStartLoading();
         mHelper.onStartLoading();
+        super.onStartLoading();
     }
 
     @Override

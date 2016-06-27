@@ -34,9 +34,9 @@ public abstract class CursorBroadcastReceiverSharedPreferencesChangeLoader exten
 
     @Override
     protected void onStartLoading() {
-        super.onStartLoading();
         mHelper1.onStartLoading();
         mHelper2.onStartLoading();
+        super.onStartLoading();
     }
 
     @Override
