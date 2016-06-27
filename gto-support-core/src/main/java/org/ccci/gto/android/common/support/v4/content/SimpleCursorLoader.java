@@ -5,8 +5,9 @@ import android.database.Cursor;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.WorkerThread;
+import android.support.v4.content.CursorLoader;
 
-public abstract class SimpleCursorLoader extends android.support.v4.content.CursorLoader {
+public abstract class SimpleCursorLoader extends CursorLoader {
     public SimpleCursorLoader(@NonNull final Context context) {
         super(context);
     }
