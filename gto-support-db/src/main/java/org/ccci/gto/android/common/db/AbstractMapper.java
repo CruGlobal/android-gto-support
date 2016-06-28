@@ -84,6 +84,18 @@ public abstract class AbstractMapper<T> implements Mapper<T> {
     }
 
     @Nullable
+    protected final <E extends Enum<E>> E getEnum(@NonNull final Cursor c, @NonNull final String field,
+                                                  final Class<E> clazz) {
+        return CursorUtils.getEnum(c, field, clazz);
+    }
+
+    @Nullable
+    protected final <E extends Enum<E>> E getEnum(@NonNull final Cursor c, @NonNull final String field,
+                                                  final Class<E> clazz, @Nullable final E defValue) {
+        return CursorUtils.getEnum(c, field, clazz, defValue);
+    }
+
+    @Nullable
     protected final Locale getLocale(@NonNull final Cursor c, @NonNull final String field) {
         return CursorUtils.getLocale(c, field);
     }
@@ -103,6 +115,11 @@ public abstract class AbstractMapper<T> implements Mapper<T> {
     @Nullable
     protected final Long serialize(@Nullable final Date date) {
         return date != null ? date.getTime() : null;
+    }
+
+    @Nullable
+    protected final String serialize(@Nullable final Enum e) {
+        return e != null ? e.toString() : null;
     }
 
     @NonNull
