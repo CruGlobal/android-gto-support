@@ -102,6 +102,7 @@
             <property name="tokens" value="COMMA"/>
             <property name="option" value="EOL"/>
         </module>
+        <module name="SingleSpaceSeparator"/>
         <module name="TypecastParenPad"/>
         <module name="WhitespaceAfter"/>
         <module name="WhitespaceAround">
