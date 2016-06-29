@@ -124,7 +124,7 @@ public class JsonApiConverterFactory extends Converter.Factory {
     private class ObjectResponseBodyConverter<T> implements Converter<ResponseBody, T> {
         private final JsonApiObjectResponseBodyConverter<T> mWrappedConverter;
 
-        public ObjectResponseBodyConverter(@NonNull final Class<T> type) {
+        ObjectResponseBodyConverter(@NonNull final Class<T> type) {
             mWrappedConverter = new JsonApiObjectResponseBodyConverter<>(type);
         }
 
