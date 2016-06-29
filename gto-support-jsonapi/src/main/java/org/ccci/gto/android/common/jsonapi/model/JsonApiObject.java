@@ -12,6 +12,8 @@ import java.util.Collections;
 import java.util.List;
 
 public final class JsonApiObject<T> {
+    public static final String MEDIA_TYPE = "application/vnd.api+json";
+
     public static final String JSON_DATA = "data";
     public static final String JSON_DATA_TYPE = "type";
     public static final String JSON_DATA_ID = "id";
