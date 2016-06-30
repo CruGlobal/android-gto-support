@@ -5,4 +5,9 @@ dependencies {
     compile 'com.squareup.retrofit2:retrofit:' + deps.retrofit2
 
     testCompile project(':gto-support-testing')
+    testCompile 'com.google.code.gson:gson:' + deps.gson
+    testCompile 'com.squareup.okhttp3:mockwebserver:' + deps.okhttp3
+    testCompile 'net.javacrumbs.json-unit:json-unit:1.12.1'
+    testCompile 'net.javacrumbs.json-unit:json-unit-fluent:1.12.1'
+    testCompile 'org.json:json:20160212'
 }

@@ -1,6 +1,7 @@
 package org.ccci.gto.android.common.jsonapi.retrofit2;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import org.ccci.gto.android.common.jsonapi.JsonApiConverter;
 import org.ccci.gto.android.common.jsonapi.JsonApiUtils;
@@ -13,13 +14,20 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.List;
 
+import okhttp3.MediaType;
+import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import retrofit2.Converter;
 import retrofit2.Retrofit;
 
 public class JsonApiConverterFactory extends Converter.Factory {
+    static final MediaType MEDIA_TYPE = MediaType.parse(JsonApiObject.MEDIA_TYPE);
+
     @NonNull
-    private final JsonApiConverter mConverter;
+    final JsonApiConverter mConverter;
+
+    final JsonApiObjectRequestBodyConverter mJsonApiObjectRequestConverter = new JsonApiObjectRequestBodyConverter();
+    private final ObjectRequestBodyConverter mObjectRequestConverter = new ObjectRequestBodyConverter();
 
     private JsonApiConverterFactory(@NonNull final JsonApiConverter converter) {
         mConverter = converter;
@@ -35,6 +43,28 @@ public class JsonApiConverterFactory extends Converter.Factory {
         return new JsonApiConverterFactory(new JsonApiConverter.Builder().addClasses(classes).build());
     }
 
+    @Nullable
+    @Override
+    public Converter<?, RequestBody> requestBodyConverter(@NonNull final Type type,
+                                                          final Annotation[] parameterAnnotations,
+                                                          final Annotation[] methodAnnotations,
+                                                          final Retrofit retrofit) {
+        final Class<?> c = JsonApiUtils.getRawType(type);
+        if (JsonApiObject.class.isAssignableFrom(c)) {
+            if (!(type instanceof ParameterizedType)) {
+                throw new IllegalArgumentException("JsonApiObject needs to be parameterized");
+            }
+
+            return mJsonApiObjectRequestConverter;
+        } else if (List.class.isAssignableFrom(c)) {
+            // TODO
+        } else if (mConverter.supports(c)) {
+            return mObjectRequestConverter;
+        }
+        return null;
+    }
+
+    @Nullable
     @Override
     public Converter<ResponseBody, ?> responseBodyConverter(@NonNull final Type type, final Annotation[] annotations,
                                                             final Retrofit retrofit) {
@@ -50,10 +80,19 @@ public class JsonApiConverterFactory extends Converter.Factory {
         } else if (List.class.isAssignableFrom(c)) {
             // TODO
         } else if (mConverter.supports(c)) {
-            // TODO
+            return new ObjectResponseBodyConverter<>(c);
         }
 
         return null;
+    }
+
+    private class JsonApiObjectRequestBodyConverter implements Converter<JsonApiObject<?>, RequestBody> {
+        JsonApiObjectRequestBodyConverter() {}
+
+        @Override
+        public RequestBody convert(final JsonApiObject<?> value) throws IOException {
+            return RequestBody.create(MEDIA_TYPE, mConverter.toJson(value).getBytes("UTF-8"));
+        }
     }
 
     private class JsonApiObjectResponseBodyConverter<T> implements Converter<ResponseBody, JsonApiObject<T>> {
@@ -70,6 +109,28 @@ public class JsonApiConverterFactory extends Converter.Factory {
             } catch (final JSONException e) {
                 throw new IOException("Error parsing JSON", e);
             }
+        }
+    }
+
+    private class ObjectRequestBodyConverter implements Converter<Object, RequestBody> {
+        ObjectRequestBodyConverter() {}
+
+        @Override
+        public RequestBody convert(final Object value) throws IOException {
+            return mJsonApiObjectRequestConverter.convert(JsonApiObject.single(value));
+        }
+    }
+
+    private class ObjectResponseBodyConverter<T> implements Converter<ResponseBody, T> {
+        private final JsonApiObjectResponseBodyConverter<T> mWrappedConverter;
+
+        ObjectResponseBodyConverter(@NonNull final Class<T> type) {
+            mWrappedConverter = new JsonApiObjectResponseBodyConverter<>(type);
+        }
+
+        @Override
+        public T convert(final ResponseBody value) throws IOException {
+            return mWrappedConverter.convert(value).getDataSingle();
         }
     }
 }
