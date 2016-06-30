@@ -145,7 +145,7 @@ public abstract class Expression implements Parcelable {
     }
 
     /**
-     * @deprecated use {@link Table#field(String)} instead
+     * @deprecated Since v0.9.0, use {@link Table#field(String)} instead
      */
     @NonNull
     @Deprecated
@@ -154,7 +154,7 @@ public abstract class Expression implements Parcelable {
     }
 
     /**
-     * @deprecated use {@link Table#forClass(Class)} and {@link Table#field(String)} instead
+     * @deprecated Since v0.9.0, use {@link Table#forClass(Class)} and {@link Table#field(String)} instead
      */
     @NonNull
     @Deprecated
