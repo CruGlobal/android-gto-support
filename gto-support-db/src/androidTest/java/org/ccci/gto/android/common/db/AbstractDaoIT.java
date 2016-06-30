@@ -218,6 +218,96 @@ public class AbstractDaoIT {
     }
 
     @Test
+    public void verifyUpdateAll() throws Exception {
+        final TestDao dao = getDao();
+
+        // create some objects
+        final Compound orig1 = new Compound("1", "1", "orig1", "d1");
+        final Compound orig2 = new Compound("1", "2", "orig2", "d2");
+        final Compound orig3 = new Compound("2", "1", "orig3", "d3");
+        dao.insert(orig1);
+        dao.insert(orig2);
+        dao.insert(orig3);
+
+        // verify initial values
+        final Compound refresh11 = dao.refresh(orig1);
+        final Compound refresh12 = dao.refresh(orig2);
+        final Compound refresh13 = dao.refresh(orig3);
+        assertNotNull(refresh11);
+        assertNotNull(refresh12);
+        assertNotNull(refresh13);
+        assertThat(refresh11.data1, is(orig1.data1));
+        assertThat(refresh11.data2, is(orig1.data2));
+        assertThat(refresh12.data1, is(orig2.data1));
+        assertThat(refresh12.data2, is(orig2.data2));
+        assertThat(refresh13.data1, is(orig3.data1));
+        assertThat(refresh13.data2, is(orig3.data2));
+
+        // trigger update
+        final Compound update = new Compound("", "", null, "newData");
+        dao.updateAll(Compound.class, CompoundTable.FIELD_ID1.eq("1"), update, CompoundTable.COLUMN_DATA2);
+
+        // verify final values
+        final Compound refresh21 = dao.refresh(orig1);
+        final Compound refresh22 = dao.refresh(orig2);
+        final Compound refresh23 = dao.refresh(orig3);
+        assertNotNull(refresh21);
+        assertNotNull(refresh22);
+        assertNotNull(refresh23);
+        assertThat(refresh21.data1, is(orig1.data1));
+        assertThat(refresh21.data2, allOf(is(not(orig1.data2)), is(update.data2)));
+        assertThat(refresh22.data1, is(orig2.data1));
+        assertThat(refresh22.data2, allOf(is(not(orig2.data2)), is(update.data2)));
+        assertThat(refresh23.data1, is(orig3.data1));
+        assertThat(refresh23.data2, allOf(is(orig3.data2), is(not(update.data2))));
+    }
+
+    @Test
+    public void verifyUpdateAllNoWhere() throws Exception {
+        final TestDao dao = getDao();
+
+        // create some objects
+        final Compound orig1 = new Compound("1", "1", "orig1", "d1");
+        final Compound orig2 = new Compound("1", "2", "orig2", "d2");
+        final Compound orig3 = new Compound("2", "1", "orig3", "d3");
+        dao.insert(orig1);
+        dao.insert(orig2);
+        dao.insert(orig3);
+
+        // verify initial values
+        final Compound refresh11 = dao.refresh(orig1);
+        final Compound refresh12 = dao.refresh(orig2);
+        final Compound refresh13 = dao.refresh(orig3);
+        assertNotNull(refresh11);
+        assertNotNull(refresh12);
+        assertNotNull(refresh13);
+        assertThat(refresh11.data1, is(orig1.data1));
+        assertThat(refresh11.data2, is(orig1.data2));
+        assertThat(refresh12.data1, is(orig2.data1));
+        assertThat(refresh12.data2, is(orig2.data2));
+        assertThat(refresh13.data1, is(orig3.data1));
+        assertThat(refresh13.data2, is(orig3.data2));
+
+        // trigger update
+        final Compound update = new Compound("", "", null, "newData");
+        dao.updateAll(Compound.class, null, update, CompoundTable.COLUMN_DATA2);
+
+        // verify final values
+        final Compound refresh21 = dao.refresh(orig1);
+        final Compound refresh22 = dao.refresh(orig2);
+        final Compound refresh23 = dao.refresh(orig3);
+        assertNotNull(refresh21);
+        assertNotNull(refresh22);
+        assertNotNull(refresh23);
+        assertThat(refresh21.data1, is(orig1.data1));
+        assertThat(refresh21.data2, allOf(is(not(orig1.data2)), is(update.data2)));
+        assertThat(refresh22.data1, is(orig2.data1));
+        assertThat(refresh22.data2, allOf(is(not(orig2.data2)), is(update.data2)));
+        assertThat(refresh23.data1, is(orig3.data1));
+        assertThat(refresh23.data2, allOf(is(not(orig3.data2)), is(update.data2)));
+    }
+
+    @Test
     public void testDeleteCompoundKey() throws Exception {
         final TestDao dao = getDao();
 
