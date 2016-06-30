@@ -127,7 +127,7 @@ public abstract class AbstractDao {
     }
 
     /**
-     * @deprecated override {@link AbstractDao#getPrimaryKeyWhere(Class)} instead.
+     * @deprecated Since v0.8.0, override {@link AbstractDao#getPrimaryKeyWhere(Class)} instead.
      */
     @NonNull
     @Deprecated
@@ -137,7 +137,7 @@ public abstract class AbstractDao {
     }
 
     /**
-     * @deprecated override {@link AbstractDao#getPrimaryKeyWhere(Object)} instead.
+     * @deprecated Since v0.8.0, override {@link AbstractDao#getPrimaryKeyWhere(Object)} instead.
      */
     @NonNull
     @Deprecated
