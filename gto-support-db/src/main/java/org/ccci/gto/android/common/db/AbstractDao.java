@@ -451,17 +451,32 @@ public abstract class AbstractDao {
     @WorkerThread
     public final <T> void update(@NonNull final T obj, @NonNull final String... projection) {
         @SuppressWarnings("unchecked")
-        final Class<T> clazz = (Class<T>) obj.getClass();
-        final String table = this.getTable(clazz);
-        final ContentValues values = this.getMapper(clazz).toContentValues(obj, projection);
-        final Pair<String, String[]> where = this.getPrimaryKeyWhere(obj).buildSql(this);
+        final Class<T> type = (Class<T>) obj.getClass();
+        final ContentValues values = getMapper(type).toContentValues(obj, projection);
+        update(type, values, getPrimaryKeyWhere(obj));
+    }
+
+    /**
+     * Update the specified {@code values} for objects of type {@code type} that match the specified {@code where}
+     * clause. If {@code where} is null, all objects of type {@code type} will be updated
+     *
+     * @param type   the type of Object to update
+     * @param values the new values for the specified object
+     * @param where  an optional {@link Expression} to narrow the scope of which objects are updated
+     */
+    @WorkerThread
+    public final void update(@NonNull final Class<?> type, @NonNull final ContentValues values,
+                             @Nullable final Expression where) {
+        final String table = getTable(type);
+        final Pair<String, String[]> builtWhere =
+                where != null ? where.buildSql(this) : Pair.<String, String[]>create(null, null);
 
         // execute update
         final SQLiteDatabase db = mDbHelper.getWritableDatabase();
         final Transaction tx = new Transaction(db);
         try {
             tx.beginTransactionNonExclusive();
-            db.update(table, values, where.first, where.second);
+            db.update(table, values, builtWhere.first, builtWhere.second);
             tx.setTransactionSuccessful();
         } finally {
             tx.endTransaction();
