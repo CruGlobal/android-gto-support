@@ -488,7 +488,8 @@ public abstract class AbstractDao {
      * {@code sample} object. The objects actually updated can be restricted via the {@code where} expression.
      *
      * @param type       the type of objects being updated
-     * @param where      a where clause that restricts which objects get updated. If this is null all objects are updated.
+     * @param where      a where clause that restricts which objects get updated. If this is null all objects are
+     *                   updated.
      * @param sample     a sample object that is used to generated the values being set on other objects.
      * @param projection the fields to update in this call
      * @param <T>        the type of objects being updated
