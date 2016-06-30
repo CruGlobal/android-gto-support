@@ -465,8 +465,8 @@ public abstract class AbstractDao {
      * @param where  an optional {@link Expression} to narrow the scope of which objects are updated
      */
     @WorkerThread
-    public final void update(@NonNull final Class<?> type, @NonNull final ContentValues values,
-                             @Nullable final Expression where) {
+    protected final void update(@NonNull final Class<?> type, @NonNull final ContentValues values,
+                                @Nullable final Expression where) {
         final String table = getTable(type);
         final Pair<String, String[]> builtWhere =
                 where != null ? where.buildSql(this) : Pair.<String, String[]>create(null, null);
