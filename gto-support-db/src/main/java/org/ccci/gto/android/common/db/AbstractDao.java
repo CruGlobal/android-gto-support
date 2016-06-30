@@ -445,7 +445,7 @@ public abstract class AbstractDao {
 
     @WorkerThread
     public final void update(@NonNull final Object obj) {
-        this.update(obj, this.getFullProjection(obj.getClass()));
+        update(obj, getFullProjection(obj.getClass()));
     }
 
     @WorkerThread
