@@ -163,6 +163,27 @@ public class JsonApiConverterIT {
     }
 
     @Test
+    public void verifyFromJsonSimpleAlias() throws Exception {
+        final JsonApiConverter converter = new JsonApiConverter.Builder().addClasses(ModelSimple.class).build();
+
+        // valid types
+        for (final String type : new String[] {ModelSimple.TYPE, ModelSimple.ALIAS1, ModelSimple.ALIAS2}) {
+            final JsonApiObject<ModelSimple> output =
+                    converter.fromJson("{data:{type:'" + type + "',id=79}}", ModelSimple.class);
+            final ModelSimple obj = output.getDataSingle();
+            assertNotNull(obj);
+            assertThat(obj.mId, is(79));
+        }
+
+        // invalid types
+        for (final String type : new String[] {ModelSimple.NOTALIAS}) {
+            final JsonApiObject<ModelSimple> output =
+                    converter.fromJson("{data:{type:'" + type + "',id=79}}", ModelSimple.class);
+            assertNull(output.getDataSingle());
+        }
+    }
+
+    @Test
     public void verifyFromJsonAttributes() throws Exception {
         final JsonApiConverter converter = new JsonApiConverter.Builder().addClasses(ModelAttributes.class).build();
 
@@ -283,9 +304,12 @@ public class JsonApiConverterIT {
         }
     }
 
-    @JsonApiType(ModelSimple.TYPE)
+    @JsonApiType(value = ModelSimple.TYPE, aliases = {ModelSimple.ALIAS1, ModelSimple.ALIAS2})
     public static final class ModelSimple extends ModelBase {
         static final String TYPE = "simple";
+        static final String ALIAS1 = "aliased";
+        static final String ALIAS2 = "simple_alias";
+        static final String NOTALIAS = "notsimple";
 
         public ModelSimple() {}
 

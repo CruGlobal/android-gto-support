@@ -84,6 +84,17 @@ public final class JsonApiConverter {
             // store this type
             mTypes.put(type, c);
             mFields.put(c, getFields(c));
+
+            // handle any type aliases
+            for (final String alias : getResourceTypeAliases(c)) {
+                // throw an exception if the specified alias is already defined
+                if (mTypes.containsKey(alias)) {
+                    throw new IllegalArgumentException(
+                            "Duplicate @JsonApiType(\"" + alias + "\") shared by " + mTypes.get(alias) + " and " + c);
+                }
+
+                mTypes.put(alias, c);
+            }
         }
     }
 
@@ -366,6 +377,12 @@ public final class JsonApiConverter {
     private String getResourceType(@NonNull final Class<?> clazz) {
         final JsonApiType type = clazz.getAnnotation(JsonApiType.class);
         return type != null ? type.value() : null;
+    }
+
+    @NonNull
+    private String[] getResourceTypeAliases(@NonNull final Class<?> clazz) {
+        final JsonApiType type = clazz.getAnnotation(JsonApiType.class);
+        return type != null ? type.aliases() : new String[0];
     }
 
     @NonNull
