@@ -76,12 +76,12 @@ public abstract class CursorExpandableItemAdapter<GVH extends ViewHolder, CVH ex
     }
 
     @Override
-    public final int getGroupCount() {
+    public int getGroupCount() {
         return mIndex.length;
     }
 
     @Override
-    public final int getChildCount(final int groupPosition) {
+    public int getChildCount(final int groupPosition) {
         assert mCursor != null;
         final int start = mIndex[groupPosition];
         final int end = groupPosition + 1 < mIndex.length ? mIndex[groupPosition + 1] : mCursor.getCount();
@@ -144,14 +144,14 @@ public abstract class CursorExpandableItemAdapter<GVH extends ViewHolder, CVH ex
                                                                int groupPosition, int x, int y, boolean expand);
 
     @NonNull
-    private Cursor scrollCursor(final int groupPosition) {
+    protected Cursor scrollCursor(final int groupPosition) {
         assert mCursor != null;
         mCursor.moveToPosition(mIndex[groupPosition]);
         return mCursor;
     }
 
     @NonNull
-    private Cursor scrollCursor(final int groupPosition, final int childPosition) {
+    protected Cursor scrollCursor(final int groupPosition, final int childPosition) {
         assert mCursor != null;
         mCursor.moveToPosition(mIndex[groupPosition] + childPosition);
         return mCursor;
