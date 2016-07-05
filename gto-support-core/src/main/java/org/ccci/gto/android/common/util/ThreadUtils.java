@@ -1,12 +1,14 @@
 package org.ccci.gto.android.common.util;
 
 import android.os.Looper;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v4.util.LongSparseArray;
 
 import java.util.Map;
 
 public final class ThreadUtils {
-    private ThreadUtils() {
-    }
+    private ThreadUtils() {}
 
     public static void assertNotOnUiThread() {
         if (isUiThread()) {
@@ -20,13 +22,29 @@ public final class ThreadUtils {
         }
     }
 
+    @NonNull
     @SuppressWarnings("SynchronizationOnLocalVariableOrMethodParameter")
-    public static <K> Object getLock(final Map<K, Object> locks, final K key) {
+    public static <K> Object getLock(@NonNull final Map<K, Object> locks, @Nullable final K key) {
         synchronized (locks) {
-            if (!locks.containsKey(key)) {
-                locks.put(key, new Object());
+            Object lock = locks.get(key);
+            if (lock == null) {
+                lock = new Object();
+                locks.put(key, lock);
             }
-            return locks.get(key);
+            return lock;
+        }
+    }
+
+    @NonNull
+    @SuppressWarnings("SynchronizationOnLocalVariableOrMethodParameter")
+    public static Object getLock(@NonNull final LongSparseArray<Object> locks, final long key) {
+        synchronized (locks) {
+            Object lock = locks.get(key);
+            if (lock == null) {
+                lock = new Object();
+                locks.put(key, lock);
+            }
+            return lock;
         }
     }
 
