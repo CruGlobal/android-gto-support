@@ -2,7 +2,9 @@ package org.ccci.gto.android.common.recyclerview.adapter;
 
 import android.database.Cursor;
 import android.provider.BaseColumns;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.UiThread;
 import android.support.v7.widget.RecyclerView;
 
 public abstract class CursorAdapter<VH extends RecyclerView.ViewHolder> extends RecyclerView.Adapter<VH> {
@@ -60,4 +62,16 @@ public abstract class CursorAdapter<VH extends RecyclerView.ViewHolder> extends 
     public int getItemCount() {
         return mCursor != null ? mCursor.getCount() : 0;
     }
+
+    @UiThread
+    @Override
+    public final void onBindViewHolder(@NonNull final VH holder, final int position) {
+        if (mCursor != null) {
+            mCursor.moveToPosition(position);
+        }
+        onBindViewHolder(holder, mCursor, position);
+    }
+
+    @UiThread
+    protected abstract void onBindViewHolder(@NonNull VH holder, @Nullable Cursor cursor, int position);
 }
