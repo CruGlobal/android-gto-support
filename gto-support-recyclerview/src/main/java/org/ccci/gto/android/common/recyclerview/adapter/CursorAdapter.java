@@ -31,6 +31,7 @@ public abstract class CursorAdapter<VH extends RecyclerView.ViewHolder> extends 
         }
     }
 
+    @UiThread
     @Nullable
     public Cursor swapCursor(@Nullable final Cursor cursor) {
         final Cursor old = mCursor;
@@ -46,18 +47,30 @@ public abstract class CursorAdapter<VH extends RecyclerView.ViewHolder> extends 
         return old;
     }
 
+    @UiThread
+    protected Cursor scrollCursor(@Nullable final Cursor cursor, final int position) {
+        if (cursor != null) {
+            cursor.moveToPosition(position);
+        }
+        return cursor;
+    }
+
+    @UiThread
     @Override
     public long getItemId(final int position) {
         // return the item id if we have a cursor and id column
-        if (mCursor != null && mIdColumn >= 0) {
-            mCursor.moveToPosition(position);
-            return mCursor.getLong(mIdColumn);
+        if (mIdColumn >= 0) {
+            final Cursor c = scrollCursor(mCursor, position);
+            if (c != null) {
+                return c.getLong(mIdColumn);
+            }
         }
 
         // default to NO_ID
         return RecyclerView.NO_ID;
     }
 
+    @UiThread
     @Override
     public int getItemCount() {
         return mCursor != null ? mCursor.getCount() : 0;
@@ -66,10 +79,7 @@ public abstract class CursorAdapter<VH extends RecyclerView.ViewHolder> extends 
     @UiThread
     @Override
     public final void onBindViewHolder(@NonNull final VH holder, final int position) {
-        if (mCursor != null) {
-            mCursor.moveToPosition(position);
-        }
-        onBindViewHolder(holder, mCursor, position);
+        onBindViewHolder(holder, scrollCursor(mCursor, position), position);
     }
 
     @UiThread
