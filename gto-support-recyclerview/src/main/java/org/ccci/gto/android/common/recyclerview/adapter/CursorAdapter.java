@@ -15,6 +15,11 @@ public abstract class CursorAdapter<VH extends RecyclerView.ViewHolder> extends 
         setHasStableIds(true);
     }
 
+    /**
+     * @deprecated Since v1.0.0, letting a ViewAdapter close a Cursor for you has been discouraged since at least
+     * Gingerbread. We shouldn't implement a discouraged pattern in our own support adapters.
+     */
+    @Deprecated
     public void changeCursor(@Nullable final Cursor cursor) {
         final Cursor old = swapCursor(cursor);
 
