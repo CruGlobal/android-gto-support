@@ -3,9 +3,10 @@ package org.ccci.gto.android.common.jsonapi;
 import android.support.test.runner.AndroidJUnit4;
 
 import org.ccci.gto.android.common.jsonapi.annotation.JsonApiAttribute;
-import org.ccci.gto.android.common.jsonapi.annotation.JsonApiId;
 import org.ccci.gto.android.common.jsonapi.annotation.JsonApiType;
 import org.ccci.gto.android.common.jsonapi.model.JsonApiObject;
+import org.ccci.gto.android.common.jsonapi.model.ModelBase;
+import org.ccci.gto.android.common.jsonapi.model.ModelSimple;
 import org.json.JSONObject;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -279,44 +280,6 @@ public class JsonApiConverterIT {
 
     @JsonApiType("type")
     public static final class ModelDuplicateType2 {}
-
-    public abstract static class ModelBase {
-        @JsonApiId
-        int mId;
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) {
-                return true;
-            }
-            if (o == null || getClass() != o.getClass()) {
-                return false;
-            }
-
-            final ModelBase modelBase = (ModelBase) o;
-
-            return mId == modelBase.mId;
-        }
-
-        @Override
-        public int hashCode() {
-            return mId;
-        }
-    }
-
-    @JsonApiType(value = ModelSimple.TYPE, aliases = {ModelSimple.ALIAS1, ModelSimple.ALIAS2})
-    public static final class ModelSimple extends ModelBase {
-        static final String TYPE = "simple";
-        static final String ALIAS1 = "aliased";
-        static final String ALIAS2 = "simple_alias";
-        static final String NOTALIAS = "notsimple";
-
-        public ModelSimple() {}
-
-        public ModelSimple(final int id) {
-            mId = id;
-        }
-    }
 
     @JsonApiType(ModelAttributes.TYPE)
     public static final class ModelAttributes extends ModelBase {
