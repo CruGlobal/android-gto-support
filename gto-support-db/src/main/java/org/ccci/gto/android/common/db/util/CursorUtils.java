@@ -5,6 +5,8 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import org.ccci.gto.android.common.util.LocaleCompat;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -161,6 +163,42 @@ public final class CursorUtils {
     public static <E extends Enum<E>> E getNonNullEnum(@NonNull final Cursor c, @NonNull final String field,
                                                        final Class<E> clazz, @NonNull final E defValue) {
         return getEnum(c, field, clazz, defValue);
+    }
+
+    @Nullable
+    public static JSONArray getJSONArray(@NonNull final Cursor c, @NonNull final String field) {
+        return getJSONArray(c, field, null);
+    }
+
+    @Nullable
+    public static JSONArray getJSONArray(@NonNull final Cursor c, @NonNull final String field,
+                                         @Nullable final JSONArray defValue) {
+        final String raw = getString(c, field, null);
+        if (raw != null) {
+            try {
+                return new JSONArray(raw);
+            } catch (final Exception ignored) {
+            }
+        }
+        return defValue;
+    }
+
+    @Nullable
+    public static JSONObject getJSONObject(@NonNull final Cursor c, @NonNull final String field) {
+        return getJSONObject(c, field, null);
+    }
+
+    @Nullable
+    public static JSONObject getJSONObject(@NonNull final Cursor c, @NonNull final String field,
+                                           @Nullable final JSONObject defValue) {
+        final String raw = getString(c, field, null);
+        if (raw != null) {
+            try {
+                return new JSONObject(raw);
+            } catch (final Exception ignored) {
+            }
+        }
+        return defValue;
     }
 
     @Nullable
