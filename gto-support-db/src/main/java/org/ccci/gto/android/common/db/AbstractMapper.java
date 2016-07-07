@@ -6,6 +6,8 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import org.ccci.gto.android.common.db.util.CursorUtils;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -96,6 +98,28 @@ public abstract class AbstractMapper<T> implements Mapper<T> {
     }
 
     @Nullable
+    protected final JSONArray getJSONArray(@NonNull final Cursor c, @NonNull final String field) {
+        return CursorUtils.getJSONArray(c, field);
+    }
+
+    @Nullable
+    protected final JSONArray getJSONArray(@NonNull final Cursor c, @NonNull final String field,
+                                           @Nullable final JSONArray defValue) {
+        return CursorUtils.getJSONArray(c, field, defValue);
+    }
+
+    @Nullable
+    protected final JSONObject getJSONObject(@NonNull final Cursor c, @NonNull final String field) {
+        return CursorUtils.getJSONObject(c, field);
+    }
+
+    @Nullable
+    protected final JSONObject getJSONObject(@NonNull final Cursor c, @NonNull final String field,
+                                             @Nullable final JSONObject defValue) {
+        return CursorUtils.getJSONObject(c, field, defValue);
+    }
+
+    @Nullable
     protected final Locale getLocale(@NonNull final Cursor c, @NonNull final String field) {
         return CursorUtils.getLocale(c, field);
     }
@@ -120,6 +144,16 @@ public abstract class AbstractMapper<T> implements Mapper<T> {
     @Nullable
     protected final String serialize(@Nullable final Enum e) {
         return e != null ? e.toString() : null;
+    }
+
+    @Nullable
+    protected final String serialize(@Nullable final JSONArray json) {
+        return json != null ? json.toString() : null;
+    }
+
+    @Nullable
+    protected final String serialize(@Nullable final JSONObject json) {
+        return json != null ? json.toString() : null;
     }
 
     @NonNull
