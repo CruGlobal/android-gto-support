@@ -52,22 +52,22 @@ public class JsonApiConverterJSONObjectIT {
 
     @Test
     public void verifyToJson() throws Exception {
-        final String JSON_OBJECT = "{'a': 'b'}";
-        final String JSON_ARRAY = "[1, 'pizza', " + JSON_OBJECT + "]";
+        final String rawJsonObject = "{'a': 'b'}";
+        final String rawJsonArray = "[1, 'pizza', " + rawJsonObject + "]";
 
         final JsonApiConverter converter = new JsonApiConverter.Builder().addClasses(ModelJSONObject.class).build();
 
         final ModelJSONObject obj = new ModelJSONObject(99);
-        obj.object = new JSONObject(JSON_OBJECT);
-        obj.array = new JSONArray(JSON_ARRAY);
+        obj.object = new JSONObject(rawJsonObject);
+        obj.array = new JSONArray(rawJsonArray);
         final String json = converter.toJson(JsonApiObject.single(obj));
         assertThatJson(json).node("data").isObject();
         assertThat(json, jsonPartEquals("data.type", ModelJSONObject.TYPE));
         assertThat(json, jsonPartEquals("data.id", obj.mId));
         assertThatJson(json).node("data.attributes.object").isObject();
-        assertThatJson(json).node("data.attributes.object").isEqualTo(JSON_OBJECT);
+        assertThatJson(json).node("data.attributes.object").isEqualTo(rawJsonObject);
         assertThatJson(json).node("data.attributes.array").isArray();
-        assertThatJson(json).node("data.attributes.array").isEqualTo(JSON_ARRAY);
+        assertThatJson(json).node("data.attributes.array").isEqualTo(rawJsonArray);
     }
 
     @Test
@@ -102,14 +102,14 @@ public class JsonApiConverterJSONObjectIT {
 
     @Test
     public void verifyFromJson() throws Exception {
-        final String JSON_OBJECT = "{'a': 'b'}";
-        final String JSON_ARRAY = "[1, 'pizza', " + JSON_OBJECT + "]";
+        final String rawJsonObject = "{'a': 'b'}";
+        final String rawJsonArray = "[1, 'pizza', " + rawJsonObject + "]";
 
         final JsonApiConverter converter = new JsonApiConverter.Builder().addClasses(ModelJSONObject.class).build();
 
         final ModelJSONObject in = new ModelJSONObject(99);
-        in.object = new JSONObject(JSON_OBJECT);
-        in.array = new JSONArray(JSON_ARRAY);
+        in.object = new JSONObject(rawJsonObject);
+        in.array = new JSONArray(rawJsonArray);
         final String json = converter.toJson(JsonApiObject.single(in));
         final ModelJSONObject out = converter.fromJson(json, ModelJSONObject.class).getDataSingle();
         assertThat(out, not(nullValue()));
