@@ -446,11 +446,10 @@ public final class JsonApiConverter {
         }
 
         // is it a native type?
-        return type.isAssignableFrom(boolean.class) || type.isAssignableFrom(double.class) ||
-                type.isAssignableFrom(int.class) || type.isAssignableFrom(long.class) ||
-                type.isAssignableFrom(Boolean.class) || type.isAssignableFrom(Double.class) ||
-                type.isAssignableFrom(Integer.class) || type.isAssignableFrom(Long.class) ||
-                type.isAssignableFrom(String.class);
+        return boolean.class.equals(type) || double.class.equals(type) || int.class.equals(type) ||
+                long.class.equals(type) || Boolean.class.equals(type) || Double.class.equals(type) ||
+                Integer.class.equals(type) || Long.class.equals(type) || String.class.equals(type) ||
+                JSONObject.class.equals(type) || JSONArray.class.equals(type);
     }
 
     @Nullable
@@ -474,7 +473,7 @@ public final class JsonApiConverter {
 
     @Nullable
     private Object convertFromJSONObject(@NonNull final JSONObject json, @NonNull final String name,
-                                         @NonNull final Class<?> type) throws JSONException, IllegalAccessException {
+                                         @NonNull final Class<?> type) throws JSONException {
         // utilize configured TypeConverters first
         for (final TypeConverter<?> converter : mConverters) {
             if (converter.supports(type)) {
@@ -491,6 +490,10 @@ public final class JsonApiConverter {
             return json.getLong(name);
         } else if (type.isAssignableFrom(boolean.class)) {
             return json.getBoolean(name);
+        } else if (type.isAssignableFrom(JSONObject.class)) {
+            return json.getJSONObject(name);
+        } else if (type.isAssignableFrom(JSONArray.class)) {
+            return json.getJSONArray(name);
         } else if (type.isAssignableFrom(Boolean.class) || type.isAssignableFrom(Double.class) ||
                 type.isAssignableFrom(Integer.class) || type.isAssignableFrom(Long.class) ||
                 type.isAssignableFrom(String.class)) {
