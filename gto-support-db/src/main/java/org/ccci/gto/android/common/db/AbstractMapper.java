@@ -141,19 +141,15 @@ public abstract class AbstractMapper<T> implements Mapper<T> {
         return date != null ? date.getTime() : null;
     }
 
+    /**
+     * generic obj.toString() serializer. Known to work for Enums, JSONObjects, and JSONArrays.
+     *
+     * @param o the Object to serialize
+     * @return representation of the Object
+     */
     @Nullable
-    protected final String serialize(@Nullable final Enum e) {
-        return e != null ? e.toString() : null;
-    }
-
-    @Nullable
-    protected final String serialize(@Nullable final JSONArray json) {
-        return json != null ? json.toString() : null;
-    }
-
-    @Nullable
-    protected final String serialize(@Nullable final JSONObject json) {
-        return json != null ? json.toString() : null;
+    protected final String serialize(@Nullable final Object o) {
+        return o != null ? o.toString() : null;
     }
 
     @NonNull
