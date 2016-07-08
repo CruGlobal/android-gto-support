@@ -86,7 +86,7 @@ public final class JsonApiConverter {
             // store this type
             mTypes.put(type, c);
             final List<Field> fields = getFields(c);
-            for (final Iterator<Field> i = fields.iterator(); i.hasNext(); ) {
+            for (final Iterator<Field> i = fields.iterator(); i.hasNext();) {
                 final Field field = i.next();
                 if (field.getAnnotation(JsonApiId.class) != null) {
                     if (mIdField.containsKey(c)) {
