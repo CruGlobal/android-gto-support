@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import org.ccci.gto.android.common.jsonapi.JsonApiConverter;
 import org.ccci.gto.android.common.jsonapi.JsonApiUtils;
 import org.ccci.gto.android.common.jsonapi.model.JsonApiObject;
+import org.ccci.gto.android.common.jsonapi.retrofit2.annotation.JsonApiInclude;
 import org.json.JSONException;
 
 import java.io.IOException;
@@ -25,9 +26,6 @@ public class JsonApiConverterFactory extends Converter.Factory {
 
     @NonNull
     final JsonApiConverter mConverter;
-
-    final JsonApiObjectRequestBodyConverter mJsonApiObjectRequestConverter = new JsonApiObjectRequestBodyConverter();
-    private final ObjectRequestBodyConverter mObjectRequestConverter = new ObjectRequestBodyConverter();
 
     private JsonApiConverterFactory(@NonNull final JsonApiConverter converter) {
         mConverter = converter;
@@ -49,17 +47,25 @@ public class JsonApiConverterFactory extends Converter.Factory {
                                                           final Annotation[] parameterAnnotations,
                                                           final Annotation[] methodAnnotations,
                                                           final Retrofit retrofit) {
+        // find any annotations we care about
+        JsonApiInclude include = null;
+        for (final Annotation ann : parameterAnnotations) {
+            if (ann instanceof JsonApiInclude) {
+                include = (JsonApiInclude) ann;
+            }
+        }
+
         final Class<?> c = JsonApiUtils.getRawType(type);
         if (JsonApiObject.class.isAssignableFrom(c)) {
             if (!(type instanceof ParameterizedType)) {
                 throw new IllegalArgumentException("JsonApiObject needs to be parameterized");
             }
 
-            return mJsonApiObjectRequestConverter;
+            return new JsonApiObjectRequestBodyConverter(include);
         } else if (List.class.isAssignableFrom(c)) {
             // TODO
         } else if (mConverter.supports(c)) {
-            return mObjectRequestConverter;
+            return new ObjectRequestBodyConverter(include);
         }
         return null;
     }
@@ -87,11 +93,16 @@ public class JsonApiConverterFactory extends Converter.Factory {
     }
 
     private class JsonApiObjectRequestBodyConverter implements Converter<JsonApiObject<?>, RequestBody> {
-        JsonApiObjectRequestBodyConverter() {}
+        @Nullable
+        private final String[] mInclude;
+
+        JsonApiObjectRequestBodyConverter(@Nullable final JsonApiInclude include) {
+            mInclude = include != null ? include.value() : new String[0];
+        }
 
         @Override
         public RequestBody convert(final JsonApiObject<?> value) throws IOException {
-            return RequestBody.create(MEDIA_TYPE, mConverter.toJson(value).getBytes("UTF-8"));
+            return RequestBody.create(MEDIA_TYPE, mConverter.toJson(value, mInclude).getBytes("UTF-8"));
         }
     }
 
@@ -113,11 +124,16 @@ public class JsonApiConverterFactory extends Converter.Factory {
     }
 
     private class ObjectRequestBodyConverter implements Converter<Object, RequestBody> {
-        ObjectRequestBodyConverter() {}
+        @NonNull
+        private final JsonApiObjectRequestBodyConverter mWrappedConverter;
+
+        ObjectRequestBodyConverter(@Nullable final JsonApiInclude include) {
+            mWrappedConverter = new JsonApiObjectRequestBodyConverter(include);
+        }
 
         @Override
         public RequestBody convert(final Object value) throws IOException {
-            return mJsonApiObjectRequestConverter.convert(JsonApiObject.single(value));
+            return mWrappedConverter.convert(JsonApiObject.single(value));
         }
     }
 
