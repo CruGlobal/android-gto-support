@@ -34,7 +34,7 @@ import static org.junit.Assert.assertThat;
 public class JsonApiConverterFactoryTest {
     private static final String SIMPLE_SINGLE_RAW_JSON = "{data:{id:5,type:\"simple\"}}";
 
-    private static abstract class ModelBase {
+    private abstract static class ModelBase {
         @JsonApiId
         int mId;
     }
