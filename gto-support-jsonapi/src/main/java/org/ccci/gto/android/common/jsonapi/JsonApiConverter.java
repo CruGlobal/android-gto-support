@@ -26,6 +26,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 
 import static java.util.Collections.singletonMap;
 import static org.ccci.gto.android.common.jsonapi.model.JsonApiObject.JSON_DATA;
@@ -116,6 +117,12 @@ public final class JsonApiConverter {
 
     @NonNull
     public String toJson(@NonNull final JsonApiObject<?> obj) {
+        return toJson(obj, (String[]) null);
+    }
+
+    @NonNull
+    public String toJson(@NonNull final JsonApiObject<?> obj, @Nullable final String... include) {
+        final Includes includes = new Includes(include);
         try {
             final JSONObject json = new JSONObject();
             final Map<ObjKey, JSONObject> related = new HashMap<>();
@@ -124,12 +131,12 @@ public final class JsonApiConverter {
                 if (resource == null) {
                     json.put(JSON_DATA, JSONObject.NULL);
                 } else {
-                    json.put(JSON_DATA, resourceToJson(resource, related));
+                    json.put(JSON_DATA, resourceToJson(resource, includes, related));
                 }
             } else {
                 final JSONArray dataArr = new JSONArray();
                 for (final Object resource : obj.getData()) {
-                    dataArr.put(resourceToJson(resource, related));
+                    dataArr.put(resourceToJson(resource, includes, related));
                 }
                 json.put(JSON_DATA, dataArr);
             }
@@ -189,10 +196,17 @@ public final class JsonApiConverter {
         return output;
     }
 
+    /**
+     * @param resource
+     * @param include  the relationships to include related objects for.
+     * @param related
+     * @return
+     * @throws JSONException
+     */
     @Nullable
     @SuppressWarnings("checkstyle:RightCurly")
-    private JSONObject resourceToJson(@Nullable final Object resource, @NonNull final Map<ObjKey, JSONObject> related)
-            throws JSONException {
+    private JSONObject resourceToJson(@Nullable final Object resource, @NonNull final Includes include,
+                                      @NonNull final Map<ObjKey, JSONObject> related) throws JSONException {
         if (resource == null) {
             return null;
         }
@@ -227,13 +241,17 @@ public final class JsonApiConverter {
             // is this a relationship?
             if (supports(fieldType)) {
                 try {
-                    final JSONObject relatedObj = resourceToJson(field.get(resource), related);
+                    final JSONObject relatedObj =
+                            resourceToJson(field.get(resource), include.descendant(attrName), related);
                     final ObjKey key = ObjKey.create(relatedObj);
                     if (key != null) {
-                        related.put(key, relatedObj);
                         final JSONObject reference =
                                 new JSONObject(relatedObj, new String[] {JSON_DATA_TYPE, JSON_DATA_ID});
                         relationships.put(attrName, new JSONObject(singletonMap(JSON_DATA, reference)));
+
+                        if (include.include(attrName)) {
+                            related.put(key, relatedObj);
+                        }
                     }
                 } catch (final IllegalAccessException ignored) {
                 }
@@ -244,11 +262,14 @@ public final class JsonApiConverter {
                     final Collection col = (Collection) field.get(resource);
                     if (col != null) {
                         for (final Object obj : col) {
-                            final JSONObject relatedObj = resourceToJson(obj, related);
+                            final JSONObject relatedObj = resourceToJson(obj, include.descendant(attrName), related);
                             final ObjKey key = ObjKey.create(relatedObj);
                             if (key != null) {
-                                related.put(key, relatedObj);
                                 objs.put(new JSONObject(relatedObj, new String[] {JSON_DATA_TYPE, JSON_DATA_ID}));
+
+                                if (include.include(attrName)) {
+                                    related.put(key, relatedObj);
+                                }
                             }
                         }
                     }
@@ -580,6 +601,57 @@ public final class JsonApiConverter {
         @Override
         public int hashCode() {
             return Arrays.hashCode(new Object[] {mType, mId});
+        }
+    }
+
+    static final class Includes {
+        @NonNull
+        private final String mBase;
+        @Nullable
+        private final TreeSet<String> mInclude;
+        private final boolean mIncludeAll;
+
+        Includes(@Nullable final String... include) {
+            mBase = "";
+            if (include != null) {
+                mIncludeAll = false;
+                mInclude = new TreeSet<>(Arrays.asList(include));
+            } else {
+                mIncludeAll = true;
+                mInclude = null;
+            }
+        }
+
+        private Includes(@NonNull final Includes base, @NonNull final String descendant) {
+            mBase = base.mBase + descendant + ".";
+            mIncludeAll = base.mIncludeAll;
+            mInclude = base.mInclude;
+        }
+
+        boolean include(@NonNull final String relationship) {
+            if (mIncludeAll) {
+                return true;
+            }
+            assert mInclude != null;
+
+            // check for a direct include
+            final String key = mBase + relationship;
+            if (mInclude.contains(key)) {
+                return true;
+            }
+
+            // check for an implicit include
+            final String entry = mInclude.ceiling(key + ".");
+            return entry != null && entry.startsWith(key + ".");
+        }
+
+        @NonNull
+        Includes descendant(@NonNull final String relationship) {
+            if (mIncludeAll) {
+                return this;
+            }
+
+            return new Includes(this, relationship);
         }
     }
 }

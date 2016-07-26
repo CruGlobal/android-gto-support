@@ -97,6 +97,62 @@ public class JsonApiConverterRelatedIT {
         assertThat(target.favorite, is(nullValue()));
     }
 
+    @Test
+    public void verifyToJsonIncludeNothing() throws Exception {
+        final JsonApiConverter converter =
+                new JsonApiConverter.Builder().addClasses(ModelParent.class, ModelChild.class).build();
+
+        final ModelParent parent = new ModelParent();
+        parent.mId = 1;
+        parent.favorite = new ModelChild("Daniel");
+        parent.favorite.mId = 11;
+        parent.children.add(parent.favorite);
+        final ModelChild child2 = new ModelChild("Hey You");
+        child2.mId = 20;
+        parent.children.add(child2);
+
+        final String json = converter.toJson(JsonApiObject.single(parent), new String[0]);
+        assertThatJson(json).node("data").isObject();
+        assertThat(json, jsonPartEquals("data.type", ModelParent.TYPE));
+        assertThat(json, jsonNodeAbsent("data.attributes.favorite"));
+        assertThat(json, jsonNodeAbsent("data.attributes.children"));
+        assertThat(json, jsonPartEquals("data.relationships.favorite.data.type", ModelChild.TYPE));
+        assertThat(json, jsonPartEquals("data.relationships.favorite.data.id", parent.favorite.mId));
+        assertThat(json, jsonNodeAbsent("data.relationships.favorite.data.attributes"));
+        assertThatJson(json).node("data.relationships.children.data").isArray().ofLength(2);
+        assertThat(json, jsonNodeAbsent("included"));
+    }
+
+    @Test
+    public void verifyToJsonIncludePartial() throws Exception {
+        final JsonApiConverter converter =
+                new JsonApiConverter.Builder().addClasses(ModelParent.class, ModelChild.class).build();
+
+        final ModelParent parent = new ModelParent();
+        parent.mId = 1;
+        parent.favorite = new ModelChild("Daniel");
+        parent.favorite.mId = 11;
+        parent.children.add(parent.favorite);
+        final ModelChild child2 = new ModelChild("Hey You");
+        child2.mId = 20;
+        parent.children.add(child2);
+
+        final String json = converter.toJson(JsonApiObject.single(parent), "favorite");
+        assertThatJson(json).node("data").isObject();
+        assertThat(json, jsonPartEquals("data.type", ModelParent.TYPE));
+        assertThat(json, jsonNodeAbsent("data.attributes.favorite"));
+        assertThat(json, jsonNodeAbsent("data.attributes.children"));
+        assertThat(json, jsonPartEquals("data.relationships.favorite.data.type", ModelChild.TYPE));
+        assertThat(json, jsonPartEquals("data.relationships.favorite.data.id", parent.favorite.mId));
+        assertThat(json, jsonNodeAbsent("data.relationships.favorite.data.attributes"));
+        assertThatJson(json).node("data.relationships.children.data").isArray().ofLength(2);
+        assertThatJson(json).node("included").isArray().ofLength(1);
+        assertThatJson(json).node("included").matches(
+                hasItem(jsonEquals("{type:'child',id:11,attributes:{name:'Daniel'}}").when(IGNORING_EXTRA_FIELDS)));
+        assertThatJson(json).node("included").matches(not(hasItem(
+                jsonEquals("{type:'child',id:20,attributes:{name:'Hey You'}}").when(IGNORING_EXTRA_FIELDS))));
+    }
+
     @JsonApiType(ModelParent.TYPE)
     public static final class ModelParent extends ModelBase {
         static final String TYPE = "parent";
