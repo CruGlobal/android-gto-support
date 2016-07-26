@@ -22,9 +22,11 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 
 import static java.util.Collections.singletonMap;
 import static org.ccci.gto.android.common.jsonapi.model.JsonApiObject.JSON_DATA;
@@ -62,6 +64,7 @@ public final class JsonApiConverter {
     private final List<TypeConverter<?>> mConverters = new ArrayList<>();
     private final Set<Class<?>> mSupportedClasses = new HashSet<>();
     private final Map<String, Class<?>> mTypes = new HashMap<>();
+    private final Map<Class<?>, Field> mIdField = new HashMap<>();
     private final Map<Class<?>, List<Field>> mFields = new HashMap<>();
 
     private JsonApiConverter(@NonNull final List<Class<?>> classes, @NonNull final List<TypeConverter<?>> converters) {
@@ -83,7 +86,17 @@ public final class JsonApiConverter {
 
             // store this type
             mTypes.put(type, c);
-            mFields.put(c, getFields(c));
+            final List<Field> fields = getFields(c);
+            for (final Iterator<Field> i = fields.iterator(); i.hasNext();) {
+                final Field field = i.next();
+                if (field.getAnnotation(JsonApiId.class) != null) {
+                    if (mIdField.containsKey(c)) {
+                        throw new IllegalArgumentException("Class " + c + " has more than one @JsonApiId defined");
+                    }
+                    mIdField.put(c, field);
+                }
+            }
+            mFields.put(c, fields);
 
             // handle any type aliases
             for (final String alias : getResourceTypeAliases(c)) {
@@ -104,6 +117,12 @@ public final class JsonApiConverter {
 
     @NonNull
     public String toJson(@NonNull final JsonApiObject<?> obj) {
+        return toJson(obj, (String[]) null);
+    }
+
+    @NonNull
+    public String toJson(@NonNull final JsonApiObject<?> obj, @Nullable final String... include) {
+        final Includes includes = new Includes(include);
         try {
             final JSONObject json = new JSONObject();
             final Map<ObjKey, JSONObject> related = new HashMap<>();
@@ -112,12 +131,12 @@ public final class JsonApiConverter {
                 if (resource == null) {
                     json.put(JSON_DATA, JSONObject.NULL);
                 } else {
-                    json.put(JSON_DATA, resourceToJson(resource, related));
+                    json.put(JSON_DATA, resourceToJson(resource, includes, related));
                 }
             } else {
                 final JSONArray dataArr = new JSONArray();
                 for (final Object resource : obj.getData()) {
-                    dataArr.put(resourceToJson(resource, related));
+                    dataArr.put(resourceToJson(resource, includes, related));
                 }
                 json.put(JSON_DATA, dataArr);
             }
@@ -177,10 +196,17 @@ public final class JsonApiConverter {
         return output;
     }
 
+    /**
+     * @param resource
+     * @param include  the relationships to include related objects for.
+     * @param related
+     * @return
+     * @throws JSONException
+     */
     @Nullable
     @SuppressWarnings("checkstyle:RightCurly")
-    private JSONObject resourceToJson(@Nullable final Object resource, @NonNull final Map<ObjKey, JSONObject> related)
-            throws JSONException {
+    private JSONObject resourceToJson(@Nullable final Object resource, @NonNull final Includes include,
+                                      @NonNull final Map<ObjKey, JSONObject> related) throws JSONException {
         if (resource == null) {
             return null;
         }
@@ -195,22 +221,37 @@ public final class JsonApiConverter {
         final JSONObject attributes = new JSONObject();
         final JSONObject relationships = new JSONObject();
         json.put(JSON_DATA_TYPE, type);
+        final Field idField = mIdField.get(clazz);
+        if (idField != null) {
+            json.put(JSON_DATA_ID, convertToJsonValue(resource, idField));
+        }
 
         // process all fields
         for (final Field field : mFields.get(clazz)) {
+            // skip id fields, we already handled them)
+            if (field.getAnnotation(JsonApiId.class) != null) {
+                continue;
+            }
+
+            // get some common attributes about the field
+            final String attrName = getAttrName(field);
             final Class<?> fieldType = field.getType();
             final Class<?> fieldCollectionType = getFieldCollectionType(field.getGenericType());
 
             // is this a relationship?
             if (supports(fieldType)) {
                 try {
-                    final JSONObject relatedObj = resourceToJson(field.get(resource), related);
+                    final JSONObject relatedObj =
+                            resourceToJson(field.get(resource), include.descendant(attrName), related);
                     final ObjKey key = ObjKey.create(relatedObj);
                     if (key != null) {
-                        related.put(key, relatedObj);
                         final JSONObject reference =
                                 new JSONObject(relatedObj, new String[] {JSON_DATA_TYPE, JSON_DATA_ID});
-                        relationships.put(getFieldName(field), new JSONObject(singletonMap(JSON_DATA, reference)));
+                        relationships.put(attrName, new JSONObject(singletonMap(JSON_DATA, reference)));
+
+                        if (include.include(attrName)) {
+                            related.put(key, relatedObj);
+                        }
                     }
                 } catch (final IllegalAccessException ignored) {
                 }
@@ -221,40 +262,31 @@ public final class JsonApiConverter {
                     final Collection col = (Collection) field.get(resource);
                     if (col != null) {
                         for (final Object obj : col) {
-                            final JSONObject relatedObj = resourceToJson(obj, related);
+                            final JSONObject relatedObj = resourceToJson(obj, include.descendant(attrName), related);
                             final ObjKey key = ObjKey.create(relatedObj);
                             if (key != null) {
-                                related.put(key, relatedObj);
                                 objs.put(new JSONObject(relatedObj, new String[] {JSON_DATA_TYPE, JSON_DATA_ID}));
+
+                                if (include.include(attrName)) {
+                                    related.put(key, relatedObj);
+                                }
                             }
                         }
                     }
                 } catch (final IllegalAccessException ignored) {
                 }
-                relationships.put(getFieldName(field), new JSONObject(singletonMap(JSON_DATA, objs)));
+                relationships.put(attrName, new JSONObject(singletonMap(JSON_DATA, objs)));
                 continue;
             }
 
-            Object value;
-            try {
-                value = convertToJsonValue(field.get(resource));
-            } catch (final IllegalAccessException e) {
-                value = null;
-            }
-
             // skip null values
+            final Object value = convertToJsonValue(resource, field);
             if (value == null) {
                 continue;
             }
 
-            // handle id fields
-            if (field.getAnnotation(JsonApiId.class) != null) {
-                json.put(JSON_DATA_ID, value);
-            }
             // everything else is a regular attribute
-            else {
-                attributes.put(getFieldName(field), value);
-            }
+            attributes.put(attrName, value);
         }
 
         // attach attributes
@@ -332,6 +364,7 @@ public final class JsonApiConverter {
         final JSONObject attributes = json.optJSONObject(JSON_DATA_ATTRIBUTES);
         final JSONObject relationships = json.optJSONObject(JSON_DATA_RELATIONSHIPS);
         for (final Field field : mFields.get(type)) {
+            final String attrName = getAttrName(field);
             final Class<?> fieldType = field.getType();
             final Class<?> fieldCollectionType = getFieldCollectionType(field.getGenericType());
 
@@ -343,7 +376,7 @@ public final class JsonApiConverter {
                 // handle relationships
                 else if (supports(fieldType)) {
                     if (relationships != null) {
-                        final JSONObject related = relationships.optJSONObject(getFieldName(field));
+                        final JSONObject related = relationships.optJSONObject(attrName);
                         if (related != null) {
                             field.set(instance, resourceFromJson(related.optJSONObject(JSON_DATA), fieldType, objects));
                         }
@@ -352,7 +385,7 @@ public final class JsonApiConverter {
                 // handle collections of relationships
                 else if (supports(fieldCollectionType)) {
                     if (relationships != null) {
-                        final JSONObject related = relationships.optJSONObject(getFieldName(field));
+                        final JSONObject related = relationships.optJSONObject(attrName);
                         if (related != null) {
                             field.set(instance, resourcesFromJson(related.optJSONArray(JSON_DATA), fieldCollectionType,
                                                                   (Class<? extends Collection>) fieldType, objects));
@@ -362,7 +395,7 @@ public final class JsonApiConverter {
                 // anything else is an attribute
                 else {
                     if (attributes != null) {
-                        field.set(instance, convertFromJSONObject(attributes, getFieldName(field), fieldType));
+                        field.set(instance, convertFromJSONObject(attributes, attrName, fieldType));
                     }
                 }
             } catch (final JSONException | IllegalAccessException ignored) {
@@ -432,7 +465,7 @@ public final class JsonApiConverter {
     }
 
     @NonNull
-    private String getFieldName(@NonNull final Field field) {
+    private String getAttrName(@NonNull final Field field) {
         final JsonApiAttribute attr = field.getAnnotation(JsonApiAttribute.class);
         return attr != null && attr.name().length() > 0 ? attr.name() : field.getName();
     }
@@ -450,6 +483,16 @@ public final class JsonApiConverter {
                 long.class.equals(type) || Boolean.class.equals(type) || Double.class.equals(type) ||
                 Integer.class.equals(type) || Long.class.equals(type) || String.class.equals(type) ||
                 JSONObject.class.equals(type) || JSONArray.class.equals(type);
+    }
+
+    @Nullable
+    private Object convertToJsonValue(@NonNull final Object resource, @NonNull final Field field) {
+        // get the value from the field
+        try {
+            return convertToJsonValue(field.get(resource));
+        } catch (IllegalAccessException e) {
+            return null;
+        }
     }
 
     @Nullable
@@ -558,6 +601,57 @@ public final class JsonApiConverter {
         @Override
         public int hashCode() {
             return Arrays.hashCode(new Object[] {mType, mId});
+        }
+    }
+
+    static final class Includes {
+        @NonNull
+        private final String mBase;
+        @Nullable
+        private final TreeSet<String> mInclude;
+        private final boolean mIncludeAll;
+
+        Includes(@Nullable final String... include) {
+            mBase = "";
+            if (include != null) {
+                mIncludeAll = false;
+                mInclude = new TreeSet<>(Arrays.asList(include));
+            } else {
+                mIncludeAll = true;
+                mInclude = null;
+            }
+        }
+
+        private Includes(@NonNull final Includes base, @NonNull final String descendant) {
+            mBase = base.mBase + descendant + ".";
+            mIncludeAll = base.mIncludeAll;
+            mInclude = base.mInclude;
+        }
+
+        boolean include(@NonNull final String relationship) {
+            if (mIncludeAll) {
+                return true;
+            }
+            assert mInclude != null;
+
+            // check for a direct include
+            final String key = mBase + relationship;
+            if (mInclude.contains(key)) {
+                return true;
+            }
+
+            // check for an implicit include
+            final String entry = mInclude.ceiling(key + ".");
+            return entry != null && entry.startsWith(key + ".");
+        }
+
+        @NonNull
+        Includes descendant(@NonNull final String relationship) {
+            if (mIncludeAll) {
+                return this;
+            }
+
+            return new Includes(this, relationship);
         }
     }
 }
