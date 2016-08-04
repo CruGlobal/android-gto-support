@@ -3,5 +3,5 @@ dependencies {
     compile project(':gto-support-api-base')
 
     compile 'com.google.guava:guava:' + deps.guava
-    compile 'me.thekey.android:thekey-api:1.1.1'
+    compile 'me.thekey.android:thekey-api:' + deps.thekey
 }
