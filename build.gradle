@@ -4,8 +4,8 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.1.2'
-        classpath 'com.github.dcendents:android-maven-gradle-plugin:1.4'
+        classpath 'com.android.tools.build:gradle:2.2.0'
+        classpath 'com.github.dcendents:android-maven-gradle-plugin:1.5'
     }
 }
 
@@ -13,6 +13,7 @@ buildscript {
 ext.deps = [
         androidSupport       : '23.4.0',
         androidTestingSupport: '0.5',
+        facebookStetho       : '1.4.1',
         gson                 : '2.6.2',
         guava                : '19.0',
         hamcrest             : '1.3',
