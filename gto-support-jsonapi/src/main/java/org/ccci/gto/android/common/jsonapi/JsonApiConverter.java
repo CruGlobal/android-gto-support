@@ -8,6 +8,7 @@ import org.ccci.gto.android.common.jsonapi.annotation.JsonApiId;
 import org.ccci.gto.android.common.jsonapi.annotation.JsonApiIgnore;
 import org.ccci.gto.android.common.jsonapi.annotation.JsonApiType;
 import org.ccci.gto.android.common.jsonapi.converter.TypeConverter;
+import org.ccci.gto.android.common.jsonapi.model.JsonApiError;
 import org.ccci.gto.android.common.jsonapi.model.JsonApiObject;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -29,11 +30,14 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import static java.util.Collections.singletonMap;
+import static org.ccci.gto.android.common.jsonapi.model.JsonApiError.JSON_ERROR_DETAIL;
+import static org.ccci.gto.android.common.jsonapi.model.JsonApiError.JSON_ERROR_STATUS;
 import static org.ccci.gto.android.common.jsonapi.model.JsonApiObject.JSON_DATA;
 import static org.ccci.gto.android.common.jsonapi.model.JsonApiObject.JSON_DATA_ATTRIBUTES;
 import static org.ccci.gto.android.common.jsonapi.model.JsonApiObject.JSON_DATA_ID;
 import static org.ccci.gto.android.common.jsonapi.model.JsonApiObject.JSON_DATA_RELATIONSHIPS;
 import static org.ccci.gto.android.common.jsonapi.model.JsonApiObject.JSON_DATA_TYPE;
+import static org.ccci.gto.android.common.jsonapi.model.JsonApiObject.JSON_ERRORS;
 import static org.ccci.gto.android.common.jsonapi.model.JsonApiObject.JSON_INCLUDED;
 import static org.ccci.gto.android.common.jsonapi.model.JsonApiObject.JSON_META;
 import static org.ccci.gto.android.common.util.CollectionUtils.newCollection;
@@ -126,7 +130,13 @@ public final class JsonApiConverter {
         try {
             final JSONObject json = new JSONObject();
             final Map<ObjKey, JSONObject> related = new HashMap<>();
-            if (obj.isSingle()) {
+            if (obj.hasErrors()) {
+                final JSONArray errors = new JSONArray();
+                for (final JsonApiError error : obj.getErrors()) {
+                    errors.put(errorToJson(error));
+                }
+                json.put(JSON_ERRORS, errors);
+            } else if (obj.isSingle()) {
                 final Object resource = obj.getDataSingle();
                 if (resource == null) {
                     json.put(JSON_DATA, JSONObject.NULL);
@@ -194,6 +204,17 @@ public final class JsonApiConverter {
         output.setRawMeta(jsonObject.optJSONObject(JSON_META));
 
         return output;
+    }
+
+    @NonNull
+    private JSONObject errorToJson(@NonNull final JsonApiError error) throws JSONException {
+        final JSONObject json = new JSONObject();
+        json.put(JSON_ERROR_DETAIL, error.getDetail());
+        final Integer status = error.getStatus();
+        if (status != null) {
+            json.put(JSON_ERROR_STATUS, status.toString());
+        }
+        return json;
     }
 
     /**

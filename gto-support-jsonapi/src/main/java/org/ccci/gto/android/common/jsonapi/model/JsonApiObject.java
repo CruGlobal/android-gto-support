@@ -19,6 +19,7 @@ public final class JsonApiObject<T> {
     public static final String JSON_DATA_ID = "id";
     public static final String JSON_DATA_ATTRIBUTES = "attributes";
     public static final String JSON_DATA_RELATIONSHIPS = "relationships";
+    public static final String JSON_ERRORS = "errors";
     public static final String JSON_INCLUDED = "included";
     public static final String JSON_META = "meta";
 
@@ -26,6 +27,8 @@ public final class JsonApiObject<T> {
 
     @NonNull
     private final List<T> mData = new ArrayList<>();
+
+    private final List<JsonApiError> mErrors = new ArrayList<>();
 
     @Nullable
     private JSONObject mRawMeta;
@@ -44,6 +47,12 @@ public final class JsonApiObject<T> {
     public static <T> JsonApiObject<T> of(@NonNull final T... data) {
         final JsonApiObject<T> obj = new JsonApiObject<>(false);
         obj.setData(Arrays.asList(data));
+        return obj;
+    }
+
+    public static JsonApiObject<?> error(@NonNull final JsonApiError... errors) {
+        final JsonApiObject<?> obj = new JsonApiObject<>(false);
+        obj.setErrors(Arrays.asList(errors));
         return obj;
     }
 
@@ -74,6 +83,26 @@ public final class JsonApiObject<T> {
 
     public void addData(final T resource) {
         mData.add(resource);
+    }
+
+    public boolean hasErrors() {
+        return !mErrors.isEmpty();
+    }
+
+    @NonNull
+    public List<JsonApiError> getErrors() {
+        return Collections.unmodifiableList(mErrors);
+    }
+
+    public void setErrors(@Nullable final Collection<JsonApiError> errors) {
+        mErrors.clear();
+        if (errors != null) {
+            mErrors.addAll(errors);
+        }
+    }
+
+    public void addError(@NonNull final JsonApiError error) {
+        mErrors.add(error);
     }
 
     @Nullable
