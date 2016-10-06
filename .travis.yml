@@ -9,20 +9,22 @@ env:
   matrix:
     - ANDROID_TARGET=android-15 ANDROID_ABI=armeabi-v7a
     - ANDROID_TARGET=android-21 ANDROID_ABI=armeabi-v7a
-    - ANDROID_TARGET=android-23 ANDROID_ABI=armeabi-v7a DEPLOY_SNAPSHOT=true
+    - ANDROID_TARGET=android-23 ANDROID_ABI=armeabi-v7a
+    - ANDROID_TARGET=android-24 ANDROID_ABI=armeabi-v7a DEPLOY_SNAPSHOT=true
 branches:
   only:
     - master
 
 android:
   components:
-    - platform-tools
     - tools
-    - build-tools-23.0.3
-    - android-23
+    - platform-tools
+    - build-tools-24.0.3
+    - android-24
     - extra-android-m2repository
 
     # system image for testing
+    - $ANDROID_TARGET
     - sys-img-$ANDROID_ABI-$ANDROID_TARGET
 
 before_cache:
