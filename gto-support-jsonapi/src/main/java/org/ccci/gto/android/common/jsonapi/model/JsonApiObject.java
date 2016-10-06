@@ -50,8 +50,8 @@ public final class JsonApiObject<T> {
         return obj;
     }
 
-    public static JsonApiObject<?> error(@NonNull final JsonApiError... errors) {
-        final JsonApiObject<?> obj = new JsonApiObject<>(false);
+    public static <T> JsonApiObject<T> error(@NonNull final JsonApiError... errors) {
+        final JsonApiObject<T> obj = new JsonApiObject<>(false);
         obj.setErrors(Arrays.asList(errors));
         return obj;
     }

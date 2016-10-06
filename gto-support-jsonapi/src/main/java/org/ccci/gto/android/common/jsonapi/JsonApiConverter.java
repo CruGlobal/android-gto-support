@@ -41,6 +41,7 @@ import static org.ccci.gto.android.common.jsonapi.model.JsonApiObject.JSON_ERROR
 import static org.ccci.gto.android.common.jsonapi.model.JsonApiObject.JSON_INCLUDED;
 import static org.ccci.gto.android.common.jsonapi.model.JsonApiObject.JSON_META;
 import static org.ccci.gto.android.common.util.CollectionUtils.newCollection;
+import static org.ccci.gto.android.common.util.NumberUtils.toInteger;
 
 public final class JsonApiConverter {
     public static final class Builder {
@@ -180,7 +181,19 @@ public final class JsonApiConverter {
         }
 
         final JsonApiObject<T> output;
-        if (jsonObject.has(JSON_DATA)) {
+        if (jsonObject.has(JSON_ERRORS)) {
+            // {errors: []}
+            output = JsonApiObject.error();
+            final JSONArray errors = jsonObject.optJSONArray(JSON_ERRORS);
+            if (errors != null) {
+                for (int i = 0; i < errors.length(); i++) {
+                    final JsonApiError error = errorFromJson(errors.optJSONObject(i));
+                    if (error != null) {
+                        output.addError(error);
+                    }
+                }
+            }
+        } else if (jsonObject.has(JSON_DATA)) {
             // {data: []}
             final JSONArray dataArray = jsonObject.optJSONArray(JSON_DATA);
             if (dataArray != null) {
@@ -215,6 +228,17 @@ public final class JsonApiConverter {
             json.put(JSON_ERROR_STATUS, status.toString());
         }
         return json;
+    }
+
+    @Nullable
+    private JsonApiError errorFromJson(@Nullable final JSONObject json) {
+        if (json != null) {
+            final JsonApiError error = new JsonApiError();
+            error.setDetail(json.optString(JSON_ERROR_DETAIL));
+            error.setStatus(toInteger(json.optString(JSON_ERROR_STATUS), null));
+            return error;
+        }
+        return null;
     }
 
     /**
