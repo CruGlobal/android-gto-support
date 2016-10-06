@@ -24,6 +24,7 @@ android:
     - extra-android-m2repository
 
     # system image for testing
+    - $ANDROID_TARGET
     - sys-img-$ANDROID_ABI-$ANDROID_TARGET
 
 before_cache:
