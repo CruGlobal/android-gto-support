@@ -654,30 +654,21 @@ public final class JsonApiConverter {
         private final String mBase;
         @Nullable
         private final TreeSet<String> mInclude;
-        private final boolean mIncludeAll;
 
         Includes(@Nullable final String... include) {
             mBase = "";
-            if (include != null) {
-                mIncludeAll = false;
-                mInclude = new TreeSet<>(Arrays.asList(include));
-            } else {
-                mIncludeAll = true;
-                mInclude = null;
-            }
+            mInclude = include != null ? new TreeSet<>(Arrays.asList(include)) : null;
         }
 
         private Includes(@NonNull final Includes base, @NonNull final String descendant) {
             mBase = base.mBase + descendant + ".";
-            mIncludeAll = base.mIncludeAll;
             mInclude = base.mInclude;
         }
 
         boolean include(@NonNull final String relationship) {
-            if (mIncludeAll) {
+            if (mInclude == null) {
                 return true;
             }
-            assert mInclude != null;
 
             // check for a direct include
             final String key = mBase + relationship;
@@ -692,7 +683,7 @@ public final class JsonApiConverter {
 
         @NonNull
         Includes descendant(@NonNull final String relationship) {
-            if (mIncludeAll) {
+            if (mInclude == null) {
                 return this;
             }
 
