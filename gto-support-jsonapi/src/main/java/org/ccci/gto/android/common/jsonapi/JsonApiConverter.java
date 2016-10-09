@@ -72,7 +72,7 @@ public final class JsonApiConverter {
     private final Map<Class<?>, Field> mIdField = new HashMap<>();
     private final Map<Class<?>, List<Field>> mFields = new HashMap<>();
 
-    private JsonApiConverter(@NonNull final List<Class<?>> classes, @NonNull final List<TypeConverter<?>> converters) {
+    JsonApiConverter(@NonNull final List<Class<?>> classes, @NonNull final List<TypeConverter<?>> converters) {
         mConverters.addAll(converters);
         mSupportedClasses.addAll(classes);
 
