@@ -8,6 +8,7 @@ import org.ccci.gto.android.common.jsonapi.JsonApiConverter.Options;
 import org.ccci.gto.android.common.jsonapi.JsonApiUtils;
 import org.ccci.gto.android.common.jsonapi.model.JsonApiObject;
 import org.ccci.gto.android.common.jsonapi.retrofit2.annotation.JsonApiInclude;
+import org.ccci.gto.android.common.jsonapi.retrofit2.model.JsonApiRetrofitObject;
 import org.json.JSONException;
 
 import java.io.IOException;
@@ -109,7 +110,12 @@ public class JsonApiConverterFactory extends Converter.Factory {
 
         @Override
         public RequestBody convert(final JsonApiObject<?> value) throws IOException {
-            return RequestBody.create(MEDIA_TYPE, mConverter.toJson(value, mOptions).getBytes("UTF-8"));
+            Options options = mOptions;
+            if (value instanceof JsonApiRetrofitObject) {
+                options = options.merge(((JsonApiRetrofitObject) value).getOptions());
+            }
+
+            return RequestBody.create(MEDIA_TYPE, mConverter.toJson(value, options).getBytes("UTF-8"));
         }
     }
 

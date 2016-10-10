@@ -651,10 +651,32 @@ public final class JsonApiConverter {
     }
 
     public static final class Options {
+        @NonNull
         final Includes mIncludes;
 
         Options(@NonNull final Includes includes) {
             mIncludes = includes;
+        }
+
+        @NonNull
+        public Options merge(@Nullable final Options options) {
+            if (options == null) {
+                return this;
+            }
+
+            // merge includes: include all overrides everything, otherwise merge the includes
+            final Includes includes;
+            if (mIncludes.mInclude == null) {
+                includes = mIncludes;
+            } else if (options.mIncludes.mInclude == null) {
+                includes = options.mIncludes;
+            } else {
+                final List<String> i = new ArrayList<>(mIncludes.mInclude);
+                i.addAll(options.mIncludes.mInclude);
+                includes = new Includes(i.toArray(new String[i.size()]));
+            }
+
+            return new Options(includes);
         }
 
         @NonNull
