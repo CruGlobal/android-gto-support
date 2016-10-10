@@ -2,6 +2,7 @@ package org.ccci.gto.android.common.jsonapi;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.util.ArrayMap;
 
 import org.ccci.gto.android.common.jsonapi.annotation.JsonApiAttribute;
 import org.ccci.gto.android.common.jsonapi.annotation.JsonApiId;
@@ -653,9 +654,12 @@ public final class JsonApiConverter {
     public static final class Options {
         @NonNull
         final Includes mIncludes;
+        @NonNull
+        final Map<String, Fields> mFields;
 
-        Options(@NonNull final Includes includes) {
+        Options(@NonNull final Includes includes, final Map<String, Fields> fields) {
             mIncludes = includes;
+            mFields = fields;
         }
 
         @NonNull
@@ -664,19 +668,14 @@ public final class JsonApiConverter {
                 return this;
             }
 
-            // merge includes: include all overrides everything, otherwise merge the includes
-            final Includes includes;
-            if (mIncludes.mInclude == null) {
-                includes = mIncludes;
-            } else if (options.mIncludes.mInclude == null) {
-                includes = options.mIncludes;
-            } else {
-                final List<String> i = new ArrayList<>(mIncludes.mInclude);
-                i.addAll(options.mIncludes.mInclude);
-                includes = new Includes(i.toArray(new String[i.size()]));
+            // default the map to our current fields, then merge in fields from the provided options.
+            final Map<String, Fields> fields = new ArrayMap<>();
+            fields.putAll(mFields);
+            for (final String key : options.mFields.keySet()) {
+                fields.put(key, options.mFields.get(key).merge(fields.get(key)));
             }
 
-            return new Options(includes);
+            return new Options(mIncludes.merge(options.mIncludes), fields);
         }
 
         @NonNull
@@ -689,8 +688,15 @@ public final class JsonApiConverter {
             return builder().include(include).build();
         }
 
+        @NonNull
+        Fields getFields(@Nullable final String type) {
+            Fields fields = mFields.get(type);
+            return fields != null ? fields : Fields.ALL;
+        }
+
         public static final class Builder {
             private List<String> mIncludes = null;
+            private Map<String, Set<String>> mFields = new ArrayMap<>();
 
             @NonNull
             public Builder includeAll() {
@@ -699,7 +705,7 @@ public final class JsonApiConverter {
             }
 
             @NonNull
-            public Builder include(final String... include) {
+            public Builder include(@NonNull final String... include) {
                 if (mIncludes == null) {
                     mIncludes = new ArrayList<>();
                 }
@@ -708,10 +714,27 @@ public final class JsonApiConverter {
                 return this;
             }
 
+            public Builder fields(@Nullable final String type, @NonNull final String... fields) {
+                Set<String> currentFields = mFields.get(type);
+                if (currentFields == null) {
+                    currentFields = new HashSet<>();
+                }
+                Collections.addAll(currentFields, fields);
+                mFields.put(type, currentFields);
+
+                return this;
+            }
+
             @NonNull
             public Options build() {
-                return new Options(
-                        new Includes(mIncludes != null ? mIncludes.toArray(new String[mIncludes.size()]) : null));
+                // build out the Fields data structure
+                final Map<String, Fields> fields = new ArrayMap<>();
+                for (final String type : mFields.keySet()) {
+                    final Set<String> values = mFields.get(type);
+                    fields.put(type, new Fields(values));
+                }
+
+                return new Options(new Includes(mIncludes), fields);
             }
         }
     }
@@ -723,13 +746,35 @@ public final class JsonApiConverter {
         private final TreeSet<String> mInclude;
 
         Includes(@Nullable final String... include) {
+            this(include != null ? Arrays.asList(include) : null);
+        }
+
+        Includes(@Nullable final Collection<String> include) {
             mBase = "";
-            mInclude = include != null ? new TreeSet<>(Arrays.asList(include)) : null;
+            mInclude = include != null ? new TreeSet<>(include) : null;
         }
 
         private Includes(@NonNull final Includes base, @NonNull final String descendant) {
             mBase = base.mBase + descendant + ".";
             mInclude = base.mInclude;
+        }
+
+        Includes merge(@Nullable final Includes includes) {
+            // we ignore mBase, this should only ever be called on a base includes object
+            if (includes == null) {
+                return this;
+            }
+
+            // merge rules: include all overrides everything, otherwise merge the includes
+            if (mInclude == null) {
+                return this;
+            } else if (includes.mInclude == null) {
+                return includes;
+            } else {
+                final List<String> values = new ArrayList<>(mInclude);
+                values.addAll(includes.mInclude);
+                return new Includes(values);
+            }
         }
 
         boolean include(@NonNull final String relationship) {
@@ -755,6 +800,41 @@ public final class JsonApiConverter {
             }
 
             return new Includes(this, relationship);
+        }
+    }
+
+    static final class Fields {
+        static final Fields ALL = new Fields(null);
+
+        @Nullable
+        private final Set<String> mFields;
+
+        Fields(@Nullable final Collection<String> fields) {
+            mFields = fields != null ? new HashSet<>(fields) : null;
+        }
+
+        Fields merge(@Nullable final Fields fields) {
+            if (fields == null) {
+                return this;
+            }
+
+            if (mFields == null) {
+                return this;
+            } else if (fields.mFields == null) {
+                return fields;
+            } else if (mFields.isEmpty()) {
+                return fields;
+            } else if (fields.mFields.isEmpty()) {
+                return this;
+            } else {
+                final List<String> values = new ArrayList<>(mFields);
+                values.addAll(fields.mFields);
+                return new Fields(values);
+            }
+        }
+
+        boolean include(@NonNull final String field) {
+            return mFields == null || mFields.contains(field);
         }
     }
 }
