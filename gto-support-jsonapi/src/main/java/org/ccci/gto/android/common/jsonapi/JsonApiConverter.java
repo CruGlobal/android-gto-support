@@ -144,12 +144,12 @@ public final class JsonApiConverter {
                 if (resource == null) {
                     json.put(JSON_DATA, JSONObject.NULL);
                 } else {
-                    json.put(JSON_DATA, resourceToJson(resource, includes, related));
+                    json.put(JSON_DATA, resourceToJson(resource, options, includes, related));
                 }
             } else {
                 final JSONArray dataArr = new JSONArray();
                 for (final Object resource : obj.getData()) {
-                    dataArr.put(resourceToJson(resource, includes, related));
+                    dataArr.put(resourceToJson(resource, options, includes, related));
                 }
                 json.put(JSON_DATA, dataArr);
             }
@@ -252,8 +252,9 @@ public final class JsonApiConverter {
      */
     @Nullable
     @SuppressWarnings("checkstyle:RightCurly")
-    private JSONObject resourceToJson(@Nullable final Object resource, @NonNull final Includes include,
-                                      @NonNull final Map<ObjKey, JSONObject> related) throws JSONException {
+    private JSONObject resourceToJson(@Nullable final Object resource, @NonNull final Options options,
+                                      @NonNull final Includes include, @NonNull final Map<ObjKey, JSONObject> related)
+            throws JSONException {
         if (resource == null) {
             return null;
         }
@@ -274,14 +275,20 @@ public final class JsonApiConverter {
         }
 
         // process all fields
+        final Fields fields = options.getFields(type);
         for (final Field field : mFields.get(clazz)) {
             // skip id fields, we already handled them)
             if (field.getAnnotation(JsonApiId.class) != null) {
                 continue;
             }
 
-            // get some common attributes about the field
+            // skip fields we are not including
             final String attrName = getAttrName(field);
+            if (!fields.include(attrName)) {
+                continue;
+            }
+
+            // get some common attributes about the field
             final Class<?> fieldType = field.getType();
             final Class<?> fieldCollectionType = getFieldCollectionType(field.getGenericType());
 
@@ -289,7 +296,7 @@ public final class JsonApiConverter {
             if (supports(fieldType)) {
                 try {
                     final JSONObject relatedObj =
-                            resourceToJson(field.get(resource), include.descendant(attrName), related);
+                            resourceToJson(field.get(resource), options, include.descendant(attrName), related);
                     final ObjKey key = ObjKey.create(relatedObj);
                     if (key != null) {
                         final JSONObject reference =
@@ -309,7 +316,8 @@ public final class JsonApiConverter {
                     final Collection col = (Collection) field.get(resource);
                     if (col != null) {
                         for (final Object obj : col) {
-                            final JSONObject relatedObj = resourceToJson(obj, include.descendant(attrName), related);
+                            final JSONObject relatedObj =
+                                    resourceToJson(obj, options, include.descendant(attrName), related);
                             final ObjKey key = ObjKey.create(relatedObj);
                             if (key != null) {
                                 objs.put(new JSONObject(relatedObj, new String[] {JSON_DATA_TYPE, JSON_DATA_ID}));
