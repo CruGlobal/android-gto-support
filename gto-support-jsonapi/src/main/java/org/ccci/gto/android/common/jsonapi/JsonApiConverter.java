@@ -21,6 +21,7 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -122,12 +123,12 @@ public final class JsonApiConverter {
 
     @NonNull
     public String toJson(@NonNull final JsonApiObject<?> obj) {
-        return toJson(obj, (String[]) null);
+        return toJson(obj, Options.builder().includeAll().build());
     }
 
     @NonNull
-    public String toJson(@NonNull final JsonApiObject<?> obj, @Nullable final String... include) {
-        final Includes includes = new Includes(include);
+    public String toJson(@NonNull final JsonApiObject<?> obj, @NonNull final Options options) {
+        final Includes includes = options.mIncludes;
         try {
             final JSONObject json = new JSONObject();
             final Map<ObjKey, JSONObject> related = new HashMap<>();
@@ -646,6 +647,50 @@ public final class JsonApiConverter {
         @Override
         public int hashCode() {
             return Arrays.hashCode(new Object[] {mType, mId});
+        }
+    }
+
+    public static final class Options {
+        final Includes mIncludes;
+
+        Options(@NonNull final Includes includes) {
+            mIncludes = includes;
+        }
+
+        @NonNull
+        public static Builder builder() {
+            return new Builder();
+        }
+
+        @NonNull
+        public static Options include(@NonNull final String... include) {
+            return builder().include(include).build();
+        }
+
+        public static final class Builder {
+            private List<String> mIncludes = null;
+
+            @NonNull
+            public Builder includeAll() {
+                mIncludes = null;
+                return this;
+            }
+
+            @NonNull
+            public Builder include(final String... include) {
+                if (mIncludes == null) {
+                    mIncludes = new ArrayList<>();
+                }
+
+                Collections.addAll(mIncludes, include);
+                return this;
+            }
+
+            @NonNull
+            public Options build() {
+                return new Options(
+                        new Includes(mIncludes != null ? mIncludes.toArray(new String[mIncludes.size()]) : null));
+            }
         }
     }
 
