@@ -101,6 +101,8 @@ public class JsonApiConverterFactory extends Converter.Factory {
         JsonApiObjectRequestBodyConverter(@Nullable final JsonApiInclude include) {
             final Options.Builder options = Options.builder();
             if (include == null) {
+                options.include();
+            } else if (include.all()) {
                 options.includeAll();
             } else {
                 options.include(include.value());
