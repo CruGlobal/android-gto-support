@@ -4,9 +4,11 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import org.ccci.gto.android.common.jsonapi.JsonApiConverter;
+import org.ccci.gto.android.common.jsonapi.JsonApiConverter.Options;
 import org.ccci.gto.android.common.jsonapi.JsonApiUtils;
 import org.ccci.gto.android.common.jsonapi.model.JsonApiObject;
 import org.ccci.gto.android.common.jsonapi.retrofit2.annotation.JsonApiInclude;
+import org.ccci.gto.android.common.jsonapi.retrofit2.model.JsonApiRetrofitObject;
 import org.json.JSONException;
 
 import java.io.IOException;
@@ -93,16 +95,27 @@ public class JsonApiConverterFactory extends Converter.Factory {
     }
 
     private class JsonApiObjectRequestBodyConverter implements Converter<JsonApiObject<?>, RequestBody> {
-        @Nullable
-        private final String[] mInclude;
+        @NonNull
+        private final Options mOptions;
 
         JsonApiObjectRequestBodyConverter(@Nullable final JsonApiInclude include) {
-            mInclude = include != null ? include.value() : new String[0];
+            final Options.Builder options = Options.builder();
+            if (include == null) {
+                options.includeAll();
+            } else {
+                options.include(include.value());
+            }
+            mOptions = options.build();
         }
 
         @Override
         public RequestBody convert(final JsonApiObject<?> value) throws IOException {
-            return RequestBody.create(MEDIA_TYPE, mConverter.toJson(value, mInclude).getBytes("UTF-8"));
+            Options options = mOptions;
+            if (value instanceof JsonApiRetrofitObject) {
+                options = options.merge(((JsonApiRetrofitObject) value).getOptions());
+            }
+
+            return RequestBody.create(MEDIA_TYPE, mConverter.toJson(value, options).getBytes("UTF-8"));
         }
     }
 

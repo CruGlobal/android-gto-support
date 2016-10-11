@@ -11,7 +11,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-public final class JsonApiObject<T> {
+public class JsonApiObject<T> {
     public static final String MEDIA_TYPE = "application/vnd.api+json";
 
     public static final String JSON_DATA = "data";
@@ -37,6 +37,13 @@ public final class JsonApiObject<T> {
         mSingle = single;
     }
 
+    protected JsonApiObject(@NonNull final JsonApiObject<T> source) {
+        mSingle = source.mSingle;
+        mData.addAll(source.mData);
+        mErrors.addAll(source.mErrors);
+        mRawMeta = source.mRawMeta;
+    }
+
     public static <T> JsonApiObject<T> single(@Nullable final T data) {
         final JsonApiObject<T> obj = new JsonApiObject<>(true);
         obj.setData(data);
@@ -56,61 +63,61 @@ public final class JsonApiObject<T> {
         return obj;
     }
 
-    public boolean isSingle() {
+    public final boolean isSingle() {
         return mSingle;
     }
 
-    public List<T> getData() {
+    public final List<T> getData() {
         return Collections.unmodifiableList(mData);
     }
 
     @Nullable
-    public T getDataSingle() {
+    public final T getDataSingle() {
         return mData.size() > 0 ? mData.get(0) : null;
     }
 
-    public void setData(@Nullable final Collection<T> data) {
+    public final void setData(@Nullable final Collection<T> data) {
         mData.clear();
         if (data != null) {
             mData.addAll(data);
         }
     }
 
-    public void setData(@Nullable final T data) {
+    public final void setData(@Nullable final T data) {
         mData.clear();
         mData.add(data);
     }
 
-    public void addData(final T resource) {
+    public final void addData(final T resource) {
         mData.add(resource);
     }
 
-    public boolean hasErrors() {
+    public final boolean hasErrors() {
         return !mErrors.isEmpty();
     }
 
     @NonNull
-    public List<JsonApiError> getErrors() {
+    public final List<JsonApiError> getErrors() {
         return Collections.unmodifiableList(mErrors);
     }
 
-    public void setErrors(@Nullable final Collection<JsonApiError> errors) {
+    public final void setErrors(@Nullable final Collection<JsonApiError> errors) {
         mErrors.clear();
         if (errors != null) {
             mErrors.addAll(errors);
         }
     }
 
-    public void addError(@NonNull final JsonApiError error) {
+    public final void addError(@NonNull final JsonApiError error) {
         mErrors.add(error);
     }
 
     @Nullable
-    public JSONObject getRawMeta() {
+    public final JSONObject getRawMeta() {
         return mRawMeta;
     }
 
-    public void setRawMeta(@Nullable final JSONObject meta) {
+    public final void setRawMeta(@Nullable final JSONObject meta) {
         mRawMeta = meta;
     }
 }

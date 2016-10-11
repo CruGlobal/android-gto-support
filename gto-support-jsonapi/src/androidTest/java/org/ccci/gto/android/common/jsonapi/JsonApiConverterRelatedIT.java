@@ -2,6 +2,7 @@ package org.ccci.gto.android.common.jsonapi;
 
 import android.support.test.runner.AndroidJUnit4;
 
+import org.ccci.gto.android.common.jsonapi.JsonApiConverter.Options;
 import org.ccci.gto.android.common.jsonapi.annotation.JsonApiType;
 import org.ccci.gto.android.common.jsonapi.model.JsonApiObject;
 import org.ccci.gto.android.common.jsonapi.model.ModelBase;
@@ -111,7 +112,7 @@ public class JsonApiConverterRelatedIT {
         child2.mId = 20;
         parent.children.add(child2);
 
-        final String json = converter.toJson(JsonApiObject.single(parent), new String[0]);
+        final String json = converter.toJson(JsonApiObject.single(parent), Options.include());
         assertThatJson(json).node("data").isObject();
         assertThat(json, jsonPartEquals("data.type", ModelParent.TYPE));
         assertThat(json, jsonNodeAbsent("data.attributes.favorite"));
@@ -137,7 +138,7 @@ public class JsonApiConverterRelatedIT {
         child2.mId = 20;
         parent.children.add(child2);
 
-        final String json = converter.toJson(JsonApiObject.single(parent), "favorite");
+        final String json = converter.toJson(JsonApiObject.single(parent), Options.include("favorite"));
         assertThatJson(json).node("data").isObject();
         assertThat(json, jsonPartEquals("data.type", ModelParent.TYPE));
         assertThat(json, jsonNodeAbsent("data.attributes.favorite"));

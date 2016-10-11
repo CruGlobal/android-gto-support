@@ -3,6 +3,8 @@ package org.ccci.gto.android.common.jsonapi;
 import org.ccci.gto.android.common.jsonapi.JsonApiConverter.Includes;
 import org.junit.Test;
 
+import java.util.Collection;
+
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -50,5 +52,41 @@ public class IncludesTest {
         assertTrue(includes.descendant("a").include("b"));
         assertTrue(includes.descendant("a").descendant("b").include("c"));
         assertFalse(includes.descendant("a").descendant("h").include("c"));
+    }
+
+    @Test
+    public void verifyMerge() throws Exception {
+        final Includes includes = new Includes("a.b.c").merge(new Includes("de.f.g"));
+
+        assertTrue(includes.include("a"));
+        assertTrue(includes.descendant("a").include("b"));
+        assertTrue(includes.descendant("a").descendant("b").include("c"));
+        assertTrue(includes.include("de"));
+        assertTrue(includes.descendant("de").include("f"));
+        assertTrue(includes.descendant("de").descendant("f").include("g"));
+        assertFalse(includes.descendant("a").descendant("h").include("c"));
+    }
+
+    @Test
+    public void verifyMergeNull() {
+        final Includes includes = new Includes("a.b.c", "de.f.g").merge(null);
+
+        assertTrue(includes.include("a"));
+        assertTrue(includes.descendant("a").include("b"));
+        assertTrue(includes.descendant("a").descendant("b").include("c"));
+        assertFalse(includes.descendant("a").descendant("h").include("c"));
+    }
+
+    @Test
+    public void testMergeIncludeAll() {
+        final Includes includes1 = new Includes((Collection<String>) null).merge(new Includes());
+        assertTrue(includes1.include("ajslkdf"));
+        assertTrue(includes1.include("whe"));
+        assertTrue(includes1.descendant("akjsdflj").include("h5h"));
+
+        final Includes includes2 = new Includes().merge(new Includes((Collection<String>) null));
+        assertTrue(includes2.include("ajslkdf"));
+        assertTrue(includes2.include("whe"));
+        assertTrue(includes2.descendant("akjsdflj").include("h5h"));
     }
 }
