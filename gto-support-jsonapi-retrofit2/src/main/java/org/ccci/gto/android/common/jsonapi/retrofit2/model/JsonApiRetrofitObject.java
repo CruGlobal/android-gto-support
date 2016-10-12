@@ -14,6 +14,11 @@ public class JsonApiRetrofitObject<T> extends JsonApiObject<T> {
         super(obj);
     }
 
+    @NonNull
+    public static <T> JsonApiRetrofitObject<T> single(@Nullable final T data) {
+        return new JsonApiRetrofitObject<>(JsonApiObject.single(data));
+    }
+
     @Nullable
     public Options getOptions() {
         return mOptions;

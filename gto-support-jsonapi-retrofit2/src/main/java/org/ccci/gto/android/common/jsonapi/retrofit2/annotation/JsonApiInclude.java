@@ -12,5 +12,7 @@ import java.lang.annotation.Target;
 @Target(ElementType.PARAMETER)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface JsonApiInclude {
-    String[] value();
+    String[] value() default {};
+
+    boolean all() default false;
 }
