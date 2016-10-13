@@ -1,0 +1,5 @@
+dependencies {
+    compile project(':gto-support-core')
+
+    compile 'com.android.support:appcompat-v7:' + deps.androidSupport
+}

@@ -5,6 +5,7 @@ import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.View;
+import android.view.ViewParent;
 
 public final class ViewUtils {
     @Nullable
@@ -24,6 +25,19 @@ public final class ViewUtils {
         if (clazz.isInstance(view)) {
             return clazz.cast(view);
         }
+        return null;
+    }
+
+    @Nullable
+    public static <T> T findAncestor(@NonNull final View view, @NonNull final Class<T> type) {
+        ViewParent ancestor = view.getParent();
+        while (ancestor != null) {
+            if (type.isInstance(ancestor)) {
+                return type.cast(ancestor);
+            }
+            ancestor = ancestor.getParent();
+        }
+
         return null;
     }
 }
