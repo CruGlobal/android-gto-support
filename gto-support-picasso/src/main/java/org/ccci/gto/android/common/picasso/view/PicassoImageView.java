@@ -1,7 +1,5 @@
 package org.ccci.gto.android.common.picasso.view;
 
-import static org.ccci.gto.android.common.Constants.INVALID_DRAWABLE_RES;
-
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
@@ -15,12 +13,17 @@ import android.widget.ImageView.ScaleType;
 
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.RequestCreator;
+import com.squareup.picasso.Transformation;
 
 import org.ccci.gto.android.common.model.Dimension;
 import org.ccci.gto.android.common.picasso.R;
 import org.ccci.gto.android.common.picasso.ScaleTransformation;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.ccci.gto.android.common.Constants.INVALID_DRAWABLE_RES;
 
 public interface PicassoImageView {
     final class Helper {
@@ -39,6 +42,7 @@ public interface PicassoImageView {
         private int mPlaceholderResId = INVALID_DRAWABLE_RES;
         @Nullable
         private Drawable mPlaceholder = null;
+        private final ArrayList<Transformation> mTransforms = new ArrayList<>();
 
         public Helper(@NonNull final ImageView view) {
             this(view, null, 0, 0);
@@ -81,6 +85,17 @@ public interface PicassoImageView {
             mPlaceholderResId = INVALID_DRAWABLE_RES;
             mPlaceholder = placeholder;
             triggerUpdate();
+        }
+
+        public void addTransform(@NonNull final Transformation transformation) {
+            mTransforms.add(transformation);
+        }
+
+        public void setTransforms(@Nullable final List<? extends Transformation> transformations) {
+            mTransforms.clear();
+            if (transformations != null) {
+                mTransforms.addAll(transformations);
+            }
         }
 
         public void onSizeChanged(int w, int h, int oldw, int oldh) {
@@ -126,6 +141,7 @@ public interface PicassoImageView {
                         break;
                 }
             }
+            update.transform(mTransforms);
 
             // fetch or load based on the target size
             if (mSize.width > 0 || mSize.height > 0) {
@@ -143,4 +159,8 @@ public interface PicassoImageView {
     void setPlaceholder(@DrawableRes int placeholder);
 
     void setPlaceholder(@Nullable Drawable placeholder);
+
+    void addTransform(@NonNull Transformation transform);
+
+    void setTransforms(@Nullable List<? extends Transformation> transforms);
 }
