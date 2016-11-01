@@ -2,6 +2,7 @@ package org.ccci.gto.android.common.picasso.view;
 
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.support.annotation.DrawableRes;
@@ -52,6 +53,11 @@ public class SimplePicassoImageView extends ImageView implements PicassoImageVie
 
     @Override
     public final void setPlaceholder(@DrawableRes final int placeholder) {
+        mHelper.setPlaceholder(placeholder);
+    }
+
+    @Override
+    public void setPlaceholder(@Nullable final Drawable placeholder) {
         mHelper.setPlaceholder(placeholder);
     }
 

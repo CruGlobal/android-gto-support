@@ -4,6 +4,7 @@ import static org.ccci.gto.android.common.Constants.INVALID_DRAWABLE_RES;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
@@ -36,6 +37,8 @@ public interface PicassoImageView {
         private Dimension mSize = new Dimension(0, 0);
         @DrawableRes
         private int mPlaceholderResId = INVALID_DRAWABLE_RES;
+        @Nullable
+        private Drawable mPlaceholder = null;
 
         public Helper(@NonNull final ImageView view) {
             this(view, null, 0, 0);
@@ -69,7 +72,15 @@ public interface PicassoImageView {
         }
 
         public void setPlaceholder(@DrawableRes final int placeholder) {
+            mPlaceholder = null;
             mPlaceholderResId = placeholder;
+            triggerUpdate();
+        }
+
+        public void setPlaceholder(@Nullable final Drawable placeholder) {
+            mPlaceholderResId = INVALID_DRAWABLE_RES;
+            mPlaceholder = placeholder;
+            triggerUpdate();
         }
 
         public void onSizeChanged(int w, int h, int oldw, int oldh) {
@@ -95,6 +106,8 @@ public interface PicassoImageView {
             // set placeholder & any transform options
             if (mPlaceholderResId != INVALID_DRAWABLE_RES) {
                 update.placeholder(mPlaceholderResId);
+            } else {
+                update.placeholder(mPlaceholder);
             }
             if (mSize.width > 0 || mSize.height > 0) {
                 switch (mView.getScaleType()) {
@@ -128,4 +141,6 @@ public interface PicassoImageView {
     void setPicassoUri(@Nullable Uri uri);
 
     void setPlaceholder(@DrawableRes int placeholder);
+
+    void setPlaceholder(@Nullable Drawable placeholder);
 }
