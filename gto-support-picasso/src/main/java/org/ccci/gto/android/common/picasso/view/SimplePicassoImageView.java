@@ -2,6 +2,7 @@ package org.ccci.gto.android.common.picasso.view;
 
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.support.annotation.DrawableRes;
@@ -10,7 +11,10 @@ import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.widget.ImageView;
 
+import com.squareup.picasso.Transformation;
+
 import java.io.File;
+import java.util.List;
 
 public class SimplePicassoImageView extends ImageView implements PicassoImageView {
     private boolean mInit = false;
@@ -53,6 +57,21 @@ public class SimplePicassoImageView extends ImageView implements PicassoImageVie
     @Override
     public final void setPlaceholder(@DrawableRes final int placeholder) {
         mHelper.setPlaceholder(placeholder);
+    }
+
+    @Override
+    public void setPlaceholder(@Nullable final Drawable placeholder) {
+        mHelper.setPlaceholder(placeholder);
+    }
+
+    @Override
+    public void addTransform(@NonNull final Transformation transform) {
+        mHelper.addTransform(transform);
+    }
+
+    @Override
+    public void setTransforms(@Nullable List<? extends Transformation> transforms) {
+        mHelper.setTransforms(transforms);
     }
 
     @Override
