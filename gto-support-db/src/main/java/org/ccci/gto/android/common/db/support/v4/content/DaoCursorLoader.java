@@ -21,7 +21,7 @@ import static org.ccci.gto.android.common.db.AbstractDao.ARG_ORDER_BY;
 import static org.ccci.gto.android.common.db.AbstractDao.ARG_PROJECTION;
 import static org.ccci.gto.android.common.db.AbstractDao.ARG_WHERE;
 
-public abstract class DaoCursorLoader<T> extends SimpleCursorLoader {
+public class DaoCursorLoader<T> extends SimpleCursorLoader {
     @NonNull
     protected final AbstractDao mDao;
 
