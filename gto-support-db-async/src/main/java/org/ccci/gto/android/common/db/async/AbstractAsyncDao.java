@@ -109,4 +109,27 @@ public abstract class AbstractAsyncDao extends AbstractDao {
         });
         return future;
     }
+
+    @NonNull
+    public final ListenableFuture<?> updateOrInsertAsync(@NonNull final Object obj) {
+        return updateOrInsertAsync(obj, getFullProjection(obj.getClass()));
+    }
+
+    @NonNull
+    public final ListenableFuture<?> updateOrInsertAsync(@NonNull final Object obj,
+                                                         @NonNull final String... projection) {
+        final SettableFuture<Long> future = SettableFuture.create();
+        AsyncTaskCompat.THREAD_POOL_EXECUTOR.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    updateOrInsert(obj, projection);
+                    future.set(null);
+                } catch (final Throwable t) {
+                    future.setException(t);
+                }
+            }
+        });
+        return future;
+    }
 }
