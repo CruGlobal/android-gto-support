@@ -498,7 +498,6 @@ public abstract class AbstractDao {
     public final <T> void updateAll(@NonNull final Class<T> type, @Nullable final Expression where,
                                     @NonNull final T sample, @NonNull final String... projection) {
         update(type, getMapper(type).toContentValues(sample, projection), where);
-
     }
 
     @WorkerThread

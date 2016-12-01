@@ -4,11 +4,13 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.SettableFuture;
 
 import org.ccci.gto.android.common.db.AbstractDao;
+import org.ccci.gto.android.common.db.Expression;
 import org.ccci.gto.android.common.db.Query;
 import org.ccci.gto.android.common.util.AsyncTaskCompat;
 
@@ -101,6 +103,24 @@ public abstract class AbstractAsyncDao extends AbstractDao {
             public void run() {
                 try {
                     update(obj, projection);
+                    future.set(null);
+                } catch (final Throwable t) {
+                    future.setException(t);
+                }
+            }
+        });
+        return future;
+    }
+
+    @NonNull
+    public final <T> ListenableFuture<?> updateAllAsync(@NonNull final Class<T> type, @Nullable final Expression where,
+                                                        @NonNull final T sample, @NonNull final String... projection) {
+        final SettableFuture<?> future = SettableFuture.create();
+        AsyncTaskCompat.THREAD_POOL_EXECUTOR.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    updateAll(type, where, sample, projection);
                     future.set(null);
                 } catch (final Throwable t) {
                     future.setException(t);
