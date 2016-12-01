@@ -245,7 +245,7 @@ public class AbstractDaoIT {
 
         // trigger update
         final Compound update = new Compound("", "", null, "newData");
-        dao.updateWhere(update, CompoundTable.FIELD_ID1.eq("1"), CompoundTable.COLUMN_DATA2);
+        dao.update(update, CompoundTable.FIELD_ID1.eq("1"), CompoundTable.COLUMN_DATA2);
 
         // verify final values
         final Compound refresh21 = dao.refresh(orig1);
@@ -290,7 +290,7 @@ public class AbstractDaoIT {
 
         // trigger update
         final Compound update = new Compound("", "", null, "newData");
-        dao.updateWhere(update, null, CompoundTable.COLUMN_DATA2);
+        dao.update(update, (Expression) null, CompoundTable.COLUMN_DATA2);
 
         // verify final values
         final Compound refresh21 = dao.refresh(orig1);

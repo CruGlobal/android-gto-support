@@ -113,14 +113,14 @@ public abstract class AbstractAsyncDao extends AbstractDao {
     }
 
     @NonNull
-    public final <T> ListenableFuture<?> updateWhereAsync(@NonNull final T sample, @Nullable final Expression where,
-                                                        @NonNull final String... projection) {
+    public final <T> ListenableFuture<?> updateAsync(@NonNull final T sample, @Nullable final Expression where,
+                                                     @NonNull final String... projection) {
         final SettableFuture<?> future = SettableFuture.create();
         AsyncTaskCompat.THREAD_POOL_EXECUTOR.execute(new Runnable() {
             @Override
             public void run() {
                 try {
-                    updateWhere(sample, where, projection);
+                    update(sample, where, projection);
                     future.set(null);
                 } catch (final Throwable t) {
                     future.setException(t);
