@@ -493,11 +493,33 @@ public abstract class AbstractDao {
      * @param sample     a sample object that is used to generated the values being set on other objects.
      * @param projection the fields to update in this call
      * @param <T>        the type of objects being updated
+     * @deprecated Since 1.0.2, use {@link AbstractDao#updateAll(Object, Expression, String...)} instead.
      */
+    @Deprecated
     @WorkerThread
     public final <T> void updateAll(@NonNull final Class<T> type, @Nullable final Expression where,
                                     @NonNull final T sample, @NonNull final String... projection) {
-        update(type, getMapper(type).toContentValues(sample, projection), where);
+        updateAll(sample, where, projection);
+    }
+
+    /**
+     * This method updates all objects of a specific type in the database with the {@code projection} values from the
+     * {@code sample} object. The objects actually updated can be restricted via the {@code where} expression.
+     *
+     * @param sample     a sample object that is used to find the type and generate the values being set on other
+     *                   objects.
+     * @param where      a where clause that restricts which objects get updated. If this is null all objects are
+     *                   updated.
+     * @param projection the fields to update in this call
+     * @param <T>        the type of objects being updated
+     */
+    @WorkerThread
+    public final <T> void updateAll(@NonNull final T sample, @Nullable final Expression where,
+                                    @NonNull final String... projection) {
+        @SuppressWarnings("unchecked")
+        final Class<T> type = (Class<T>) sample.getClass();
+        final ContentValues values = getMapper(type).toContentValues(sample, projection);
+        update(type, values, where);
     }
 
     @WorkerThread
