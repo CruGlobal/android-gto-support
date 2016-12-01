@@ -218,7 +218,7 @@ public class AbstractDaoIT {
     }
 
     @Test
-    public void verifyUpdateAll() throws Exception {
+    public void verifyUpdateWhere() throws Exception {
         final TestDao dao = getDao();
 
         // create some objects
@@ -245,7 +245,7 @@ public class AbstractDaoIT {
 
         // trigger update
         final Compound update = new Compound("", "", null, "newData");
-        dao.updateAll(Compound.class, CompoundTable.FIELD_ID1.eq("1"), update, CompoundTable.COLUMN_DATA2);
+        dao.update(update, CompoundTable.FIELD_ID1.eq("1"), CompoundTable.COLUMN_DATA2);
 
         // verify final values
         final Compound refresh21 = dao.refresh(orig1);
@@ -263,7 +263,7 @@ public class AbstractDaoIT {
     }
 
     @Test
-    public void verifyUpdateAllNoWhere() throws Exception {
+    public void verifyUpdateWhereAll() throws Exception {
         final TestDao dao = getDao();
 
         // create some objects
@@ -290,7 +290,7 @@ public class AbstractDaoIT {
 
         // trigger update
         final Compound update = new Compound("", "", null, "newData");
-        dao.updateAll(Compound.class, null, update, CompoundTable.COLUMN_DATA2);
+        dao.update(update, (Expression) null, CompoundTable.COLUMN_DATA2);
 
         // verify final values
         final Compound refresh21 = dao.refresh(orig1);
