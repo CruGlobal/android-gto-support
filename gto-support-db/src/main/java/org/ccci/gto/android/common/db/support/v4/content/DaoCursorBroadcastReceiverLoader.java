@@ -7,11 +7,11 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import org.ccci.gto.android.common.compat.os.BundleCompat;
 import org.ccci.gto.android.common.db.AbstractDao;
 import org.ccci.gto.android.common.db.Expression;
 import org.ccci.gto.android.common.db.Table;
 import org.ccci.gto.android.common.support.v4.content.BroadcastReceiverLoaderHelper;
-import org.ccci.gto.android.common.util.BundleCompat;
 
 import static org.ccci.gto.android.common.db.AbstractDao.ARG_WHERE;
 import static org.ccci.gto.android.common.db.AbstractDao.ARG_WHERE_ARGS;

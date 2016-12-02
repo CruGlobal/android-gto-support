@@ -11,6 +11,7 @@ android {
 }
 
 dependencies {
+    compile project(':gto-support-compat')
     compile project(':gto-support-core')
 
     testCompile project(':gto-support-testing')
