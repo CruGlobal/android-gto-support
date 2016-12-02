@@ -3,6 +3,7 @@ sudo: required
 jdk: oraclejdk8
 env:
   global:
+    - GRADLE_OPTS="-Xms128m -Xmx2048m -Dorg.gradle.jvmargs='-Xms128m'"
     - DEPLOY_USERNAME=travis-ci-android-gto-support
     - secure: "NpKiD/OhxURch8MhFvVohqNDgS6SVPfjiM2Qm/mQbjLmeEmdlfDQ3lPF+X2HNL960eWulhvpcTPr5TS8eUMUA83U5HBUaADQEnqnHN75oC1OYJtB54ELP2b+vXOEVD3hFQFFnBWsPLJKd6DK8XMpVe+eG+MnmGPM5AWC0a4cw6I="
   matrix:
@@ -17,6 +18,7 @@ branches:
 
 android:
   components:
+    - tools
     - tools
     - platform-tools
 
@@ -51,9 +53,11 @@ before_install:
 #  --parallel      : build/test multiple subprojects simultaneously
 #  --continue      : continue processing on an error to try and capture all errors
 #  --stacktrace    : output stacktraces for failures to aid in debugging
+#  --max-workers   : limit the number of workers gradle will spawn
+#  --no-daemon     : disable the background gradle build daemon
 #  -PdisablePreDex : disable library pre-dex to improve build server performance
 install:
-  - ./gradlew clean assemble assembleAndroidTest -PdisablePreDex --parallel --continue --stacktrace
+  - ./gradlew clean assemble assembleAndroidTest -PdisablePreDex --parallel --continue --stacktrace --no-daemon --max-workers 4
 
 before_script:
   - android-wait-for-emulator
@@ -61,7 +65,7 @@ before_script:
   - adb shell input keyevent 82 &
 
 script:
-  - ./gradlew check connectedCheck -PdisablePreDex --parallel --continue --stacktrace
+  - ./gradlew check connectedCheck -PdisablePreDex --parallel --continue --stacktrace --no-daemon --max-workers 4
 
 after_failure:
   - cat /home/travis/build/CruGlobal/android-gto-support/*/build/outputs/lint-results-*.xml
