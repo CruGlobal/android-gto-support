@@ -1,5 +1,5 @@
 include ':gto-support-api', ':gto-support-api-base', ':gto-support-api-okhttp3', ':gto-support-api-retrofit2',
-        ':gto-support-appcompat', ':gto-support-core', ':gto-support-db', ':gto-support-db-async',
-        ':gto-support-eventbus', ':gto-support-gson', ':gto-support-jsonapi', ':gto-support-jsonapi-retrofit2',
-        ':gto-support-picasso', ':gto-support-recyclerview', ':gto-support-recyclerview-advrecyclerview',
-        ':gto-support-stetho', ':gto-support-testing'
+        ':gto-support-appcompat', ':gto-support-compat', ':gto-support-core', ':gto-support-db',
+        ':gto-support-db-async', ':gto-support-eventbus', ':gto-support-gson', ':gto-support-jsonapi',
+        ':gto-support-jsonapi-retrofit2', ':gto-support-picasso', ':gto-support-recyclerview',
+        ':gto-support-recyclerview-advrecyclerview', ':gto-support-stetho', ':gto-support-testing'
