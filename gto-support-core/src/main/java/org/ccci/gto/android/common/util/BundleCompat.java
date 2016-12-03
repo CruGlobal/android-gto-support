@@ -1,20 +1,21 @@
 package org.ccci.gto.android.common.util;
 
-import android.annotation.TargetApi;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+/**
+ * @deprecated Since v1.0.2, use {@link org.ccci.gto.android.common.compat.os.BundleCompat} instead.
+ */
+@Deprecated
 public class BundleCompat {
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR1)
+    /**
+     * @deprecated Since v1.0.2, use {@link org.ccci.gto.android.common.compat.os.BundleCompat#getString(Bundle, String,
+     * String)} instead.
+     */
+    @Deprecated
     public static String getString(@NonNull final Bundle bundle, @NonNull final String key,
                                    @Nullable final String defaultValue) {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB_MR1) {
-            final String value = bundle.getString(key);
-            return value != null ? value : defaultValue;
-        } else {
-            return bundle.getString(key, defaultValue);
-        }
+        return org.ccci.gto.android.common.compat.os.BundleCompat.getString(bundle, key, defaultValue);
     }
 }

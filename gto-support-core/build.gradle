@@ -5,6 +5,7 @@ android {
 }
 
 dependencies {
+    compile project(':gto-support-compat')
     compile 'com.android.support:support-v4:' + deps.androidSupport
 
     testCompile 'junit:junit:' + deps.junit
