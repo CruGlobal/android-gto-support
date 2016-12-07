@@ -1,7 +1,6 @@
 language: android
 sudo: false
-jdk:
-  - oraclejdk8
+jdk: oraclejdk8
 env:
   global:
     - DEPLOY_USERNAME=travis-android-gto-support

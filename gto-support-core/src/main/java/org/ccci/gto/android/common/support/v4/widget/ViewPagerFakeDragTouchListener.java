@@ -82,6 +82,7 @@ public final class ViewPagerFakeDragTouchListener implements View.OnTouchListene
                 mPager.endFakeDrag();
                 mIsBeingDragged = false;
                 break;
+            default:
         }
 
         return true;
