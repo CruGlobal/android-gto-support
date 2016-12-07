@@ -61,7 +61,7 @@ public final class ViewPagerFakeDragTouchListener implements View.OnTouchListene
 
                 break;
             case MotionEvent.ACTION_MOVE:
-                if (mIsBeingDragged || Math.abs(dx) > mTouchSlop && Math.abs(dx) > Math.abs(dy)) {
+                if (mIsBeingDragged || !isTouchSlop(dx, dy)) {
                     mIsBeingDragged = true;
                     mPager.fakeDragBy(dx);
 
@@ -72,7 +72,7 @@ public final class ViewPagerFakeDragTouchListener implements View.OnTouchListene
                 break;
             case MotionEvent.ACTION_UP:
             case MotionEvent.ACTION_POINTER_UP:
-                if (mIsBeingDragged) {
+                if (mIsBeingDragged || !isTouchSlop(dx, dy)) {
                     mPager.fakeDragBy(dx);
                 }
 
@@ -85,5 +85,9 @@ public final class ViewPagerFakeDragTouchListener implements View.OnTouchListene
         }
 
         return true;
+    }
+
+    private boolean isTouchSlop(final float dx, final float dy) {
+        return Math.abs(dx) < mTouchSlop || Math.abs(dx) < Math.abs(dy);
     }
 }
