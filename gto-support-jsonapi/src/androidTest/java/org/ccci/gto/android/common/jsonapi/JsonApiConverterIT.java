@@ -175,6 +175,19 @@ public class JsonApiConverterIT {
     }
 
     @Test
+    public void verifyFromJsonNullAttribute() throws Exception {
+        final String raw = "{'data':{'id':5,'type':'attrs','attributes':{'attrStr1':null}}}";
+
+        final JsonApiConverter converter = new JsonApiConverter.Builder().addClasses(ModelAttributes.class).build();
+        final JsonApiObject<ModelAttributes> output =
+                converter.fromJson(raw, ModelAttributes.class);
+        assertThat(output.isSingle(), is(true));
+        final ModelAttributes target = output.getDataSingle();
+        assertThat(target, is(not(nullValue())));
+        assertThat(target.attrStr1, is(nullValue()));
+    }
+
+    @Test
     public void verifyFromJsonMetaNull() throws Exception {
         final JsonApiConverter converter = new JsonApiConverter.Builder().build();
 
