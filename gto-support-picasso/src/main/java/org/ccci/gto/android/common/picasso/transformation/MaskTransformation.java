@@ -25,7 +25,7 @@ public class MaskTransformation implements Transformation {
     @DrawableRes
     private final int mMask;
 
-    public MaskTransformation(@NonNull final Context context, final int mask) {
+    public MaskTransformation(@NonNull final Context context, @DrawableRes final int mask) {
         mContext = context;
         mMask = mask;
     }
