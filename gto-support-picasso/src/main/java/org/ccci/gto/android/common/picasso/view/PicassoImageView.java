@@ -163,4 +163,7 @@ public interface PicassoImageView {
     void addTransform(@NonNull Transformation transform);
 
     void setTransforms(@Nullable List<? extends Transformation> transforms);
+
+    /* Methods already present on View objects */
+    Context getContext();
 }
