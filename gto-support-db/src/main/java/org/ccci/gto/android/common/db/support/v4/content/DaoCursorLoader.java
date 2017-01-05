@@ -54,7 +54,7 @@ public class DaoCursorLoader<T> extends SimpleCursorLoader {
             setSortOrder(args.getString(ARG_ORDER_BY));
         } else {
             setDistinct(false);
-            setJoins(null);
+            setJoins((Join<T, ?>[]) null);
             setProjection(null);
             setWhere(null);
             setSortOrder(null);
@@ -90,7 +90,7 @@ public class DaoCursorLoader<T> extends SimpleCursorLoader {
     }
 
     @SuppressWarnings("unchecked")
-    public void setJoins(@Nullable final Join<T, ?>[] joins) {
+    public void setJoins(@Nullable final Join<T, ?>... joins) {
         mJoins = joins != null ? joins : Join.NO_JOINS;
     }
 
