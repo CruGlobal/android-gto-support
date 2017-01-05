@@ -575,7 +575,8 @@ public final class JsonApiConverter {
         // utilize configured TypeConverters first
         for (final TypeConverter<?> converter : mConverters) {
             if (converter.supports(type)) {
-                return converter.fromString(json.optString(name, null));
+                final String value = !json.isNull(name) ? json.optString(name, null) : null;
+                return converter.fromString(value);
             }
         }
 
@@ -595,7 +596,10 @@ public final class JsonApiConverter {
         } else if (type.isAssignableFrom(Boolean.class) || type.isAssignableFrom(Double.class) ||
                 type.isAssignableFrom(Integer.class) || type.isAssignableFrom(Long.class) ||
                 type.isAssignableFrom(String.class)) {
-            final String value = json.optString(name, null);
+            final String value = !json.isNull(name) ? json.optString(name, null) : null;
+            if (value == null) {
+                return null;
+            }
             try {
                 if (type.isAssignableFrom(Boolean.class)) {
                     return Boolean.valueOf(value);
@@ -630,8 +634,8 @@ public final class JsonApiConverter {
         @Nullable
         static ObjKey create(@Nullable final JSONObject json) {
             if (json != null) {
-                final String type = json.optString(JSON_DATA_TYPE, null);
-                final String id = json.optString(JSON_DATA_ID, null);
+                final String type = !json.isNull(JSON_DATA_TYPE) ? json.optString(JSON_DATA_TYPE, null) : null;
+                final String id = !json.isNull(JSON_DATA_ID) ? json.optString(JSON_DATA_ID, null) : null;
                 if (type != null && id != null) {
                     return new ObjKey(type, id);
                 }
