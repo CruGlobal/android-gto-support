@@ -90,7 +90,7 @@ public class DaoCursorLoader<T> extends SimpleCursorLoader {
     }
 
     @SuppressWarnings("unchecked")
-    public void setJoins(@Nullable final Join<T, ?>[] joins) {
+    public void setJoins(@Nullable final Join<T, ?>... joins) {
         mJoins = joins != null ? joins : Join.NO_JOINS;
     }
 
