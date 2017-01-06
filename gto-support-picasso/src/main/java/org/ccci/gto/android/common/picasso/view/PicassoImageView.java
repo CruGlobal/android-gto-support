@@ -29,8 +29,6 @@ public interface PicassoImageView {
     final class Helper {
         @NonNull
         private final ImageView mView;
-        @NonNull
-        private final Picasso mPicasso;
 
         @Nullable
         private Uri mPicassoUri;
@@ -51,7 +49,6 @@ public interface PicassoImageView {
         public Helper(@NonNull final ImageView view, @Nullable final AttributeSet attrs, final int defStyleAttr,
                       final int defStyleRes) {
             mView = view;
-            mPicasso = Picasso.with(mView.getContext());
             init(mView.getContext(), attrs, defStyleAttr, defStyleRes);
         }
 
@@ -110,12 +107,18 @@ public interface PicassoImageView {
         }
 
         private void triggerUpdate() {
+            // short-circuit if we are in edit mode within a development tool
+            if (mView.isInEditMode()) {
+                return;
+            }
+
             // create base request
+            final Picasso picasso = Picasso.with(mView.getContext());
             final RequestCreator update;
             if (mPicassoFile != null) {
-                update = mPicasso.load(mPicassoFile);
+                update = picasso.load(mPicassoFile);
             } else {
-                update = mPicasso.load(mPicassoUri);
+                update = picasso.load(mPicassoUri);
             }
 
             // set placeholder & any transform options
