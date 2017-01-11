@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import org.ccci.gto.android.common.db.util.CursorUtils;
+import org.ccci.gto.android.common.util.LocaleCompat;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -139,6 +140,11 @@ public abstract class AbstractMapper<T> implements Mapper<T> {
     @Nullable
     protected final Long serialize(@Nullable final Date date) {
         return date != null ? date.getTime() : null;
+    }
+
+    @Nullable
+    protected final String serialize(@Nullable final Locale locale) {
+        return locale != null ? LocaleCompat.toLanguageTag(locale) : null;
     }
 
     /**
