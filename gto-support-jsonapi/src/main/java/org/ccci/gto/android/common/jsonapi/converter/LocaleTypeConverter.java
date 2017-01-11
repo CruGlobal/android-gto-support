@@ -3,7 +3,7 @@ package org.ccci.gto.android.common.jsonapi.converter;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import org.ccci.gto.android.common.util.LocaleCompat;
+import org.ccci.gto.android.common.compat.util.LocaleCompat;
 
 import java.util.Locale;
 

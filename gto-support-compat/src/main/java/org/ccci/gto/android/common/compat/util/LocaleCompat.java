@@ -1,4 +1,4 @@
-package org.ccci.gto.android.common.util;
+package org.ccci.gto.android.common.compat.util;
 
 import android.annotation.TargetApi;
 import android.os.Build;
@@ -35,7 +35,7 @@ public class LocaleCompat {
     }
 
     @NonNull
-    public static Locale[] getFallbacks(final Locale... locales) {
+    public static Locale[] getFallbacks(@NonNull final Locale... locales) {
         final LinkedHashSet<Locale> outputs = new LinkedHashSet<>();
 
         // generate fallbacks for all provided locales

@@ -2,7 +2,7 @@ package org.ccci.gto.android.common.api.retrofit2.converter;
 
 import android.support.annotation.Nullable;
 
-import org.ccci.gto.android.common.util.LocaleCompat;
+import org.ccci.gto.android.common.compat.util.LocaleCompat;
 
 import java.io.IOException;
 import java.util.Locale;

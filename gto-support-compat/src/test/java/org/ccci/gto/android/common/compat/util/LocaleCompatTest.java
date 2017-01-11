@@ -1,13 +1,10 @@
-package org.ccci.gto.android.common.util;
-
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
+package org.ccci.gto.android.common.compat.util;
 
 import com.google.common.collect.ImmutableMap;
 
-import org.ccci.gto.android.common.util.LocaleCompat.Compat;
-import org.ccci.gto.android.common.util.LocaleCompat.FroyoCompat;
-import org.ccci.gto.android.common.util.LocaleCompat.LollipopCompat;
+import org.ccci.gto.android.common.compat.util.LocaleCompat.Compat;
+import org.ccci.gto.android.common.compat.util.LocaleCompat.FroyoCompat;
+import org.ccci.gto.android.common.compat.util.LocaleCompat.LollipopCompat;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -16,6 +13,9 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Locale;
 import java.util.Map;
+
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
 
 @RunWith(Parameterized.class)
 public class LocaleCompatTest {
