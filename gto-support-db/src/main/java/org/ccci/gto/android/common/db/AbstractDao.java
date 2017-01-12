@@ -15,7 +15,7 @@ import android.util.Pair;
 import org.ccci.gto.android.common.db.CommonTables.LastSyncTable;
 import org.ccci.gto.android.common.db.Expression.Field;
 import org.ccci.gto.android.common.util.ArrayUtils;
-import org.ccci.gto.android.common.util.LocaleCompat;
+import org.ccci.gto.android.common.compat.util.LocaleCompat;
 
 import java.util.ArrayList;
 import java.util.Date;
