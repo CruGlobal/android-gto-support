@@ -28,7 +28,7 @@ subprojects {
     apply plugin: 'com.android.library'
 
     group 'org.ccci.gto.android'
-    version '1.0.3'
+    version '1.0.4-SNAPSHOT'
 
     repositories {
         mavenLocal()
