@@ -493,7 +493,7 @@ public final class JsonApiConverter {
                 // skip fields we don't support
                 final Class<?> fieldType = field.getType();
                 final Class<?> fieldCollectionType = getFieldCollectionType(field.getGenericType());
-                if (!isSupportedType(fieldType) && !supports(fieldType) && !supports(fieldCollectionType)) {
+                if (!(isSupportedType(fieldType) || supports(fieldCollectionType))) {
                     continue;
                 }
 
@@ -526,6 +526,11 @@ public final class JsonApiConverter {
     }
 
     private boolean isSupportedType(@NonNull final Class<?> type) {
+        // check if this is a supported model type
+        if (supports(type)) {
+            return true;
+        }
+
         // check configured TypeConverters
         for (final TypeConverter<?> converter : mConverters) {
             if (converter.supports(type)) {
