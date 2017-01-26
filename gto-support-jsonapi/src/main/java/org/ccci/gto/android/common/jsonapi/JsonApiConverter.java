@@ -290,6 +290,7 @@ public final class JsonApiConverter {
 
             // get some common attributes about the field
             final Class<?> fieldType = field.getType();
+            final Class<?> fieldArrayType = fieldType.getComponentType();
             final Class<?> fieldCollectionType = getFieldCollectionType(field.getGenericType());
 
             // is this a relationship?
@@ -309,6 +310,28 @@ public final class JsonApiConverter {
                     }
                 } catch (final IllegalAccessException ignored) {
                 }
+                continue;
+            } else if (supports(fieldArrayType)) {
+                final JSONArray objs = new JSONArray();
+                try {
+                    final Object[] col = (Object[]) field.get(resource);
+                    if (col != null) {
+                        for (final Object obj : col) {
+                            final JSONObject relatedObj =
+                                    resourceToJson(obj, options, include.descendant(attrName), related);
+                            final ObjKey key = ObjKey.create(relatedObj);
+                            if (key != null) {
+                                objs.put(new JSONObject(relatedObj, new String[] {JSON_DATA_TYPE, JSON_DATA_ID}));
+
+                                if (include.include(attrName)) {
+                                    related.put(key, relatedObj);
+                                }
+                            }
+                        }
+                    }
+                } catch (final IllegalAccessException ignored) {
+                }
+                relationships.put(attrName, new JSONObject(singletonMap(JSON_DATA, objs)));
                 continue;
             } else if (supports(fieldCollectionType)) {
                 final JSONArray objs = new JSONArray();
