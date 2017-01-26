@@ -16,6 +16,7 @@ import java.util.Collections;
 import static net.javacrumbs.jsonunit.JsonMatchers.jsonNodeAbsent;
 import static net.javacrumbs.jsonunit.JsonMatchers.jsonNodePresent;
 import static net.javacrumbs.jsonunit.JsonMatchers.jsonPartEquals;
+import static net.javacrumbs.jsonunit.JsonMatchers.jsonPartMatches;
 import static net.javacrumbs.jsonunit.fluent.JsonFluentAssert.assertThatJson;
 import static org.hamcrest.CoreMatchers.allOf;
 import static org.hamcrest.CoreMatchers.is;
@@ -82,6 +83,11 @@ public class JsonApiConverterIT {
         final String json = converter.toJson(JsonApiObject.single(new ModelAttributes()));
         assertThatJson(json).node("data").isObject();
         assertThatJson(json).node("data.attributes").isObject();
+        assertThatJson(json).node("data.attributes.attrArrayDouble").isArray().ofLength(2);
+        assertThatJson(json).node("data.attributes.attrArrayInt").isArray().ofLength(2);
+        assertThatJson(json).node("data.attributes.attrArrayLong").isArray().ofLength(2);
+        assertThatJson(json).node("data.attributes.attrArrayBoolean").isArray().ofLength(2);
+        assertThatJson(json).node("data.attributes.attrArrayString").isArray().ofLength(3);
         assertThat(json, jsonPartEquals("data.type", ModelAttributes.TYPE));
         assertThat(json, jsonPartEquals("data.attributes.attrStr1", "attrStr1"));
         assertThat(json, jsonPartEquals("data.attributes.attrInt1", 1));
@@ -90,7 +96,17 @@ public class JsonApiConverterIT {
         assertThat(json, jsonPartEquals("data.attributes.attrAnn2", "attrAnn2"));
         assertThat(json, allOf(jsonNodeAbsent("data.attributes.transientAttr"),
                                jsonNodeAbsent("data.attributes.staticAttr")));
-
+        assertThat(json, jsonPartEquals("data.attributes.attrArrayDouble[0]", 1.5));
+        assertThat(json, jsonPartEquals("data.attributes.attrArrayDouble[1]", 2.5));
+        assertThat(json, jsonPartEquals("data.attributes.attrArrayLong[0]", 1));
+        assertThat(json, jsonPartEquals("data.attributes.attrArrayLong[1]", 2));
+        assertThat(json, jsonPartEquals("data.attributes.attrArrayInt[0]", 3));
+        assertThat(json, jsonPartEquals("data.attributes.attrArrayInt[1]", 4));
+        assertThat(json, jsonPartEquals("data.attributes.attrArrayBoolean[0]", true));
+        assertThat(json, jsonPartEquals("data.attributes.attrArrayBoolean[1]", false));
+        assertThat(json, jsonPartEquals("data.attributes.attrArrayString[0]", "a"));
+        assertThat(json, jsonPartMatches("data.attributes.attrArrayString[1]", nullValue()));
+        assertThat(json, jsonPartEquals("data.attributes.attrArrayString[2]", "b"));
     }
 
     @Test
@@ -227,6 +243,12 @@ public class JsonApiConverterIT {
         private String attrStr1 = "attrStr1";
         public int attrInt1 = 1;
         boolean attrBool1 = true;
+
+        private double[] attrArrayDouble = {1.5, 2.5};
+        private long[] attrArrayLong = {1, 2};
+        private int[] attrArrayInt = {3, 4};
+        private boolean[] attrArrayBoolean = {true, false};
+        private String[] attrArrayString = {"a", null, "b"};
 
         @JsonApiAttribute
         String attrAnn1 = "attrAnn1";

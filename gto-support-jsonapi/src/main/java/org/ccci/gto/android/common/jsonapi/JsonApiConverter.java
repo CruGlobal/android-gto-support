@@ -421,6 +421,7 @@ public final class JsonApiConverter {
         for (final Field field : mFields.get(type)) {
             final String attrName = getAttrName(field);
             final Class<?> fieldType = field.getType();
+            final Class<?> fieldArrayType = fieldType.getComponentType();
             final Class<?> fieldCollectionType = getFieldCollectionType(field.getGenericType());
 
             try {
@@ -492,8 +493,10 @@ public final class JsonApiConverter {
 
                 // skip fields we don't support
                 final Class<?> fieldType = field.getType();
+                final Class<?> fieldArrayType = fieldType.getComponentType();
                 final Class<?> fieldCollectionType = getFieldCollectionType(field.getGenericType());
-                if (!(isSupportedType(fieldType) || supports(fieldCollectionType))) {
+                if (!(isSupportedType(fieldType) || (fieldType.isArray() && isSupportedType(fieldArrayType)) ||
+                        supports(fieldCollectionType))) {
                     continue;
                 }
 
@@ -546,7 +549,7 @@ public final class JsonApiConverter {
     }
 
     @Nullable
-    private Object convertToJsonValue(@NonNull final Object resource, @NonNull final Field field) {
+    private Object convertToJsonValue(@NonNull final Object resource, @NonNull final Field field) throws JSONException {
         // get the value from the field
         try {
             return convertToJsonValue(field.get(resource));
@@ -556,7 +559,7 @@ public final class JsonApiConverter {
     }
 
     @Nullable
-    private Object convertToJsonValue(@Nullable final Object raw) {
+    private Object convertToJsonValue(@Nullable final Object raw) throws JSONException {
         if (raw == null) {
             return null;
         }
@@ -570,8 +573,44 @@ public final class JsonApiConverter {
             }
         }
 
+        // handle array values
+        if (type.isArray()) {
+            return convertArrayToJsonValue(raw);
+        }
+
         // just return native types
         return raw;
+    }
+
+    @NonNull
+    private JSONArray convertArrayToJsonValue(@NonNull final Object raw) throws JSONException {
+        final Class<?> arrayType = raw.getClass().getComponentType();
+
+        final JSONArray array = new JSONArray();
+
+        if (double.class.equals(arrayType)) {
+            for (final double rawItem : (double[]) raw) {
+                array.put(rawItem);
+            }
+        } else if (int.class.equals(arrayType)) {
+            for (final int rawItem : (int[]) raw) {
+                array.put(rawItem);
+            }
+        } else if (long.class.equals(arrayType)) {
+            for (final long rawItem : (long[]) raw) {
+                array.put(rawItem);
+            }
+        } else if (boolean.class.equals(arrayType)) {
+            for (final boolean rawItem : (boolean[]) raw) {
+                array.put(rawItem);
+            }
+        } else {
+            for (final Object rawItem : (Object[]) raw) {
+                array.put(convertToJsonValue(rawItem));
+            }
+        }
+
+        return array;
     }
 
     @Nullable
