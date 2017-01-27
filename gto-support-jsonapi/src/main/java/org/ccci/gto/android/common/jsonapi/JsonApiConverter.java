@@ -15,6 +15,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
@@ -290,6 +291,7 @@ public final class JsonApiConverter {
 
             // get some common attributes about the field
             final Class<?> fieldType = field.getType();
+            final Class<?> fieldArrayType = fieldType.getComponentType();
             final Class<?> fieldCollectionType = getFieldCollectionType(field.getGenericType());
 
             // is this a relationship?
@@ -309,6 +311,28 @@ public final class JsonApiConverter {
                     }
                 } catch (final IllegalAccessException ignored) {
                 }
+                continue;
+            } else if (supports(fieldArrayType)) {
+                final JSONArray objs = new JSONArray();
+                try {
+                    final Object[] col = (Object[]) field.get(resource);
+                    if (col != null) {
+                        for (final Object obj : col) {
+                            final JSONObject relatedObj =
+                                    resourceToJson(obj, options, include.descendant(attrName), related);
+                            final ObjKey key = ObjKey.create(relatedObj);
+                            if (key != null) {
+                                objs.put(new JSONObject(relatedObj, new String[] {JSON_DATA_TYPE, JSON_DATA_ID}));
+
+                                if (include.include(attrName)) {
+                                    related.put(key, relatedObj);
+                                }
+                            }
+                        }
+                    }
+                } catch (final IllegalAccessException ignored) {
+                }
+                relationships.put(attrName, new JSONObject(singletonMap(JSON_DATA, objs)));
                 continue;
             } else if (supports(fieldCollectionType)) {
                 final JSONArray objs = new JSONArray();
@@ -357,6 +381,21 @@ public final class JsonApiConverter {
     }
 
     @NonNull
+    private <E> E[] resourcesFromJson(@Nullable final JSONArray json, @NonNull final Class<E> type,
+                                      @NonNull final Map<ObjKey, Object> objects) {
+        @SuppressWarnings("unchecked")
+        final E[] array = (E[]) Array.newInstance(type, json != null ? json.length() : 0);
+
+        if (json != null) {
+            for (int i = 0; i < json.length(); i++) {
+                array[i] = resourceFromJson(json.optJSONObject(i), type, objects);
+            }
+        }
+
+        return array;
+    }
+
+    @NonNull
     private <E, T extends Collection<E>> T resourcesFromJson(@Nullable final JSONArray json,
                                                              @NonNull final Class<E> type,
                                                              @NonNull final Class<T> collectionType,
@@ -369,10 +408,7 @@ public final class JsonApiConverter {
 
         if (json != null) {
             for (int i = 0; i < json.length(); i++) {
-                final E resource = resourceFromJson(json.optJSONObject(i), type, objects);
-                if (resource != null) {
-                    resources.add(resource);
-                }
+                resources.add(resourceFromJson(json.optJSONObject(i), type, objects));
             }
         }
 
@@ -421,6 +457,7 @@ public final class JsonApiConverter {
         for (final Field field : mFields.get(type)) {
             final String attrName = getAttrName(field);
             final Class<?> fieldType = field.getType();
+            final Class<?> fieldArrayType = fieldType.getComponentType();
             final Class<?> fieldCollectionType = getFieldCollectionType(field.getGenericType());
 
             try {
@@ -434,6 +471,16 @@ public final class JsonApiConverter {
                         final JSONObject related = relationships.optJSONObject(attrName);
                         if (related != null) {
                             field.set(instance, resourceFromJson(related.optJSONObject(JSON_DATA), fieldType, objects));
+                        }
+                    }
+                }
+                // handle arrays of relationships
+                else if (fieldType.isArray() && supports(fieldArrayType)) {
+                    if (relationships != null) {
+                        final JSONObject related = relationships.optJSONObject(attrName);
+                        if (related != null) {
+                            field.set(instance,
+                                      resourcesFromJson(related.optJSONArray(JSON_DATA), fieldArrayType, objects));
                         }
                     }
                 }
@@ -492,8 +539,10 @@ public final class JsonApiConverter {
 
                 // skip fields we don't support
                 final Class<?> fieldType = field.getType();
+                final Class<?> fieldArrayType = fieldType.getComponentType();
                 final Class<?> fieldCollectionType = getFieldCollectionType(field.getGenericType());
-                if (!isSupportedType(fieldType) && !supports(fieldType) && !supports(fieldCollectionType)) {
+                if (!(isSupportedType(fieldType) || (fieldType.isArray() && isSupportedType(fieldArrayType)) ||
+                        supports(fieldCollectionType))) {
                     continue;
                 }
 
@@ -526,6 +575,11 @@ public final class JsonApiConverter {
     }
 
     private boolean isSupportedType(@NonNull final Class<?> type) {
+        // check if this is a supported model type
+        if (supports(type)) {
+            return true;
+        }
+
         // check configured TypeConverters
         for (final TypeConverter<?> converter : mConverters) {
             if (converter.supports(type)) {
@@ -541,7 +595,7 @@ public final class JsonApiConverter {
     }
 
     @Nullable
-    private Object convertToJsonValue(@NonNull final Object resource, @NonNull final Field field) {
+    private Object convertToJsonValue(@NonNull final Object resource, @NonNull final Field field) throws JSONException {
         // get the value from the field
         try {
             return convertToJsonValue(field.get(resource));
@@ -551,7 +605,7 @@ public final class JsonApiConverter {
     }
 
     @Nullable
-    private Object convertToJsonValue(@Nullable final Object raw) {
+    private Object convertToJsonValue(@Nullable final Object raw) throws JSONException {
         if (raw == null) {
             return null;
         }
@@ -565,8 +619,85 @@ public final class JsonApiConverter {
             }
         }
 
+        // handle array values
+        if (type.isArray()) {
+            return convertArrayToJsonValue(raw);
+        }
+
         // just return native types
         return raw;
+    }
+
+    @NonNull
+    private JSONArray convertArrayToJsonValue(@NonNull final Object raw) throws JSONException {
+        final JSONArray array = new JSONArray();
+        final int length = Array.getLength(raw);
+        for (int i = 0; i < length; i++) {
+            array.put(i, convertToJsonValue(Array.get(raw, i)));
+        }
+
+        return array;
+    }
+
+    @Nullable
+    private Object convertFromJSONArray(@NonNull final JSONArray json, @NonNull final Class<?> arrayType)
+            throws JSONException {
+        final Object array = Array.newInstance(arrayType, json.length());
+        for (int i = 0; i < json.length(); i++) {
+            Array.set(array, i, convertFromJSONArray(json, i, arrayType));
+        }
+        return array;
+    }
+
+    @Nullable
+    private Object convertFromJSONArray(@NonNull final JSONArray json, final int index, @NonNull final Class<?> type)
+            throws JSONException {
+        // utilize configured TypeConverters first
+        for (final TypeConverter<?> converter : mConverters) {
+            if (converter.supports(type)) {
+                final String value = !json.isNull(index) ? json.optString(index, null) : null;
+                return converter.fromString(value);
+            }
+        }
+
+        // handle native types
+        if (type.isAssignableFrom(double.class)) {
+            return json.getDouble(index);
+        } else if (type.isAssignableFrom(int.class)) {
+            return json.getInt(index);
+        } else if (type.isAssignableFrom(long.class)) {
+            return json.getLong(index);
+        } else if (type.isAssignableFrom(boolean.class)) {
+            return json.getBoolean(index);
+        } else if (type.isAssignableFrom(JSONObject.class)) {
+            return json.getJSONObject(index);
+        } else if (type.isAssignableFrom(JSONArray.class)) {
+            return json.getJSONArray(index);
+        } else if (type.isAssignableFrom(Boolean.class) || type.isAssignableFrom(Double.class) ||
+                type.isAssignableFrom(Integer.class) || type.isAssignableFrom(Long.class) ||
+                type.isAssignableFrom(String.class)) {
+            final String value = !json.isNull(index) ? json.optString(index, null) : null;
+            if (value == null) {
+                return null;
+            }
+            try {
+                if (type.isAssignableFrom(Boolean.class)) {
+                    return Boolean.valueOf(value);
+                } else if (type.isAssignableFrom(Double.class)) {
+                    return Double.valueOf(value);
+                } else if (type.isAssignableFrom(Integer.class)) {
+                    return Integer.valueOf(value);
+                } else if (type.isAssignableFrom(Long.class)) {
+                    return Long.valueOf(value);
+                } else if (type.isAssignableFrom(String.class)) {
+                    return value;
+                }
+            } catch (final Exception e) {
+                return null;
+            }
+        }
+
+        return null;
     }
 
     @Nullable
@@ -578,6 +709,11 @@ public final class JsonApiConverter {
                 final String value = !json.isNull(name) ? json.optString(name, null) : null;
                 return converter.fromString(value);
             }
+        }
+
+        // handle array types
+        if (type.isArray() && type.getComponentType() != null) {
+            return convertFromJSONArray(json.getJSONArray(name), type.getComponentType());
         }
 
         // handle native types

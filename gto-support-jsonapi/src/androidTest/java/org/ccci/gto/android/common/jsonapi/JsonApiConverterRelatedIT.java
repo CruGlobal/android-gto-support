@@ -23,6 +23,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.CoreMatchers.sameInstance;
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertThat;
 
 @RunWith(AndroidJUnit4.class)
@@ -40,6 +41,7 @@ public class JsonApiConverterRelatedIT {
         final ModelChild child2 = new ModelChild("Hey You");
         child2.mId = 20;
         parent.children.add(child2);
+        parent.orphans = new ModelChild[] {parent.favorite, child2};
 
         final String json = converter.toJson(JsonApiObject.single(parent));
         assertThatJson(json).node("data").isObject();
@@ -50,6 +52,7 @@ public class JsonApiConverterRelatedIT {
         assertThat(json, jsonPartEquals("data.relationships.favorite.data.id", parent.favorite.mId));
         assertThat(json, jsonNodeAbsent("data.relationships.favorite.data.attributes"));
         assertThatJson(json).node("data.relationships.children.data").isArray().ofLength(2);
+        assertThatJson(json).node("data.relationships.orphans.data").isArray().ofLength(2);
         assertThatJson(json).node("included").isArray().ofLength(2);
         assertThatJson(json).node("included").matches(
                 hasItem(jsonEquals("{type:'child',id:11,attributes:{name:'Daniel'}}").when(IGNORING_EXTRA_FIELDS)));
@@ -70,6 +73,7 @@ public class JsonApiConverterRelatedIT {
         final ModelChild child2 = new ModelChild("Kid");
         child2.mId = 20;
         parent.children.add(child2);
+        parent.orphans = new ModelChild[] {parent.favorite, child2};
 
         final JsonApiObject<ModelParent> output =
                 converter.fromJson(converter.toJson(JsonApiObject.single(parent)), ModelParent.class);
@@ -83,6 +87,7 @@ public class JsonApiConverterRelatedIT {
         assertThat(target.children.size(), is(2));
         assertThat(target.children.get(0), is(sameInstance(target.favorite)));
         assertThat(target.children, hasItems(parent.children.toArray(new ModelChild[0])));
+        assertArrayEquals(parent.orphans, target.orphans);
     }
 
     @Test
@@ -162,6 +167,8 @@ public class JsonApiConverterRelatedIT {
 
         // everyone has a favorite child
         ModelChild favorite;
+
+        ModelChild[] orphans;
     }
 
     @JsonApiType(ModelChild.TYPE)
