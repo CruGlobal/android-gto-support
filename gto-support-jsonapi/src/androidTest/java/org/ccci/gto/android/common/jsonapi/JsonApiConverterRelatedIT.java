@@ -23,6 +23,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.CoreMatchers.sameInstance;
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertThat;
 
 @RunWith(AndroidJUnit4.class)
@@ -72,6 +73,7 @@ public class JsonApiConverterRelatedIT {
         final ModelChild child2 = new ModelChild("Kid");
         child2.mId = 20;
         parent.children.add(child2);
+        parent.orphans = new ModelChild[] {parent.favorite, child2};
 
         final JsonApiObject<ModelParent> output =
                 converter.fromJson(converter.toJson(JsonApiObject.single(parent)), ModelParent.class);
@@ -85,6 +87,7 @@ public class JsonApiConverterRelatedIT {
         assertThat(target.children.size(), is(2));
         assertThat(target.children.get(0), is(sameInstance(target.favorite)));
         assertThat(target.children, hasItems(parent.children.toArray(new ModelChild[0])));
+        assertArrayEquals(parent.orphans, target.orphans);
     }
 
     @Test

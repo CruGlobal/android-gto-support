@@ -381,6 +381,21 @@ public final class JsonApiConverter {
     }
 
     @NonNull
+    private <E> E[] resourcesFromJson(@Nullable final JSONArray json, @NonNull final Class<E> type,
+                                      @NonNull final Map<ObjKey, Object> objects) {
+        @SuppressWarnings("unchecked")
+        final E[] array = (E[]) Array.newInstance(type, json != null ? json.length() : 0);
+
+        if (json != null) {
+            for (int i = 0; i < json.length(); i++) {
+                array[i] = resourceFromJson(json.optJSONObject(i), type, objects);
+            }
+        }
+
+        return array;
+    }
+
+    @NonNull
     private <E, T extends Collection<E>> T resourcesFromJson(@Nullable final JSONArray json,
                                                              @NonNull final Class<E> type,
                                                              @NonNull final Class<T> collectionType,
@@ -393,10 +408,7 @@ public final class JsonApiConverter {
 
         if (json != null) {
             for (int i = 0; i < json.length(); i++) {
-                final E resource = resourceFromJson(json.optJSONObject(i), type, objects);
-                if (resource != null) {
-                    resources.add(resource);
-                }
+                resources.add(resourceFromJson(json.optJSONObject(i), type, objects));
             }
         }
 
@@ -459,6 +471,16 @@ public final class JsonApiConverter {
                         final JSONObject related = relationships.optJSONObject(attrName);
                         if (related != null) {
                             field.set(instance, resourceFromJson(related.optJSONObject(JSON_DATA), fieldType, objects));
+                        }
+                    }
+                }
+                // handle arrays of relationships
+                else if (fieldType.isArray() && supports(fieldArrayType)) {
+                    if (relationships != null) {
+                        final JSONObject related = relationships.optJSONObject(attrName);
+                        if (related != null) {
+                            field.set(instance,
+                                      resourcesFromJson(related.optJSONArray(JSON_DATA), fieldArrayType, objects));
                         }
                     }
                 }
