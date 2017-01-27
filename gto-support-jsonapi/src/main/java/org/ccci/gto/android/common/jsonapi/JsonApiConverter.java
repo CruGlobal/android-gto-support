@@ -11,6 +11,7 @@ import org.ccci.gto.android.common.jsonapi.annotation.JsonApiType;
 import org.ccci.gto.android.common.jsonapi.converter.TypeConverter;
 import org.ccci.gto.android.common.jsonapi.model.JsonApiError;
 import org.ccci.gto.android.common.jsonapi.model.JsonApiObject;
+import org.ccci.gto.android.common.jsonapi.util.Includes;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -30,7 +31,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeSet;
 
 import static java.util.Collections.singletonMap;
 import static org.ccci.gto.android.common.jsonapi.model.JsonApiError.JSON_ERROR_DETAIL;
@@ -884,70 +884,6 @@ public final class JsonApiConverter {
 
                 return new Options(new Includes(mIncludes), fields);
             }
-        }
-    }
-
-    static final class Includes {
-        @NonNull
-        private final String mBase;
-        @Nullable
-        private final TreeSet<String> mInclude;
-
-        Includes(@Nullable final String... include) {
-            this(include != null ? Arrays.asList(include) : null);
-        }
-
-        Includes(@Nullable final Collection<String> include) {
-            mBase = "";
-            mInclude = include != null ? new TreeSet<>(include) : null;
-        }
-
-        private Includes(@NonNull final Includes base, @NonNull final String descendant) {
-            mBase = base.mBase + descendant + ".";
-            mInclude = base.mInclude;
-        }
-
-        Includes merge(@Nullable final Includes includes) {
-            // we ignore mBase, this should only ever be called on a base includes object
-            if (includes == null) {
-                return this;
-            }
-
-            // merge rules: include all overrides everything, otherwise merge the includes
-            if (mInclude == null) {
-                return this;
-            } else if (includes.mInclude == null) {
-                return includes;
-            } else {
-                final List<String> values = new ArrayList<>(mInclude);
-                values.addAll(includes.mInclude);
-                return new Includes(values);
-            }
-        }
-
-        boolean include(@NonNull final String relationship) {
-            if (mInclude == null) {
-                return true;
-            }
-
-            // check for a direct include
-            final String key = mBase + relationship;
-            if (mInclude.contains(key)) {
-                return true;
-            }
-
-            // check for an implicit include
-            final String entry = mInclude.ceiling(key + ".");
-            return entry != null && entry.startsWith(key + ".");
-        }
-
-        @NonNull
-        Includes descendant(@NonNull final String relationship) {
-            if (mInclude == null) {
-                return this;
-            }
-
-            return new Includes(this, relationship);
         }
     }
 
