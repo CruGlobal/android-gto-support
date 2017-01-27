@@ -37,7 +37,7 @@ public final class Includes {
      */
     public Includes merge(@Nullable final Includes includes) {
         // throw an error if this is a descendant includes object
-        if (!mBase.equals("")) {
+        if (!"".equals(mBase)) {
             throw new IllegalStateException("Cannot merge includes with a descendant Includes object");
         }
 
@@ -47,8 +47,8 @@ public final class Includes {
         }
 
         // throw an error if the includes object being merged is a descendant includes object
-        if (!includes.mBase.equals("")) {
-            throw new IllegalStateException("Cannot merge includes with a descendant Includes object");
+        if (!"".equals(includes.mBase)) {
+            throw new IllegalArgumentException("Cannot merge a descendant Includes object");
         }
 
         // merge rules: include all overrides everything, otherwise merge the includes
