@@ -22,6 +22,7 @@ import static org.hamcrest.CoreMatchers.allOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.nullValue;
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
@@ -175,6 +176,11 @@ public class JsonApiConverterIT {
         source.attrBool1 = false;
         source.attrAnn1 = "1nnArtta";
         source.ann2 = "2nnArtta";
+        source.attrArrayBoolean = new boolean[] {false};
+        source.attrArrayDouble = new double[] {2.73, 3.14};
+        source.attrArrayInt = new int[] {11, 12, 13};
+        source.attrArrayLong = new long[] {21, 22};
+        source.attrArrayString = new String[] {null, "str1", "str2"};
         final JsonApiObject<ModelAttributes> output =
                 converter.fromJson(converter.toJson(JsonApiObject.single(source)), ModelAttributes.class);
         assertThat(output.isSingle(), is(true));
@@ -188,6 +194,11 @@ public class JsonApiConverterIT {
         assertThat(target.attrBool1, is(source.attrBool1));
         assertThat(target.attrAnn1, is(source.attrAnn1));
         assertThat(target.ann2, is(source.ann2));
+        assertArrayEquals(source.attrArrayBoolean, target.attrArrayBoolean);
+        assertArrayEquals(source.attrArrayDouble, target.attrArrayDouble, 0.000001);
+        assertArrayEquals(source.attrArrayInt, target.attrArrayInt);
+        assertArrayEquals(source.attrArrayLong, target.attrArrayLong);
+        assertArrayEquals(source.attrArrayString, target.attrArrayString);
     }
 
     @Test
