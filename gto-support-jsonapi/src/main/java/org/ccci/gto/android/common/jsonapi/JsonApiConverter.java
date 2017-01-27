@@ -15,6 +15,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
@@ -607,30 +608,10 @@ public final class JsonApiConverter {
 
     @NonNull
     private JSONArray convertArrayToJsonValue(@NonNull final Object raw) throws JSONException {
-        final Class<?> arrayType = raw.getClass().getComponentType();
-
         final JSONArray array = new JSONArray();
-
-        if (double.class.equals(arrayType)) {
-            for (final double rawItem : (double[]) raw) {
-                array.put(rawItem);
-            }
-        } else if (int.class.equals(arrayType)) {
-            for (final int rawItem : (int[]) raw) {
-                array.put(rawItem);
-            }
-        } else if (long.class.equals(arrayType)) {
-            for (final long rawItem : (long[]) raw) {
-                array.put(rawItem);
-            }
-        } else if (boolean.class.equals(arrayType)) {
-            for (final boolean rawItem : (boolean[]) raw) {
-                array.put(rawItem);
-            }
-        } else {
-            for (final Object rawItem : (Object[]) raw) {
-                array.put(convertToJsonValue(rawItem));
-            }
+        final int length = Array.getLength(raw);
+        for (int i = 0; i < length; i++) {
+            array.put(i, convertToJsonValue(Array.get(raw, i)));
         }
 
         return array;
