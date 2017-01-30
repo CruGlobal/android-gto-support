@@ -4,6 +4,7 @@ import android.database.Cursor;
 import android.provider.BaseColumns;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.UiThread;
 import android.support.v7.widget.RecyclerView.ViewHolder;
 
 import com.h6ah4i.android.widget.advrecyclerview.utils.AbstractExpandableItemAdapter;
@@ -11,14 +12,15 @@ import com.h6ah4i.android.widget.advrecyclerview.utils.AbstractExpandableItemAda
 import java.util.ArrayList;
 import java.util.List;
 
+import static android.support.v7.widget.RecyclerView.NO_ID;
+
 public abstract class CursorExpandableItemAdapter<GVH extends ViewHolder, CVH extends ViewHolder>
         extends AbstractExpandableItemAdapter<GVH, CVH> {
     @Nullable
     protected Cursor mCursor;
-    private int mGroupIdColumnIndex = -1;
     private int mIdColumnIndex = -1;
     @NonNull
-    private Integer[] mIndex = new Integer[0];
+    private Group[] mGroupIndex = new Group[0];
 
     @NonNull
     private String mIdColumn = BaseColumns._ID;
@@ -34,14 +36,12 @@ public abstract class CursorExpandableItemAdapter<GVH extends ViewHolder, CVH ex
     }
 
     @Nullable
+    @UiThread
     public Cursor swapCursor(@Nullable final Cursor cursor) {
         if (cursor == mCursor) {
             return null;
         }
         final Cursor oldCursor = mCursor;
-
-        // create index of cursor
-        final List<Integer> index = new ArrayList<>();
 
         // process the cursor
         int groupIdColumnIndex = -1;
@@ -49,23 +49,11 @@ public abstract class CursorExpandableItemAdapter<GVH extends ViewHolder, CVH ex
         if (cursor != null) {
             groupIdColumnIndex = cursor.getColumnIndexOrThrow(mGroupIdColumn);
             idColumnIndex = cursor.getColumnIndexOrThrow(mIdColumn);
-
-            // extract the start indices for unique groups
-            cursor.moveToPosition(-1);
-            long currentGroup = 0;
-            for (int i = 0; cursor.moveToNext(); i++) {
-                final long group = groupIdColumnIndex != -1 ? cursor.getLong(groupIdColumnIndex) : currentGroup + 1;
-                if (cursor.isFirst() || currentGroup != group) {
-                    index.add(i);
-                    currentGroup = group;
-                }
-            }
         }
 
         // store the new index and cursor
-        mIndex = index.toArray(new Integer[index.size()]);
+        mGroupIndex = buildGroupIndex(cursor, groupIdColumnIndex, idColumnIndex);
         mCursor = cursor;
-        mGroupIdColumnIndex = groupIdColumnIndex;
         mIdColumnIndex = idColumnIndex;
 
         // notify the RecyclerView that the attached data has changed
@@ -75,22 +63,58 @@ public abstract class CursorExpandableItemAdapter<GVH extends ViewHolder, CVH ex
         return oldCursor;
     }
 
+    @NonNull
+    protected Group[] buildGroupIndex(@Nullable final Cursor cursor, final int groupIdColumnIndex,
+                                      final int idColumnIndex) {
+        // short-circuit if we don't have a Cursor
+        if (cursor == null) {
+            return new Group[0];
+        }
+
+        // extract an index of groups
+        final List<Group> groups = new ArrayList<>();
+        cursor.moveToPosition(-1);
+        Group group = null;
+        for (int i = 0; cursor.moveToNext(); i++) {
+            // get the id of the current group
+            final long groupId = groupIdColumnIndex != -1 ? cursor.getLong(groupIdColumnIndex) : groups.size() + 1;
+
+            // create a new group object if necessary
+            if (group == null || group.id != groupId) {
+                if (group != null) {
+                    groups.add(group);
+                }
+
+                group = new Group();
+                group.id = groupId;
+                group.beginIndex = i;
+            }
+
+            // increase the size of this group
+            group.size++;
+        }
+
+        // make sure we include the final group
+        if (group != null) {
+            groups.add(group);
+        }
+
+        return groups.toArray(new Group[groups.size()]);
+    }
+
     @Override
     public int getGroupCount() {
-        return mIndex.length;
+        return mGroupIndex.length;
     }
 
     @Override
     public int getChildCount(final int groupPosition) {
-        assert mCursor != null;
-        final int start = mIndex[groupPosition];
-        final int end = groupPosition + 1 < mIndex.length ? mIndex[groupPosition + 1] : mCursor.getCount();
-        return end - start;
+        return mGroupIndex[groupPosition].size;
     }
 
     @Override
     public final long getGroupId(final int groupPosition) {
-        return scrollCursor(groupPosition).getLong(mGroupIdColumnIndex);
+        return mGroupIndex[groupPosition].id;
     }
 
     @Override
@@ -99,7 +123,7 @@ public abstract class CursorExpandableItemAdapter<GVH extends ViewHolder, CVH ex
     }
 
     @Override
-    public int getGroupItemViewType(int groupPosition) {
+    public int getGroupItemViewType(final int groupPosition) {
         return getGroupItemViewType(scrollCursor(groupPosition), groupPosition);
     }
 
@@ -116,7 +140,7 @@ public abstract class CursorExpandableItemAdapter<GVH extends ViewHolder, CVH ex
                                                   int viewType);
 
     @Override
-    public int getChildItemViewType(int groupPosition, int childPosition) {
+    public int getChildItemViewType(final int groupPosition, final int childPosition) {
         return getChildItemViewType(scrollCursor(groupPosition, childPosition), groupPosition, childPosition);
     }
 
@@ -146,14 +170,20 @@ public abstract class CursorExpandableItemAdapter<GVH extends ViewHolder, CVH ex
     @NonNull
     protected Cursor scrollCursor(final int groupPosition) {
         assert mCursor != null;
-        mCursor.moveToPosition(mIndex[groupPosition]);
+        mCursor.moveToPosition(mGroupIndex[groupPosition].beginIndex);
         return mCursor;
     }
 
     @NonNull
     protected Cursor scrollCursor(final int groupPosition, final int childPosition) {
         assert mCursor != null;
-        mCursor.moveToPosition(mIndex[groupPosition] + childPosition);
+        mCursor.moveToPosition(mGroupIndex[groupPosition].beginIndex + childPosition);
         return mCursor;
+    }
+
+    public static class Group {
+        public long id = NO_ID;
+        public int beginIndex = 0;
+        public int size = 0;
     }
 }
