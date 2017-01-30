@@ -132,7 +132,7 @@ public abstract class CursorExpandableItemAdapter<GVH extends ViewHolder, CVH ex
     }
 
     @Override
-    public final void onBindGroupViewHolder(@NonNull final GVH holder, final int groupPosition, final int viewType) {
+    public void onBindGroupViewHolder(@NonNull final GVH holder, final int groupPosition, final int viewType) {
         onBindGroupViewHolder(holder, scrollCursor(groupPosition), groupPosition, viewType);
     }
 
