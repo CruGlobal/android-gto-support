@@ -1,6 +1,5 @@
-package org.ccci.gto.android.common.jsonapi;
+package org.ccci.gto.android.common.jsonapi.util;
 
-import org.ccci.gto.android.common.jsonapi.JsonApiConverter.Includes;
 import org.junit.Test;
 
 import java.util.Collection;
