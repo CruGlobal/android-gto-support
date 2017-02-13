@@ -75,8 +75,7 @@ public class AppCompatRelativeLayoutImpl extends RelativeLayout implements Tinta
     @Override
     @Nullable
     public ColorStateList getSupportBackgroundTintList() {
-        return mBackgroundTintHelper != null
-                ? mBackgroundTintHelper.getSupportBackgroundTintList() : null;
+        return mBackgroundTintHelper != null ? mBackgroundTintHelper.getSupportBackgroundTintList() : null;
     }
 
     /**
@@ -103,8 +102,7 @@ public class AppCompatRelativeLayoutImpl extends RelativeLayout implements Tinta
     @Override
     @Nullable
     public PorterDuff.Mode getSupportBackgroundTintMode() {
-        return mBackgroundTintHelper != null
-                ? mBackgroundTintHelper.getSupportBackgroundTintMode() : null;
+        return mBackgroundTintHelper != null ? mBackgroundTintHelper.getSupportBackgroundTintMode() : null;
     }
 
     @Override
