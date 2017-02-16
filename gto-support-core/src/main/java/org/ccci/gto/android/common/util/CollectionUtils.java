@@ -15,10 +15,16 @@ public class CollectionUtils {
             return null;
         }
 
+        // try creating the collection via reflection
+        try {
+            return type.newInstance();
+        } catch (final Throwable t) {
+            // suppress this exception and allow remaining logic to execute
+        }
+
+        // try using some generic collection type
         if (type.isAssignableFrom(ArrayList.class)) {
             return (T) new ArrayList();
-        } else if (type.isAssignableFrom(LinkedList.class)) {
-            return (T) new LinkedList();
         } else if (type.isAssignableFrom(HashSet.class)) {
             return (T) new HashSet();
         } else {
