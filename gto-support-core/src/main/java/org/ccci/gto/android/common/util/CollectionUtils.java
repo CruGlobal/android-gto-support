@@ -5,7 +5,6 @@ import android.support.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.LinkedList;
 
 public class CollectionUtils {
     @Nullable
@@ -15,11 +14,10 @@ public class CollectionUtils {
             return null;
         }
 
-        // try creating the collection via reflection
+        // try creating the collection via reflection, suppress exceptions to allow generic types to be used.
         try {
             return type.newInstance();
-        } catch (final Throwable t) {
-            // suppress this exception and allow remaining logic to execute
+        } catch (final Throwable ignored) {
         }
 
         // try using some generic collection type
