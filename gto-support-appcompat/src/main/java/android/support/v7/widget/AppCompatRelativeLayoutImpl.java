@@ -1,6 +1,5 @@
 package android.support.v7.widget;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.graphics.PorterDuff;
@@ -14,7 +13,6 @@ import android.widget.RelativeLayout;
 
 import static android.support.annotation.RestrictTo.Scope.LIBRARY_GROUP;
 
-@SuppressLint("AppCompatCustomView")
 @SuppressWarnings("RestrictedApi")
 public class AppCompatRelativeLayoutImpl extends RelativeLayout implements TintableBackgroundView {
     private AppCompatBackgroundHelper mBackgroundTintHelper;
