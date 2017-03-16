@@ -9,23 +9,22 @@ import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
 import android.support.v4.view.TintableBackgroundView;
 import android.util.AttributeSet;
-import android.widget.RelativeLayout;
 
 import static android.support.annotation.RestrictTo.Scope.LIBRARY_GROUP;
 
 @SuppressWarnings("RestrictedApi")
-public class AppCompatRelativeLayoutImpl extends RelativeLayout implements TintableBackgroundView {
+public class AppCompatRadioButtonImpl extends AppCompatRadioButton implements TintableBackgroundView {
     private AppCompatBackgroundHelper mBackgroundTintHelper;
 
-    public AppCompatRelativeLayoutImpl(final Context context) {
+    public AppCompatRadioButtonImpl(final Context context) {
         this(context, null);
     }
 
-    public AppCompatRelativeLayoutImpl(final Context context, final AttributeSet attrs) {
+    public AppCompatRadioButtonImpl(final Context context, final AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public AppCompatRelativeLayoutImpl(final Context context, final AttributeSet attrs, final int defStyleAttr) {
+    public AppCompatRadioButtonImpl(final Context context, final AttributeSet attrs, final int defStyleAttr) {
         super(TintContextWrapper.wrap(context), attrs, defStyleAttr);
 
         mBackgroundTintHelper = new AppCompatBackgroundHelper(this);
