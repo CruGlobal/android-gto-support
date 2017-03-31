@@ -13,6 +13,8 @@ import android.support.v4.content.ContextCompat;
 
 import com.squareup.picasso.Transformation;
 
+import java.lang.ref.WeakReference;
+
 public class MaskTransformation implements Transformation {
     private static final Paint PAINT_MASK = new Paint();
 
@@ -21,18 +23,30 @@ public class MaskTransformation implements Transformation {
     }
 
     @NonNull
-    private final Context mContext;
+    private final Context mApplicationContext;
+    @NonNull
+    private final WeakReference<Context> mContext;
     @DrawableRes
     private final int mMask;
 
     public MaskTransformation(@NonNull final Context context, @DrawableRes final int mask) {
-        mContext = context;
+        mApplicationContext = context.getApplicationContext();
+        mContext = new WeakReference<>(context);
         mMask = mask;
+    }
+
+    @NonNull
+    private Context getContext() {
+        Context context = mContext.get();
+        if (context == null) {
+            context = mApplicationContext;
+        }
+        return context;
     }
 
     @Override
     public String key() {
-        return "MaskTransformation(mask=" + mContext.getResources().getResourceEntryName(mMask) + ")";
+        return "MaskTransformation(mask=" + getContext().getResources().getResourceEntryName(mMask) + ")";
     }
 
     @Override
@@ -40,7 +54,7 @@ public class MaskTransformation implements Transformation {
         final int w = source.getWidth();
         final int h = source.getHeight();
 
-        final Drawable mask = ContextCompat.getDrawable(mContext, mMask);
+        final Drawable mask = ContextCompat.getDrawable(getContext(), mMask);
         if (mask == null) {
             throw new IllegalArgumentException("Unable to load mask");
         }
