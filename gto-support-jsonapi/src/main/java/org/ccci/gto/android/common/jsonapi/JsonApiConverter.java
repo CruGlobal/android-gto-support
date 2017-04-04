@@ -72,7 +72,7 @@ public final class JsonApiConverter {
     private final List<TypeConverter<?>> mConverters = new ArrayList<>();
     private final Set<Class<?>> mSupportedClasses = new HashSet<>();
     private final Map<String, Class<?>> mTypes = new HashMap<>();
-    private final Map<Class<?>, Field> mIdField = new HashMap<>();
+    private final Map<Class<?>, FieldInfo> mIdField = new HashMap<>();
     private final Map<Class<?>, List<Field>> mFields = new HashMap<>();
 
     JsonApiConverter(@NonNull final List<Class<?>> classes, @NonNull final List<TypeConverter<?>> converters) {
@@ -96,8 +96,8 @@ public final class JsonApiConverter {
             mTypes.put(type, c);
             final List<Field> fields = getFields(c);
             for (final Iterator<Field> i = fields.iterator(); i.hasNext();) {
-                final Field field = i.next();
-                if (field.getAnnotation(JsonApiId.class) != null) {
+                final FieldInfo field = new FieldInfo(i.next());
+                if (field.isId()) {
                     if (mIdField.containsKey(c)) {
                         throw new IllegalArgumentException("Class " + c + " has more than one @JsonApiId defined");
                     }
@@ -279,9 +279,9 @@ public final class JsonApiConverter {
         final JSONObject attributes = new JSONObject();
         final JSONObject relationships = new JSONObject();
         json.put(JSON_DATA_TYPE, type);
-        final Field idField = mIdField.get(clazz);
+        final FieldInfo idField = mIdField.get(clazz);
         if (idField != null) {
-            json.put(JSON_DATA_ID, convertToJsonValue(resource, idField));
+            json.put(JSON_DATA_ID, convertToJsonValue(resource, idField.mField));
         }
 
         // process all fields
@@ -772,6 +772,19 @@ public final class JsonApiConverter {
         }
 
         return null;
+    }
+
+    static final class FieldInfo {
+        @NonNull
+        final Field mField;
+
+        FieldInfo(@NonNull final Field field) {
+            mField = field;
+        }
+
+        boolean isId() {
+            return mField.getAnnotation(JsonApiId.class) != null;
+        }
     }
 
     static final class ObjKey {
