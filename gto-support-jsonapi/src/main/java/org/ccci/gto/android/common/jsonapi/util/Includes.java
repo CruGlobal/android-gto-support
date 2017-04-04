@@ -75,8 +75,9 @@ public final class Includes {
         }
 
         // check for an implicit include
-        final String entry = mInclude.ceiling(key + ".");
-        return entry != null && entry.startsWith(key + ".");
+        final String prefix = key + ".";
+        final String entry = mInclude.ceiling(prefix);
+        return entry != null && entry.startsWith(prefix);
     }
 
     @NonNull
