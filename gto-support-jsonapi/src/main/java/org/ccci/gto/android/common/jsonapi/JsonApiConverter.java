@@ -134,6 +134,8 @@ public final class JsonApiConverter {
         try {
             final JSONObject json = new JSONObject();
             final Map<ObjKey, JSONObject> related = new HashMap<>();
+            final List<JSONObject> anonymousRelated =
+                    options.mIncludeObjectsWithNoId ? new ArrayList<JSONObject>() : null;
             if (obj.hasErrors()) {
                 final JSONArray errors = new JSONArray();
                 for (final JsonApiError error : obj.getErrors()) {
@@ -145,19 +147,25 @@ public final class JsonApiConverter {
                 if (resource == null) {
                     json.put(JSON_DATA, JSONObject.NULL);
                 } else {
-                    json.put(JSON_DATA, resourceToJson(resource, options, includes, related));
+                    json.put(JSON_DATA, resourceToJson(resource, options, includes, related, anonymousRelated));
                 }
             } else {
                 final JSONArray dataArr = new JSONArray();
                 for (final Object resource : obj.getData()) {
-                    dataArr.put(resourceToJson(resource, options, includes, related));
+                    dataArr.put(resourceToJson(resource, options, includes, related, anonymousRelated));
                 }
                 json.put(JSON_DATA, dataArr);
             }
 
             // include related objects if there are any
-            if (related.size() > 0) {
-                json.put(JSON_INCLUDED, new JSONArray(related.values()));
+            if (related.size() > 0 || (anonymousRelated != null && !anonymousRelated.isEmpty())) {
+                final JSONArray included = new JSONArray(related.values());
+                if (anonymousRelated != null) {
+                    for (final JSONObject object : anonymousRelated) {
+                        included.put(object);
+                    }
+                }
+                json.put(JSON_INCLUDED, included);
             }
 
             // pass the JSONApi meta data as-is
@@ -254,7 +262,8 @@ public final class JsonApiConverter {
     @Nullable
     @SuppressWarnings("checkstyle:RightCurly")
     private JSONObject resourceToJson(@Nullable final Object resource, @NonNull final Options options,
-                                      @NonNull final Includes include, @NonNull final Map<ObjKey, JSONObject> related)
+                                      @NonNull final Includes include, @NonNull final Map<ObjKey, JSONObject> related,
+                                      @Nullable final List<JSONObject> anonymousRelated)
             throws JSONException {
         if (resource == null) {
             return null;
@@ -298,7 +307,8 @@ public final class JsonApiConverter {
             if (supports(fieldType)) {
                 try {
                     final JSONObject relatedObj =
-                            resourceToJson(field.get(resource), options, include.descendant(attrName), related);
+                            resourceToJson(field.get(resource), options, include.descendant(attrName), related,
+                                           anonymousRelated);
                     final ObjKey key = ObjKey.create(relatedObj);
                     if (key != null) {
                         final JSONObject reference =
@@ -308,6 +318,8 @@ public final class JsonApiConverter {
                         if (include.include(attrName)) {
                             related.put(key, relatedObj);
                         }
+                    } else if (relatedObj != null && anonymousRelated != null && include.include(attrName)) {
+                        anonymousRelated.add(relatedObj);
                     }
                 } catch (final IllegalAccessException ignored) {
                 }
@@ -319,7 +331,8 @@ public final class JsonApiConverter {
                     if (col != null) {
                         for (final Object obj : col) {
                             final JSONObject relatedObj =
-                                    resourceToJson(obj, options, include.descendant(attrName), related);
+                                    resourceToJson(obj, options, include.descendant(attrName), related,
+                                                   anonymousRelated);
                             final ObjKey key = ObjKey.create(relatedObj);
                             if (key != null) {
                                 objs.put(new JSONObject(relatedObj, new String[] {JSON_DATA_TYPE, JSON_DATA_ID}));
@@ -327,6 +340,8 @@ public final class JsonApiConverter {
                                 if (include.include(attrName)) {
                                     related.put(key, relatedObj);
                                 }
+                            } else if (anonymousRelated != null && relatedObj != null && include.include(attrName)) {
+                                anonymousRelated.add(relatedObj);
                             }
                         }
                     }
@@ -341,7 +356,8 @@ public final class JsonApiConverter {
                     if (col != null) {
                         for (final Object obj : col) {
                             final JSONObject relatedObj =
-                                    resourceToJson(obj, options, include.descendant(attrName), related);
+                                    resourceToJson(obj, options, include.descendant(attrName), related,
+                                                   anonymousRelated);
                             final ObjKey key = ObjKey.create(relatedObj);
                             if (key != null) {
                                 objs.put(new JSONObject(relatedObj, new String[] {JSON_DATA_TYPE, JSON_DATA_ID}));
@@ -349,6 +365,8 @@ public final class JsonApiConverter {
                                 if (include.include(attrName)) {
                                     related.put(key, relatedObj);
                                 }
+                            } else if (anonymousRelated != null && relatedObj != null && include.include(attrName)) {
+                                anonymousRelated.add(relatedObj);
                             }
                         }
                     }
@@ -802,11 +820,14 @@ public final class JsonApiConverter {
     public static final class Options {
         @NonNull
         final Includes mIncludes;
+        final boolean mIncludeObjectsWithNoId;
         @NonNull
         final Map<String, Fields> mFields;
 
-        Options(@NonNull final Includes includes, final Map<String, Fields> fields) {
+        Options(@NonNull final Includes includes, final boolean includeObjectsWithNoId,
+                final Map<String, Fields> fields) {
             mIncludes = includes;
+            mIncludeObjectsWithNoId = includeObjectsWithNoId;
             mFields = fields;
         }
 
@@ -823,7 +844,8 @@ public final class JsonApiConverter {
                 fields.put(key, options.mFields.get(key).merge(fields.get(key)));
             }
 
-            return new Options(mIncludes.merge(options.mIncludes), fields);
+            return new Options(mIncludes.merge(options.mIncludes),
+                               mIncludeObjectsWithNoId || options.mIncludeObjectsWithNoId, fields);
         }
 
         @NonNull
@@ -844,6 +866,7 @@ public final class JsonApiConverter {
 
         public static final class Builder {
             private List<String> mIncludes = null;
+            private boolean mIncludeObjectsWithNoId = false;
             private Map<String, Set<String>> mFields = new ArrayMap<>();
 
             @NonNull
@@ -859,6 +882,11 @@ public final class JsonApiConverter {
                 }
 
                 Collections.addAll(mIncludes, include);
+                return this;
+            }
+
+            public Builder includeObjectsWithNoId(final boolean state) {
+                mIncludeObjectsWithNoId = state;
                 return this;
             }
 
@@ -882,7 +910,7 @@ public final class JsonApiConverter {
                     fields.put(type, new Fields(values));
                 }
 
-                return new Options(new Includes(mIncludes), fields);
+                return new Options(new Includes(mIncludes), mIncludeObjectsWithNoId, fields);
             }
         }
     }
