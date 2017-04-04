@@ -778,8 +778,12 @@ public final class JsonApiConverter {
         @NonNull
         final Field mField;
 
-        private boolean mIsIdResolved = false;
+        @Nullable
+        private Class<?> mCollectionType;
+        private boolean mCollectionTypeResolved = false;
+
         private boolean mIsId;
+        private boolean mIsIdResolved = false;
 
         @Nullable
         private String mAttrName;
@@ -796,6 +800,23 @@ public final class JsonApiConverter {
         @Nullable
         Class<?> getArrayType() {
             return getType().getComponentType();
+        }
+
+        @Nullable
+        Class<?> getCollectionType() {
+            // resolve the collection type if we haven't resolved it already
+            if (!mCollectionTypeResolved) {
+                final Type type = mField.getGenericType();
+                if (Collection.class.isAssignableFrom(JsonApiUtils.getRawType(type))) {
+                    if (type instanceof ParameterizedType) {
+                        mCollectionType =
+                                JsonApiUtils.getRawType(((ParameterizedType) type).getActualTypeArguments()[0]);
+                    }
+                }
+                mCollectionTypeResolved = true;
+            }
+
+            return mCollectionType;
         }
 
         boolean isId() {
