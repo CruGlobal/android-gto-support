@@ -41,7 +41,9 @@ public class JsonApiConverterRelatedIT {
         final ModelChild child2 = new ModelChild("Hey You");
         child2.mId = 20;
         parent.children.add(child2);
-        parent.orphans = new ModelChild[] {parent.favorite, child2};
+        final ModelChild child3 = new ModelChild("Child with no name");
+        parent.children.add(child3);
+        parent.orphans = new ModelChild[] {parent.favorite, child2, child3};
 
         final String json = converter.toJson(JsonApiObject.single(parent));
         assertThatJson(json).node("data").isObject();
