@@ -547,21 +547,22 @@ public final class JsonApiConverter {
 
         if (type != null && !Object.class.equals(type)) {
             for (final Field field : type.getDeclaredFields()) {
-                final int modifiers = field.getModifiers();
-
                 // skip ignored fields
                 if (field.getAnnotation(JsonApiIgnore.class) != null) {
                     continue;
                 }
+
                 // skip static and transient fields
+                final int modifiers = field.getModifiers();
                 if (Modifier.isStatic(modifiers) || Modifier.isTransient(modifiers)) {
                     continue;
                 }
 
                 // skip fields we don't support
-                final Class<?> fieldType = field.getType();
-                final Class<?> fieldArrayType = fieldType.getComponentType();
-                final Class<?> fieldCollectionType = getFieldCollectionType(field.getGenericType());
+                final FieldInfo info = new FieldInfo(field);
+                final Class<?> fieldType = info.getType();
+                final Class<?> fieldArrayType = info.getArrayType();
+                final Class<?> fieldCollectionType = info.getCollectionType();
                 if (!(isSupportedType(fieldType) || (fieldType.isArray() && isSupportedType(fieldArrayType)) ||
                         supports(fieldCollectionType))) {
                     continue;
@@ -569,7 +570,7 @@ public final class JsonApiConverter {
 
                 // set field as accessible and track it
                 field.setAccessible(true);
-                fields.add(new FieldInfo(field));
+                fields.add(info);
             }
 
             // process the superclass
