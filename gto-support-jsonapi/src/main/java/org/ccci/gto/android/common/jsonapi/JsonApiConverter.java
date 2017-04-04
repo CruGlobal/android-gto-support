@@ -281,7 +281,7 @@ public final class JsonApiConverter {
         json.put(JSON_DATA_TYPE, type);
         final FieldInfo idField = mIdField.get(clazz);
         if (idField != null) {
-            json.put(JSON_DATA_ID, convertToJsonValue(resource, idField.mField));
+            json.put(JSON_DATA_ID, convertToJsonValue(resource, idField));
         }
 
         // process all fields
@@ -377,7 +377,7 @@ public final class JsonApiConverter {
             }
 
             // skip null values
-            final Object value = convertToJsonValue(resource, field.mField);
+            final Object value = convertToJsonValue(resource, field);
             if (value == null) {
                 continue;
             }
@@ -616,10 +616,11 @@ public final class JsonApiConverter {
     }
 
     @Nullable
-    private Object convertToJsonValue(@NonNull final Object resource, @NonNull final Field field) throws JSONException {
+    private Object convertToJsonValue(@NonNull final Object resource, @NonNull final FieldInfo field)
+            throws JSONException {
         // get the value from the field
         try {
-            return convertToJsonValue(field.get(resource));
+            return convertToJsonValue(field.mField.get(resource));
         } catch (IllegalAccessException e) {
             return null;
         }
