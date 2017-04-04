@@ -21,7 +21,7 @@ public final class Transaction implements Closeable {
     private SQLiteDatabase mDb;
     private int mState = STATE_INIT;
 
-    private static final Pools.Pool<Transaction> sPool = new Pools.SynchronizedPool<>(10);
+    private static final Pools.Pool<Transaction> POOL = new Pools.SynchronizedPool<>(10);
 
     public Transaction(@NonNull final SQLiteDatabase db) {
         mDb = db;
@@ -29,7 +29,7 @@ public final class Transaction implements Closeable {
 
     static Transaction newTransaction(@NonNull final SQLiteDatabase db) {
         // check to see if we have a Transaction object cached in our pool
-        final Transaction tx = sPool.acquire();
+        final Transaction tx = POOL.acquire();
         if (tx != null) {
             tx.mDb = db;
             tx.mState = STATE_INIT;
@@ -118,6 +118,6 @@ public final class Transaction implements Closeable {
     public void recycle() {
         mState = STATE_RECYCLED;
         mDb = null;
-        sPool.release(this);
+        POOL.release(this);
     }
 }
