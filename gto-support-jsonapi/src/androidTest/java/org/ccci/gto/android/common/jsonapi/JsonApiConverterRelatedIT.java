@@ -17,6 +17,7 @@ import static net.javacrumbs.jsonunit.JsonMatchers.jsonNodeAbsent;
 import static net.javacrumbs.jsonunit.JsonMatchers.jsonPartEquals;
 import static net.javacrumbs.jsonunit.core.Option.IGNORING_EXTRA_FIELDS;
 import static net.javacrumbs.jsonunit.fluent.JsonFluentAssert.assertThatJson;
+import static org.hamcrest.CoreMatchers.either;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.hasItems;
 import static org.hamcrest.CoreMatchers.is;
@@ -159,6 +160,30 @@ public class JsonApiConverterRelatedIT {
                 hasItem(jsonEquals("{type:'child',id:11,attributes:{name:'Daniel'}}").when(IGNORING_EXTRA_FIELDS)));
         assertThatJson(json).node("included").matches(not(hasItem(
                 jsonEquals("{type:'child',id:20,attributes:{name:'Hey You'}}").when(IGNORING_EXTRA_FIELDS))));
+    }
+
+    @Test
+    public void verifyToJsonIncludeNoId() throws Exception {
+        final JsonApiConverter converter =
+                new JsonApiConverter.Builder().addClasses(ModelParent.class, ModelChild.class).build();
+
+        final ModelParent parent = new ModelParent();
+        parent.mId = 1;
+        parent.favorite = new ModelChild("Daniel");
+        parent.children.add(parent.favorite);
+
+        final String json = converter.toJson(JsonApiObject.single(parent),
+                                             Options.builder().include("favorite").includeObjectsWithNoId(true)
+                                                     .build());
+        assertThatJson(json).node("data").isObject();
+        assertThat(json, jsonPartEquals("data.type", ModelParent.TYPE));
+        assertThat(json, jsonNodeAbsent("data.attributes.favorite"));
+        assertThat(json, jsonNodeAbsent("data.attributes.children"));
+        assertThat(json, either(jsonNodeAbsent("data.relationships.favorite"))
+                .or(jsonPartEquals("data.relationships.favorite.data", "null")));
+        assertThatJson(json).node("data.relationships.children.data").isArray().ofLength(0);
+        assertThatJson(json).node("included").isArray().ofLength(1);
+        assertThatJson(json).node("included").matches(hasItem(jsonEquals("{type:'child',attributes:{name:'Daniel'}}")));
     }
 
     @JsonApiType(ModelParent.TYPE)
