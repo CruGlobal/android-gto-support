@@ -778,12 +778,20 @@ public final class JsonApiConverter {
         @NonNull
         final Field mField;
 
+        private boolean mIsIdResolved = false;
+        private boolean mIsId;
+
         FieldInfo(@NonNull final Field field) {
             mField = field;
         }
 
         boolean isId() {
-            return mField.getAnnotation(JsonApiId.class) != null;
+            if (!mIsIdResolved) {
+                mIsId = mField.getAnnotation(JsonApiId.class) != null;
+                mIsIdResolved = true;
+            }
+
+            return mIsId;
         }
     }
 
