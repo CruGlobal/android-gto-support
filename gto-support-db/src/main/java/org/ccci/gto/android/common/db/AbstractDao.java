@@ -12,10 +12,10 @@ import android.support.v4.util.SimpleArrayMap;
 import android.text.TextUtils;
 import android.util.Pair;
 
+import org.ccci.gto.android.common.compat.util.LocaleCompat;
 import org.ccci.gto.android.common.db.CommonTables.LastSyncTable;
 import org.ccci.gto.android.common.db.Expression.Field;
 import org.ccci.gto.android.common.util.ArrayUtils;
-import org.ccci.gto.android.common.compat.util.LocaleCompat;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -418,28 +418,28 @@ public abstract class AbstractDao {
 
         // execute insert
         final SQLiteDatabase db = mDbHelper.getWritableDatabase();
-        final Transaction tx = new Transaction(db);
+        final Transaction tx = newTransaction();
         try {
             tx.beginTransactionNonExclusive();
             final long id = db.insertWithOnConflict(table, null, values, conflictAlgorithm);
             tx.setTransactionSuccessful();
             return id;
         } finally {
-            tx.endTransaction();
+            tx.endTransaction().recycle();
         }
     }
 
     @WorkerThread
     public final void replace(@NonNull final Object obj) {
         final SQLiteDatabase db = mDbHelper.getWritableDatabase();
-        final Transaction tx = new Transaction(db);
+        final Transaction tx = newTransaction();
         try {
             tx.beginTransactionNonExclusive();
             this.delete(obj);
             this.insert(obj);
             tx.setTransactionSuccessful();
         } finally {
-            tx.endTransaction();
+            tx.endTransaction().recycle();
         }
     }
 
@@ -493,13 +493,13 @@ public abstract class AbstractDao {
 
         // execute update
         final SQLiteDatabase db = mDbHelper.getWritableDatabase();
-        final Transaction tx = new Transaction(db);
+        final Transaction tx = newTransaction();
         try {
             tx.beginTransactionNonExclusive();
             db.update(table, values, builtWhere.first, builtWhere.second);
             tx.setTransactionSuccessful();
         } finally {
-            tx.endTransaction();
+            tx.endTransaction().recycle();
         }
     }
 
@@ -524,7 +524,7 @@ public abstract class AbstractDao {
 
     @WorkerThread
     public final void updateOrInsert(@NonNull final Object obj) {
-        this.updateOrInsert(obj, this.getFullProjection(obj.getClass()));
+        this.updateOrInsert(obj, getFullProjection(obj.getClass()));
     }
 
     @WorkerThread
@@ -532,7 +532,7 @@ public abstract class AbstractDao {
         final Expression where = this.getPrimaryKeyWhere(obj);
 
         final SQLiteDatabase db = mDbHelper.getWritableDatabase();
-        final Transaction tx = new Transaction(db);
+        final Transaction tx = newTransaction();
         try {
             tx.beginTransactionNonExclusive();
             final Object existing = find(obj.getClass(), where);
@@ -543,7 +543,7 @@ public abstract class AbstractDao {
             }
             tx.setTransactionSuccessful();
         } finally {
-            tx.endTransaction();
+            tx.endTransaction().recycle();
         }
     }
 
@@ -564,13 +564,13 @@ public abstract class AbstractDao {
         final Pair<String, String[]> builtWhere =
                 where != null ? where.buildSql(this) : Pair.<String, String[]>create(null, null);
         final SQLiteDatabase db = mDbHelper.getWritableDatabase();
-        final Transaction tx = new Transaction(db);
+        final Transaction tx = newTransaction();
         try {
             tx.beginTransactionNonExclusive();
             db.delete(table, builtWhere.first, builtWhere.second);
             tx.setTransactionSuccessful();
         } finally {
-            tx.endTransaction();
+            tx.endTransaction().recycle();
         }
     }
 
@@ -600,7 +600,7 @@ public abstract class AbstractDao {
     @NonNull
     @WorkerThread
     public final Transaction newTransaction() {
-        return new Transaction(mDbHelper.getWritableDatabase());
+        return Transaction.newTransaction(mDbHelper.getWritableDatabase());
     }
 
     @NonNull
