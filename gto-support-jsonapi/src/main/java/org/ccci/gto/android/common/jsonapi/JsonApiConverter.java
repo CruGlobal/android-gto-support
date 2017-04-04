@@ -781,8 +781,21 @@ public final class JsonApiConverter {
         private boolean mIsIdResolved = false;
         private boolean mIsId;
 
+        @Nullable
+        private String mAttrName;
+
         FieldInfo(@NonNull final Field field) {
             mField = field;
+        }
+
+        @NonNull
+        Class<?> getType() {
+            return mField.getType();
+        }
+
+        @Nullable
+        Class<?> getArrayType() {
+            return getType().getComponentType();
         }
 
         boolean isId() {
@@ -792,6 +805,16 @@ public final class JsonApiConverter {
             }
 
             return mIsId;
+        }
+
+        @NonNull
+        String getAttrName() {
+            if (mAttrName == null) {
+                final JsonApiAttribute attr = mField.getAnnotation(JsonApiAttribute.class);
+                mAttrName = attr != null && attr.name().length() > 0 ? attr.name() : mField.getName();
+            }
+
+            return mAttrName;
         }
     }
 
