@@ -4,6 +4,7 @@ import android.annotation.TargetApi;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
 import android.support.annotation.NonNull;
+import android.support.v4.util.Pools;
 
 import java.io.Closeable;
 
@@ -15,17 +16,33 @@ public final class Transaction implements Closeable {
     private static final int STATE_OPEN = 1;
     private static final int STATE_SUCCESSFUL = 2;
     private static final int STATE_CLOSED = 3;
+    private static final int STATE_RECYCLED = 4;
 
-    private final SQLiteDatabase mDb;
+    private SQLiteDatabase mDb;
     private int mState = STATE_INIT;
+
+    private static final Pools.Pool<Transaction> sPool = new Pools.SynchronizedPool<>(10);
 
     public Transaction(@NonNull final SQLiteDatabase db) {
         mDb = db;
     }
 
+    static Transaction newTransaction(@NonNull final SQLiteDatabase db) {
+        // check to see if we have a Transaction object cached in our pool
+        final Transaction tx = sPool.acquire();
+        if (tx != null) {
+            tx.mDb = db;
+            tx.mState = STATE_INIT;
+            return tx;
+        }
+
+        // create a new transaction object
+        return new Transaction(db);
+    }
+
     @NonNull
     public static Transaction begin(@NonNull final SQLiteDatabase db) {
-        return new Transaction(db).beginTransaction(true);
+        return newTransaction(db).beginTransaction(true);
     }
 
     @NonNull
@@ -96,5 +113,11 @@ public final class Transaction implements Closeable {
     @Override
     public void close() {
         endTransaction();
+    }
+
+    public void recycle() {
+        mState = STATE_RECYCLED;
+        mDb = null;
+        sPool.release(this);
     }
 }
