@@ -72,8 +72,8 @@ public final class JsonApiConverter {
     private final List<TypeConverter<?>> mConverters = new ArrayList<>();
     private final Set<Class<?>> mSupportedClasses = new HashSet<>();
     private final Map<String, Class<?>> mTypes = new HashMap<>();
-    private final Map<Class<?>, Field> mIdField = new HashMap<>();
-    private final Map<Class<?>, List<Field>> mFields = new HashMap<>();
+    private final Map<Class<?>, FieldInfo> mIdField = new HashMap<>();
+    private final Map<Class<?>, List<FieldInfo>> mFields = new HashMap<>();
 
     JsonApiConverter(@NonNull final List<Class<?>> classes, @NonNull final List<TypeConverter<?>> converters) {
         mConverters.addAll(converters);
@@ -94,10 +94,10 @@ public final class JsonApiConverter {
 
             // store this type
             mTypes.put(type, c);
-            final List<Field> fields = getFields(c);
-            for (final Iterator<Field> i = fields.iterator(); i.hasNext();) {
-                final Field field = i.next();
-                if (field.getAnnotation(JsonApiId.class) != null) {
+            final List<FieldInfo> fields = getFields(c);
+            for (final Iterator<FieldInfo> i = fields.iterator(); i.hasNext();) {
+                final FieldInfo field = i.next();
+                if (field.isId()) {
                     if (mIdField.containsKey(c)) {
                         throw new IllegalArgumentException("Class " + c + " has more than one @JsonApiId defined");
                     }
@@ -279,35 +279,35 @@ public final class JsonApiConverter {
         final JSONObject attributes = new JSONObject();
         final JSONObject relationships = new JSONObject();
         json.put(JSON_DATA_TYPE, type);
-        final Field idField = mIdField.get(clazz);
+        final FieldInfo idField = mIdField.get(clazz);
         if (idField != null) {
             json.put(JSON_DATA_ID, convertToJsonValue(resource, idField));
         }
 
         // process all fields
         final Fields fields = options.getFields(type);
-        for (final Field field : mFields.get(clazz)) {
+        for (final FieldInfo field : mFields.get(clazz)) {
             // skip id fields, we already handled them)
-            if (field.getAnnotation(JsonApiId.class) != null) {
+            if (field.isId()) {
                 continue;
             }
 
             // skip fields we are not including
-            final String attrName = getAttrName(field);
+            final String attrName = field.getAttrName();
             if (!fields.include(attrName)) {
                 continue;
             }
 
             // get some common attributes about the field
             final Class<?> fieldType = field.getType();
-            final Class<?> fieldArrayType = fieldType.getComponentType();
-            final Class<?> fieldCollectionType = getFieldCollectionType(field.getGenericType());
+            final Class<?> fieldArrayType = field.getArrayType();
+            final Class<?> fieldCollectionType = field.getCollectionType();
 
             // is this a relationship?
             if (supports(fieldType)) {
                 try {
                     final JSONObject relatedObj =
-                            resourceToJson(field.get(resource), options, include.descendant(attrName), related,
+                            resourceToJson(field.mField.get(resource), options, include.descendant(attrName), related,
                                            anonymousRelated);
                     final ObjKey key = ObjKey.create(relatedObj);
                     if (key != null) {
@@ -327,7 +327,7 @@ public final class JsonApiConverter {
             } else if (supports(fieldArrayType)) {
                 final JSONArray objs = new JSONArray();
                 try {
-                    final Object[] col = (Object[]) field.get(resource);
+                    final Object[] col = (Object[]) field.mField.get(resource);
                     if (col != null) {
                         for (final Object obj : col) {
                             final JSONObject relatedObj =
@@ -352,7 +352,7 @@ public final class JsonApiConverter {
             } else if (supports(fieldCollectionType)) {
                 final JSONArray objs = new JSONArray();
                 try {
-                    final Collection col = (Collection) field.get(resource);
+                    final Collection col = (Collection) field.mField.get(resource);
                     if (col != null) {
                         for (final Object obj : col) {
                             final JSONObject relatedObj =
@@ -472,23 +472,24 @@ public final class JsonApiConverter {
         // populate fields
         final JSONObject attributes = json.optJSONObject(JSON_DATA_ATTRIBUTES);
         final JSONObject relationships = json.optJSONObject(JSON_DATA_RELATIONSHIPS);
-        for (final Field field : mFields.get(type)) {
-            final String attrName = getAttrName(field);
+        for (final FieldInfo field : mFields.get(type)) {
+            final String attrName = field.getAttrName();
             final Class<?> fieldType = field.getType();
-            final Class<?> fieldArrayType = fieldType.getComponentType();
-            final Class<?> fieldCollectionType = getFieldCollectionType(field.getGenericType());
+            final Class<?> fieldArrayType = field.getArrayType();
+            final Class<?> fieldCollectionType = field.getCollectionType();
 
             try {
                 // handle id fields
-                if (field.getAnnotation(JsonApiId.class) != null) {
-                    field.set(instance, convertFromJSONObject(json, JSON_DATA_ID, fieldType));
+                if (field.isId()) {
+                    field.mField.set(instance, convertFromJSONObject(json, JSON_DATA_ID, fieldType));
                 }
                 // handle relationships
                 else if (supports(fieldType)) {
                     if (relationships != null) {
                         final JSONObject related = relationships.optJSONObject(attrName);
                         if (related != null) {
-                            field.set(instance, resourceFromJson(related.optJSONObject(JSON_DATA), fieldType, objects));
+                            field.mField.set(instance,
+                                             resourceFromJson(related.optJSONObject(JSON_DATA), fieldType, objects));
                         }
                     }
                 }
@@ -497,8 +498,9 @@ public final class JsonApiConverter {
                     if (relationships != null) {
                         final JSONObject related = relationships.optJSONObject(attrName);
                         if (related != null) {
-                            field.set(instance,
-                                      resourcesFromJson(related.optJSONArray(JSON_DATA), fieldArrayType, objects));
+                            field.mField.set(instance,
+                                             resourcesFromJson(related.optJSONArray(JSON_DATA), fieldArrayType,
+                                                               objects));
                         }
                     }
                 }
@@ -507,15 +509,16 @@ public final class JsonApiConverter {
                     if (relationships != null) {
                         final JSONObject related = relationships.optJSONObject(attrName);
                         if (related != null) {
-                            field.set(instance, resourcesFromJson(related.optJSONArray(JSON_DATA), fieldCollectionType,
-                                                                  (Class<? extends Collection>) fieldType, objects));
+                            field.mField.set(instance,
+                                             resourcesFromJson(related.optJSONArray(JSON_DATA), fieldCollectionType,
+                                                               (Class<? extends Collection>) fieldType, objects));
                         }
                     }
                 }
                 // anything else is an attribute
                 else {
                     if (attributes != null) {
-                        field.set(instance, convertFromJSONObject(attributes, attrName, fieldType));
+                        field.mField.set(instance, convertFromJSONObject(attributes, attrName, fieldType));
                     }
                 }
             } catch (final JSONException | IllegalAccessException ignored) {
@@ -539,26 +542,27 @@ public final class JsonApiConverter {
     }
 
     @NonNull
-    private List<Field> getFields(@Nullable final Class<?> type) {
-        final List<Field> fields = new ArrayList<>();
+    private List<FieldInfo> getFields(@Nullable final Class<?> type) {
+        final List<FieldInfo> fields = new ArrayList<>();
 
         if (type != null && !Object.class.equals(type)) {
             for (final Field field : type.getDeclaredFields()) {
-                final int modifiers = field.getModifiers();
-
                 // skip ignored fields
                 if (field.getAnnotation(JsonApiIgnore.class) != null) {
                     continue;
                 }
+
                 // skip static and transient fields
+                final int modifiers = field.getModifiers();
                 if (Modifier.isStatic(modifiers) || Modifier.isTransient(modifiers)) {
                     continue;
                 }
 
                 // skip fields we don't support
-                final Class<?> fieldType = field.getType();
-                final Class<?> fieldArrayType = fieldType.getComponentType();
-                final Class<?> fieldCollectionType = getFieldCollectionType(field.getGenericType());
+                final FieldInfo info = new FieldInfo(field);
+                final Class<?> fieldType = info.getType();
+                final Class<?> fieldArrayType = info.getArrayType();
+                final Class<?> fieldCollectionType = info.getCollectionType();
                 if (!(isSupportedType(fieldType) || (fieldType.isArray() && isSupportedType(fieldArrayType)) ||
                         supports(fieldCollectionType))) {
                     continue;
@@ -566,7 +570,7 @@ public final class JsonApiConverter {
 
                 // set field as accessible and track it
                 field.setAccessible(true);
-                fields.add(field);
+                fields.add(info);
             }
 
             // process the superclass
@@ -574,22 +578,6 @@ public final class JsonApiConverter {
         }
 
         return fields;
-    }
-
-    @Nullable
-    private Class<?> getFieldCollectionType(@NonNull final Type fieldType) {
-        if (Collection.class.isAssignableFrom(JsonApiUtils.getRawType(fieldType))) {
-            if (fieldType instanceof ParameterizedType) {
-                return JsonApiUtils.getRawType(((ParameterizedType) fieldType).getActualTypeArguments()[0]);
-            }
-        }
-        return null;
-    }
-
-    @NonNull
-    private String getAttrName(@NonNull final Field field) {
-        final JsonApiAttribute attr = field.getAnnotation(JsonApiAttribute.class);
-        return attr != null && attr.name().length() > 0 ? attr.name() : field.getName();
     }
 
     private boolean isSupportedType(@NonNull final Class<?> type) {
@@ -613,10 +601,11 @@ public final class JsonApiConverter {
     }
 
     @Nullable
-    private Object convertToJsonValue(@NonNull final Object resource, @NonNull final Field field) throws JSONException {
+    private Object convertToJsonValue(@NonNull final Object resource, @NonNull final FieldInfo field)
+            throws JSONException {
         // get the value from the field
         try {
-            return convertToJsonValue(field.get(resource));
+            return convertToJsonValue(field.mField.get(resource));
         } catch (IllegalAccessException e) {
             return null;
         }
@@ -772,6 +761,71 @@ public final class JsonApiConverter {
         }
 
         return null;
+    }
+
+    static final class FieldInfo {
+        @NonNull
+        final Field mField;
+
+        @Nullable
+        private Class<?> mCollectionType;
+        private boolean mCollectionTypeResolved = false;
+
+        private boolean mIsId;
+        private boolean mIsIdResolved = false;
+
+        @Nullable
+        private String mAttrName;
+
+        FieldInfo(@NonNull final Field field) {
+            mField = field;
+        }
+
+        @NonNull
+        Class<?> getType() {
+            return mField.getType();
+        }
+
+        @Nullable
+        Class<?> getArrayType() {
+            return getType().getComponentType();
+        }
+
+        @Nullable
+        Class<?> getCollectionType() {
+            // resolve the collection type if we haven't resolved it already
+            if (!mCollectionTypeResolved) {
+                final Type type = mField.getGenericType();
+                if (Collection.class.isAssignableFrom(JsonApiUtils.getRawType(type))) {
+                    if (type instanceof ParameterizedType) {
+                        mCollectionType =
+                                JsonApiUtils.getRawType(((ParameterizedType) type).getActualTypeArguments()[0]);
+                    }
+                }
+                mCollectionTypeResolved = true;
+            }
+
+            return mCollectionType;
+        }
+
+        boolean isId() {
+            if (!mIsIdResolved) {
+                mIsId = mField.getAnnotation(JsonApiId.class) != null;
+                mIsIdResolved = true;
+            }
+
+            return mIsId;
+        }
+
+        @NonNull
+        String getAttrName() {
+            if (mAttrName == null) {
+                final JsonApiAttribute attr = mField.getAnnotation(JsonApiAttribute.class);
+                mAttrName = attr != null && attr.name().length() > 0 ? attr.name() : mField.getName();
+            }
+
+            return mAttrName;
+        }
     }
 
     static final class ObjKey {
