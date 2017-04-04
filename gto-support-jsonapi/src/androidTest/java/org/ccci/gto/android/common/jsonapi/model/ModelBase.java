@@ -1,10 +1,13 @@
 package org.ccci.gto.android.common.jsonapi.model;
 
+import android.support.annotation.Nullable;
+
 import org.ccci.gto.android.common.jsonapi.annotation.JsonApiId;
 
 public abstract class ModelBase {
+    @Nullable
     @JsonApiId
-    public int mId;
+    public Integer mId;
 
     @Override
     public boolean equals(Object o) {
@@ -17,11 +20,11 @@ public abstract class ModelBase {
 
         final ModelBase modelBase = (ModelBase) o;
 
-        return mId == modelBase.mId;
+        return mId != null ? mId.equals(modelBase.mId) : modelBase.mId == null;
     }
 
     @Override
     public int hashCode() {
-        return mId;
+        return mId != null ? mId : Integer.MAX_VALUE;
     }
 }
