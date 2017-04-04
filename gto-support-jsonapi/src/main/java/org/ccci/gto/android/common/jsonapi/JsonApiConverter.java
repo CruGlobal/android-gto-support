@@ -580,22 +580,6 @@ public final class JsonApiConverter {
         return fields;
     }
 
-    @Nullable
-    private Class<?> getFieldCollectionType(@NonNull final Type fieldType) {
-        if (Collection.class.isAssignableFrom(JsonApiUtils.getRawType(fieldType))) {
-            if (fieldType instanceof ParameterizedType) {
-                return JsonApiUtils.getRawType(((ParameterizedType) fieldType).getActualTypeArguments()[0]);
-            }
-        }
-        return null;
-    }
-
-    @NonNull
-    private String getAttrName(@NonNull final Field field) {
-        final JsonApiAttribute attr = field.getAnnotation(JsonApiAttribute.class);
-        return attr != null && attr.name().length() > 0 ? attr.name() : field.getName();
-    }
-
     private boolean isSupportedType(@NonNull final Class<?> type) {
         // check if this is a supported model type
         if (supports(type)) {
