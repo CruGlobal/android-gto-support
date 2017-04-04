@@ -524,7 +524,7 @@ public abstract class AbstractDao {
 
     @WorkerThread
     public final void updateOrInsert(@NonNull final Object obj) {
-        this.updateOrInsert(obj, this.getFullProjection(obj.getClass()));
+        this.updateOrInsert(obj, getFullProjection(obj.getClass()));
     }
 
     @WorkerThread
