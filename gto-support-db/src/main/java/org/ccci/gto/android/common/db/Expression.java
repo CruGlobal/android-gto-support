@@ -273,6 +273,9 @@ public abstract class Expression implements Parcelable {
         private final Number mNumValue;
         private final boolean mConstant;
 
+        @Nullable
+        private transient Pair<String, String[]> mSql;
+
         Literal(@Nullable final Number value, final boolean constant) {
             this(null, value, constant);
         }
@@ -310,17 +313,25 @@ public abstract class Expression implements Parcelable {
         @NonNull
         @Override
         protected Pair<String, String[]> buildSql(@NonNull final AbstractDao dao) {
-            if (mConstant) {
-                if (mNumValue != null) {
-                    return Pair.create(mNumValue.toString(), NO_ARGS);
-                } else if (mStrValue != null) {
-                    //TODO: how should we handle non-null constant string values?
-                } else {
-                    return Pair.create("NULL", NO_ARGS);
+            if (mSql == null) {
+                // handle constants
+                if (mConstant) {
+                    if (mNumValue != null) {
+                        mSql = Pair.create(mNumValue.toString(), NO_ARGS);
+                    } else if (mStrValue != null) {
+                        //TODO: how should we handle non-null constant string values?
+                    } else {
+                        mSql = Pair.create("NULL", NO_ARGS);
+                    }
+                }
+
+                // default if mSql is still null
+                if (mSql == null) {
+                    mSql = Pair.create("?", new String[] {mNumValue != null ? mNumValue.toString() : mStrValue});
                 }
             }
 
-            return Pair.create("?", new String[] {mNumValue != null ? mNumValue.toString() : mStrValue});
+            return mSql;
         }
 
         @Override
