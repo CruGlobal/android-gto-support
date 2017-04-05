@@ -91,19 +91,18 @@ public abstract class AbstractAsyncDao extends AbstractDao {
     }
 
     @NonNull
-    public final ListenableFuture<?> updateAsync(@NonNull final Object obj) {
+    public final ListenableFuture<Integer> updateAsync(@NonNull final Object obj) {
         return updateAsync(obj, getFullProjection(obj.getClass()));
     }
 
     @NonNull
-    public final ListenableFuture<?> updateAsync(@NonNull final Object obj, @NonNull final String... projection) {
-        final SettableFuture<?> future = SettableFuture.create();
+    public final ListenableFuture<Integer> updateAsync(@NonNull final Object obj, @NonNull final String... projection) {
+        final SettableFuture<Integer> future = SettableFuture.create();
         AsyncTaskCompat.THREAD_POOL_EXECUTOR.execute(new Runnable() {
             @Override
             public void run() {
                 try {
-                    update(obj, projection);
-                    future.set(null);
+                    future.set(update(obj, projection));
                 } catch (final Throwable t) {
                     future.setException(t);
                 }
@@ -113,15 +112,14 @@ public abstract class AbstractAsyncDao extends AbstractDao {
     }
 
     @NonNull
-    public final <T> ListenableFuture<?> updateAsync(@NonNull final T sample, @Nullable final Expression where,
-                                                     @NonNull final String... projection) {
-        final SettableFuture<?> future = SettableFuture.create();
+    public final <T> ListenableFuture<Integer> updateAsync(@NonNull final T sample, @Nullable final Expression where,
+                                                           @NonNull final String... projection) {
+        final SettableFuture<Integer> future = SettableFuture.create();
         AsyncTaskCompat.THREAD_POOL_EXECUTOR.execute(new Runnable() {
             @Override
             public void run() {
                 try {
-                    update(sample, where, projection);
-                    future.set(null);
+                    future.set(update(sample, where, projection));
                 } catch (final Throwable t) {
                     future.setException(t);
                 }
