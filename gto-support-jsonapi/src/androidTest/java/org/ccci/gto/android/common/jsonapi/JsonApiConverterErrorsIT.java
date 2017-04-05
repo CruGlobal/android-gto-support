@@ -21,6 +21,19 @@ import static org.junit.Assert.assertThat;
 public class JsonApiConverterErrorsIT {
     private static final String META_SIMPLE = "{\"detail\":{\"person_id\":[\"This person is already assigned\"]}}";
 
+    // sample error taken from http://jsonapi.org/examples/#error-objects-multiple-errors
+    private static final String ERROR_JSONAPI_MULTIPLE1 = "{\"errors\": [" +
+            "{\"status\": \"403\"," +
+            " \"source\": { \"pointer\": \"/data/attributes/secret-powers\" }," +
+            " \"detail\": \"Editing secret powers is not authorized on Sundays.\"}," +
+            "{\"status\": \"422\"," +
+            " \"source\": { \"pointer\": \"/data/attributes/volume\" }," +
+            " \"detail\": \"Volume does not, in fact, go to 11.\"}," +
+            "{\"status\": \"500\"," +
+            " \"source\": { \"pointer\": \"/data/attributes/reputation\" }," +
+            " \"title\": \"The backend responded with an error\"," +
+            " \"detail\": \"Reputation service not responding after three requests.\"}]}";
+
     @Test
     public void verifyToJsonSingleSimpleError() throws Exception {
         final JsonApiConverter converter = new JsonApiConverter.Builder().addClasses(ModelSimple.class).build();
@@ -51,6 +64,23 @@ public class JsonApiConverterErrorsIT {
         assertThat(error1.getStatus(), is(error.getStatus()));
         assertThat(error1.getSource().getPointer(), is(error.getSource().getPointer()));
         assertThatJson(error1.getRawMeta().toString()).isEqualTo(error.getRawMeta().toString());
+    }
+
+    @Test
+    public void verifyFromJsonJsonapiMultiple1() throws Exception {
+        final JsonApiConverter converter = new JsonApiConverter.Builder().addClasses(ModelSimple.class).build();
+
+        final JsonApiObject<ModelSimple> obj = converter.fromJson(ERROR_JSONAPI_MULTIPLE1, ModelSimple.class);
+        assertThat(obj.hasErrors(), is(true));
+        assertThat(obj.getErrors(), hasSize(3));
+        final JsonApiError error1 = obj.getErrors().get(0);
+        assertThat(error1.getStatus(), is(403));
+        assertThat(error1.getDetail(), is("Editing secret powers is not authorized on Sundays."));
+        assertThat(error1.getSource().getPointer(), is("/data/attributes/secret-powers"));
+        final JsonApiError error3 = obj.getErrors().get(2);
+        assertThat(error3.getStatus(), is(500));
+        assertThat(error3.getDetail(), is("Reputation service not responding after three requests."));
+        assertThat(error3.getSource().getPointer(), is("/data/attributes/reputation"));
     }
 
     @NonNull
