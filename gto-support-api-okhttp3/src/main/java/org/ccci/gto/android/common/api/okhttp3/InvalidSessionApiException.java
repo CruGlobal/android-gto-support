@@ -1,10 +1,7 @@
 package org.ccci.gto.android.common.api.okhttp3;
 
-public class InvalidSessionApiException extends ApiException {
-    public InvalidSessionApiException() {
-    }
+import java.net.ProtocolException;
 
-    public InvalidSessionApiException(Throwable cause) {
-        super(cause);
-    }
+public class InvalidSessionApiException extends ProtocolException {
+    public InvalidSessionApiException() {}
 }
