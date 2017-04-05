@@ -22,6 +22,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import static android.database.sqlite.SQLiteDatabase.CONFLICT_NONE;
 import static org.ccci.gto.android.common.db.util.CursorUtils.getLong;
 
 public abstract class AbstractDao {
@@ -406,7 +407,7 @@ public abstract class AbstractDao {
 
     @WorkerThread
     public final long insert(@NonNull final Object obj) {
-        return insert(obj, SQLiteDatabase.CONFLICT_NONE);
+        return insert(obj, CONFLICT_NONE);
     }
 
     @WorkerThread
@@ -471,10 +472,29 @@ public abstract class AbstractDao {
     @WorkerThread
     public final <T> int update(@NonNull final T obj, @Nullable final Expression where,
                                 @NonNull final String... projection) {
+        return update(obj, where, CONFLICT_NONE, projection);
+    }
+
+    /**
+     * This method updates all objects that match the {@code where} {@link Expression} based on the provided sample
+     * object and projection.
+     *
+     * @param <T>               the type of objects being updated
+     * @param obj               a sample object that is used to find the type and generate the values being set on other
+     *                          objects.
+     * @param where             a where clause that restricts which objects get updated. If this is null all objects are
+     *                          updated.
+     * @param projection        the fields to update in this call
+     * @param conflictAlgorithm the conflict algorithm to use when updating the database
+     * @return the number of rows affected
+     */
+    @WorkerThread
+    public final <T> int update(@NonNull final T obj, @Nullable final Expression where, final int conflictAlgorithm,
+                                @NonNull final String... projection) {
         @SuppressWarnings("unchecked")
         final Class<T> type = (Class<T>) obj.getClass();
         final ContentValues values = getMapper(type).toContentValues(obj, projection);
-        return update(type, values, where);
+        return update(type, values, where, conflictAlgorithm);
     }
 
     /**
@@ -489,7 +509,7 @@ public abstract class AbstractDao {
     @WorkerThread
     protected final int update(@NonNull final Class<?> type, @NonNull final ContentValues values,
                                @Nullable final Expression where) {
-        return update(type, values, where, SQLiteDatabase.CONFLICT_NONE);
+        return update(type, values, where, CONFLICT_NONE);
     }
 
     /**
