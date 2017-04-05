@@ -444,16 +444,16 @@ public abstract class AbstractDao {
     }
 
     @WorkerThread
-    public final void update(@NonNull final Object obj) {
-        update(obj, getFullProjection(obj.getClass()));
+    public final int update(@NonNull final Object obj) {
+        return update(obj, getFullProjection(obj.getClass()));
     }
 
     @WorkerThread
-    public final <T> void update(@NonNull final T obj, @NonNull final String... projection) {
+    public final <T> int update(@NonNull final T obj, @NonNull final String... projection) {
         @SuppressWarnings("unchecked")
         final Class<T> type = (Class<T>) obj.getClass();
         final ContentValues values = getMapper(type).toContentValues(obj, projection);
-        update(type, values, getPrimaryKeyWhere(obj));
+        return update(type, values, getPrimaryKeyWhere(obj));
     }
 
     /**
@@ -466,14 +466,15 @@ public abstract class AbstractDao {
      *                   updated.
      * @param projection the fields to update in this call
      * @param <T>        the type of objects being updated
+     * @return the number of rows affected
      */
     @WorkerThread
-    public final <T> void update(@NonNull final T obj, @Nullable final Expression where,
-                                 @NonNull final String... projection) {
+    public final <T> int update(@NonNull final T obj, @Nullable final Expression where,
+                                @NonNull final String... projection) {
         @SuppressWarnings("unchecked")
         final Class<T> type = (Class<T>) obj.getClass();
         final ContentValues values = getMapper(type).toContentValues(obj, projection);
-        update(type, values, where);
+        return update(type, values, where);
     }
 
     /**
@@ -483,11 +484,12 @@ public abstract class AbstractDao {
      * @param type   the type of Object to update
      * @param values the new values for the specified object
      * @param where  an optional {@link Expression} to narrow the scope of which objects are updated
+     * @return the number of rows affected
      */
     @WorkerThread
-    protected final void update(@NonNull final Class<?> type, @NonNull final ContentValues values,
-                                @Nullable final Expression where) {
-        update(type, values, where, SQLiteDatabase.CONFLICT_NONE);
+    protected final int update(@NonNull final Class<?> type, @NonNull final ContentValues values,
+                               @Nullable final Expression where) {
+        return update(type, values, where, SQLiteDatabase.CONFLICT_NONE);
     }
 
     /**
