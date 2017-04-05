@@ -487,6 +487,22 @@ public abstract class AbstractDao {
     @WorkerThread
     protected final void update(@NonNull final Class<?> type, @NonNull final ContentValues values,
                                 @Nullable final Expression where) {
+        update(type, values, where, SQLiteDatabase.CONFLICT_NONE);
+    }
+
+    /**
+     * Update the specified {@code values} for objects of type {@code type} that match the specified {@code where}
+     * clause. If {@code where} is null, all objects of type {@code type} will be updated
+     *
+     * @param type              the type of Object to update
+     * @param values            the new values for the specified object
+     * @param where             an optional {@link Expression} to narrow the scope of which objects are updated
+     * @param conflictAlgorithm the conflict algorithm to use when updating the database
+     * @return the number of rows affected
+     */
+    @WorkerThread
+    protected final int update(@NonNull final Class<?> type, @NonNull final ContentValues values,
+                               @Nullable final Expression where, final int conflictAlgorithm) {
         final String table = getTable(type);
         final Pair<String, String[]> builtWhere =
                 where != null ? where.buildSql(this) : Pair.<String, String[]>create(null, null);
@@ -496,8 +512,10 @@ public abstract class AbstractDao {
         final Transaction tx = newTransaction(db);
         try {
             tx.beginTransactionNonExclusive();
-            db.update(table, values, builtWhere.first, builtWhere.second);
+            final int result =
+                    db.updateWithOnConflict(table, values, builtWhere.first, builtWhere.second, conflictAlgorithm);
             tx.setTransactionSuccessful();
+            return result;
         } finally {
             tx.endTransaction().recycle();
         }
