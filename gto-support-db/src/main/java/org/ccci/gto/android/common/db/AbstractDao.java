@@ -418,7 +418,7 @@ public abstract class AbstractDao {
 
         // execute insert
         final SQLiteDatabase db = mDbHelper.getWritableDatabase();
-        final Transaction tx = newTransaction();
+        final Transaction tx = newTransaction(db);
         try {
             tx.beginTransactionNonExclusive();
             final long id = db.insertWithOnConflict(table, null, values, conflictAlgorithm);
@@ -432,11 +432,11 @@ public abstract class AbstractDao {
     @WorkerThread
     public final void replace(@NonNull final Object obj) {
         final SQLiteDatabase db = mDbHelper.getWritableDatabase();
-        final Transaction tx = newTransaction();
+        final Transaction tx = newTransaction(db);
         try {
             tx.beginTransactionNonExclusive();
-            this.delete(obj);
-            this.insert(obj);
+            delete(obj);
+            insert(obj);
             tx.setTransactionSuccessful();
         } finally {
             tx.endTransaction().recycle();
@@ -493,7 +493,7 @@ public abstract class AbstractDao {
 
         // execute update
         final SQLiteDatabase db = mDbHelper.getWritableDatabase();
-        final Transaction tx = newTransaction();
+        final Transaction tx = newTransaction(db);
         try {
             tx.beginTransactionNonExclusive();
             db.update(table, values, builtWhere.first, builtWhere.second);
@@ -532,14 +532,14 @@ public abstract class AbstractDao {
         final Expression where = this.getPrimaryKeyWhere(obj);
 
         final SQLiteDatabase db = mDbHelper.getWritableDatabase();
-        final Transaction tx = newTransaction();
+        final Transaction tx = newTransaction(db);
         try {
             tx.beginTransactionNonExclusive();
             final Object existing = find(obj.getClass(), where);
             if (existing != null) {
-                this.update(obj, projection);
+                update(obj, projection);
             } else {
-                this.insert(obj);
+                insert(obj);
             }
             tx.setTransactionSuccessful();
         } finally {
@@ -564,7 +564,7 @@ public abstract class AbstractDao {
         final Pair<String, String[]> builtWhere =
                 where != null ? where.buildSql(this) : Pair.<String, String[]>create(null, null);
         final SQLiteDatabase db = mDbHelper.getWritableDatabase();
-        final Transaction tx = newTransaction();
+        final Transaction tx = newTransaction(db);
         try {
             tx.beginTransactionNonExclusive();
             db.delete(table, builtWhere.first, builtWhere.second);
@@ -600,7 +600,13 @@ public abstract class AbstractDao {
     @NonNull
     @WorkerThread
     public final Transaction newTransaction() {
-        return Transaction.newTransaction(mDbHelper.getWritableDatabase());
+        return newTransaction(mDbHelper.getWritableDatabase());
+    }
+
+    @NonNull
+    @WorkerThread
+    protected final Transaction newTransaction(@NonNull final SQLiteDatabase db) {
+        return Transaction.newTransaction(db);
     }
 
     @NonNull
