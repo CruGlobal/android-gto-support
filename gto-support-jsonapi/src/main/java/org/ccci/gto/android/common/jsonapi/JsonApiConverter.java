@@ -34,7 +34,10 @@ import java.util.Set;
 
 import static java.util.Collections.singletonMap;
 import static org.ccci.gto.android.common.jsonapi.model.JsonApiError.JSON_ERROR_DETAIL;
+import static org.ccci.gto.android.common.jsonapi.model.JsonApiError.JSON_ERROR_META;
+import static org.ccci.gto.android.common.jsonapi.model.JsonApiError.JSON_ERROR_SOURCE;
 import static org.ccci.gto.android.common.jsonapi.model.JsonApiError.JSON_ERROR_STATUS;
+import static org.ccci.gto.android.common.jsonapi.model.JsonApiError.Source.JSON_ERROR_SOURCE_POINTER;
 import static org.ccci.gto.android.common.jsonapi.model.JsonApiObject.JSON_DATA;
 import static org.ccci.gto.android.common.jsonapi.model.JsonApiObject.JSON_DATA_ATTRIBUTES;
 import static org.ccci.gto.android.common.jsonapi.model.JsonApiObject.JSON_DATA_ID;
@@ -233,21 +236,45 @@ public final class JsonApiConverter {
     @NonNull
     private JSONObject errorToJson(@NonNull final JsonApiError error) throws JSONException {
         final JSONObject json = new JSONObject();
-        json.put(JSON_ERROR_DETAIL, error.getDetail());
         final Integer status = error.getStatus();
         if (status != null) {
             json.put(JSON_ERROR_STATUS, status.toString());
         }
+        json.put(JSON_ERROR_DETAIL, error.getDetail());
+        json.put(JSON_ERROR_SOURCE, errorSourceToJson(error.getSource()));
+        json.put(JSON_ERROR_META, error.getRawMeta());
         return json;
+    }
+
+    @Nullable
+    private JSONObject errorSourceToJson(@Nullable final JsonApiError.Source source) throws JSONException {
+        if (source != null) {
+            final JSONObject json = new JSONObject();
+            json.put(JSON_ERROR_SOURCE_POINTER, source.getPointer());
+            return json;
+        }
+        return null;
     }
 
     @Nullable
     private JsonApiError errorFromJson(@Nullable final JSONObject json) {
         if (json != null) {
             final JsonApiError error = new JsonApiError();
-            error.setDetail(json.optString(JSON_ERROR_DETAIL));
-            error.setStatus(toInteger(json.optString(JSON_ERROR_STATUS), null));
+            error.setStatus(toInteger(json.optString(JSON_ERROR_STATUS, null), null));
+            error.setDetail(json.optString(JSON_ERROR_DETAIL, null));
+            error.setSource(errorSourceFromJson(json.optJSONObject(JSON_ERROR_SOURCE)));
+            error.setRawMeta(json.optJSONObject(JSON_ERROR_META));
             return error;
+        }
+        return null;
+    }
+
+    @Nullable
+    private JsonApiError.Source errorSourceFromJson(@Nullable final JSONObject json) {
+        if (json != null) {
+            final JsonApiError.Source source = new JsonApiError.Source();
+            source.setPointer(json.optString(JSON_ERROR_SOURCE_POINTER, null));
+            return source;
         }
         return null;
     }
