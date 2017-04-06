@@ -16,19 +16,31 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 public abstract class SessionInterceptor<S extends Session> implements Interceptor {
+    private static final boolean DEFAULT_RETURN_INVALID_SESSION_RESPONSES = false;
     protected final Object mLockSession = new Object();
 
     @NonNull
     protected final Context mContext;
+    private final boolean mReturnInvalidSessionResponses;
     @NonNull
     private final String mPrefFile;
 
     protected SessionInterceptor(@NonNull final Context context) {
-        this(context, null);
+        this(context, DEFAULT_RETURN_INVALID_SESSION_RESPONSES, null);
+    }
+
+    protected SessionInterceptor(@NonNull final Context context, final boolean returnInvalidSessionResponses) {
+        this(context, returnInvalidSessionResponses, null);
     }
 
     protected SessionInterceptor(@NonNull final Context context, @Nullable final String prefFile) {
+        this(context, DEFAULT_RETURN_INVALID_SESSION_RESPONSES, prefFile);
+    }
+
+    protected SessionInterceptor(@NonNull final Context context, final boolean returnInvalidSessionResponses,
+                                 @Nullable final String prefFile) {
         mContext = context.getApplicationContext();
+        mReturnInvalidSessionResponses = returnInvalidSessionResponses;
         mPrefFile = prefFile != null ? prefFile : getClass().getSimpleName();
     }
 
@@ -76,6 +88,11 @@ public abstract class SessionInterceptor<S extends Session> implements Intercept
                 if (active != null && active.equals(session)) {
                     deleteSession(session);
                 }
+            }
+
+            // throw an invalid session exception because our session was invalid
+            if (!mReturnInvalidSessionResponses) {
+                throw new InvalidSessionApiException();
             }
         }
 
