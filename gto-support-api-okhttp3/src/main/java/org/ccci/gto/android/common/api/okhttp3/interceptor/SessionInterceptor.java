@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import org.ccci.gto.android.common.api.Session;
+import org.ccci.gto.android.common.api.okhttp3.EstablishSessionApiException;
 import org.ccci.gto.android.common.api.okhttp3.InvalidSessionApiException;
 
 import java.io.IOException;
@@ -56,7 +57,12 @@ public abstract class SessionInterceptor<S extends Session> implements Intercept
         synchronized (mLockSession) {
             session = loadSession();
             if (session == null) {
-                session = establishSession();
+                try {
+                    session = establishSession();
+                } catch (final IOException e) {
+                    // wrap establish session IOExceptions
+                    throw new EstablishSessionApiException(e);
+                }
 
                 // save the newly established session
                 if (session != null && session.isValid()) {
