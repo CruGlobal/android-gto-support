@@ -126,16 +126,7 @@ public abstract class ViewHolderPagerAdapter<VH extends ViewHolderPagerAdapter.V
         holder.mLastKnownPosition = position;
     }
 
-    protected void onViewHolderRecycled(@NonNull final VH holder) {
-        onViewRecycled(holder);
-    }
-
-    /**
-     * @deprecated As of v0.9.0, override {@link ViewHolderPagerAdapter#onViewHolderRecycled(ViewHolder)} instead.
-     */
-    @Deprecated
-    protected void onViewRecycled(@NonNull final VH holder) {
-    }
+    protected void onViewHolderRecycled(@NonNull final VH holder) {}
 
     public static class ViewHolder {
         long mId = NO_ID;
