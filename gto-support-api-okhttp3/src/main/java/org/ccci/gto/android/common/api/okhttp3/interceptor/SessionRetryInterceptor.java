@@ -36,6 +36,7 @@ public final class SessionRetryInterceptor implements Interceptor {
     public Response intercept(@NonNull final Chain chain) throws IOException {
         int tries = 0;
         while (true) {
+            tries++;
             try {
                 final Response response = chain.proceed(chain.request());
 
@@ -47,7 +48,6 @@ public final class SessionRetryInterceptor implements Interceptor {
 
                 return response;
             } catch (@NonNull final InvalidSessionApiException e) {
-                tries++;
                 if (tries < mAttempts) {
                     continue;
                 }
