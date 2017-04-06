@@ -15,7 +15,6 @@ import org.ccci.gto.android.common.support.v4.content.BroadcastReceiverLoaderHel
 
 import static org.ccci.gto.android.common.db.AbstractDao.ARG_WHERE;
 import static org.ccci.gto.android.common.db.AbstractDao.ARG_WHERE_ARGS;
-import static org.ccci.gto.android.common.db.AbstractDao.bindValues;
 
 public class DaoCursorBroadcastReceiverLoader<T> extends DaoCursorLoader<T>
         implements BroadcastReceiverLoaderHelper.Interface {
@@ -72,14 +71,6 @@ public class DaoCursorBroadcastReceiverLoader<T> extends DaoCursorLoader<T>
     @Override
     public final void setBroadcastReceiver(@Nullable final BroadcastReceiver receiver) {
         mHelper.setBroadcastReceiver(receiver);
-    }
-
-    /**
-     * @deprecated Since v0.9.0, use {@link DaoCursorBroadcastReceiverLoader#setWhere(Expression)} instead.
-     */
-    @Deprecated
-    public void setWhere(@Nullable final String where, @Nullable final Object... args) {
-        setWhere(where, args != null ? bindValues(args) : null);
     }
 
     /**

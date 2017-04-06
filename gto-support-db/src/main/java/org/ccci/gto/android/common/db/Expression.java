@@ -162,33 +162,6 @@ public abstract class Expression implements Parcelable {
         return Table.forClass(type).field(name);
     }
 
-    /**
-     * @deprecated Since v0.9.0, use {@link Expression#bind(Object)} instead.
-     */
-    @NonNull
-    @Deprecated
-    public static Literal literal(@NonNull final Object value) {
-        return bind(value);
-    }
-
-    /**
-     * @deprecated Since v0.9.0, use {@link Expression#bind(Number)} instead.
-     */
-    @NonNull
-    @Deprecated
-    public static Literal literal(@NonNull final Number value) {
-        return bind(value);
-    }
-
-    /**
-     * @deprecated Since v0.9.0, use {@link Expression#bind(String)} instead.
-     */
-    @NonNull
-    @Deprecated
-    public static Literal literal(@NonNull final String value) {
-        return bind(value);
-    }
-
     @NonNull
     public static Literal bind() {
         return new Literal((String) null, false);
