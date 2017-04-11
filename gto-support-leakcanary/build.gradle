@@ -1,0 +1,4 @@
+dependencies {
+    compile 'com.squareup.leakcanary:leakcanary-android:' + deps.leakcanary
+    provided 'com.crashlytics.sdk.android:crashlytics:' + deps.crashlytics
+}
