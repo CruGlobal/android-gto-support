@@ -1,2 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest package="org.ccci.gto.android.common.leakcanary"/>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="org.ccci.gto.android.common.leakcanary">
+
+    <application>
+        <service android:name=".CrashlyticsLeakService" />
+    </application>
+</manifest>
