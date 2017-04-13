@@ -9,7 +9,7 @@ import static android.support.v7.widget.ReflectionUtils.getDeclaredField;
 
 public class AppCompatButtonImpl extends AppCompatButton {
     @NonNull
-    private final AppCompatTextCompoundDrawableHelper mCompoundDrawableHelper;
+    private final AppCompatCompoundDrawableHelper mCompoundDrawableHelper;
 
     public AppCompatButtonImpl(Context context) {
         this(context, null);
@@ -23,7 +23,7 @@ public class AppCompatButtonImpl extends AppCompatButton {
         super(context, attrs, defStyleAttr);
 
         mCompoundDrawableHelper =
-                new AppCompatTextCompoundDrawableHelper(this, getDeclaredField(AppCompatButton.class, "mTextHelper"));
+                new AppCompatCompoundDrawableHelper(this, getDeclaredField(AppCompatButton.class, "mTextHelper"));
         mCompoundDrawableHelper.loadFromAttributes(attrs, defStyleAttr);
     }
 

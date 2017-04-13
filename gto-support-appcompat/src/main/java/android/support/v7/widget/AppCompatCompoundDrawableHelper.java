@@ -15,7 +15,7 @@ import java.lang.reflect.Field;
 import static android.support.v7.widget.ReflectionUtils.getDeclaredField;
 
 @SuppressWarnings("RestrictedApi")
-final class AppCompatTextCompoundDrawableHelper {
+final class AppCompatCompoundDrawableHelper {
     private final TextView mView;
     @Nullable
     private final AppCompatTextHelper mTextHelper;
@@ -34,7 +34,7 @@ final class AppCompatTextCompoundDrawableHelper {
     private static final Field BOTTOM_TINT = getDeclaredField(AppCompatTextHelper.class, "mDrawableBottomTint");
     private static final Field[] TINT_FIELDS = {START_TINT, LEFT_TINT, TOP_TINT, END_TINT, RIGHT_TINT, BOTTOM_TINT};
 
-    AppCompatTextCompoundDrawableHelper(@NonNull final TextView view, @Nullable final Field textHelperField) {
+    AppCompatCompoundDrawableHelper(@NonNull final TextView view, @Nullable final Field textHelperField) {
         mView = view;
 
         AppCompatTextHelper helper = null;
@@ -49,15 +49,15 @@ final class AppCompatTextCompoundDrawableHelper {
 
     void loadFromAttributes(@NonNull final AttributeSet attrs, final int defStyleAttr) {
         final TintTypedArray a = TintTypedArray
-                .obtainStyledAttributes(mView.getContext(), attrs, R.styleable.TextViewCompoundDrawableHelper,
+                .obtainStyledAttributes(mView.getContext(), attrs, R.styleable.AppCompatCompoundDrawableHelper,
                                         defStyleAttr, 0);
 
-        final Drawable drawableStart = a.getDrawable(R.styleable.TextViewCompoundDrawableHelper_drawableStart);
-        final Drawable drawableLeft = a.getDrawable(R.styleable.TextViewCompoundDrawableHelper_drawableLeft);
-        final Drawable drawableTop = a.getDrawable(R.styleable.TextViewCompoundDrawableHelper_drawableTop);
-        final Drawable drawableEnd = a.getDrawable(R.styleable.TextViewCompoundDrawableHelper_drawableEnd);
-        final Drawable drawableRight = a.getDrawable(R.styleable.TextViewCompoundDrawableHelper_drawableRight);
-        final Drawable drawableBottom = a.getDrawable(R.styleable.TextViewCompoundDrawableHelper_drawableBottom);
+        final Drawable drawableStart = a.getDrawable(R.styleable.AppCompatCompoundDrawableHelper_drawableStart);
+        final Drawable drawableLeft = a.getDrawable(R.styleable.AppCompatCompoundDrawableHelper_drawableLeft);
+        final Drawable drawableTop = a.getDrawable(R.styleable.AppCompatCompoundDrawableHelper_drawableTop);
+        final Drawable drawableEnd = a.getDrawable(R.styleable.AppCompatCompoundDrawableHelper_drawableEnd);
+        final Drawable drawableRight = a.getDrawable(R.styleable.AppCompatCompoundDrawableHelper_drawableRight);
+        final Drawable drawableBottom = a.getDrawable(R.styleable.AppCompatCompoundDrawableHelper_drawableBottom);
 
         // We can only choose absolute positioned drawables or relative positioned drawables, not both
         if (drawableStart != null || drawableEnd != null) {
@@ -75,9 +75,9 @@ final class AppCompatTextCompoundDrawableHelper {
         }
 
         // handle compound drawable tint
-        if (a.hasValue(R.styleable.TextViewCompoundDrawableHelper_drawableTint)) {
+        if (a.hasValue(R.styleable.AppCompatCompoundDrawableHelper_drawableTint)) {
             setSupportCompoundDrawableTintList(
-                    a.getColorStateList(R.styleable.TextViewCompoundDrawableHelper_drawableTint));
+                    a.getColorStateList(R.styleable.AppCompatCompoundDrawableHelper_drawableTint));
         }
         a.recycle();
     }

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <declare-styleable name="TextViewCompoundDrawableHelper">
+    <declare-styleable name="AppCompatCompoundDrawableHelper">
         <attr name="drawableStart" format="reference" />
         <attr name="drawableLeft" format="reference" />
         <attr name="drawableTop" format="reference" />
