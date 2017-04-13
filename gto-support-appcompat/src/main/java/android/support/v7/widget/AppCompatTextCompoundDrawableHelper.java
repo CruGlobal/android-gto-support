@@ -1,6 +1,8 @@
 package android.support.v7.widget;
 
 import android.content.res.ColorStateList;
+import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
@@ -49,6 +51,30 @@ final class AppCompatTextCompoundDrawableHelper {
         final TintTypedArray a = TintTypedArray
                 .obtainStyledAttributes(mView.getContext(), attrs, R.styleable.TextViewCompoundDrawableHelper,
                                         defStyleAttr, 0);
+
+        final Drawable drawableStart = a.getDrawable(R.styleable.TextViewCompoundDrawableHelper_drawableStart);
+        final Drawable drawableLeft = a.getDrawable(R.styleable.TextViewCompoundDrawableHelper_drawableLeft);
+        final Drawable drawableTop = a.getDrawable(R.styleable.TextViewCompoundDrawableHelper_drawableTop);
+        final Drawable drawableEnd = a.getDrawable(R.styleable.TextViewCompoundDrawableHelper_drawableEnd);
+        final Drawable drawableRight = a.getDrawable(R.styleable.TextViewCompoundDrawableHelper_drawableRight);
+        final Drawable drawableBottom = a.getDrawable(R.styleable.TextViewCompoundDrawableHelper_drawableBottom);
+
+        // We can only choose absolute positioned drawables or relative positioned drawables, not both
+        if (drawableStart != null || drawableEnd != null) {
+            // prefer relative drawables if defined
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                mView.setCompoundDrawablesRelativeWithIntrinsicBounds(drawableStart, drawableTop, drawableEnd,
+                                                                      drawableBottom);
+            } else {
+                // no RTL support on older devices anyways, just default to left/right for start/end
+                mView.setCompoundDrawablesWithIntrinsicBounds(drawableStart, drawableTop, drawableEnd, drawableBottom);
+            }
+        } else if (drawableLeft != null || drawableRight != null || drawableTop != null || drawableBottom != null) {
+            // fallback to absolute drawables if defined
+            mView.setCompoundDrawablesWithIntrinsicBounds(drawableLeft, drawableTop, drawableRight, drawableBottom);
+        }
+
+        // handle compound drawable tint
         if (a.hasValue(R.styleable.TextViewCompoundDrawableHelper_drawableTint)) {
             setSupportCompoundDrawableTintList(
                     a.getColorStateList(R.styleable.TextViewCompoundDrawableHelper_drawableTint));
