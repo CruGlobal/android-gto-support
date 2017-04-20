@@ -3,4 +3,4 @@ include ':gto-support-api', ':gto-support-api-base', ':gto-support-api-okhttp3',
         ':gto-support-db-async', ':gto-support-db-stream', ':gto-support-eventbus', ':gto-support-gson',
         ':gto-support-jsonapi', ':gto-support-jsonapi-retrofit2', ':gto-support-leakcanary', ':gto-support-picasso',
         ':gto-support-recyclerview', ':gto-support-recyclerview-advrecyclerview', ':gto-support-stetho',
-        ':gto-support-testing'
+        ':gto-support-sync', ':gto-support-testing'

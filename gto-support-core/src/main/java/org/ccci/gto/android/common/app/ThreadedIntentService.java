@@ -3,6 +3,8 @@ package org.ccci.gto.android.common.app;
 import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.annotation.WorkerThread;
 
 import org.ccci.gto.android.common.concurrent.NamedThreadFactory;
@@ -29,6 +31,7 @@ public abstract class ThreadedIntentService extends Service {
 
     private boolean mRedelivery;
 
+    @NonNull
     private final String mName;
     private final int mPoolSize;
 
@@ -36,11 +39,11 @@ public abstract class ThreadedIntentService extends Service {
     private Executor mExecutor = null;
     private final BlockingQueue<Future<Integer>> mTasks = new LinkedBlockingQueue<>();
 
-    protected ThreadedIntentService(final String name) {
+    protected ThreadedIntentService(@NonNull final String name) {
         this(name, 10);
     }
 
-    protected ThreadedIntentService(final String name, final int poolSize) {
+    protected ThreadedIntentService(@NonNull final String name, final int poolSize) {
         mName = name;
         mPoolSize = poolSize;
     }
@@ -66,7 +69,7 @@ public abstract class ThreadedIntentService extends Service {
     }
 
     @Override
-    public int onStartCommand(final Intent intent, final int flags, final int startId) {
+    public int onStartCommand(@Nullable final Intent intent, final int flags, final int startId) {
         final RunnableFuture<Integer> task = new IntentRunnable(intent, startId);
         mTasks.add(task);
         mExecutor.execute(task);
@@ -74,7 +77,7 @@ public abstract class ThreadedIntentService extends Service {
     }
 
     @WorkerThread
-    protected abstract void onHandleIntent(Intent intent);
+    protected abstract void onHandleIntent(@Nullable Intent intent);
 
     @Override
     public void onDestroy() {
@@ -136,11 +139,11 @@ public abstract class ThreadedIntentService extends Service {
         }
     }
 
-    private final class IntentRunnable extends FutureTask<Integer> {
+    final class IntentRunnable extends FutureTask<Integer> {
         final int mPriority;
         final int mStartId;
 
-        private IntentRunnable(final Intent intent, final int startId) {
+        IntentRunnable(@Nullable final Intent intent, final int startId) {
             super(new Callable<Integer>() {
                 @Override
                 public Integer call() {
@@ -150,7 +153,7 @@ public abstract class ThreadedIntentService extends Service {
             });
 
             mStartId = startId;
-            mPriority = intent.getIntExtra(EXTRA_PRIORITY, PRIORITY_DEFAULT);
+            mPriority = intent != null ? intent.getIntExtra(EXTRA_PRIORITY, PRIORITY_DEFAULT) : PRIORITY_DEFAULT;
         }
 
         @Override
