@@ -13,7 +13,7 @@ public interface StreamDao {
 
     class StreamHelper {
         @NonNull
-        static <T> Stream<T> stream(@NonNull final AbstractDao dao, @NonNull final Query<T> query) {
+        public static <T> Stream<T> stream(@NonNull final AbstractDao dao, @NonNull final Query<T> query) {
             return Stream.of(dao.get(query));
         }
     }
