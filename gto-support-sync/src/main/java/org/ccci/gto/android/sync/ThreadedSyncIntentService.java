@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.RestrictTo;
 import android.support.annotation.WorkerThread;
 import android.util.SparseBooleanArray;
 
@@ -46,6 +47,7 @@ public abstract class ThreadedSyncIntentService extends ThreadedIntentService {
 
     /* END lifecycle */
 
+    @RestrictTo(RestrictTo.Scope.SUBCLASSES)
     protected void finishSync(final int syncId) {}
 
     public static final class SyncTask implements Runnable {
@@ -57,7 +59,7 @@ public abstract class ThreadedSyncIntentService extends ThreadedIntentService {
         @NonNull
         private final Intent mTask;
 
-        protected SyncTask(@NonNull final Context context, @NonNull final Intent task) {
+        public SyncTask(@NonNull final Context context, @NonNull final Intent task) {
             mContext = context.getApplicationContext();
             mTask = task;
         }
