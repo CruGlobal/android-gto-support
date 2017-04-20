@@ -1,0 +1,5 @@
+dependencies {
+    compile project(':gto-support-db')
+
+    compile "com.annimon:stream:${deps.lightweightStream}"
+}
