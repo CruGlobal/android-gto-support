@@ -1,3 +1,9 @@
+android {
+    defaultConfig {
+        consumerProguardFiles 'proguard-rules.txt'
+    }
+}
+
 dependencies {
     compile project(':gto-support-core')
 
