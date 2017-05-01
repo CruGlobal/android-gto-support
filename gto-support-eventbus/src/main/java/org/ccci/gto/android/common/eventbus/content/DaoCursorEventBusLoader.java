@@ -13,19 +13,19 @@ import org.greenrobot.eventbus.EventBus;
 public class DaoCursorEventBusLoader<T> extends DaoCursorLoader<T> implements EventBusLoaderHelper.Interface {
     private final EventBusLoaderHelper mHelper;
 
-    public DaoCursorEventBusLoader(@NonNull final Context context, @NonNull  final AbstractDao dao,
-                                   @NonNull final Class<T> type, @Nullable  final Bundle args) {
+    public DaoCursorEventBusLoader(@NonNull final Context context, @NonNull final AbstractDao dao,
+                                   @NonNull final Class<T> type, @Nullable final Bundle args) {
         this(context, null, dao, Table.forClass(type), args);
     }
 
     public DaoCursorEventBusLoader(@NonNull final Context context, @NonNull final AbstractDao dao,
-                                   @NonNull final Table<T> from, @Nullable  final Bundle args) {
+                                   @NonNull final Table<T> from, @Nullable final Bundle args) {
         this(context, null, dao, from, args);
     }
 
     public DaoCursorEventBusLoader(@NonNull final Context context, @Nullable final EventBus eventBus,
                                    @NonNull final AbstractDao dao, @NonNull final Table<T> from,
-                                   @Nullable  final Bundle args) {
+                                   @Nullable final Bundle args) {
         super(context, dao, from, args);
         mHelper = new EventBusLoaderHelper(this, eventBus);
     }
