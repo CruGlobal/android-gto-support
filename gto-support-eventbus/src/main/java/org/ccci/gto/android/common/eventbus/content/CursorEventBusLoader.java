@@ -13,19 +13,33 @@ public abstract class CursorEventBusLoader extends SimpleCursorLoader implements
     private final EventBusLoaderHelper mHelper;
 
     public CursorEventBusLoader(@NonNull final Context context) {
-        this(context, null, null);
+        this(context, (EventBus) null);
     }
 
-    public CursorEventBusLoader(@NonNull final Context context, @Nullable EventBusSubscriber subscriber) {
+    public CursorEventBusLoader(@NonNull final Context context, @Nullable final EventBus eventBus) {
+        super(context);
+        mHelper = new EventBusLoaderHelper(this, eventBus);
+    }
+
+    /**
+     * @deprecated Since v1.1.1, use {@link CursorEventBusLoader#addEventBusSubscriber(EventBusSubscriber)} to attach
+     * subscribers
+     */
+    @Deprecated
+    public CursorEventBusLoader(@NonNull final Context context, @Nullable final EventBusSubscriber subscriber) {
         this(context, subscriber, null);
     }
 
-    public CursorEventBusLoader(@NonNull final Context context, @Nullable EventBusSubscriber subscriber,
-                                @Nullable EventBus eventBus) {
-        super(context);
-        mHelper = new EventBusLoaderHelper(this, eventBus);
+    /**
+     * @deprecated Since v1.1.1, use {@link CursorEventBusLoader#addEventBusSubscriber(EventBusSubscriber)} to attach
+     * subscribers
+     */
+    @Deprecated
+    public CursorEventBusLoader(@NonNull final Context context, @Nullable final EventBusSubscriber subscriber,
+                                @Nullable final EventBus eventBus) {
+        this(context, eventBus);
         if (subscriber != null) {
-            mHelper.addEventBusSubscriber(subscriber);
+            addEventBusSubscriber(subscriber);
         }
     }
 
