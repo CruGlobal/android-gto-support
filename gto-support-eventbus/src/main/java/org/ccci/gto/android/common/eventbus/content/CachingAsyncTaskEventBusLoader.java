@@ -17,8 +17,7 @@ public abstract class CachingAsyncTaskEventBusLoader<D> extends CachingAsyncTask
         this(context, null);
     }
 
-    public CachingAsyncTaskEventBusLoader(@NonNull final Context context,
-                                          @Nullable final EventBus eventBus) {
+    public CachingAsyncTaskEventBusLoader(@NonNull final Context context, @Nullable final EventBus eventBus) {
         super(context);
         mHelper = new EventBusLoaderHelper(this, eventBus);
     }

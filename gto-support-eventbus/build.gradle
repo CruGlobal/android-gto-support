@@ -1,4 +1,6 @@
 dependencies {
     compile project(':gto-support-core')
+    provided project(':gto-support-db')
+
     compile 'org.greenrobot:eventbus:3.0.0'
 }
