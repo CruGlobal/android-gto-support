@@ -2,24 +2,25 @@ package android.support.v7.widget;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.appcompat.R;
 import android.util.AttributeSet;
 
 import static android.support.v7.widget.ReflectionUtils.getDeclaredField;
 
 public class AppCompatButtonImpl extends AppCompatButton {
-    @NonNull
     private final AppCompatCompoundDrawableHelper mCompoundDrawableHelper;
 
-    public AppCompatButtonImpl(Context context) {
+    public AppCompatButtonImpl(@NonNull final Context context) {
         this(context, null);
     }
 
-    public AppCompatButtonImpl(Context context, AttributeSet attrs) {
+    public AppCompatButtonImpl(@NonNull final Context context, @Nullable final AttributeSet attrs) {
         this(context, attrs, R.attr.buttonStyle);
     }
 
-    public AppCompatButtonImpl(Context context, AttributeSet attrs, int defStyleAttr) {
+    public AppCompatButtonImpl(@NonNull final Context context, @Nullable final AttributeSet attrs,
+                               final int defStyleAttr) {
         super(context, attrs, defStyleAttr);
 
         mCompoundDrawableHelper =
@@ -30,6 +31,8 @@ public class AppCompatButtonImpl extends AppCompatButton {
     @Override
     protected void drawableStateChanged() {
         super.drawableStateChanged();
-        mCompoundDrawableHelper.applyCompoundDrawablesTints();
+        if (mCompoundDrawableHelper != null) {
+            mCompoundDrawableHelper.applyCompoundDrawablesTints();
+        }
     }
 }
