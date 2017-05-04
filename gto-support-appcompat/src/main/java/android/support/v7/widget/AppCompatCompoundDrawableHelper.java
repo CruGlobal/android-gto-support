@@ -47,7 +47,7 @@ final class AppCompatCompoundDrawableHelper {
         mTextHelper = helper;
     }
 
-    void loadFromAttributes(@NonNull final AttributeSet attrs, final int defStyleAttr) {
+    void loadFromAttributes(@Nullable final AttributeSet attrs, final int defStyleAttr) {
         final TintTypedArray a = TintTypedArray
                 .obtainStyledAttributes(mView.getContext(), attrs, R.styleable.AppCompatCompoundDrawableHelper,
                                         defStyleAttr, 0);
