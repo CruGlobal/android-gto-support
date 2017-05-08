@@ -23,4 +23,30 @@ public class BundleUtils {
         System.arraycopy(raw, 0, arr, 0, raw.length);
         return arr;
     }
+
+    public static void putEnum(@NonNull final Bundle bundle, @Nullable final String key,
+                               @Nullable final Enum<?> value) {
+        bundle.putString(key, value != null ? value.name() : null);
+    }
+
+    @Nullable
+    public static <T extends Enum<T>> T getEnum(@NonNull final Bundle bundle, @NonNull final Class<T> type,
+                                                @Nullable final String key) {
+        return getEnum(bundle, type, key, null);
+    }
+
+    @Nullable
+    public static <T extends Enum<T>> T getEnum(@NonNull final Bundle bundle, @NonNull final Class<T> type,
+                                                @Nullable final String key, @Nullable final T defValue) {
+        final String raw = bundle.getString(key);
+        if (raw == null) {
+            return defValue;
+        }
+
+        try {
+            return Enum.valueOf(type, raw);
+        } catch (final IllegalArgumentException e) {
+            return defValue;
+        }
+    }
 }
