@@ -34,12 +34,20 @@ public final class IOUtils {
     }
 
     public static long copy(@NonNull final InputStream in, @NonNull final OutputStream out) throws IOException {
+        return copy(in, out, null);
+    }
+
+    public static long copy(@NonNull final InputStream in, @NonNull final OutputStream out,
+                            @Nullable final ProgressCallback progress) throws IOException {
         byte[] buffer = new byte[DEFAULT_BUFFER_SIZE];
         long count = 0;
         int n;
         while (EOF != (n = in.read(buffer))) {
             out.write(buffer, 0, n);
             count += n;
+            if (progress != null) {
+                progress.progress(count);
+            }
         }
         return count;
     }
@@ -54,5 +62,9 @@ public final class IOUtils {
             out.append(buffer, 0, n);
         }
         return out.toString();
+    }
+
+    public interface ProgressCallback {
+        void progress(long count);
     }
 }
