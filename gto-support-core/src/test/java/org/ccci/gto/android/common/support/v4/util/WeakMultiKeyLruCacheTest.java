@@ -1,12 +1,11 @@
 package org.ccci.gto.android.common.support.v4.util;
 
+import org.junit.Test;
+
+import static org.ccci.gto.android.common.support.v4.util.WeakLruCacheTest.forceGc;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNull;
-
-import org.junit.Test;
-
-import java.lang.ref.WeakReference;
 
 public class WeakMultiKeyLruCacheTest {
     @Test
@@ -39,18 +38,5 @@ public class WeakMultiKeyLruCacheTest {
         assertNull(cache.get("KEY1"));
         assertNotEquals("VALUE1", cache.get("KEY1"));
         assertEquals("VALUE2", cache.get("KEY2"));
-    }
-
-    private void forceGc() {
-        Object obj = new Object();
-        WeakReference ref = new WeakReference<Object>(obj);
-        obj = null;
-        while (ref.get() != null) {
-            System.gc();
-            try {
-                Thread.sleep(100);
-            } catch (final InterruptedException ignored) {
-            }
-        }
     }
 }
