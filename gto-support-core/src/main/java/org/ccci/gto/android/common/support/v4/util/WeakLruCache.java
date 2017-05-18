@@ -1,14 +1,15 @@
 package org.ccci.gto.android.common.support.v4.util;
 
 import android.support.v4.util.ArrayMap;
+import android.support.v4.util.LruCache;
 
 import java.lang.ref.WeakReference;
 import java.util.Map;
 
-public class WeakMultiKeyLruCache<K, V> extends MultiKeyLruCache<K, V> {
+public class WeakLruCache<K, V> extends LruCache<K, V> {
     private final Map<K, WeakReference<V>> mBackup = new ArrayMap<>();
 
-    public WeakMultiKeyLruCache(final int maxSize) {
+    public WeakLruCache(final int maxSize) {
         super(maxSize);
     }
 
@@ -23,7 +24,7 @@ public class WeakMultiKeyLruCache<K, V> extends MultiKeyLruCache<K, V> {
     }
 
     @Override
-    protected final V createMulti(final K key) {
+    protected final V create(final K key) {
         final WeakReference<V> ref;
         synchronized (mBackup) {
             ref = mBackup.remove(key);
@@ -32,6 +33,6 @@ public class WeakMultiKeyLruCache<K, V> extends MultiKeyLruCache<K, V> {
         if (ref != null) {
             return ref.get();
         }
-        return super.createMulti(key);
+        return super.create(key);
     }
 }

@@ -1,25 +1,28 @@
 package org.ccci.gto.android.common.support.v4.util;
 
+import android.support.v4.util.LruCache;
+
 import org.junit.Test;
 
-import static org.ccci.gto.android.common.support.v4.util.WeakLruCacheTest.forceGc;
+import java.lang.ref.WeakReference;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNull;
 
-public class WeakMultiKeyLruCacheTest {
+public class WeakLruCacheTest {
     @Test
     public void testWeakDeletion() {
-        final MultiKeyLruCache<String, String> cache = new WeakMultiKeyLruCache<>(1);
+        final LruCache<String, String> cache = new WeakLruCache<>(1);
 
         // create Strings this way to prevent usage of intern table
         String val1 = new String("VALUE1");
         String val2 = new String("VALUE2");
 
         // populate the cache
-        cache.putMulti("KEY1", val1);
+        cache.put("KEY1", val1);
         assertEquals(1, cache.size());
-        cache.putMulti("KEY2", val2);
+        cache.put("KEY2", val2);
         assertEquals(1, cache.size());
 
         // controlled gc to make sure errors don't hide behind unscheduled GC's
@@ -38,5 +41,18 @@ public class WeakMultiKeyLruCacheTest {
         assertNull(cache.get("KEY1"));
         assertNotEquals("VALUE1", cache.get("KEY1"));
         assertEquals("VALUE2", cache.get("KEY2"));
+    }
+
+    static void forceGc() {
+        Object obj = new Object();
+        WeakReference ref = new WeakReference<>(obj);
+        obj = null;
+        while (ref.get() != null) {
+            System.gc();
+            try {
+                Thread.sleep(100);
+            } catch (final InterruptedException ignored) {
+            }
+        }
     }
 }
