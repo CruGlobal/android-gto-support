@@ -15,9 +15,11 @@ public class WeakMultiKeyLruCache<K, V> extends MultiKeyLruCache<K, V> {
     @Override
     protected void entryRemoved(final boolean evicted, final K key, final V oldValue, final V newValue) {
         super.entryRemoved(evicted, key, oldValue, newValue);
-        if (evicted) {
-            synchronized (mBackup) {
+        synchronized (mBackup) {
+            if (evicted) {
                 mBackup.put(key, new WeakReference<>(oldValue));
+            } else {
+                mBackup.remove(key);
             }
         }
     }
