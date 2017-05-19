@@ -50,7 +50,7 @@ public class WeakLruCacheTest {
 
     @Test
     public void verifyCacheConsistency() throws Exception {
-        final LruCache<String, String> cache = new WeakLruCache<>(1);
+        final WeakLruCache<String, String> cache = new WeakLruCache<>(1);
 
         // populate the cache
         cache.put(KEY1, VALUE1);
@@ -64,10 +64,12 @@ public class WeakLruCacheTest {
         cache.put(KEY1, VALUE2);
         assertEquals(1, cache.size());
 
-        // remove the key
+        // remove keys
         cache.remove(KEY1);
+        cache.removeWeak(KEY2);
         assertEquals(0, cache.size());
         assertNull(cache.get(KEY1));
+        assertNull(cache.get(KEY2));
     }
 
     static void forceGc() {
