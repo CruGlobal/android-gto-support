@@ -5,7 +5,10 @@ import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import org.ccci.gto.android.common.compat.util.LocaleCompat;
+
 import java.lang.reflect.Array;
+import java.util.Locale;
 
 public class BundleUtils {
     @Nullable
@@ -48,5 +51,25 @@ public class BundleUtils {
         } catch (final IllegalArgumentException e) {
             return defValue;
         }
+    }
+
+    public static void putLocale(@NonNull final Bundle bundle, @Nullable final String key,
+                                 @Nullable final Locale locale) {
+        bundle.putString(key, locale != null ? LocaleCompat.toLanguageTag(locale) : null);
+    }
+
+    @Nullable
+    public static Locale getLocale(@NonNull final Bundle bundle, @Nullable final String key) {
+        return getLocale(bundle, key, null);
+    }
+
+    @Nullable
+    public static Locale getLocale(@NonNull final Bundle bundle, @Nullable final String key,
+                                   @Nullable final Locale defValue) {
+        final String raw = bundle.getString(key);
+        if (raw == null) {
+            return defValue;
+        }
+        return LocaleCompat.forLanguageTag(raw);
     }
 }

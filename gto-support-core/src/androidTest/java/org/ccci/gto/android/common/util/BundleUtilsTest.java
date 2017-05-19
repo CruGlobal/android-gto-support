@@ -4,8 +4,12 @@ import android.os.Bundle;
 
 import org.junit.Test;
 
+import java.util.Locale;
+
 import static org.ccci.gto.android.common.util.BundleUtils.getEnum;
+import static org.ccci.gto.android.common.util.BundleUtils.getLocale;
 import static org.ccci.gto.android.common.util.BundleUtils.putEnum;
+import static org.ccci.gto.android.common.util.BundleUtils.putLocale;
 import static org.ccci.gto.android.common.util.BundleUtilsTest.TestEnum.DEFVALUE;
 import static org.ccci.gto.android.common.util.BundleUtilsTest.TestEnum.VALUE1;
 import static org.ccci.gto.android.common.util.BundleUtilsTest.TestEnum.VALUE2;
@@ -58,5 +62,18 @@ public final class BundleUtilsTest {
         assertThat(getEnum(bundle, TestEnum.class, KEY1, DEFVALUE), is(VALUE1));
         assertThat(getEnum(bundle, TestEnum.class, KEY2, DEFVALUE), is(DEFVALUE));
         assertThat(getEnum(bundle, TestEnum.class, KEY3, DEFVALUE), is(DEFVALUE));
+    }
+
+    @Test
+    public void verifyPutLocaleAndGetLocale() throws Exception {
+        final Bundle bundle = new Bundle();
+        putLocale(bundle, KEY1, Locale.ENGLISH);
+        putLocale(bundle, KEY2, Locale.FRENCH);
+        putLocale(bundle, KEY3, null);
+
+        assertThat(bundle.size(), is(3));
+        assertThat(getLocale(bundle, KEY1), is(Locale.ENGLISH));
+        assertThat(getLocale(bundle, KEY2), is(Locale.FRENCH));
+        assertThat(getLocale(bundle, KEY3), is(nullValue()));
     }
 }
