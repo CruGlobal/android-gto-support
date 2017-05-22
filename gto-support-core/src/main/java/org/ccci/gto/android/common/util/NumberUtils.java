@@ -26,4 +26,28 @@ public class NumberUtils {
 
         return defaultValue;
     }
+
+    @Nullable
+    public static Double toDouble(@Nullable final String raw, @Nullable final Double defaultValue) {
+        if (raw != null) {
+            try {
+                return Double.valueOf(raw);
+            } catch (final NumberFormatException ignored) {
+            }
+        }
+
+        return defaultValue;
+    }
+
+    @Nullable
+    public static Float toFloat(@Nullable final String raw, @Nullable final Float defaultValue) {
+        if (raw != null) {
+            try {
+                return Float.valueOf(raw);
+            } catch (final NumberFormatException ignored) {
+            }
+        }
+
+        return defaultValue;
+    }
 }
