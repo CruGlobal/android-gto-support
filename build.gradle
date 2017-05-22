@@ -70,6 +70,7 @@ subprojects {
         }
 
         dependencies {
+            provided 'org.jetbrains:annotations:15.0'
             compile 'com.android.support:support-annotations:' + deps.androidSupport
 
             androidTestCompile 'com.android.support.test:runner:' + deps.androidTestingSupport
