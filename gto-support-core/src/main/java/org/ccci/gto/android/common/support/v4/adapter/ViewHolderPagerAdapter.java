@@ -1,5 +1,6 @@
 package org.ccci.gto.android.common.support.v4.adapter;
 
+import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.view.PagerAdapter;
@@ -121,6 +122,7 @@ public abstract class ViewHolderPagerAdapter<VH extends ViewHolderPagerAdapter.V
     @NonNull
     protected abstract VH onCreateViewHolder(@NonNull ViewGroup parent);
 
+    @CallSuper
     protected void onBindViewHolder(@NonNull final VH holder, final int position) {
         holder.mId = getItemId(position);
         holder.mLastKnownPosition = position;
