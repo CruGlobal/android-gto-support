@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import org.ccci.gto.android.common.compat.util.LocaleCompat;
+import org.jetbrains.annotations.Contract;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -63,10 +64,11 @@ public final class CursorUtils {
      * @param c        The Cursor we are fetching the value from
      * @param field    The column we are requesting the value of
      * @param defValue The default value to return when the column doesn't exist, is invalid, or is null
-     * @return the value for the specified column in the current row of the specified Cursor. Or the default value
-     * if the column is invalid, null or non-existant
+     * @return the value for the specified column in the current row of the specified Cursor. Or the default value if
+     * the column is invalid, null or non-existent
      */
     @Nullable
+    @Contract("_, _, !null -> !null")
     public static Long getLong(@NonNull final Cursor c, @NonNull final String field, @Nullable final Long defValue) {
         final int index = c.getColumnIndex(field);
         if (index != -1 && !c.isNull(index)) {
@@ -88,10 +90,11 @@ public final class CursorUtils {
      * @param c        The Cursor we are fetching the value from
      * @param column   The column we are requesting the value of
      * @param defValue The default value to return when the column doesn't exist or is null
-     * @return the value for the specified column in the current row of the specified Cursor. Or the default value
-     * if the column is null or non-existant
+     * @return the value for the specified column in the current row of the specified Cursor. Or the default value if
+     * the column is null or non-existent
      */
     @Nullable
+    @Contract("_, _, !null -> !null")
     public static String getString(@NonNull final Cursor c, @NonNull final String column,
                                    @Nullable final String defValue) {
         final int index = c.getColumnIndex(column);
@@ -99,11 +102,14 @@ public final class CursorUtils {
         return value != null ? value : defValue;
     }
 
+    /**
+     * @deprecated Since 1.1.1, use {@link CursorUtils#getString(Cursor, String, String)} instead now that there is an
+     * IntelliJ Contract defined for it.
+     */
     @NonNull
+    @Deprecated
     public static String getNonNullString(@NonNull final Cursor c, @NonNull final String field,
                                           @NonNull final String defValue) {
-        // if defValue is @NonNull, then getString() will return @NonNull
-        //noinspection ConstantConditions
         return getString(c, field, defValue);
     }
 
@@ -144,10 +150,10 @@ public final class CursorUtils {
     }
 
     @Nullable
+    @Contract("_, _, _, !null -> !null")
     public static <E extends Enum<E>> E getEnum(@NonNull final Cursor c, @NonNull final String field,
                                                 @NonNull final Class<E> clazz, @Nullable final E defValue) {
-        final String raw = getString(c, field, defValue != null ? defValue.toString() : null);
-
+        final String raw = getString(c, field, null);
         if (raw != null) {
             try {
                 return Enum.valueOf(clazz, raw);
@@ -158,8 +164,12 @@ public final class CursorUtils {
         return defValue;
     }
 
+    /**
+     * @deprecated Since 1.1.1, use {@link CursorUtils#getEnum(Cursor, String, Class, Enum)} instead now that there is
+     * an IntelliJ Contract defined for it.
+     */
     @NonNull
-    @SuppressWarnings("ConstantConditions")
+    @Deprecated
     public static <E extends Enum<E>> E getNonNullEnum(@NonNull final Cursor c, @NonNull final String field,
                                                        final Class<E> clazz, @NonNull final E defValue) {
         return getEnum(c, field, clazz, defValue);
@@ -207,6 +217,7 @@ public final class CursorUtils {
     }
 
     @Nullable
+    @Contract("_, _, !null -> !null")
     public static Locale getLocale(@NonNull final Cursor c, @NonNull final String field,
                                    @Nullable final Locale defValue) {
         final String raw = getString(c, field, null);
@@ -219,10 +230,14 @@ public final class CursorUtils {
         return defValue;
     }
 
+    /**
+     * @deprecated Since 1.1.1, use {@link CursorUtils#getLocale(Cursor, String, Locale)} instead now that there is an
+     * IntelliJ Contract defined for it.
+     */
     @NonNull
+    @Deprecated
     public static Locale getNonNullLocale(@NonNull final Cursor c, @NonNull final String field,
                                           @NonNull final Locale defValue) {
-        final Locale val = getLocale(c, field, defValue);
-        return val != null ? val : defValue;
+        return getLocale(c, field, defValue);
     }
 }

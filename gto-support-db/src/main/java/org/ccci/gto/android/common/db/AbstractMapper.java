@@ -64,10 +64,15 @@ public abstract class AbstractMapper<T> implements Mapper<T> {
         return CursorUtils.getString(c, field, defValue);
     }
 
+    /**
+     * @deprecated Since 1.1.1, use {@link AbstractMapper#getString(Cursor, String, String)} instead now that there is
+     * an IntelliJ Contract defined for it.
+     */
     @NonNull
+    @Deprecated
     protected final String getNonNullString(@NonNull final Cursor c, @NonNull final String field,
                                             @NonNull final String defValue) {
-        return CursorUtils.getNonNullString(c, field, defValue);
+        return CursorUtils.getString(c, field, defValue);
     }
 
     @Nullable
@@ -131,10 +136,15 @@ public abstract class AbstractMapper<T> implements Mapper<T> {
         return CursorUtils.getLocale(c, field, defValue);
     }
 
+    /**
+     * @deprecated Since 1.1.1, use {@link AbstractMapper#getLocale(Cursor, String, Locale)} instead now that there is
+     * an IntelliJ Contract defined for it.
+     */
     @NonNull
+    @Deprecated
     protected final Locale getNonNullLocale(@NonNull final Cursor c, @NonNull final String field,
                                             @NonNull final Locale defValue) {
-        return CursorUtils.getNonNullLocale(c, field, defValue);
+        return CursorUtils.getLocale(c, field, defValue);
     }
 
     @Nullable
