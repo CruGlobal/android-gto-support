@@ -1,5 +1,6 @@
 package org.ccci.gto.android.common.picasso.view;
 
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
@@ -16,6 +17,7 @@ import com.squareup.picasso.Transformation;
 import java.io.File;
 import java.util.List;
 
+@SuppressLint("AppCompatCustomView")
 public class SimplePicassoImageView extends ImageView implements PicassoImageView {
     private boolean mInit = false;
     @NonNull
