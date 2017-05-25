@@ -3,7 +3,7 @@ package org.ccci.gto.android.common.util;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import org.ccci.gto.android.common.model.Dimension;
+import org.ccci.gto.android.common.base.model.Dimension;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;

@@ -15,7 +15,7 @@ import com.squareup.picasso.Picasso;
 import com.squareup.picasso.RequestCreator;
 import com.squareup.picasso.Transformation;
 
-import org.ccci.gto.android.common.model.Dimension;
+import org.ccci.gto.android.common.base.model.Dimension;
 import org.ccci.gto.android.common.picasso.R;
 import org.ccci.gto.android.common.picasso.ScaleTransformation;
 
