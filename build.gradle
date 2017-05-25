@@ -17,7 +17,7 @@ ext.deps = [
         crashlytics          : '2.6.7',
         facebookStetho       : '1.5.0',
         gson                 : '2.6.2',
-        guava                : '19.0',
+        guava                : '22.0-android',
         hamcrest             : '1.3',
         jsonUnit             : '1.15.0',
         junit                : '4.12',
