@@ -15,7 +15,7 @@ import com.squareup.picasso.Picasso;
 import com.squareup.picasso.RequestCreator;
 import com.squareup.picasso.Transformation;
 
-import org.ccci.gto.android.common.model.Dimension;
+import org.ccci.gto.android.common.base.model.Dimension;
 import org.ccci.gto.android.common.picasso.R;
 import org.ccci.gto.android.common.picasso.ScaleTransformation;
 
@@ -23,7 +23,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.ccci.gto.android.common.Constants.INVALID_DRAWABLE_RES;
+import static org.ccci.gto.android.common.base.Constants.INVALID_DRAWABLE_RES;
 
 public interface PicassoImageView {
     final class Helper {
