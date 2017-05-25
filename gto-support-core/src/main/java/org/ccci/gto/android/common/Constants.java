@@ -4,8 +4,16 @@ import android.support.annotation.DrawableRes;
 import android.support.annotation.StringRes;
 
 public final class Constants {
+    /**
+     * @deprecated Since 1.1.2, use {@link org.ccci.gto.android.common.base.Constants#INVALID_DRAWABLE_RES} instead.
+     */
+    @Deprecated
     @DrawableRes
-    public static final int INVALID_DRAWABLE_RES = 0;
+    public static final int INVALID_DRAWABLE_RES = org.ccci.gto.android.common.base.Constants.INVALID_DRAWABLE_RES;
+    /**
+     * @deprecated Since 1.1.2, use {@link org.ccci.gto.android.common.base.Constants#INVALID_STRING_RES} instead.
+     */
     @StringRes
-    public static final int INVALID_STRING_RES = 0;
+    @Deprecated
+    public static final int INVALID_STRING_RES = org.ccci.gto.android.common.base.Constants.INVALID_STRING_RES;
 }
