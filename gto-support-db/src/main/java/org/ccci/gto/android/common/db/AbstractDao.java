@@ -162,8 +162,8 @@ public abstract class AbstractDao {
     public static String[] bindValues(@NonNull final Object... raw) {
         final String[] values = new String[raw.length];
         for (int i = 0; i < raw.length; i++) {
-            if (raw[i] == null) {
-                throw new IllegalArgumentException("Bind Values cannot be null");
+            if (raw[i] instanceof String) {
+                values[i] = (String) raw[i];
             } else if (raw[i] instanceof Boolean) {
                 values[i] = ((Boolean) raw[i]) ? "1" : "0";
             } else if (raw[i] instanceof Date) {
@@ -171,6 +171,9 @@ public abstract class AbstractDao {
             } else if (raw[i] instanceof Locale) {
                 values[i] = LocaleCompat.toLanguageTag((Locale) raw[i]);
             } else {
+                if (raw[i] == null) {
+                    throw new IllegalArgumentException("Bind Values cannot be null");
+                }
                 values[i] = raw[i].toString();
             }
         }
