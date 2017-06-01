@@ -8,6 +8,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 
 import org.ccci.gto.android.common.util.LongSparseBooleanArray;
 import org.ccci.gto.android.sync.ThreadedSyncIntentService;
+import org.ccci.gto.android.sync.ThreadedSyncIntentService.SyncTask;
 
 public final class SwipeRefreshSyncHelper {
     private static final String EXTRA_ACTIVE_SYNCS = SwipeRefreshSyncHelper.class.getName() + ".ACTIVE_SYNCS";
@@ -46,6 +47,11 @@ public final class SwipeRefreshSyncHelper {
 
         // update refresh layout & state
         mRefreshLayout = layout;
+        updateState();
+    }
+
+    public void sync(@NonNull final SyncTask task) {
+        mActiveSyncIds.put(task.sync(), true);
         updateState();
     }
 
