@@ -74,6 +74,66 @@ public abstract class Expression implements Parcelable {
     }
 
     @NonNull
+    public final Binary lt(@NonNull final Number constant) {
+        return lt(constant(constant));
+    }
+
+    @NonNull
+    public final Binary lt(@NonNull final Object constant) {
+        return lt(constant(constant));
+    }
+
+    @NonNull
+    public final Binary lt(@NonNull final Expression expression) {
+        return binaryExpr(Binary.LT, expression);
+    }
+
+    @NonNull
+    public final Binary lte(@NonNull final Number constant) {
+        return lte(constant(constant));
+    }
+
+    @NonNull
+    public final Binary lte(@NonNull final Object constant) {
+        return lte(constant(constant));
+    }
+
+    @NonNull
+    public final Binary lte(@NonNull final Expression expression) {
+        return binaryExpr(Binary.LTE, expression);
+    }
+
+    @NonNull
+    public final Binary gt(@NonNull final Number constant) {
+        return gt(constant(constant));
+    }
+
+    @NonNull
+    public final Binary gt(@NonNull final Object constant) {
+        return gt(constant(constant));
+    }
+
+    @NonNull
+    public final Binary gt(@NonNull final Expression expression) {
+        return binaryExpr(Binary.GT, expression);
+    }
+
+    @NonNull
+    public final Binary gte(@NonNull final Number constant) {
+        return gte(constant(constant));
+    }
+
+    @NonNull
+    public final Binary gte(@NonNull final Object constant) {
+        return gte(constant(constant));
+    }
+
+    @NonNull
+    public final Binary gte(@NonNull final Expression expression) {
+        return binaryExpr(Binary.GTE, expression);
+    }
+
+    @NonNull
     public final Binary in(@NonNull final Expression... expressions) {
         return new Binary(Binary.IN, ArrayUtils.merge(Expression.class, new Expression[] {this}, expressions));
     }
@@ -526,14 +586,18 @@ public abstract class Expression implements Parcelable {
     }
 
     public static class Binary extends Expression {
-        static final String AND = "AND";
-        static final String OR = "OR";
-        static final String IS = "IS";
-        static final String ISNOT = "IS NOT";
+        static final String LT = "<";
+        static final String LTE = "<=";
+        static final String GT = ">";
+        static final String GTE = ">=";
         static final String EQ = "==";
         static final String NE = "!=";
+        static final String IS = "IS";
+        static final String ISNOT = "IS NOT";
         static final String IN = "IN";
         static final String NOTIN = "NOT IN";
+        static final String AND = "AND";
+        static final String OR = "OR";
 
         @NonNull
         private final String mOp;
