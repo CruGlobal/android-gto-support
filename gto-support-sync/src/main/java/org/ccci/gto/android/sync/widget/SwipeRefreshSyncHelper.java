@@ -21,7 +21,7 @@ public final class SwipeRefreshSyncHelper {
 
     /* BEGIN lifecycle */
 
-    protected final void onRestoreInstanceState(@Nullable final Bundle state) {
+    public final void onRestoreInstanceState(@Nullable final Bundle state) {
         if (state != null) {
             final LongSparseBooleanArray activeSyncs = state.getParcelable(EXTRA_ACTIVE_SYNCS);
             if (activeSyncs != null) {
