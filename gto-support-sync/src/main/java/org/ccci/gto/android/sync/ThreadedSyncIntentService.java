@@ -12,6 +12,8 @@ import org.ccci.gto.android.common.app.ThreadedIntentService;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
+import static org.ccci.gto.android.sync.ThreadedSyncIntentService.SyncTask.INITIAL_SYNC_ID;
+
 public abstract class ThreadedSyncIntentService extends ThreadedIntentService {
     static final String EXTRA_SYNCID = ThreadedSyncIntentService.class.getName() + ".EXTRA_SYNCID";
 
@@ -50,8 +52,18 @@ public abstract class ThreadedSyncIntentService extends ThreadedIntentService {
     @RestrictTo(RestrictTo.Scope.SUBCLASSES)
     protected void finishSync(final int syncId) {}
 
+    public static boolean isSyncRunning(final int syncId) {
+        if (syncId < INITIAL_SYNC_ID) {
+            return false;
+        }
+
+        synchronized (SYNCS_RUNNING) {
+            return SYNCS_RUNNING.get(syncId, false);
+        }
+    }
+
     public static final class SyncTask implements Runnable {
-        private static final int INITIAL_SYNC_ID = 1;
+        static final int INITIAL_SYNC_ID = 1;
         private static final AtomicInteger NEXT_SYNC_ID = new AtomicInteger(INITIAL_SYNC_ID);
 
         @NonNull
