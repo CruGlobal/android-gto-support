@@ -3,6 +3,7 @@ package org.ccci.gto.android.sync.widget;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.UiThread;
 import android.support.v4.widget.SwipeRefreshLayout;
 
 import org.ccci.gto.android.common.util.LongSparseBooleanArray;
@@ -36,11 +37,19 @@ public final class SwipeRefreshSyncHelper {
 
     /* END lifecycle */
 
+    @UiThread
     public void setRefreshLayout(@Nullable final SwipeRefreshLayout layout) {
+        // clear refreshing state on previously set SwipeRefreshLayout
+        if (mRefreshLayout != null && mRefreshLayout != layout) {
+            mRefreshLayout.setRefreshing(false);
+        }
+
+        // update refresh layout & state
         mRefreshLayout = layout;
         updateState();
     }
 
+    @UiThread
     public void updateState() {
         if (mRefreshLayout != null) {
             boolean refreshing = false;
