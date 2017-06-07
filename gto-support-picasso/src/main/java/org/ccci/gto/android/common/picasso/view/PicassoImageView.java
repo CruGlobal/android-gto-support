@@ -150,10 +150,10 @@ public interface PicassoImageView {
             }
         }
 
-        protected void onSetUpdateScale(@NonNull final RequestCreator update, final Dimension size) {
+        protected void onSetUpdateScale(@NonNull final RequestCreator update, @NonNull final Dimension size) {
             switch (mView.getScaleType()) {
                 case CENTER_CROP:
-                    update.resize(mSize.width, mSize.height);
+                    update.resize(size.width, size.height);
                     update.onlyScaleDown();
                     update.centerCrop();
                     break;
@@ -161,12 +161,12 @@ public interface PicassoImageView {
                 case FIT_CENTER:
                 case FIT_START:
                 case FIT_END:
-                    update.resize(mSize.width, mSize.height);
+                    update.resize(size.width, size.height);
                     update.onlyScaleDown();
                     update.centerInside();
                     break;
                 default:
-                    update.transform(new ScaleTransformation(mSize.width, mSize.height));
+                    update.transform(new ScaleTransformation(size.width, size.height));
                     break;
             }
         }
