@@ -26,9 +26,9 @@ import java.util.List;
 import static org.ccci.gto.android.common.base.Constants.INVALID_DRAWABLE_RES;
 
 public interface PicassoImageView {
-    final class Helper {
+    class Helper {
         @NonNull
-        private final ImageView mView;
+        protected final ImageView mView;
 
         @Nullable
         private Uri mPicassoUri;
@@ -60,49 +60,49 @@ public interface PicassoImageView {
             a.recycle();
         }
 
-        public void setPicassoUri(@Nullable final Uri uri) {
+        public final void setPicassoUri(@Nullable final Uri uri) {
             mPicassoFile = null;
             mPicassoUri = uri;
             triggerUpdate();
         }
 
-        public void setPicassoFile(@Nullable final File file) {
+        public final void setPicassoFile(@Nullable final File file) {
             mPicassoUri = null;
             mPicassoFile = file;
             triggerUpdate();
         }
 
-        public void setPlaceholder(@DrawableRes final int placeholder) {
+        public final void setPlaceholder(@DrawableRes final int placeholder) {
             mPlaceholder = null;
             mPlaceholderResId = placeholder;
             triggerUpdate();
         }
 
-        public void setPlaceholder(@Nullable final Drawable placeholder) {
+        public final void setPlaceholder(@Nullable final Drawable placeholder) {
             mPlaceholderResId = INVALID_DRAWABLE_RES;
             mPlaceholder = placeholder;
             triggerUpdate();
         }
 
-        public void addTransform(@NonNull final Transformation transformation) {
+        public final void addTransform(@NonNull final Transformation transformation) {
             mTransforms.add(transformation);
         }
 
-        public void setTransforms(@Nullable final List<? extends Transformation> transformations) {
+        public final void setTransforms(@Nullable final List<? extends Transformation> transformations) {
             mTransforms.clear();
             if (transformations != null) {
                 mTransforms.addAll(transformations);
             }
         }
 
-        public void onSizeChanged(int w, int h, int oldw, int oldh) {
+        public final void onSizeChanged(int w, int h, int oldw, int oldh) {
             if (oldw != w || oldh != h) {
                 mSize = new Dimension(w, h);
                 triggerUpdate();
             }
         }
 
-        public void setScaleType(final ScaleType type) {
+        public final void setScaleType(@NonNull final ScaleType type) {
             triggerUpdate();
         }
 
@@ -127,26 +127,11 @@ public interface PicassoImageView {
             } else {
                 update.placeholder(mPlaceholder);
             }
+
             if (mSize.width > 0 || mSize.height > 0) {
-                switch (mView.getScaleType()) {
-                    case CENTER_CROP:
-                        update.resize(mSize.width, mSize.height);
-                        update.onlyScaleDown();
-                        update.centerCrop();
-                        break;
-                    case CENTER_INSIDE:
-                    case FIT_CENTER:
-                    case FIT_START:
-                    case FIT_END:
-                        update.resize(mSize.width, mSize.height);
-                        update.onlyScaleDown();
-                        update.centerInside();
-                        break;
-                    default:
-                        update.transform(new ScaleTransformation(mSize.width, mSize.height));
-                        break;
-                }
+                onSetUpdateScale(update, mSize);
             }
+
             update.transform(mTransforms);
 
             // fetch or load based on the target size
@@ -154,6 +139,27 @@ public interface PicassoImageView {
                 update.into(mView);
             } else {
                 update.fetch();
+            }
+        }
+
+        protected void onSetUpdateScale(@NonNull final RequestCreator update, final Dimension size) {
+            switch (mView.getScaleType()) {
+                case CENTER_CROP:
+                    update.resize(mSize.width, mSize.height);
+                    update.onlyScaleDown();
+                    update.centerCrop();
+                    break;
+                case CENTER_INSIDE:
+                case FIT_CENTER:
+                case FIT_START:
+                case FIT_END:
+                    update.resize(mSize.width, mSize.height);
+                    update.onlyScaleDown();
+                    update.centerInside();
+                    break;
+                default:
+                    update.transform(new ScaleTransformation(mSize.width, mSize.height));
+                    break;
             }
         }
     }
