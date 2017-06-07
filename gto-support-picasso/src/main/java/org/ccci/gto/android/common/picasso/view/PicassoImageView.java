@@ -91,6 +91,7 @@ public interface PicassoImageView {
 
         public final void addTransform(@NonNull final Transformation transformation) {
             mTransforms.add(transformation);
+            triggerUpdate();
         }
 
         public final void setTransforms(@Nullable final List<? extends Transformation> transformations) {
@@ -98,6 +99,7 @@ public interface PicassoImageView {
             if (transformations != null) {
                 mTransforms.addAll(transformations);
             }
+            triggerUpdate();
         }
 
         public final void onSizeChanged(int w, int h, int oldw, int oldh) {
