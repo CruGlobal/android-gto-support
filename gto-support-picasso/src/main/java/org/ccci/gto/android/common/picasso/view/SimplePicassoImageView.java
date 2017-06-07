@@ -47,6 +47,12 @@ public class SimplePicassoImageView extends ImageView implements PicassoImageVie
         return new Helper(this, attrs, defStyleAttr, defStyleRes);
     }
 
+    @NonNull
+    @Override
+    public ImageView asImageView() {
+        return mHelper.asImageView();
+    }
+
     @Override
     public final void setPicassoFile(@Nullable final File file) {
         mHelper.setPicassoFile(file);

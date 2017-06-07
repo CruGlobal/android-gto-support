@@ -60,6 +60,11 @@ public interface PicassoImageView {
             a.recycle();
         }
 
+        @NonNull
+        public final ImageView asImageView() {
+            return mView;
+        }
+
         public final void setPicassoUri(@Nullable final Uri uri) {
             mPicassoFile = null;
             mPicassoUri = uri;
@@ -167,6 +172,12 @@ public interface PicassoImageView {
         }
     }
 
+    /**
+     * @return The ImageView this PicassoImageView represents.
+     */
+    @NonNull
+    ImageView asImageView();
+
     void setPicassoFile(@Nullable File file);
 
     void setPicassoUri(@Nullable Uri uri);
@@ -180,5 +191,6 @@ public interface PicassoImageView {
     void setTransforms(@Nullable List<? extends Transformation> transforms);
 
     /* Methods already present on View objects */
+    @NonNull
     Context getContext();
 }
