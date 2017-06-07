@@ -17,7 +17,7 @@ import com.squareup.picasso.Transformation;
 
 import org.ccci.gto.android.common.base.model.Dimension;
 import org.ccci.gto.android.common.picasso.R;
-import org.ccci.gto.android.common.picasso.ScaleTransformation;
+import org.ccci.gto.android.common.picasso.transformation.ScaleTransformation;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -26,9 +26,9 @@ import java.util.List;
 import static org.ccci.gto.android.common.base.Constants.INVALID_DRAWABLE_RES;
 
 public interface PicassoImageView {
-    final class Helper {
+    class Helper {
         @NonNull
-        private final ImageView mView;
+        protected final ImageView mView;
 
         @Nullable
         private Uri mPicassoUri;
@@ -60,66 +60,65 @@ public interface PicassoImageView {
             a.recycle();
         }
 
-        public void setPicassoUri(@Nullable final Uri uri) {
+        @NonNull
+        public final ImageView asImageView() {
+            return mView;
+        }
+
+        public final void setPicassoUri(@Nullable final Uri uri) {
             mPicassoFile = null;
             mPicassoUri = uri;
             triggerUpdate();
         }
 
-        public void setPicassoFile(@Nullable final File file) {
+        public final void setPicassoFile(@Nullable final File file) {
             mPicassoUri = null;
             mPicassoFile = file;
             triggerUpdate();
         }
 
-        public void setPlaceholder(@DrawableRes final int placeholder) {
+        public final void setPlaceholder(@DrawableRes final int placeholder) {
             mPlaceholder = null;
             mPlaceholderResId = placeholder;
             triggerUpdate();
         }
 
-        public void setPlaceholder(@Nullable final Drawable placeholder) {
+        public final void setPlaceholder(@Nullable final Drawable placeholder) {
             mPlaceholderResId = INVALID_DRAWABLE_RES;
             mPlaceholder = placeholder;
             triggerUpdate();
         }
 
-        public void addTransform(@NonNull final Transformation transformation) {
+        public final void addTransform(@NonNull final Transformation transformation) {
             mTransforms.add(transformation);
         }
 
-        public void setTransforms(@Nullable final List<? extends Transformation> transformations) {
+        public final void setTransforms(@Nullable final List<? extends Transformation> transformations) {
             mTransforms.clear();
             if (transformations != null) {
                 mTransforms.addAll(transformations);
             }
         }
 
-        public void onSizeChanged(int w, int h, int oldw, int oldh) {
+        public final void onSizeChanged(int w, int h, int oldw, int oldh) {
             if (oldw != w || oldh != h) {
                 mSize = new Dimension(w, h);
                 triggerUpdate();
             }
         }
 
-        public void setScaleType(final ScaleType type) {
+        public final void setScaleType(@NonNull final ScaleType type) {
             triggerUpdate();
         }
 
-        private void triggerUpdate() {
+        protected final void triggerUpdate() {
             // short-circuit if we are in edit mode within a development tool
             if (mView.isInEditMode()) {
                 return;
             }
 
             // create base request
-            final Picasso picasso = Picasso.with(mView.getContext());
-            final RequestCreator update;
-            if (mPicassoFile != null) {
-                update = picasso.load(mPicassoFile);
-            } else {
-                update = picasso.load(mPicassoUri);
-            }
+            final RequestCreator update = onCreateUpdate(Picasso.with(mView.getContext()));
 
             // set placeholder & any transform options
             if (mPlaceholderResId != INVALID_DRAWABLE_RES) {
@@ -127,23 +126,11 @@ public interface PicassoImageView {
             } else {
                 update.placeholder(mPlaceholder);
             }
+
             if (mSize.width > 0 || mSize.height > 0) {
-                switch (mView.getScaleType()) {
-                    case CENTER_CROP:
-                        update.resize(mSize.width, mSize.height);
-                        update.onlyScaleDown();
-                        update.centerCrop();
-                        break;
-                    case CENTER_INSIDE:
-                        update.resize(mSize.width, mSize.height);
-                        update.onlyScaleDown();
-                        update.centerInside();
-                        break;
-                    default:
-                        update.transform(new ScaleTransformation(mSize.width, mSize.height));
-                        break;
-                }
+                onSetUpdateScale(update, mSize);
             }
+
             update.transform(mTransforms);
 
             // fetch or load based on the target size
@@ -153,7 +140,43 @@ public interface PicassoImageView {
                 update.fetch();
             }
         }
+
+        @NonNull
+        protected RequestCreator onCreateUpdate(@NonNull final Picasso picasso) {
+            if (mPicassoFile != null) {
+                return picasso.load(mPicassoFile);
+            } else {
+                return picasso.load(mPicassoUri);
+            }
+        }
+
+        protected void onSetUpdateScale(@NonNull final RequestCreator update, @NonNull final Dimension size) {
+            switch (mView.getScaleType()) {
+                case CENTER_CROP:
+                    update.resize(size.width, size.height);
+                    update.onlyScaleDown();
+                    update.centerCrop();
+                    break;
+                case CENTER_INSIDE:
+                case FIT_CENTER:
+                case FIT_START:
+                case FIT_END:
+                    update.resize(size.width, size.height);
+                    update.onlyScaleDown();
+                    update.centerInside();
+                    break;
+                default:
+                    update.transform(new ScaleTransformation(size.width, size.height));
+                    break;
+            }
+        }
     }
+
+    /**
+     * @return The ImageView this PicassoImageView represents.
+     */
+    @NonNull
+    ImageView asImageView();
 
     void setPicassoFile(@Nullable File file);
 
@@ -168,5 +191,6 @@ public interface PicassoImageView {
     void setTransforms(@Nullable List<? extends Transformation> transforms);
 
     /* Methods already present on View objects */
+    @NonNull
     Context getContext();
 }

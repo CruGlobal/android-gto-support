@@ -19,9 +19,7 @@ import java.util.List;
 
 @SuppressLint("AppCompatCustomView")
 public class SimplePicassoImageView extends ImageView implements PicassoImageView {
-    private boolean mInit = false;
-    @NonNull
-    private final Helper mHelper;
+    protected final Helper mHelper;
 
     public SimplePicassoImageView(@NonNull final Context context) {
         this(context, null);
@@ -34,16 +32,25 @@ public class SimplePicassoImageView extends ImageView implements PicassoImageVie
     public SimplePicassoImageView(@NonNull final Context context, @Nullable final AttributeSet attrs,
                                   final int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        mHelper = new Helper(this, attrs, defStyleAttr, 0);
-        mInit = true;
+        mHelper = createHelper(attrs, defStyleAttr, 0);
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public SimplePicassoImageView(@NonNull final Context context, @Nullable final AttributeSet attrs,
                                   final int defStyleAttr, final int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
-        mHelper = new Helper(this, attrs, defStyleAttr, defStyleRes);
-        mInit = true;
+        mHelper = createHelper(attrs, defStyleAttr, defStyleRes);
+    }
+
+    @NonNull
+    protected Helper createHelper(@Nullable final AttributeSet attrs, final int defStyleAttr, final int defStyleRes) {
+        return new Helper(this, attrs, defStyleAttr, defStyleRes);
+    }
+
+    @NonNull
+    @Override
+    public ImageView asImageView() {
+        return mHelper.asImageView();
     }
 
     @Override
@@ -83,9 +90,9 @@ public class SimplePicassoImageView extends ImageView implements PicassoImageVie
     }
 
     @Override
-    public void setScaleType(ScaleType scaleType) {
+    public void setScaleType(@NonNull final ScaleType scaleType) {
         super.setScaleType(scaleType);
-        if (mInit) {
+        if (mHelper != null) {
             mHelper.setScaleType(scaleType);
         }
     }
