@@ -113,13 +113,7 @@ public interface PicassoImageView {
             }
 
             // create base request
-            final Picasso picasso = Picasso.with(mView.getContext());
-            final RequestCreator update;
-            if (mPicassoFile != null) {
-                update = picasso.load(mPicassoFile);
-            } else {
-                update = picasso.load(mPicassoUri);
-            }
+            final RequestCreator update = onCreateUpdate(Picasso.with(mView.getContext()));
 
             // set placeholder & any transform options
             if (mPlaceholderResId != INVALID_DRAWABLE_RES) {
@@ -139,6 +133,15 @@ public interface PicassoImageView {
                 update.into(mView);
             } else {
                 update.fetch();
+            }
+        }
+
+        @NonNull
+        protected RequestCreator onCreateUpdate(@NonNull final Picasso picasso) {
+            if (mPicassoFile != null) {
+                return picasso.load(mPicassoFile);
+            } else {
+                return picasso.load(mPicassoUri);
             }
         }
 
