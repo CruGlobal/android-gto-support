@@ -16,9 +16,13 @@ public class ScaleTransformation implements Transformation {
     private transient String mKey;
 
     public ScaleTransformation(final int minWidth, final int minHeight) {
+        this(minWidth, minHeight, true);
+    }
+
+    public ScaleTransformation(final int minWidth, final int minHeight, final boolean onlyScaleDown) {
         mMinWidth = minWidth;
         mMinHeight = minHeight;
-        mOnlyScaleDown = true;
+        mOnlyScaleDown = onlyScaleDown;
     }
 
     @NonNull
