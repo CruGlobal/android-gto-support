@@ -135,6 +135,9 @@ public interface PicassoImageView {
                         update.centerCrop();
                         break;
                     case CENTER_INSIDE:
+                    case FIT_CENTER:
+                    case FIT_START:
+                    case FIT_END:
                         update.resize(mSize.width, mSize.height);
                         update.onlyScaleDown();
                         update.centerInside();
