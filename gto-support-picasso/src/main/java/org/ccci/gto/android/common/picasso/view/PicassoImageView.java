@@ -111,7 +111,7 @@ public interface PicassoImageView {
             triggerUpdate();
         }
 
-        private void triggerUpdate() {
+        protected final void triggerUpdate() {
             // short-circuit if we are in edit mode within a development tool
             if (mView.isInEditMode()) {
                 return;
