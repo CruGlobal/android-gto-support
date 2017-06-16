@@ -16,6 +16,7 @@ import com.squareup.picasso.RequestCreator;
 import com.squareup.picasso.Transformation;
 
 import org.ccci.gto.android.common.base.model.Dimension;
+import org.ccci.gto.android.common.compat.util.ObjectsCompat;
 import org.ccci.gto.android.common.picasso.R;
 import org.ccci.gto.android.common.picasso.transformation.ScaleTransformation;
 
@@ -66,15 +67,21 @@ public interface PicassoImageView {
         }
 
         public final void setPicassoUri(@Nullable final Uri uri) {
+            final boolean changing = mPicassoFile != null || !ObjectsCompat.equals(uri, mPicassoUri);
             mPicassoFile = null;
             mPicassoUri = uri;
-            triggerUpdate();
+            if (changing) {
+                triggerUpdate();
+            }
         }
 
         public final void setPicassoFile(@Nullable final File file) {
+            final boolean changing = mPicassoUri != null || !ObjectsCompat.equals(file, mPicassoFile);
             mPicassoUri = null;
             mPicassoFile = file;
-            triggerUpdate();
+            if (changing) {
+                triggerUpdate();
+            }
         }
 
         public final void setPlaceholder(@DrawableRes final int placeholder) {
