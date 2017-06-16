@@ -60,7 +60,7 @@ subprojects {
                 minSdkVersion 9
                 targetSdkVersion 25
 
-                consumerProguardFiles "$rootProject.projectDir/proguard-rules.txt"
+                consumerProguardFiles "$rootProject.projectDir/proguard-consumer-jetbrains.pro"
 
                 testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
             }
