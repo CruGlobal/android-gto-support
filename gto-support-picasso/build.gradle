@@ -6,6 +6,7 @@ android {
 
 dependencies {
     compile project(':gto-support-base')
+    compile project(':gto-support-compat')
 
     compile "com.squareup.picasso:picasso:${deps.picasso}"
 
