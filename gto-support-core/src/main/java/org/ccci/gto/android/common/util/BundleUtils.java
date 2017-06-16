@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import org.ccci.gto.android.common.compat.util.LocaleCompat;
+import org.jetbrains.annotations.Contract;
 
 import java.lang.reflect.Array;
 import java.util.Locale;
@@ -39,6 +40,7 @@ public class BundleUtils {
     }
 
     @Nullable
+    @Contract("_, _, _, !null -> !null")
     public static <T extends Enum<T>> T getEnum(@NonNull final Bundle bundle, @NonNull final Class<T> type,
                                                 @Nullable final String key, @Nullable final T defValue) {
         final String raw = bundle.getString(key);
@@ -64,6 +66,7 @@ public class BundleUtils {
     }
 
     @Nullable
+    @Contract("_, _, !null -> !null")
     public static Locale getLocale(@NonNull final Bundle bundle, @Nullable final String key,
                                    @Nullable final Locale defValue) {
         final String raw = bundle.getString(key);
