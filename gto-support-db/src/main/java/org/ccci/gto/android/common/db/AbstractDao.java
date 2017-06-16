@@ -4,7 +4,6 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.WorkerThread;
@@ -103,46 +102,11 @@ public abstract class AbstractDao {
 
     @NonNull
     protected Expression getPrimaryKeyWhere(@NonNull final Class<?> clazz, @NonNull final Object... key) {
-        try {
-            return getPrimaryKeyWhere(clazz).args(key);
-        } catch (final IllegalArgumentException e) {
-            // try fallback to legacy getPrimaryKeyWhereRaw() method
-            try {
-                final Pair<String, String[]> raw = getPrimaryKeyWhereRaw(clazz, key);
-                return Expression.raw(raw.first, raw.second);
-            } catch (final Throwable e2) {
-                // add this as a suppressed exception in case it has additional information
-                if (Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT) {
-                    e.addSuppressed(e2);
-                }
-                throw e;
-            }
-        }
+        return getPrimaryKeyWhere(clazz).args(key);
     }
 
     @NonNull
     protected Expression getPrimaryKeyWhere(@NonNull final Object obj) {
-        // fallback to legacy getPrimaryKeyWhereRaw() method
-        final Pair<String, String[]> raw = getPrimaryKeyWhereRaw(obj);
-        return Expression.raw(raw.first, raw.second);
-    }
-
-    /**
-     * @deprecated Since v0.8.0, override {@link AbstractDao#getPrimaryKeyWhere(Class)} instead.
-     */
-    @NonNull
-    @Deprecated
-    protected Pair<String, String[]> getPrimaryKeyWhereRaw(@NonNull final Class<?> clazz,
-                                                           @NonNull final Object... key) {
-        throw new IllegalArgumentException("invalid class specified: " + clazz.getName());
-    }
-
-    /**
-     * @deprecated Since v0.8.0, override {@link AbstractDao#getPrimaryKeyWhere(Object)} instead.
-     */
-    @NonNull
-    @Deprecated
-    protected Pair<String, String[]> getPrimaryKeyWhereRaw(@NonNull final Object obj) {
         throw new IllegalArgumentException("unsupported object: " + obj.getClass());
     }
 
