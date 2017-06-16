@@ -3,6 +3,7 @@ package org.ccci.gto.android.common.compat.util;
 import android.annotation.TargetApi;
 import android.os.Build;
 import android.support.annotation.NonNull;
+import android.support.annotation.RestrictTo;
 import android.support.annotation.VisibleForTesting;
 
 import java.util.Collections;
@@ -58,7 +59,7 @@ public class LocaleCompat {
         Locale[] getFallbacks(@NonNull Locale locale);
     }
 
-    @VisibleForTesting
+    @RestrictTo({RestrictTo.Scope.LIBRARY})
     static class FroyoCompat implements Compat {
         @NonNull
         @Override
@@ -109,7 +110,7 @@ public class LocaleCompat {
         }
     }
 
-    @VisibleForTesting
+    @RestrictTo({RestrictTo.Scope.LIBRARY})
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     static final class LollipopCompat extends FroyoCompat {
         @NonNull
