@@ -13,7 +13,7 @@ buildscript {
 // define dependency versions for this project
 ext.deps = [
         advrecyclerview      : '0.10.5',
-        androidSupport       : '25.3.1',
+        androidSupport       : '25.4.0',
         androidTestingSupport: '0.5',
         crashlytics          : '2.6.8',
         facebookStetho       : '1.5.0',
