@@ -1,3 +1,5 @@
 dependencies {
     compile "com.android.support:design:${deps.androidSupport}"
+
+    provided "com.crashlytics.sdk.android:crashlytics:${deps.crashlytics}"
 }
