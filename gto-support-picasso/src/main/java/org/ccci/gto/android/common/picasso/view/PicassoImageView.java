@@ -70,6 +70,7 @@ public interface PicassoImageView {
             return mView;
         }
 
+        @UiThread
         public final void setPicassoUri(@Nullable final Uri uri) {
             final boolean changing = mPicassoFile != null || !ObjectsCompat.equals(uri, mPicassoUri);
             mPicassoFile = null;
@@ -79,6 +80,7 @@ public interface PicassoImageView {
             }
         }
 
+        @UiThread
         public final void setPicassoFile(@Nullable final File file) {
             final boolean changing = mPicassoUri != null || !ObjectsCompat.equals(file, mPicassoFile);
             mPicassoUri = null;
@@ -88,6 +90,7 @@ public interface PicassoImageView {
             }
         }
 
+        @UiThread
         public final void setPlaceholder(@DrawableRes final int placeholder) {
             final boolean changing = mPlaceholder != null || mPlaceholderResId != placeholder;
             mPlaceholder = null;
@@ -97,6 +100,7 @@ public interface PicassoImageView {
             }
         }
 
+        @UiThread
         public final void setPlaceholder(@Nullable final Drawable placeholder) {
             final boolean changing = mPlaceholderResId != INVALID_DRAWABLE_RES || placeholder != mPlaceholder;
             mPlaceholderResId = INVALID_DRAWABLE_RES;
@@ -106,11 +110,13 @@ public interface PicassoImageView {
             }
         }
 
+        @UiThread
         public final void addTransform(@NonNull final Transformation transformation) {
             mTransforms.add(transformation);
             triggerUpdate();
         }
 
+        @UiThread
         public final void setTransforms(@Nullable final List<? extends Transformation> transformations) {
             mTransforms.clear();
             if (transformations != null) {
@@ -119,6 +125,7 @@ public interface PicassoImageView {
             triggerUpdate();
         }
 
+        @UiThread
         public final void onSizeChanged(int w, int h, int oldw, int oldh) {
             if (oldw != w || oldh != h) {
                 mSize = new Dimension(w, h);
@@ -126,6 +133,7 @@ public interface PicassoImageView {
             }
         }
 
+        @UiThread
         public final void setScaleType(@NonNull final ScaleType type) {
             triggerUpdate();
         }
@@ -186,6 +194,7 @@ public interface PicassoImageView {
         }
 
         @NonNull
+        @UiThread
         protected RequestCreator onCreateUpdate(@NonNull final Picasso picasso) {
             if (mPicassoFile != null) {
                 return picasso.load(mPicassoFile);
@@ -194,6 +203,7 @@ public interface PicassoImageView {
             }
         }
 
+        @UiThread
         protected void onSetUpdateScale(@NonNull final RequestCreator update, @NonNull final Dimension size) {
             switch (mView.getScaleType()) {
                 case CENTER_CROP:
@@ -222,18 +232,25 @@ public interface PicassoImageView {
     @NonNull
     ImageView asImageView();
 
+    @UiThread
     void setPicassoFile(@Nullable File file);
 
+    @UiThread
     void setPicassoUri(@Nullable Uri uri);
 
+    @UiThread
     void setPlaceholder(@DrawableRes int placeholder);
 
+    @UiThread
     void setPlaceholder(@Nullable Drawable placeholder);
 
+    @UiThread
     void addTransform(@NonNull Transformation transform);
 
+    @UiThread
     void setTransforms(@Nullable List<? extends Transformation> transforms);
 
+    @UiThread
     void toggleBatchUpdates(boolean enable);
 
     /* Methods already present on View objects */
