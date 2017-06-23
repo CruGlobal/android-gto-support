@@ -85,15 +85,21 @@ public interface PicassoImageView {
         }
 
         public final void setPlaceholder(@DrawableRes final int placeholder) {
+            final boolean changing = mPlaceholder != null || mPlaceholderResId != placeholder;
             mPlaceholder = null;
             mPlaceholderResId = placeholder;
-            triggerUpdate();
+            if (changing) {
+                triggerUpdate();
+            }
         }
 
         public final void setPlaceholder(@Nullable final Drawable placeholder) {
+            final boolean changing = mPlaceholderResId != INVALID_DRAWABLE_RES || placeholder != mPlaceholder;
             mPlaceholderResId = INVALID_DRAWABLE_RES;
             mPlaceholder = placeholder;
-            triggerUpdate();
+            if (changing) {
+                triggerUpdate();
+            }
         }
 
         public final void addTransform(@NonNull final Transformation transformation) {
