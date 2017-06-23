@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.UiThread;
 import android.util.AttributeSet;
 import android.widget.ImageView;
 import android.widget.ImageView.ScaleType;
@@ -43,6 +44,9 @@ public interface PicassoImageView {
         private Drawable mPlaceholder = null;
         private final ArrayList<Transformation> mTransforms = new ArrayList<>();
 
+        private int mBatching = 0;
+        private boolean mNeedsUpdate = false;
+
         public Helper(@NonNull final ImageView view) {
             this(view, null, 0, 0);
         }
@@ -66,6 +70,7 @@ public interface PicassoImageView {
             return mView;
         }
 
+        @UiThread
         public final void setPicassoUri(@Nullable final Uri uri) {
             final boolean changing = mPicassoFile != null || !ObjectsCompat.equals(uri, mPicassoUri);
             mPicassoFile = null;
@@ -75,6 +80,7 @@ public interface PicassoImageView {
             }
         }
 
+        @UiThread
         public final void setPicassoFile(@Nullable final File file) {
             final boolean changing = mPicassoUri != null || !ObjectsCompat.equals(file, mPicassoFile);
             mPicassoUri = null;
@@ -84,23 +90,33 @@ public interface PicassoImageView {
             }
         }
 
+        @UiThread
         public final void setPlaceholder(@DrawableRes final int placeholder) {
+            final boolean changing = mPlaceholder != null || mPlaceholderResId != placeholder;
             mPlaceholder = null;
             mPlaceholderResId = placeholder;
-            triggerUpdate();
+            if (changing) {
+                triggerUpdate();
+            }
         }
 
+        @UiThread
         public final void setPlaceholder(@Nullable final Drawable placeholder) {
+            final boolean changing = mPlaceholderResId != INVALID_DRAWABLE_RES || placeholder != mPlaceholder;
             mPlaceholderResId = INVALID_DRAWABLE_RES;
             mPlaceholder = placeholder;
-            triggerUpdate();
+            if (changing) {
+                triggerUpdate();
+            }
         }
 
+        @UiThread
         public final void addTransform(@NonNull final Transformation transformation) {
             mTransforms.add(transformation);
             triggerUpdate();
         }
 
+        @UiThread
         public final void setTransforms(@Nullable final List<? extends Transformation> transformations) {
             mTransforms.clear();
             if (transformations != null) {
@@ -109,6 +125,7 @@ public interface PicassoImageView {
             triggerUpdate();
         }
 
+        @UiThread
         public final void onSizeChanged(int w, int h, int oldw, int oldh) {
             if (oldw != w || oldh != h) {
                 mSize = new Dimension(w, h);
@@ -116,13 +133,36 @@ public interface PicassoImageView {
             }
         }
 
+        @UiThread
         public final void setScaleType(@NonNull final ScaleType type) {
             triggerUpdate();
         }
 
+        @UiThread
+        public final void toggleBatchUpdates(final boolean enable) {
+            if (enable) {
+                mBatching++;
+            } else {
+                mBatching--;
+                if (mBatching <= 0) {
+                    mBatching = 0;
+                    if (mNeedsUpdate) {
+                        triggerUpdate();
+                    }
+                }
+            }
+        }
+
+        @UiThread
         protected final void triggerUpdate() {
             // short-circuit if we are in edit mode within a development tool
             if (mView.isInEditMode()) {
+                return;
+            }
+
+            // if we are batching updates, track that we need an update, but don't trigger the update now
+            if (mBatching > 0) {
+                mNeedsUpdate = true;
                 return;
             }
 
@@ -148,9 +188,13 @@ public interface PicassoImageView {
             } else {
                 update.fetch();
             }
+
+            // clear the needs update flag
+            mNeedsUpdate = false;
         }
 
         @NonNull
+        @UiThread
         protected RequestCreator onCreateUpdate(@NonNull final Picasso picasso) {
             if (mPicassoFile != null) {
                 return picasso.load(mPicassoFile);
@@ -159,6 +203,7 @@ public interface PicassoImageView {
             }
         }
 
+        @UiThread
         protected void onSetUpdateScale(@NonNull final RequestCreator update, @NonNull final Dimension size) {
             switch (mView.getScaleType()) {
                 case CENTER_CROP:
@@ -187,17 +232,26 @@ public interface PicassoImageView {
     @NonNull
     ImageView asImageView();
 
+    @UiThread
     void setPicassoFile(@Nullable File file);
 
+    @UiThread
     void setPicassoUri(@Nullable Uri uri);
 
+    @UiThread
     void setPlaceholder(@DrawableRes int placeholder);
 
+    @UiThread
     void setPlaceholder(@Nullable Drawable placeholder);
 
+    @UiThread
     void addTransform(@NonNull Transformation transform);
 
+    @UiThread
     void setTransforms(@Nullable List<? extends Transformation> transforms);
+
+    @UiThread
+    void toggleBatchUpdates(boolean enable);
 
     /* Methods already present on View objects */
     @NonNull
