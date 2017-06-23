@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.UiThread;
 import android.util.AttributeSet;
 import android.widget.ImageView;
 import android.widget.ImageView.ScaleType;
@@ -42,6 +43,9 @@ public interface PicassoImageView {
         @Nullable
         private Drawable mPlaceholder = null;
         private final ArrayList<Transformation> mTransforms = new ArrayList<>();
+
+        private int mBatching = 0;
+        private boolean mNeedsUpdate = false;
 
         public Helper(@NonNull final ImageView view) {
             this(view, null, 0, 0);
@@ -126,9 +130,31 @@ public interface PicassoImageView {
             triggerUpdate();
         }
 
+        @UiThread
+        public final void toggleBatchUpdates(final boolean enable) {
+            if (enable) {
+                mBatching++;
+            } else {
+                mBatching--;
+                if (mBatching <= 0) {
+                    mBatching = 0;
+                    if (mNeedsUpdate) {
+                        triggerUpdate();
+                    }
+                }
+            }
+        }
+
+        @UiThread
         protected final void triggerUpdate() {
             // short-circuit if we are in edit mode within a development tool
             if (mView.isInEditMode()) {
+                return;
+            }
+
+            // if we are batching updates, track that we need an update, but don't trigger the update now
+            if (mBatching > 0) {
+                mNeedsUpdate = true;
                 return;
             }
 
@@ -154,6 +180,9 @@ public interface PicassoImageView {
             } else {
                 update.fetch();
             }
+
+            // clear the needs update flag
+            mNeedsUpdate = false;
         }
 
         @NonNull
@@ -204,6 +233,8 @@ public interface PicassoImageView {
     void addTransform(@NonNull Transformation transform);
 
     void setTransforms(@Nullable List<? extends Transformation> transforms);
+
+    void toggleBatchUpdates(boolean enable);
 
     /* Methods already present on View objects */
     @NonNull

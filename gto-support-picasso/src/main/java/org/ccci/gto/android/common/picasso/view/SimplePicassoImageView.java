@@ -84,6 +84,11 @@ public class SimplePicassoImageView extends ImageView implements PicassoImageVie
     }
 
     @Override
+    public void toggleBatchUpdates(final boolean enable) {
+        mHelper.toggleBatchUpdates(enable);
+    }
+
+    @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
         mHelper.onSizeChanged(w, h, oldw, oldh);
