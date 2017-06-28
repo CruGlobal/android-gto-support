@@ -1,12 +1,17 @@
 package org.ccci.gto.android.common.support.v4.adapter;
 
+import android.os.Parcelable;
 import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.UiThread;
 import android.support.v4.view.PagerAdapter;
 import android.util.SparseArray;
 import android.view.View;
 import android.view.ViewGroup;
+
+import org.ccci.gto.android.common.util.ParcelableLongSparseArray;
+import org.ccci.gto.android.common.util.ParcelableSparseArray;
 
 import java.util.LinkedList;
 
@@ -19,6 +24,9 @@ public abstract class ViewHolderPagerAdapter<VH extends ViewHolderPagerAdapter.V
     private VH mCurrent;
 
     private boolean mHasStableIds = false;
+
+    @NonNull
+    private ParcelableLongSparseArray<Parcelable> mViewHolderSavedState = new ParcelableLongSparseArray<>();
 
     public void setHasStableIds(final boolean hasStableIds) {
         mHasStableIds = hasStableIds;
@@ -66,6 +74,14 @@ public abstract class ViewHolderPagerAdapter<VH extends ViewHolderPagerAdapter.V
         // bind ViewHolder
         onBindViewHolder(holder, position);
 
+        // restore state
+        if (hasStableIds()) {
+            final long id = getItemId(position);
+            if (id != NO_ID) {
+                holder.restoreState(mViewHolderSavedState.get(id));
+            }
+        }
+
         // return this ViewHolder
         return holder;
     }
@@ -104,6 +120,7 @@ public abstract class ViewHolderPagerAdapter<VH extends ViewHolderPagerAdapter.V
         super.notifyDataSetChanged();
     }
 
+    @UiThread
     @Override
     @SuppressWarnings("unchecked")
     public final void destroyItem(@NonNull final ViewGroup container, final int position,
@@ -113,6 +130,12 @@ public abstract class ViewHolderPagerAdapter<VH extends ViewHolderPagerAdapter.V
         // remove the view from the container
         container.removeView(holder.mView);
 
+        // save the view holder state
+        if (hasStableIds()) {
+            final long id = getItemId(position);
+            mViewHolderSavedState.put(id, id != NO_ID ? holder.saveState() : null);
+        }
+
         // recycle this ViewHolder
         mActive.delete(object.hashCode());
         onViewHolderRecycled(holder);
@@ -120,14 +143,17 @@ public abstract class ViewHolderPagerAdapter<VH extends ViewHolderPagerAdapter.V
     }
 
     @NonNull
+    @UiThread
     protected abstract VH onCreateViewHolder(@NonNull ViewGroup parent);
 
+    @UiThread
     @CallSuper
     protected void onBindViewHolder(@NonNull final VH holder, final int position) {
         holder.mId = getItemId(position);
         holder.mLastKnownPosition = position;
     }
 
+    @UiThread
     protected void onViewHolderRecycled(@NonNull final VH holder) {}
 
     public static class ViewHolder {
@@ -147,6 +173,19 @@ public abstract class ViewHolderPagerAdapter<VH extends ViewHolderPagerAdapter.V
 
         protected int getLastKnownPosition() {
             return mLastKnownPosition;
+        }
+
+        protected Parcelable saveState() {
+            final ParcelableSparseArray<Parcelable> state = new ParcelableSparseArray<>();
+            mView.saveHierarchyState(state);
+            return state;
+        }
+
+        protected void restoreState(@Nullable final Parcelable state) {
+            if (state instanceof ParcelableSparseArray) {
+                //noinspection unchecked
+                mView.restoreHierarchyState((ParcelableSparseArray) state);
+            }
         }
     }
 }
