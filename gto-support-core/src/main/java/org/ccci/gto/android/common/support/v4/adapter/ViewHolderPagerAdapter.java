@@ -1,10 +1,14 @@
 package org.ccci.gto.android.common.support.v4.adapter;
 
+import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.UiThread;
+import android.support.v4.os.ParcelableCompat;
+import android.support.v4.os.ParcelableCompatCreatorCallbacks;
+import android.support.v4.view.AbsSavedState;
 import android.support.v4.view.PagerAdapter;
 import android.util.SparseArray;
 import android.view.View;
@@ -142,6 +146,47 @@ public abstract class ViewHolderPagerAdapter<VH extends ViewHolderPagerAdapter.V
         mRecycled.add(holder);
     }
 
+    @Override
+    public Parcelable saveState() {
+        // update saved state for all active views
+        if (hasStableIds()) {
+            for (int i = 0; i < mActive.size(); i++) {
+                final VH holder = mActive.valueAt(i);
+                if (holder.mId != NO_ID) {
+                    mViewHolderSavedState.put(holder.mId, holder.saveState());
+                }
+            }
+        }
+
+        // generate the saved state
+        final SavedState state = new SavedState(super.saveState());
+        state.viewHolderSavedState = mViewHolderSavedState;
+        return state;
+    }
+
+    @Override
+    public void restoreState(@Nullable final Parcelable state, final ClassLoader loader) {
+        if (!(state instanceof SavedState)) {
+            super.restoreState(state, loader);
+            return;
+        }
+
+        final SavedState ss = (SavedState) state;
+        super.restoreState(ss.getSuperState(), loader);
+        mViewHolderSavedState =
+                ss.viewHolderSavedState != null ? ss.viewHolderSavedState : new ParcelableLongSparseArray<>();
+
+        // restore state to all active views
+        if (hasStableIds()) {
+            for (int i = 0; i < mActive.size(); i++) {
+                final VH holder = mActive.valueAt(i);
+                if (holder.mId != NO_ID) {
+                    holder.restoreState(mViewHolderSavedState.get(holder.mId));
+                }
+            }
+        }
+    }
+
     @NonNull
     @UiThread
     protected abstract VH onCreateViewHolder(@NonNull ViewGroup parent);
@@ -186,6 +231,42 @@ public abstract class ViewHolderPagerAdapter<VH extends ViewHolderPagerAdapter.V
                 //noinspection unchecked
                 mView.restoreHierarchyState((ParcelableSparseArray) state);
             }
+        }
+    }
+
+    private static class SavedState extends AbsSavedState {
+        @Nullable
+        ParcelableLongSparseArray<Parcelable> viewHolderSavedState;
+
+        public SavedState(@Nullable final Parcelable superState) {
+            super(superState != null ? superState : EMPTY_STATE);
+        }
+
+        @Override
+        public void writeToParcel(Parcel out, int flags) {
+            super.writeToParcel(out, flags);
+            out.writeParcelable(viewHolderSavedState, 0);
+        }
+
+        public static final Parcelable.Creator<SavedState> CREATOR = ParcelableCompat.newCreator(
+                new ParcelableCompatCreatorCallbacks<SavedState>() {
+                    @Override
+                    public SavedState createFromParcel(Parcel in, ClassLoader loader) {
+                        return new SavedState(in, loader);
+                    }
+
+                    @Override
+                    public SavedState[] newArray(int size) {
+                        return new SavedState[size];
+                    }
+                });
+
+        SavedState(Parcel in, ClassLoader loader) {
+            super(in, loader);
+            if (loader == null) {
+                loader = getClass().getClassLoader();
+            }
+            viewHolderSavedState = in.readParcelable(loader);
         }
     }
 }
