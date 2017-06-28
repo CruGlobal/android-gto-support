@@ -136,8 +136,7 @@ public abstract class ViewHolderPagerAdapter<VH extends ViewHolderPagerAdapter.V
 
         // save the view holder state
         if (hasStableIds()) {
-            final long id = getItemId(position);
-            mViewHolderSavedState.put(id, id != NO_ID ? holder.saveState() : null);
+            mViewHolderSavedState.put(holder.mId, holder.mId != NO_ID ? holder.saveState() : null);
         }
 
         // recycle this ViewHolder
@@ -199,7 +198,11 @@ public abstract class ViewHolderPagerAdapter<VH extends ViewHolderPagerAdapter.V
     }
 
     @UiThread
-    protected void onViewHolderRecycled(@NonNull final VH holder) {}
+    @CallSuper
+    protected void onViewHolderRecycled(@NonNull final VH holder) {
+        holder.mId = NO_ID;
+        holder.mLastKnownPosition = POSITION_NONE;
+    }
 
     public static class ViewHolder {
         long mId = NO_ID;
