@@ -234,11 +234,11 @@ public abstract class ViewHolderPagerAdapter<VH extends ViewHolderPagerAdapter.V
         }
     }
 
-    private static class SavedState extends AbsSavedState {
+    static class SavedState extends AbsSavedState {
         @Nullable
         ParcelableLongSparseArray<Parcelable> viewHolderSavedState;
 
-        public SavedState(@Nullable final Parcelable superState) {
+        SavedState(@Nullable final Parcelable superState) {
             super(superState != null ? superState : EMPTY_STATE);
         }
 
