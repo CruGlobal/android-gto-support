@@ -1,6 +1,23 @@
-include ':gto-support-api', ':gto-support-api-base', ':gto-support-api-okhttp3', ':gto-support-api-retrofit2',
-        ':gto-support-appcompat', ':gto-support-base', ':gto-support-compat', ':gto-support-core', ':gto-support-db',
-        ':gto-support-db-async', ':gto-support-db-stream', ':gto-support-design', ':gto-support-eventbus',
-        ':gto-support-gson', ':gto-support-jsonapi', ':gto-support-jsonapi-retrofit2', ':gto-support-leakcanary',
-        ':gto-support-picasso', ':gto-support-recyclerview', ':gto-support-recyclerview-advrecyclerview',
-        ':gto-support-stetho', ':gto-support-sync', ':gto-support-testing'
+include 'gto-support-api'
+include 'gto-support-api-base'
+include 'gto-support-api-okhttp3'
+include 'gto-support-api-retrofit2'
+include 'gto-support-appcompat'
+include 'gto-support-base'
+include 'gto-support-compat'
+include 'gto-support-core'
+include 'gto-support-db'
+include 'gto-support-db-async'
+include 'gto-support-db-stream'
+include 'gto-support-design'
+include 'gto-support-eventbus'
+include 'gto-support-gson'
+include 'gto-support-jsonapi'
+include 'gto-support-jsonapi-retrofit2'
+include 'gto-support-leakcanary'
+include 'gto-support-picasso'
+include 'gto-support-recyclerview'
+include 'gto-support-recyclerview-advrecyclerview'
+include 'gto-support-stetho'
+include 'gto-support-sync'
+include 'gto-support-testing'
