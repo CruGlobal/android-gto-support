@@ -75,4 +75,33 @@ public class BundleUtils {
         }
         return LocaleCompat.forLanguageTag(raw);
     }
+
+    public static void putLocaleArray(@NonNull final Bundle bundle, @Nullable final String key,
+                                      @Nullable final Locale[] locales) {
+        final String[] array;
+        if (locales != null) {
+            array = new String[locales.length];
+            for (int i = 0; i < locales.length; i++) {
+                array[i] = locales[i] != null ? LocaleCompat.toLanguageTag(locales[i]) : null;
+            }
+        } else {
+            array = null;
+        }
+        bundle.putStringArray(key, array);
+    }
+
+    @Nullable
+    public static Locale[] getLocaleArray(@NonNull final Bundle bundle, @Nullable final String key) {
+        final String[] raw = bundle.getStringArray(key);
+        final Locale[] locales;
+        if (raw != null) {
+            locales = new Locale[raw.length];
+            for (int i = 0; i < raw.length; i++) {
+                locales[i] = raw[i] != null ? LocaleCompat.forLanguageTag(raw[i]) : null;
+            }
+        } else {
+            locales = null;
+        }
+        return locales;
+    }
 }
