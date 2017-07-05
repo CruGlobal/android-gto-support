@@ -400,7 +400,7 @@ public abstract class Expression implements Parcelable {
         }
     }
 
-    public static class Field extends Expression {
+    public static final class Field extends Expression {
         @Nullable
         private final Table<?> mTable;
         @NonNull

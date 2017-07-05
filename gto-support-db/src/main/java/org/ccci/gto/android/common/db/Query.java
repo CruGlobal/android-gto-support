@@ -22,15 +22,15 @@ public final class Query<T> {
     @Nullable
     final String mOrderBy;
     @Nullable
-    final Expression mWhere;
+    private final Expression mWhere;
     @NonNull
     final Field[] mGroupBy;
     @Nullable
-    final Expression mHaving;
+    private final Expression mHaving;
     @Nullable
-    final Integer mLimit;
+    private final Integer mLimit;
     @Nullable
-    final Integer mOffset;
+    private final Integer mOffset;
 
     @SuppressWarnings({"unchecked", "checkstyle:parameternumber"})
     private Query(@NonNull final Table<T> table, final boolean distinct, @Nullable final Join<T, ?>[] joins,
@@ -113,7 +113,7 @@ public final class Query<T> {
     }
 
     @NonNull
-    public Query<T> groupBy(@NonNull final Field... groupBy) {
+    public Query<T> groupBy(@Nullable final Field... groupBy) {
         return new Query<>(mTable, mDistinct, mJoins, mProjection, mWhere, mOrderBy, groupBy, mHaving, mLimit, mOffset);
     }
 
