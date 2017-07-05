@@ -9,6 +9,7 @@ import android.support.annotation.WorkerThread;
 
 import org.ccci.gto.android.common.db.AbstractDao;
 import org.ccci.gto.android.common.db.Expression;
+import org.ccci.gto.android.common.db.Expression.Field;
 import org.ccci.gto.android.common.db.Join;
 import org.ccci.gto.android.common.db.Query;
 import org.ccci.gto.android.common.db.Table;
@@ -33,6 +34,10 @@ public class DaoCursorLoader<T> extends SimpleCursorLoader {
     private Join<T, ?>[] mJoins = Join.NO_JOINS;
     @Nullable
     private Expression mWhere;
+    @Nullable
+    private Field[] mGroupBy;
+    @Nullable
+    private Expression mHaving;
 
     public DaoCursorLoader(@NonNull final Context context, @NonNull final AbstractDao dao, @NonNull final Class<T> type,
                            @Nullable final Bundle args) {
@@ -66,8 +71,14 @@ public class DaoCursorLoader<T> extends SimpleCursorLoader {
     @WorkerThread
     protected final Cursor getCursor() {
         // build query
-        return mDao.getCursor(Query.select(mFrom).distinct(isDistinct()).joins(getJoins()).projection(getProjection())
-                                      .where(getWhere()).orderBy(getSortOrder()));
+        return mDao.getCursor(Query.select(mFrom)
+                                      .distinct(isDistinct())
+                                      .joins(getJoins())
+                                      .projection(getProjection())
+                                      .where(getWhere())
+                                      .groupBy(getGroupBy())
+                                      .having(getHaving())
+                                      .orderBy(getSortOrder()));
     }
 
     public void setDistinct(final boolean distinct) {
@@ -106,5 +117,23 @@ public class DaoCursorLoader<T> extends SimpleCursorLoader {
     @Nullable
     public Expression getWhere() {
         return mWhere;
+    }
+
+    @Nullable
+    public Field[] getGroupBy() {
+        return mGroupBy;
+    }
+
+    public void setGroupBy(@Nullable final Field... groupBy) {
+        mGroupBy = groupBy;
+    }
+
+    @Nullable
+    public Expression getHaving() {
+        return mHaving;
+    }
+
+    public void setHaving(@Nullable final Expression having) {
+        mHaving = having;
     }
 }
