@@ -10,4 +10,9 @@ public final class TabLayoutUtils {
         ViewCompat.setBackground(tab.mView, background);
         return tab;
     }
+
+    public static TabLayout.Tab setVisibility(@NonNull final TabLayout.Tab tab, final int visibility) {
+        tab.mView.setVisibility(visibility);
+        return tab;
+    }
 }
