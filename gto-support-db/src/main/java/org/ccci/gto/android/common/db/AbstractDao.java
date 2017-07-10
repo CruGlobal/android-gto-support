@@ -539,18 +539,16 @@ public abstract class AbstractDao {
 
     @WorkerThread
     public final void updateOrInsert(@NonNull final Object obj) {
-        this.updateOrInsert(obj, getFullProjection(obj.getClass()));
+        updateOrInsert(obj, getFullProjection(obj.getClass()));
     }
 
     @WorkerThread
     public final void updateOrInsert(@NonNull final Object obj, @NonNull final String... projection) {
-        final Expression where = this.getPrimaryKeyWhere(obj);
-
         final SQLiteDatabase db = mDbHelper.getWritableDatabase();
         final Transaction tx = newTransaction(db);
         try {
             tx.beginTransactionNonExclusive();
-            final Object existing = find(obj.getClass(), where);
+            final Object existing = refresh(obj);
             if (existing != null) {
                 update(obj, projection);
             } else {
