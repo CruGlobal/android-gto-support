@@ -3,6 +3,11 @@ package org.ccci.gto.android.common.support.v4.widget;
 import android.support.v4.widget.DrawerLayout;
 import android.view.View;
 
+/**
+ * @deprecated Since v1.1.2, use {@link DrawerLayout#addDrawerListener(DrawerLayout.DrawerListener)} to register
+ * multiple listeners.
+ */
+@Deprecated
 public final class MultiDrawerListener implements DrawerLayout.DrawerListener {
     private final DrawerLayout.DrawerListener[] listeners;
 
