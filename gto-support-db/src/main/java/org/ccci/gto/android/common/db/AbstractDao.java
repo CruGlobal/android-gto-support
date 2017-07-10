@@ -550,15 +550,21 @@ public abstract class AbstractDao {
 
     @WorkerThread
     public final void updateOrInsert(@NonNull final Object obj, @NonNull final String... projection) {
+        updateOrInsert(obj, CONFLICT_NONE, projection);
+    }
+
+    @WorkerThread
+    public final void updateOrInsert(@NonNull final Object obj, final int conflictAlgorithm,
+                                     @NonNull final String... projection) {
         final SQLiteDatabase db = mDbHelper.getWritableDatabase();
         final Transaction tx = newTransaction(db);
         try {
             tx.beginTransactionNonExclusive();
             final Object existing = refresh(obj);
             if (existing != null) {
-                update(obj, projection);
+                update(obj, conflictAlgorithm, projection);
             } else {
-                insert(obj);
+                insert(obj, conflictAlgorithm);
             }
             tx.setTransactionSuccessful();
         } finally {
