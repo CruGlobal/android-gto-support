@@ -305,14 +305,22 @@ public abstract class AbstractDao {
         return get(Query.select(clazz));
     }
 
+    /**
+     * @deprecated Since v1.1.2, use {@link AbstractDao#get(Query)} instead.
+     */
     @NonNull
+    @Deprecated
     @WorkerThread
     public final <T> List<T> get(@NonNull final Class<T> clazz, @Nullable final String whereClause,
                                  @Nullable final String[] whereBindValues) {
         return get(Query.select(clazz).where(whereClause, whereBindValues));
     }
 
+    /**
+     * @deprecated Since v1.1.2, use {@link AbstractDao#get(Query)} instead.
+     */
     @NonNull
+    @Deprecated
     @WorkerThread
     public final <T> List<T> get(@NonNull final Class<T> clazz, @Nullable final String whereClause,
                                  @Nullable final String[] whereBindValues, @Nullable final String orderBy) {
