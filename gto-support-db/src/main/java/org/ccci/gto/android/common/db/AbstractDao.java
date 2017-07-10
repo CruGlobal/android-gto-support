@@ -305,14 +305,22 @@ public abstract class AbstractDao {
         return get(Query.select(clazz));
     }
 
+    /**
+     * @deprecated Since v1.1.2, use {@link AbstractDao#get(Query)} instead.
+     */
     @NonNull
+    @Deprecated
     @WorkerThread
     public final <T> List<T> get(@NonNull final Class<T> clazz, @Nullable final String whereClause,
                                  @Nullable final String[] whereBindValues) {
         return get(Query.select(clazz).where(whereClause, whereBindValues));
     }
 
+    /**
+     * @deprecated Since v1.1.2, use {@link AbstractDao#get(Query)} instead.
+     */
     @NonNull
+    @Deprecated
     @WorkerThread
     public final <T> List<T> get(@NonNull final Class<T> clazz, @Nullable final String whereClause,
                                  @Nullable final String[] whereBindValues, @Nullable final String orderBy) {
@@ -418,10 +426,16 @@ public abstract class AbstractDao {
 
     @WorkerThread
     public final <T> int update(@NonNull final T obj, @NonNull final String... projection) {
+        return update(obj, CONFLICT_NONE, projection);
+    }
+
+    @WorkerThread
+    public final <T> int update(@NonNull final T obj, final int conflictAlgorithm,
+                                @NonNull final String... projection) {
         @SuppressWarnings("unchecked")
         final Class<T> type = (Class<T>) obj.getClass();
         final ContentValues values = getMapper(type).toContentValues(obj, projection);
-        return update(type, values, getPrimaryKeyWhere(obj));
+        return update(type, values, getPrimaryKeyWhere(obj), conflictAlgorithm);
     }
 
     /**
@@ -531,22 +545,26 @@ public abstract class AbstractDao {
 
     @WorkerThread
     public final void updateOrInsert(@NonNull final Object obj) {
-        this.updateOrInsert(obj, getFullProjection(obj.getClass()));
+        updateOrInsert(obj, getFullProjection(obj.getClass()));
     }
 
     @WorkerThread
     public final void updateOrInsert(@NonNull final Object obj, @NonNull final String... projection) {
-        final Expression where = this.getPrimaryKeyWhere(obj);
+        updateOrInsert(obj, CONFLICT_NONE, projection);
+    }
 
+    @WorkerThread
+    public final void updateOrInsert(@NonNull final Object obj, final int conflictAlgorithm,
+                                     @NonNull final String... projection) {
         final SQLiteDatabase db = mDbHelper.getWritableDatabase();
         final Transaction tx = newTransaction(db);
         try {
             tx.beginTransactionNonExclusive();
-            final Object existing = find(obj.getClass(), where);
+            final Object existing = refresh(obj);
             if (existing != null) {
-                update(obj, projection);
+                update(obj, conflictAlgorithm, projection);
             } else {
-                insert(obj);
+                insert(obj, conflictAlgorithm);
             }
             tx.setTransactionSuccessful();
         } finally {
