@@ -4,11 +4,14 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.Build;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.UiThread;
+import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
+import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 import android.widget.ImageView.ScaleType;
 
@@ -28,7 +31,7 @@ import java.util.List;
 import static org.ccci.gto.android.common.base.Constants.INVALID_DRAWABLE_RES;
 
 public interface PicassoImageView {
-    class Helper {
+    class Helper implements ViewTreeObserver.OnGlobalLayoutListener {
         @NonNull
         protected final ImageView mView;
 
@@ -138,6 +141,21 @@ public interface PicassoImageView {
             triggerUpdate();
         }
 
+        public final void onAttachedToWindow() {
+            mView.getViewTreeObserver().addOnGlobalLayoutListener(this);
+        }
+
+        @Override
+        public void onGlobalLayout() {
+            if (mNeedsUpdate) {
+                triggerUpdate();
+            }
+        }
+
+        public final void onDetachedFromWindow() {
+            mView.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+        }
+
         @UiThread
         public final void toggleBatchUpdates(final boolean enable) {
             if (enable) {
@@ -162,6 +180,14 @@ public interface PicassoImageView {
 
             // if we are batching updates, track that we need an update, but don't trigger the update now
             if (mBatching > 0) {
+                mNeedsUpdate = true;
+                return;
+            }
+
+            // if we are currently in a layout pass, track that we need an update once layout is complete
+            if (ViewCompat.isInLayout(mView) ||
+                    // attempt to detect if we are currently being laid out for older versions of android
+                    (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR2 && mView.isLayoutRequested())) {
                 mNeedsUpdate = true;
                 return;
             }
