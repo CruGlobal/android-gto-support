@@ -89,6 +89,22 @@ public class SimplePicassoImageView extends ImageView implements PicassoImageVie
     }
 
     @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        if (mHelper != null) {
+            mHelper.onAttachedToWindow();
+        }
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        if (mHelper != null) {
+            mHelper.onDetachedFromWindow();
+        }
+    }
+
+    @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
         mHelper.onSizeChanged(w, h, oldw, oldh);
