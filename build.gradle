@@ -2,6 +2,7 @@ buildscript {
     repositories {
         mavenLocal()
         jcenter()
+        maven { url 'https://maven.google.com' }
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:2.2.2'
@@ -41,6 +42,7 @@ subprojects {
                 password gcxMavenRepositoryPassword
             }
         }
+        maven { url 'https://maven.google.com' }
     }
 
     beforeEvaluate {
