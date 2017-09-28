@@ -9,4 +9,9 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface JsonApiAttribute {
     String name() default "";
+
+    /**
+     * When true, the field will indicate whether the deserialized object is a placeholder object only.
+     */
+    boolean placeholder() default false;
 }
