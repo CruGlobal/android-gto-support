@@ -13,6 +13,7 @@ env:
 branches:
   only:
     - master
+    - 1.0.x
 
 android:
   components:
