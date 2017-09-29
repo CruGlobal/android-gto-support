@@ -7,6 +7,7 @@ import android.support.v4.util.ArrayMap;
 import org.ccci.gto.android.common.jsonapi.annotation.JsonApiAttribute;
 import org.ccci.gto.android.common.jsonapi.annotation.JsonApiId;
 import org.ccci.gto.android.common.jsonapi.annotation.JsonApiIgnore;
+import org.ccci.gto.android.common.jsonapi.annotation.JsonApiPlaceholder;
 import org.ccci.gto.android.common.jsonapi.annotation.JsonApiType;
 import org.ccci.gto.android.common.jsonapi.converter.TypeConverter;
 import org.ccci.gto.android.common.jsonapi.model.JsonApiError;
@@ -76,6 +77,7 @@ public final class JsonApiConverter {
     private final Set<Class<?>> mSupportedClasses = new HashSet<>();
     private final Map<String, Class<?>> mTypes = new HashMap<>();
     private final Map<Class<?>, FieldInfo> mIdField = new HashMap<>();
+    private final Map<Class<?>, FieldInfo> mPlaceholderField = new HashMap<>();
     private final Map<Class<?>, List<FieldInfo>> mFields = new HashMap<>();
 
     JsonApiConverter(@NonNull final List<Class<?>> classes, @NonNull final List<TypeConverter<?>> converters) {
@@ -105,6 +107,18 @@ public final class JsonApiConverter {
                         throw new IllegalArgumentException("Class " + c + " has more than one @JsonApiId defined");
                     }
                     mIdField.put(c, field);
+                }
+                if (field.isPlaceholder()) {
+                    if (mPlaceholderField.containsKey(c)) {
+                        throw new IllegalArgumentException("Class " + c + " has more than one placeholder defined");
+                    }
+                    final Class<?> fieldType = field.getType();
+                    if (!Boolean.class.equals(fieldType) && !boolean.class.equals(fieldType)) {
+                        throw new IllegalArgumentException(
+                                "Class " + c + " has an unsupported placeholder field type " + fieldType);
+                    }
+                    mPlaceholderField.put(c, field);
+                    i.remove();
                 }
             }
             mFields.put(c, fields);
@@ -191,7 +205,7 @@ public final class JsonApiConverter {
         final JSONArray included = jsonObject.optJSONArray(JSON_INCLUDED);
         if (included != null) {
             //noinspection unchecked
-            resourcesFromJson(included, Object.class, Collection.class, objects);
+            resourcesFromJson(included, Object.class, Collection.class, false, objects);
         }
 
         final JsonApiObject<T> output;
@@ -213,12 +227,12 @@ public final class JsonApiConverter {
             if (dataArray != null) {
                 output = JsonApiObject.of();
                 //noinspection unchecked
-                output.setData(resourcesFromJson(dataArray, type, Collection.class, objects));
+                output.setData(resourcesFromJson(dataArray, type, Collection.class, false, objects));
             }
             // {data: null} or {data: {}}
             else {
                 output = JsonApiObject.single(null);
-                final T resource = resourceFromJson(jsonObject.optJSONObject(JSON_DATA), type, objects);
+                final T resource = resourceFromJson(jsonObject.optJSONObject(JSON_DATA), type, false, objects);
                 if (resource != null) {
                     output.setData(resource);
                 }
@@ -427,13 +441,13 @@ public final class JsonApiConverter {
 
     @NonNull
     private <E> E[] resourcesFromJson(@Nullable final JSONArray json, @NonNull final Class<E> type,
-                                      @NonNull final Map<ObjKey, Object> objects) {
+                                      final boolean placeholder, @NonNull final Map<ObjKey, Object> objects) {
         @SuppressWarnings("unchecked")
         final E[] array = (E[]) Array.newInstance(type, json != null ? json.length() : 0);
 
         if (json != null) {
             for (int i = 0; i < json.length(); i++) {
-                array[i] = resourceFromJson(json.optJSONObject(i), type, objects);
+                array[i] = resourceFromJson(json.optJSONObject(i), type, placeholder, objects);
             }
         }
 
@@ -444,6 +458,7 @@ public final class JsonApiConverter {
     private <E, T extends Collection<E>> T resourcesFromJson(@Nullable final JSONArray json,
                                                              @NonNull final Class<E> type,
                                                              @NonNull final Class<T> collectionType,
+                                                             final boolean placeholder,
                                                              @NonNull final Map<ObjKey, Object> objects) {
         // create new collection
         final T resources = newCollection(collectionType);
@@ -453,7 +468,7 @@ public final class JsonApiConverter {
 
         if (json != null) {
             for (int i = 0; i < json.length(); i++) {
-                resources.add(resourceFromJson(json.optJSONObject(i), type, objects));
+                resources.add(resourceFromJson(json.optJSONObject(i), type, placeholder, objects));
             }
         }
 
@@ -463,7 +478,7 @@ public final class JsonApiConverter {
     @Nullable
     @SuppressWarnings("checkstyle:RightCurly")
     private <E> E resourceFromJson(@Nullable final JSONObject json, @NonNull final Class<E> expectedType,
-                                   @NonNull final Map<ObjKey, Object> objects) {
+                                   final boolean placeholder, @NonNull final Map<ObjKey, Object> objects) {
         if (json == null) {
             return null;
         }
@@ -491,6 +506,12 @@ public final class JsonApiConverter {
                 if (key != null) {
                     objects.put(key, instance);
                 }
+
+                // mark the new object as a placeholder
+                final FieldInfo placeholderField = mPlaceholderField.get(type);
+                if (placeholderField != null) {
+                    placeholderField.mField.set(instance, true);
+                }
             } catch (final Exception e) {
                 return null;
             }
@@ -516,7 +537,8 @@ public final class JsonApiConverter {
                         final JSONObject related = relationships.optJSONObject(attrName);
                         if (related != null) {
                             field.mField.set(instance,
-                                             resourceFromJson(related.optJSONObject(JSON_DATA), fieldType, objects));
+                                             resourceFromJson(related.optJSONObject(JSON_DATA), fieldType, true,
+                                                              objects));
                         }
                     }
                 }
@@ -526,7 +548,7 @@ public final class JsonApiConverter {
                         final JSONObject related = relationships.optJSONObject(attrName);
                         if (related != null) {
                             field.mField.set(instance,
-                                             resourcesFromJson(related.optJSONArray(JSON_DATA), fieldArrayType,
+                                             resourcesFromJson(related.optJSONArray(JSON_DATA), fieldArrayType, true,
                                                                objects));
                         }
                     }
@@ -538,7 +560,7 @@ public final class JsonApiConverter {
                         if (related != null) {
                             field.mField.set(instance,
                                              resourcesFromJson(related.optJSONArray(JSON_DATA), fieldCollectionType,
-                                                               (Class<? extends Collection>) fieldType, objects));
+                                                               (Class<? extends Collection>) fieldType, true, objects));
                         }
                     }
                 }
@@ -549,6 +571,17 @@ public final class JsonApiConverter {
                     }
                 }
             } catch (final JSONException | IllegalAccessException ignored) {
+            }
+        }
+
+        // clear placeholder state if the full object was just instantiated
+        if (!placeholder) {
+            final FieldInfo placeholderField = mPlaceholderField.get(type);
+            if (placeholderField != null) {
+                try {
+                    placeholderField.mField.set(instance, false);
+                } catch (final IllegalAccessException ignored) {
+                }
             }
         }
 
@@ -793,6 +826,8 @@ public final class JsonApiConverter {
     static final class FieldInfo {
         @NonNull
         final Field mField;
+        @Nullable
+        private final JsonApiPlaceholder mPlaceholder;
 
         @Nullable
         private Class<?> mCollectionType;
@@ -806,6 +841,7 @@ public final class JsonApiConverter {
 
         FieldInfo(@NonNull final Field field) {
             mField = field;
+            mPlaceholder = mField.getAnnotation(JsonApiPlaceholder.class);
         }
 
         @NonNull
@@ -842,6 +878,10 @@ public final class JsonApiConverter {
             }
 
             return mIsId;
+        }
+
+        boolean isPlaceholder() {
+            return mPlaceholder != null;
         }
 
         @NonNull
