@@ -7,6 +7,7 @@ import android.support.v4.util.ArrayMap;
 import org.ccci.gto.android.common.jsonapi.annotation.JsonApiAttribute;
 import org.ccci.gto.android.common.jsonapi.annotation.JsonApiId;
 import org.ccci.gto.android.common.jsonapi.annotation.JsonApiIgnore;
+import org.ccci.gto.android.common.jsonapi.annotation.JsonApiPlaceholder;
 import org.ccci.gto.android.common.jsonapi.annotation.JsonApiType;
 import org.ccci.gto.android.common.jsonapi.converter.TypeConverter;
 import org.ccci.gto.android.common.jsonapi.model.JsonApiError;
@@ -107,7 +108,7 @@ public final class JsonApiConverter {
                     }
                     mIdField.put(c, field);
                 }
-                if (field.isPlaceholderMarker()) {
+                if (field.isPlaceholder()) {
                     if (mPlaceholderField.containsKey(c)) {
                         throw new IllegalArgumentException("Class " + c + " has more than one placeholder defined");
                     }
@@ -826,7 +827,7 @@ public final class JsonApiConverter {
         @NonNull
         final Field mField;
         @Nullable
-        private final JsonApiAttribute mAttrAnn;
+        private final JsonApiPlaceholder mPlaceholder;
 
         @Nullable
         private Class<?> mCollectionType;
@@ -840,7 +841,7 @@ public final class JsonApiConverter {
 
         FieldInfo(@NonNull final Field field) {
             mField = field;
-            mAttrAnn = mField.getAnnotation(JsonApiAttribute.class);
+            mPlaceholder = mField.getAnnotation(JsonApiPlaceholder.class);
         }
 
         @NonNull
@@ -879,14 +880,15 @@ public final class JsonApiConverter {
             return mIsId;
         }
 
-        boolean isPlaceholderMarker() {
-            return mAttrAnn != null && mAttrAnn.placeholder();
+        boolean isPlaceholder() {
+            return mPlaceholder != null;
         }
 
         @NonNull
         String getAttrName() {
             if (mAttrName == null) {
-                mAttrName = mAttrAnn != null && mAttrAnn.name().length() > 0 ? mAttrAnn.name() : mField.getName();
+                final JsonApiAttribute attr = mField.getAnnotation(JsonApiAttribute.class);
+                mAttrName = attr != null && attr.name().length() > 0 ? attr.name() : mField.getName();
             }
 
             return mAttrName;

@@ -3,7 +3,7 @@ package org.ccci.gto.android.common.jsonapi;
 import android.support.test.runner.AndroidJUnit4;
 
 import org.ccci.gto.android.common.jsonapi.JsonApiConverter.Options;
-import org.ccci.gto.android.common.jsonapi.annotation.JsonApiAttribute;
+import org.ccci.gto.android.common.jsonapi.annotation.JsonApiPlaceholder;
 import org.ccci.gto.android.common.jsonapi.annotation.JsonApiType;
 import org.ccci.gto.android.common.jsonapi.model.JsonApiObject;
 import org.ccci.gto.android.common.jsonapi.model.ModelBase;
@@ -223,7 +223,7 @@ public class JsonApiConverterRelatedIT {
     public static final class ModelParent extends ModelBase {
         static final String TYPE = "parent";
 
-        @JsonApiAttribute(placeholder = true)
+        @JsonApiPlaceholder
         boolean placeholder = false;
 
         List<ModelChild> children = new ArrayList<>();
@@ -238,7 +238,7 @@ public class JsonApiConverterRelatedIT {
     public static final class ModelChild extends ModelBase {
         static final String TYPE = "child";
 
-        @JsonApiAttribute(placeholder = true)
+        @JsonApiPlaceholder
         boolean placeholder = false;
 
         String name;
