@@ -11,6 +11,7 @@ import android.support.annotation.Nullable;
 import android.support.annotation.UiThread;
 import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
+import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 import android.widget.ImageView.ScaleType;
@@ -28,6 +29,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 import static org.ccci.gto.android.common.base.Constants.INVALID_DRAWABLE_RES;
 
 public interface PicassoImageView {
@@ -231,11 +233,31 @@ public interface PicassoImageView {
 
         @UiThread
         protected void onSetUpdateScale(@NonNull final RequestCreator update, @NonNull final Dimension size) {
+            // TODO: add some android integration tests for this behavior
+
+            // is the view layout set to wrap content? if so we should just resize and not crop the image
+            final ViewGroup.LayoutParams lp = mView.getLayoutParams();
+            if (lp.width == WRAP_CONTENT || lp.height == WRAP_CONTENT) {
+                if (lp.width == WRAP_CONTENT && lp.height == WRAP_CONTENT) {
+                    // Don't resize, let the view determine the size from the original image
+                } else if (lp.width == WRAP_CONTENT && size.height > 0) {
+                    update.resize(0, size.height).onlyScaleDown();
+                } else if (lp.height == WRAP_CONTENT && size.width > 0) {
+                    update.resize(size.width, 0).onlyScaleDown();
+                }
+                return;
+            }
+
+            // if we are planning on cropping the image when displaying it, lets crop it in Picasso first
             switch (mView.getScaleType()) {
                 case CENTER_CROP:
-                    update.resize(size.width, size.height);
-                    update.onlyScaleDown();
-                    update.centerCrop();
+                    // centerCrop crops the image to the exact size specified by resize. So, if a dimension is 0 we
+                    // can't crop the image anyways.
+                    if (size.width > 0 && size.height > 0) {
+                        update.resize(size.width, size.height);
+                        update.onlyScaleDown();
+                        update.centerCrop();
+                    }
                     break;
                 case CENTER_INSIDE:
                 case FIT_CENTER:
