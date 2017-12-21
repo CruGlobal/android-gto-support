@@ -2,6 +2,11 @@ android {
     defaultConfig {
         consumerProguardFiles 'proguard-consumer.pro'
     }
+
+    testVariants.all {
+        buildConfigField "String", "ACCOUNT_TYPE", '"' + applicationId + '.account"'
+        resValue "string", "account_type", applicationId + ".account"
+    }
 }
 
 dependencies {

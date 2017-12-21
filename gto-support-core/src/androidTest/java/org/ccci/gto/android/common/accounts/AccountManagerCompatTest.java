@@ -8,7 +8,7 @@ import org.junit.Test;
 
 import java.util.Arrays;
 
-import static org.ccci.gto.android.common.accounts.TestConstants.ACCOUNT_TYPE;
+import static org.ccci.gto.android.common.test.BuildConfig.ACCOUNT_TYPE;
 import static org.hamcrest.CoreMatchers.allOf;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.hasItems;
