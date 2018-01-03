@@ -7,6 +7,7 @@ import android.support.annotation.RestrictTo;
 import android.support.annotation.VisibleForTesting;
 
 import java.util.Collections;
+import java.util.IllformedLocaleException;
 import java.util.LinkedHashSet;
 import java.util.Locale;
 
@@ -132,9 +133,37 @@ public class LocaleCompat {
             final LinkedHashSet<Locale> locales = new LinkedHashSet<>();
             locales.add(locale);
 
-            // generate all fallback variants
+            // populate builder from provided locale
             final Locale.Builder builder = new Locale.Builder();
-            builder.setLocale(locale).clearExtensions();
+            try {
+                builder.setLocale(locale).clearExtensions();
+            } catch (final IllformedLocaleException e) {
+                /* HACK: There appears to be a bug on Huawei devices running Android 5.0-5.1.1 using Arabic locales.
+                         Setting the locale on the Locale Builder throws an IllformedLocaleException for "Invalid
+                         variant: LNum". To workaround this bug we manually set the locale components on the builder,
+                         skipping any invalid components
+                   see: https://gist.github.com/frett/034b8eba09cf815cbcd60f83b3f52eb4
+                */
+                builder.clear();
+                try {
+                    builder.setLanguage(locale.getLanguage());
+                } catch (final IllformedLocaleException ignored) {
+                }
+                try {
+                    builder.setRegion(locale.getCountry());
+                } catch (final IllformedLocaleException ignored) {
+                }
+                try {
+                    builder.setScript(locale.getScript());
+                } catch (final IllformedLocaleException ignored) {
+                }
+                try {
+                    builder.setVariant(locale.getVariant());
+                } catch (final IllformedLocaleException ignored) {
+                }
+            }
+
+            // generate all fallback variants
             locales.add(builder.setVariant(null).build());
             locales.add(builder.setScript(null).build());
             locales.add(builder.setRegion(null).build());
