@@ -147,16 +147,20 @@ public class LocaleCompat {
                 builder.clear();
                 try {
                     builder.setLanguage(locale.getLanguage());
-                } catch (final IllformedLocaleException ignored) {}
+                } catch (final IllformedLocaleException ignored) {
+                }
                 try {
                     builder.setRegion(locale.getCountry());
-                } catch (final IllformedLocaleException ignored) {}
+                } catch (final IllformedLocaleException ignored) {
+                }
                 try {
                     builder.setScript(locale.getScript());
-                } catch (final IllformedLocaleException ignored) {}
+                } catch (final IllformedLocaleException ignored) {
+                }
                 try {
                     builder.setVariant(locale.getVariant());
-                } catch (final IllformedLocaleException ignored) {}
+                } catch (final IllformedLocaleException ignored) {
+                }
             }
 
             // generate all fallback variants
