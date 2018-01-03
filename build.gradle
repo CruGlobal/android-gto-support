@@ -86,10 +86,10 @@ subprojects {
     // configure checkstyle
     apply plugin: 'checkstyle'
     checkstyle {
-        toolVersion '7.0'
+        toolVersion '7.8.2'
     }
     task checkstyle(type: Checkstyle) {
-        configFile rootProject.file('checkstyle.xml')
+        configFile rootProject.file('config/checkstyle/checkstyle.xml')
         source 'src'
         include '*/java/**/*.java'
         ignoreFailures false

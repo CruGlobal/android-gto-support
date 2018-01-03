@@ -184,7 +184,7 @@ public abstract class AbstractMapper<T> implements Mapper<T> {
     }
 
     @NonNull
-    protected abstract T newObject(@NonNull final Cursor c);
+    protected abstract T newObject(@NonNull Cursor c);
 
     @NonNull
     @Override
