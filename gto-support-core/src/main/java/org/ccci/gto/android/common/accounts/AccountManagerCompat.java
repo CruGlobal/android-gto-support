@@ -43,7 +43,7 @@ public class AccountManagerCompat {
 
     static class GingerbreadCompat implements Compat {
         @Override
-        @RequiresPermission(value = "android.permission.MANAGE_ACCOUNTS")
+        @RequiresPermission(value = "android.permission.MANAGE_ACCOUNTS", conditional = true)
         public AccountManagerFuture<Boolean> removeAccountExplicitly(@NonNull final AccountManager manager,
                                                                      @NonNull final Account account) {
             return manager.removeAccount(account, null, null);
