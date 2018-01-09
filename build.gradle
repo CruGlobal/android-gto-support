@@ -74,12 +74,12 @@ subprojects {
         }
 
         dependencies {
-            provided 'org.jetbrains:annotations:15.0'
-            compile 'com.android.support:support-annotations:' + deps.androidSupport
+            compileOnly 'org.jetbrains:annotations:15.0'
+            compileOnly "com.android.support:support-annotations:${deps.androidSupport}"
 
-            androidTestCompile 'com.android.support.test:runner:' + deps.androidTestingSupport
-            androidTestCompile 'com.android.support.test:rules:' + deps.androidTestingSupport
-            androidTestCompile 'org.hamcrest:hamcrest-library:' + deps.hamcrest
+            androidTestImplementation "com.android.support.test:runner:${deps.androidTestingSupport}"
+            androidTestImplementation "com.android.support.test:rules:${deps.androidTestingSupport}"
+            androidTestImplementation "org.hamcrest:hamcrest-library:${deps.hamcrest}"
         }
     }
 
