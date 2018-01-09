@@ -1,13 +1,13 @@
 dependencies {
-    compile project(':gto-support-jsonapi')
+    api project(':gto-support-jsonapi')
 
-    compile 'com.google.guava:guava:' + deps.guava
-    compile 'com.squareup.retrofit2:retrofit:' + deps.retrofit2
+    implementation "com.google.guava:guava:${deps.guava}"
+    api "com.squareup.retrofit2:retrofit:${deps.retrofit2}"
 
-    testCompile project(':gto-support-testing')
-    testCompile 'com.google.code.gson:gson:' + deps.gson
-    testCompile 'com.squareup.okhttp3:mockwebserver:' + deps.okhttp3
-    testCompile 'net.javacrumbs.json-unit:json-unit:1.12.1'
-    testCompile 'net.javacrumbs.json-unit:json-unit-fluent:1.12.1'
-    testCompile 'org.json:json:20160212'
+    testImplementation project(':gto-support-testing')
+    testImplementation 'com.google.code.gson:gson:' + deps.gson
+    testImplementation 'com.squareup.okhttp3:mockwebserver:' + deps.okhttp3
+    testImplementation "net.javacrumbs.json-unit:json-unit:${deps.jsonUnit}"
+    testImplementation "net.javacrumbs.json-unit:json-unit-fluent:${deps.jsonUnit}"
+    testImplementation 'org.json:json:20160810'
 }

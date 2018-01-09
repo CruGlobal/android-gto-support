@@ -1,9 +1,9 @@
 dependencies {
-    compile project(':gto-support-core')
+    implementation project(':gto-support-core')
 
-    androidTestCompile 'net.javacrumbs.json-unit:json-unit:' + deps.jsonUnit
-    androidTestCompile 'net.javacrumbs.json-unit:json-unit-fluent:' + deps.jsonUnit
-    androidTestCompile 'com.google.code.gson:gson:' + deps.gson
+    androidTestImplementation "net.javacrumbs.json-unit:json-unit:${deps.jsonUnit}"
+    androidTestImplementation "net.javacrumbs.json-unit:json-unit-fluent:${deps.jsonUnit}"
+    androidTestImplementation "com.google.code.gson:gson:${deps.gson}"
 
-    testCompile 'junit:junit:' + deps.junit
+    testImplementation "junit:junit:${deps.junit}"
 }

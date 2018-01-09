@@ -5,7 +5,7 @@ buildscript {
         maven { url 'https://maven.google.com' }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.3.3'
+        classpath 'com.android.tools.build:gradle:3.0.1'
         classpath 'com.github.dcendents:android-maven-gradle-plugin:1.5'
     }
 }
@@ -16,6 +16,7 @@ ext.deps = [
         androidSupport       : '25.4.0',
         androidTestingSupport: '0.5',
         crashlytics          : '2.6.8',
+        eventbus             : '3.0.0',
         facebookStetho       : '1.5.0',
         gson                 : '2.8.1',
         guava                : '22.0-android',
@@ -54,7 +55,6 @@ subprojects {
     beforeEvaluate {
         android {
             compileSdkVersion 25
-            buildToolsVersion "25.0.3"
 
             defaultConfig {
                 minSdkVersion 9
@@ -74,12 +74,12 @@ subprojects {
         }
 
         dependencies {
-            provided 'org.jetbrains:annotations:15.0'
-            compile 'com.android.support:support-annotations:' + deps.androidSupport
+            compileOnly 'org.jetbrains:annotations:15.0'
+            compileOnly "com.android.support:support-annotations:${deps.androidSupport}"
 
-            androidTestCompile 'com.android.support.test:runner:' + deps.androidTestingSupport
-            androidTestCompile 'com.android.support.test:rules:' + deps.androidTestingSupport
-            androidTestCompile 'org.hamcrest:hamcrest-library:' + deps.hamcrest
+            androidTestImplementation "com.android.support.test:runner:${deps.androidTestingSupport}"
+            androidTestImplementation "com.android.support.test:rules:${deps.androidTestingSupport}"
+            androidTestImplementation "org.hamcrest:hamcrest-library:${deps.hamcrest}"
         }
     }
 
