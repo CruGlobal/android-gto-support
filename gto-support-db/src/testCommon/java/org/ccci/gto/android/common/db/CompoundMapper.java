@@ -35,7 +35,7 @@ class CompoundMapper extends AbstractMapper<Compound> {
     @NonNull
     @Override
     protected Compound newObject(@NonNull Cursor c) {
-        return new Compound(getNonNullString(c, COLUMN_ID1, ""), getNonNullString(c, COLUMN_ID2, ""));
+        return new Compound(getString(c, COLUMN_ID1, ""), getString(c, COLUMN_ID2, ""));
     }
 
     @NonNull
