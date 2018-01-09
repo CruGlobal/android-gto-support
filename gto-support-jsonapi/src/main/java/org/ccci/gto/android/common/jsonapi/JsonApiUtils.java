@@ -1,5 +1,7 @@
 package org.ccci.gto.android.common.jsonapi;
 
+import android.support.annotation.RestrictTo;
+
 import java.lang.reflect.Array;
 import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.ParameterizedType;
@@ -7,9 +9,9 @@ import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.lang.reflect.WildcardType;
 
-/**
- * @hide
- */
+import static android.support.annotation.RestrictTo.Scope.LIBRARY_GROUP;
+
+@RestrictTo(LIBRARY_GROUP)
 public class JsonApiUtils {
     // copied from retrofit2.Utils.getRawType
     public static Class<?> getRawType(Type type) {
