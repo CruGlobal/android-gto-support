@@ -18,7 +18,6 @@ android:
   components:
     - tools
     - platform-tools
-    - android-25
 
     # system image for testing
     - $ANDROID_TARGET
