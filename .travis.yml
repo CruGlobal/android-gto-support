@@ -22,7 +22,6 @@ android:
 
     # system image for testing
     - $ANDROID_TARGET
-    - sys-img-$ANDROID_ABI-$ANDROID_TARGET
 
 before_cache:
   - rm -f $HOME/.gradle/caches/modules-2/modules-2.lock
