@@ -4,7 +4,6 @@ import android.annotation.TargetApi;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.support.annotation.NonNull;
-import android.support.v4.content.ParallelExecutorCompat;
 
 import org.ccci.gto.android.common.concurrent.NamedThreadFactory;
 
@@ -25,12 +24,6 @@ public class AsyncTaskCompat {
     }
 
     public static final Executor SERIAL_EXECUTOR = COMPAT.serialExecutor();
-
-    /**
-     * @deprecated Since v1.1.2, use {@link ParallelExecutorCompat#getParallelExecutor()} instead.
-     */
-    @Deprecated
-    public static final Executor THREAD_POOL_EXECUTOR = ParallelExecutorCompat.getParallelExecutor();
 
     public static void execute(@NonNull final Runnable task) {
         COMPAT.execute(task);

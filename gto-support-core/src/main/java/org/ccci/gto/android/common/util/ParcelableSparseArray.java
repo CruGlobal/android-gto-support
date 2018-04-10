@@ -4,8 +4,6 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.os.ParcelableCompat;
-import android.support.v4.os.ParcelableCompatCreatorCallbacks;
 import android.util.SparseArray;
 
 public class ParcelableSparseArray<T extends Parcelable> extends SparseArray<T> implements Parcelable {
@@ -48,16 +46,21 @@ public class ParcelableSparseArray<T extends Parcelable> extends SparseArray<T> 
     }
 
     public static final Parcelable.Creator<ParcelableSparseArray> CREATOR =
-            ParcelableCompat.newCreator(new ParcelableCompatCreatorCallbacks<ParcelableSparseArray>() {
+            new ClassLoaderCreator<ParcelableSparseArray>() {
                 @Override
-                public ParcelableSparseArray createFromParcel(@NonNull final Parcel in,
+                public ParcelableSparseArray createFromParcel(@NonNull final Parcel source,
                                                               @Nullable final ClassLoader loader) {
-                    return new ParcelableSparseArray(in, loader);
+                    return new ParcelableSparseArray(source, loader);
+                }
+
+                @Override
+                public ParcelableSparseArray createFromParcel(final Parcel source) {
+                    return createFromParcel(source, null);
                 }
 
                 @Override
                 public ParcelableSparseArray[] newArray(int size) {
                     return new ParcelableSparseArray[size];
                 }
-            });
+            };
 }
