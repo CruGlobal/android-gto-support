@@ -1,4 +1,4 @@
 dependencies {
-    testCompile 'junit:junit:' + deps.junit
-    testCompile 'com.google.guava:guava:' + deps.guava
+    testImplementation "junit:junit:${deps.junit}"
+    testImplementation "com.google.guava:guava:${deps.guava}"
 }

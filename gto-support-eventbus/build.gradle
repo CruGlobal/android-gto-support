@@ -1,5 +1,5 @@
 dependencies {
-    compile project(':gto-support-core')
+    implementation project(':gto-support-core')
     compileOnly project(':gto-support-db')
 
     api "org.greenrobot:eventbus:${deps.eventbus}"

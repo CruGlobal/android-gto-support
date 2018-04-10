@@ -5,11 +5,11 @@ android {
 }
 
 dependencies {
-    compile project(':gto-support-base')
-    compile project(':gto-support-compat')
+    implementation project(':gto-support-base')
+    implementation project(':gto-support-compat')
 
-    compile "com.squareup.picasso:picasso:${deps.picasso}"
+    implementation "com.squareup.picasso:picasso:${deps.picasso}"
 
-    provided "com.android.support:appcompat-v7:${deps.androidSupport}"
-    provided "com.crashlytics.sdk.android:crashlytics:${deps.crashlytics}"
+    compileOnly "com.android.support:appcompat-v7:${deps.androidSupport}"
+    compileOnly "com.crashlytics.sdk.android:crashlytics:${deps.crashlytics}"
 }

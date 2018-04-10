@@ -1,7 +1,7 @@
 dependencies {
-    compile project(':gto-support-core')
-    compile project(':gto-support-api-base')
+    implementation project(':gto-support-core')
+    implementation project(':gto-support-api-base')
 
-    compile 'com.google.guava:guava:' + deps.guava
-    compile 'me.thekey.android:thekey-api:' + deps.thekey
+    implementation "com.google.guava:guava:${deps.guava}"
+    implementation "me.thekey.android:thekey-api:${deps.thekey}"
 }
