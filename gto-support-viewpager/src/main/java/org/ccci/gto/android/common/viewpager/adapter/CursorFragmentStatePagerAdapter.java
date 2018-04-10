@@ -1,4 +1,4 @@
-package org.ccci.gto.android.common.adapter;
+package org.ccci.gto.android.common.viewpager.adapter;
 
 import android.database.Cursor;
 import android.os.Bundle;
