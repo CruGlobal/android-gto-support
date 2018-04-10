@@ -4,8 +4,6 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.os.ParcelableCompat;
-import android.support.v4.os.ParcelableCompatCreatorCallbacks;
 import android.support.v4.util.LongSparseArray;
 
 public class ParcelableLongSparseArray<T extends Parcelable> extends LongSparseArray<T> implements Parcelable {
@@ -56,16 +54,21 @@ public class ParcelableLongSparseArray<T extends Parcelable> extends LongSparseA
     }
 
     public static final Parcelable.Creator<ParcelableLongSparseArray> CREATOR =
-            ParcelableCompat.newCreator(new ParcelableCompatCreatorCallbacks<ParcelableLongSparseArray>() {
+            new ClassLoaderCreator<ParcelableLongSparseArray>() {
                 @Override
-                public ParcelableLongSparseArray createFromParcel(@NonNull final Parcel in,
+                public ParcelableLongSparseArray createFromParcel(final Parcel source) {
+                    return createFromParcel(source, null);
+                }
+
+                @Override
+                public ParcelableLongSparseArray createFromParcel(@NonNull final Parcel source,
                                                                   @Nullable final ClassLoader loader) {
-                    return new ParcelableLongSparseArray(in, loader);
+                    return new ParcelableLongSparseArray(source, loader);
                 }
 
                 @Override
                 public ParcelableLongSparseArray[] newArray(final int size) {
                     return new ParcelableLongSparseArray[size];
                 }
-            });
+            };
 }

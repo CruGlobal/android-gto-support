@@ -6,8 +6,6 @@ import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.UiThread;
-import android.support.v4.os.ParcelableCompat;
-import android.support.v4.os.ParcelableCompatCreatorCallbacks;
 import android.support.v4.view.AbsSavedState;
 import android.support.v4.view.PagerAdapter;
 import android.util.SparseArray;
@@ -262,18 +260,22 @@ public abstract class ViewHolderPagerAdapter<VH extends ViewHolderPagerAdapter.V
             out.writeParcelable(viewHolderSavedState, 0);
         }
 
-        public static final Parcelable.Creator<SavedState> CREATOR = ParcelableCompat.newCreator(
-                new ParcelableCompatCreatorCallbacks<SavedState>() {
-                    @Override
-                    public SavedState createFromParcel(Parcel in, ClassLoader loader) {
-                        return new SavedState(in, loader);
-                    }
+        public static final Parcelable.Creator<SavedState> CREATOR = new ClassLoaderCreator<SavedState>() {
+            @Override
+            public SavedState createFromParcel(final Parcel source) {
+                return createFromParcel(source, null);
+            }
 
-                    @Override
-                    public SavedState[] newArray(int size) {
-                        return new SavedState[size];
-                    }
-                });
+            @Override
+            public SavedState createFromParcel(final Parcel source, @Nullable final ClassLoader loader) {
+                return new SavedState(source, loader);
+            }
+
+            @Override
+            public SavedState[] newArray(int size) {
+                return new SavedState[size];
+            }
+        };
 
         SavedState(Parcel in, ClassLoader loader) {
             super(in, loader);
