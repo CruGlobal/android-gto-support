@@ -1,4 +1,5 @@
 dependencies {
+    implementation project(':gto-support-compat')
     implementation project(':gto-support-core')
 
     androidTestImplementation "net.javacrumbs.json-unit:json-unit:${deps.jsonUnit}"
