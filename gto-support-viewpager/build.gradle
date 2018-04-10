@@ -1,0 +1,3 @@
+dependencies {
+    api "com.android.support:support-core-ui:${deps.androidSupport}"
+}
