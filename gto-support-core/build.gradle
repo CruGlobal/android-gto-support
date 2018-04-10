@@ -12,6 +12,7 @@ android {
 dependencies {
     implementation project(':gto-support-base')
     implementation project(':gto-support-compat')
+    implementation project(':gto-support-util')
 
     api "com.android.support:support-core-utils:${deps.androidSupport}"
     implementation "com.android.support:support-fragment:${deps.androidSupport}"
