@@ -29,6 +29,7 @@ ext.deps = [
         lightweightStream    : '1.1.8',
         okhttp3              : '3.8.1',
         picasso              : '2.5.2',
+        powermock            : '1.6.4',
         retrofit2            : '2.3.0',
         thekey               : '1.2.0'
 ]

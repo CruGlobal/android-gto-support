@@ -10,12 +10,13 @@ android {
 }
 
 dependencies {
-    compile project(':gto-support-base')
-    compile project(':gto-support-compat')
+    implementation project(':gto-support-base')
+    implementation project(':gto-support-compat')
 
-    compile "com.android.support:support-v4:${deps.androidSupport}"
+    api "com.android.support:support-core-utils:${deps.androidSupport}"
+    implementation "com.android.support:support-fragment:${deps.androidSupport}"
 
-    testCompile "junit:junit:${deps.junit}"
-    testCompile "com.google.guava:guava:${deps.guava}"
-    androidTestCompile "org.hamcrest:hamcrest-library:${deps.hamcrest}"
+    testImplementation "junit:junit:${deps.junit}"
+    testImplementation "com.google.guava:guava:${deps.guava}"
+    androidTestImplementation "org.hamcrest:hamcrest-library:${deps.hamcrest}"
 }

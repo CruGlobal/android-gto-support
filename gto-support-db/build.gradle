@@ -11,8 +11,10 @@ android {
 }
 
 dependencies {
-    compile project(':gto-support-compat')
-    compile project(':gto-support-core')
+    implementation project(':gto-support-compat')
+    implementation project(':gto-support-core')
 
-    testCompile project(':gto-support-testing')
+    testImplementation project(':gto-support-testing')
+    testImplementation "junit:junit:${deps.junit}"
+    testImplementation "org.powermock:powermock-module-junit4:${deps.powermock}"
 }
