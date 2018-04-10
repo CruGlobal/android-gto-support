@@ -5,17 +5,16 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 /**
- * @deprecated Since v1.0.2, use {@link org.ccci.gto.android.common.compat.os.BundleCompat} instead.
+ * @deprecated Since v1.0.2, use {@link Bundle} directly.
  */
 @Deprecated
 public class BundleCompat {
     /**
-     * @deprecated Since v1.0.2, use {@link org.ccci.gto.android.common.compat.os.BundleCompat#getString(Bundle, String,
-     * String)} instead.
+     * @deprecated Since v1.0.2, use {@link Bundle#getString(String, String)} directly.
      */
     @Deprecated
     public static String getString(@NonNull final Bundle bundle, @NonNull final String key,
                                    @Nullable final String defaultValue) {
-        return org.ccci.gto.android.common.compat.os.BundleCompat.getString(bundle, key, defaultValue);
+        return bundle.getString(key, defaultValue);
     }
 }
