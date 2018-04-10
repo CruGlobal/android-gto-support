@@ -3,8 +3,8 @@ sudo: required
 jdk: oraclejdk8
 env:
   global:
-    - DEPLOY_USERNAME=travis-android-gto-support
-    - secure: "hZZ5kMqY/ZLCpsKX25SUni57Pz2r2P2zlmM6Tg1WNLfhNty4jqn9WIcGtjfuXTdqMcB4lLvQ6hnqodAoxQZmuk/8sTQjtckwXyY3c1D7GQWwB3wdtsV8kPDc9O9OOcNNc96hTtMHsBNI4WxE4GxqtB1QICGbnH0p+JZcFdX4n5o="
+    - DEPLOY_USERNAME=travis-ci-android-gto-support
+    - secure: "NpKiD/OhxURch8MhFvVohqNDgS6SVPfjiM2Qm/mQbjLmeEmdlfDQ3lPF+X2HNL960eWulhvpcTPr5TS8eUMUA83U5HBUaADQEnqnHN75oC1OYJtB54ELP2b+vXOEVD3hFQFFnBWsPLJKd6DK8XMpVe+eG+MnmGPM5AWC0a4cw6I="
   matrix:
     - ANDROID_TARGET=android-15 ANDROID_ABI=armeabi-v7a
     - ANDROID_TARGET=android-21 ANDROID_ABI=armeabi-v7a
@@ -64,13 +64,13 @@ after_failure:
   - cat /home/travis/build/CruGlobal/android-gto-support/*/build/outputs/lint-results-*.xml
 
 before_deploy:
-  - echo gcxMavenRepositoryUsername=$DEPLOY_USERNAME >> $HOME/.gradle/gradle.properties
-  - echo gcxMavenRepositoryPassword=$DEPLOY_PASSWORD >> $HOME/.gradle/gradle.properties
+  - echo cruGlobalMavenRepositoryUsername=$DEPLOY_USERNAME >> $HOME/.gradle/gradle.properties
+  - echo cruGlobalMavenRepositoryPassword=$DEPLOY_PASSWORD >> $HOME/.gradle/gradle.properties
 
 deploy:
   provider: script
   skip_cleanup: true
-  script: ./gradlew uploadArchives --parallel
+  script: ./gradlew publish --parallel
   on:
     repo: CruGlobal/android-gto-support
     branch: master
