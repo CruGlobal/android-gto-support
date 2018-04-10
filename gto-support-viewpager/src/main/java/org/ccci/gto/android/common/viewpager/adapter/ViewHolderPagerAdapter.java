@@ -12,7 +12,7 @@ import android.util.SparseArray;
 import android.view.View;
 import android.view.ViewGroup;
 
-import org.ccci.gto.android.common.support.v4.util.ParcelableLongSparseArray;
+import org.ccci.gto.android.common.util.ParcelableLongSparseArray;
 import org.ccci.gto.android.common.util.ParcelableSparseArray;
 
 import java.util.LinkedList;

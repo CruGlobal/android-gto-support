@@ -1,4 +1,4 @@
-package org.ccci.gto.android.common.support.v4.util;
+package org.ccci.gto.android.common.util;
 
 import android.os.Parcel;
 import android.os.Parcelable;
