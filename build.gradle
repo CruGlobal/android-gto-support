@@ -15,7 +15,7 @@ plugins {
 // define dependency versions for this project
 ext.deps = [
         advrecyclerview      : '0.10.6',
-        androidSupport       : '25.4.0',
+        androidSupport       : '27.1.1',
         androidTestingSupport: '0.5',
         crashlytics          : '2.6.8',
         eventbus             : '3.0.0',
@@ -57,11 +57,11 @@ subprojects {
 
     beforeEvaluate {
         android {
-            compileSdkVersion 25
+            compileSdkVersion 27
 
             defaultConfig {
-                minSdkVersion 9
-                targetSdkVersion 25
+                minSdkVersion 14
+                targetSdkVersion 27
 
                 consumerProguardFiles "$rootProject.projectDir/proguard-consumer-jetbrains.pro"
 
