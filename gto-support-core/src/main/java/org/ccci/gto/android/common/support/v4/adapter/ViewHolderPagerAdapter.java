@@ -94,7 +94,11 @@ public abstract class ViewHolderPagerAdapter<VH extends ViewHolderPagerAdapter.V
     @SuppressWarnings("unchecked")
     public final void setPrimaryItem(@NonNull final ViewGroup container, final int position,
                                      @Nullable final Object holder) {
+        final VH old = mCurrent;
         mCurrent = (VH) holder;
+        if (old != mCurrent) {
+            onUpdatePrimaryItem(old, mCurrent);
+        }
     }
 
     @Nullable
@@ -186,6 +190,8 @@ public abstract class ViewHolderPagerAdapter<VH extends ViewHolderPagerAdapter.V
         }
     }
 
+    /* BEGIN lifecycle */
+
     @NonNull
     @UiThread
     protected abstract VH onCreateViewHolder(@NonNull ViewGroup parent);
@@ -198,11 +204,16 @@ public abstract class ViewHolderPagerAdapter<VH extends ViewHolderPagerAdapter.V
     }
 
     @UiThread
+    protected void onUpdatePrimaryItem(@Nullable final VH old, @Nullable final VH current) {}
+
+    @UiThread
     @CallSuper
     protected void onViewHolderRecycled(@NonNull final VH holder) {
         holder.mId = NO_ID;
         holder.mLastKnownPosition = POSITION_NONE;
     }
+
+    /* END lifecycle */
 
     public static class ViewHolder {
         long mId = NO_ID;
