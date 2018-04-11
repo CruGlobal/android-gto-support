@@ -1,4 +1,4 @@
-package org.ccci.gto.android.common.support.v4.widget;
+package org.ccci.gto.android.common.viewpager.view;
 
 import android.content.Context;
 import android.support.v4.view.ViewPager;

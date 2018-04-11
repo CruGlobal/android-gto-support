@@ -1,4 +1,4 @@
-package org.ccci.gto.android.common.support.v4.adapter;
+package org.ccci.gto.android.common.viewpager.adapter;
 
 import android.os.Parcel;
 import android.os.Parcelable;
