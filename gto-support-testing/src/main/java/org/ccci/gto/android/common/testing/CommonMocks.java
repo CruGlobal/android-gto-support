@@ -1,35 +1,48 @@
 package org.ccci.gto.android.common.testing;
 
+import android.graphics.Color;
 import android.text.TextUtils;
 import android.util.Pair;
 
 import com.google.common.base.Joiner;
 
-import org.mockito.internal.util.reflection.Whitebox;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
+import org.powermock.reflect.Whitebox;
 
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Matchers.any;
 import static org.powermock.api.mockito.PowerMockito.mock;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
 import static org.powermock.api.mockito.PowerMockito.when;
 
 public class CommonMocks {
+    public static void mockColor() {
+        mockStatic(Color.class);
+
+        when(Color.argb(anyInt(), anyInt(), anyInt(), anyInt())).thenAnswer(i -> {
+            return ((int) i.getArgument(0) << 24) |
+                    ((int) i.getArgument(1) << 16) |
+                    ((int) i.getArgument(2) << 8) |
+                    (int) i.getArgument(3);
+        });
+    }
+
     public static void mockTextUtils() throws Exception {
         mockStatic(TextUtils.class);
 
         when(TextUtils.join(any(CharSequence.class), any(Iterable.class))).thenAnswer(new Answer<Object>() {
             @Override
             public Object answer(InvocationOnMock invocation) throws Throwable {
-                return Joiner.on(invocation.getArgumentAt(0, CharSequence.class).toString())
-                        .join(invocation.getArgumentAt(1, Iterable.class));
+                return Joiner.on(invocation.getArgument(0).toString())
+                        .join((Iterable) invocation.getArgument(1));
             }
         });
         when(TextUtils.join(any(CharSequence.class), any(Object[].class))).thenAnswer(new Answer<Object>() {
             @Override
             public Object answer(InvocationOnMock invocation) throws Throwable {
-                return Joiner.on(invocation.getArgumentAt(0, CharSequence.class).toString())
-                        .join(invocation.getArgumentAt(1, Object[].class));
+                return Joiner.on(invocation.getArgument(0).toString())
+                        .join((Object[]) invocation.getArgument(1));
             }
         });
     }
@@ -41,8 +54,8 @@ public class CommonMocks {
             @Override
             public Pair<?, ?> answer(InvocationOnMock invocation) throws Throwable {
                 final Pair pair = mock(Pair.class);
-                Whitebox.setInternalState(pair, "first", invocation.getArgumentAt(0, Object.class));
-                Whitebox.setInternalState(pair, "second", invocation.getArgumentAt(1, Object.class));
+                Whitebox.setInternalState(pair, "first", (Object) invocation.getArgument(0));
+                Whitebox.setInternalState(pair, "second", (Object) invocation.getArgument(1));
                 return pair;
             }
         });
