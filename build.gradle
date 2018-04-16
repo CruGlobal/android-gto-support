@@ -74,6 +74,10 @@ subprojects {
             adbOptions {
                timeOutInMs 600000
             }
+            compileOptions {
+                sourceCompatibility JavaVersion.VERSION_1_8
+                targetCompatibility JavaVersion.VERSION_1_8
+            }
             dexOptions {
                 preDexLibraries !project.hasProperty('disablePreDex')
             }
