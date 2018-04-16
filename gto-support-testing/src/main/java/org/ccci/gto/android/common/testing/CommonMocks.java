@@ -1,5 +1,6 @@
 package org.ccci.gto.android.common.testing;
 
+import android.graphics.Color;
 import android.text.TextUtils;
 import android.util.Pair;
 
@@ -9,12 +10,24 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.powermock.reflect.Whitebox;
 
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Matchers.any;
 import static org.powermock.api.mockito.PowerMockito.mock;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
 import static org.powermock.api.mockito.PowerMockito.when;
 
 public class CommonMocks {
+    public static void mockColor() {
+        mockStatic(Color.class);
+
+        when(Color.argb(anyInt(), anyInt(), anyInt(), anyInt())).thenAnswer(i -> {
+            return ((int) i.getArgument(0) << 24) |
+                    ((int) i.getArgument(1) << 16) |
+                    ((int) i.getArgument(2) << 8) |
+                    (int) i.getArgument(3);
+        });
+    }
+
     public static void mockTextUtils() throws Exception {
         mockStatic(TextUtils.class);
 
