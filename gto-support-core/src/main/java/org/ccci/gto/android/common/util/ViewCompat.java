@@ -1,30 +1,15 @@
 package org.ccci.gto.android.common.util;
 
-import android.annotation.TargetApi;
-import android.os.Build;
-import android.view.View;
-
-import java.util.concurrent.atomic.AtomicInteger;
-
+/**
+ * @deprecated Since 1.2.0.
+ */
+@Deprecated
 public final class ViewCompat {
-    private static final AtomicInteger NEXT_ID = new AtomicInteger(1);
-
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
+    /**
+     * @deprecated Since 1.2.0, use {@link android.support.v4.view.ViewCompat#generateViewId()} instead.
+     */
+    @Deprecated
     public static int generateViewId() {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            while (true) {
-                final int result = NEXT_ID.get();
-                // aapt-generated IDs have the high byte nonzero; clamp to the range under that.
-                int newValue = result + 1;
-                if (newValue > 0x00FFFFFF) {
-                    newValue = 1; // Roll over to 1, not 0.
-                }
-                if (NEXT_ID.compareAndSet(result, newValue)) {
-                    return result;
-                }
-            }
-        } else {
-            return View.generateViewId();
-        }
+        return android.support.v4.view.ViewCompat.generateViewId();
     }
 }
