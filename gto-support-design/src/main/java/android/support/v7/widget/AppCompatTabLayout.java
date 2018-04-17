@@ -73,8 +73,7 @@ public class AppCompatTabLayout extends TabLayout implements TintableBackgroundV
     @Override
     @Nullable
     public ColorStateList getSupportBackgroundTintList() {
-        return mBackgroundTintHelper != null
-                ? mBackgroundTintHelper.getSupportBackgroundTintList() : null;
+        return mBackgroundTintHelper != null ? mBackgroundTintHelper.getSupportBackgroundTintList() : null;
     }
 
     /**
@@ -101,8 +100,7 @@ public class AppCompatTabLayout extends TabLayout implements TintableBackgroundV
     @Override
     @Nullable
     public PorterDuff.Mode getSupportBackgroundTintMode() {
-        return mBackgroundTintHelper != null
-                ? mBackgroundTintHelper.getSupportBackgroundTintMode() : null;
+        return mBackgroundTintHelper != null ? mBackgroundTintHelper.getSupportBackgroundTintMode() : null;
     }
 
     @Override
