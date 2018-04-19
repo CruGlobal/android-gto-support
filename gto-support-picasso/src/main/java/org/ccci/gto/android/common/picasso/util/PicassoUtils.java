@@ -6,10 +6,11 @@ import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.TintContextWrapper;
 
-import com.crashlytics.android.Crashlytics;
 import com.squareup.picasso.Picasso;
 
 import java.lang.reflect.Field;
+
+import timber.log.Timber;
 
 public final class PicassoUtils {
     @NonNull
@@ -23,7 +24,8 @@ public final class PicassoUtils {
                 f.setAccessible(true);
                 f.set(builder, TintContextWrapper.wrap(context.getApplicationContext()));
             } catch (final Exception e) {
-                Crashlytics.logException(e);
+                Timber.tag(PicassoUtils.class.getSimpleName())
+                        .e(e, "Error injecting a vector aware context object into Picasso");
             }
         }
 
