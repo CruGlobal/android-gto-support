@@ -5,10 +5,10 @@ import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.crashlytics.android.Crashlytics;
-
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+
+import timber.log.Timber;
 
 public final class TextInputLayoutUtils {
     public static void setHintTextColor(@NonNull final TextInputLayout layout, @ColorInt final int color) {
@@ -33,7 +33,8 @@ public final class TextInputLayoutUtils {
             defaultTextColor.setAccessible(true);
             defaultTextColor.set(layout, colors);
         } catch (@NonNull final Exception e) {
-            Crashlytics.logException(e);
+            Timber.tag(TextInputLayoutUtils.class.getSimpleName())
+                    .e(e, "Error setting the expanded text color on a TextInputLayout");
         }
 
         updateLayout(layout);
@@ -52,7 +53,8 @@ public final class TextInputLayoutUtils {
             focusedTextColor.setAccessible(true);
             focusedTextColor.set(layout, colors);
         } catch (final Exception e) {
-            Crashlytics.logException(e);
+            Timber.tag(TextInputLayoutUtils.class.getSimpleName())
+                    .e(e, "Error setting the collapsed text color on a TextInputLayout");
         }
 
         updateLayout(layout);
@@ -69,7 +71,8 @@ public final class TextInputLayoutUtils {
                 method.invoke(layout);
             }
         } catch (@NonNull final Exception e) {
-            Crashlytics.logException(e);
+            Timber.tag(TextInputLayoutUtils.class.getSimpleName())
+                    .e(e, "Error updating the layout for a TextInputLayout");
         }
     }
 }

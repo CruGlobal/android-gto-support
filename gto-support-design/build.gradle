@@ -1,5 +1,5 @@
 dependencies {
     implementation "com.android.support:design:${deps.androidSupport}"
 
-    compileOnly "com.crashlytics.sdk.android:crashlytics:${deps.crashlytics}"
+    implementation "com.jakewharton.timber:timber:${deps.timber}"
 }
