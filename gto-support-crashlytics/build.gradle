@@ -1,0 +1,5 @@
+dependencies {
+    implementation "com.crashlytics.sdk.android:crashlytics:${deps.crashlytics}"
+
+    compileOnly "com.jakewharton.timber:timber:${deps.timber}"
+}
