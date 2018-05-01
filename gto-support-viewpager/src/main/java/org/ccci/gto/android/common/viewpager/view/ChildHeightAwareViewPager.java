@@ -1,7 +1,6 @@
 package org.ccci.gto.android.common.viewpager.view;
 
 import android.content.Context;
-import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
 import android.view.View;
 
@@ -10,7 +9,7 @@ import android.view.View;
  *
  * @see <a href="http://stackoverflow.com/a/14983747/4721910">http://stackoverflow.com/a/14983747/4721910</a>
  */
-public class ChildHeightAwareViewPager extends ViewPager {
+public class ChildHeightAwareViewPager extends HackyViewPager {
     public ChildHeightAwareViewPager(final Context context) {
         super(context);
     }

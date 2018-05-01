@@ -10,7 +10,7 @@ import android.view.MotionEvent;
 import android.view.ViewConfiguration;
 import android.view.ViewParent;
 
-public class ChildViewPager extends ViewPager {
+public class ChildViewPager extends HackyViewPager {
     private static final int INVALID_POINTER = -1;
 
     private boolean intercept = true;
