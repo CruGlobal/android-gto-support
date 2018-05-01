@@ -4,6 +4,7 @@ import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.support.test.InstrumentationRegistry;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.Arrays;
@@ -23,6 +24,7 @@ public class AccountManagerCompatTest {
     private static final Account ACCOUNT_2 = new Account("Account 2", ACCOUNT_TYPE);
 
     @Test
+    @Ignore
     public void verifyRemoveAccountExplicitly() throws Exception {
         final AccountManager accountManager = AccountManager.get(InstrumentationRegistry.getContext());
 
