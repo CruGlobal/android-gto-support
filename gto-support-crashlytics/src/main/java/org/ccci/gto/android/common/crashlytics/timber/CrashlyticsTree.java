@@ -1,18 +1,28 @@
 package org.ccci.gto.android.common.crashlytics.timber;
 
+import android.util.Log;
+
 import com.crashlytics.android.Crashlytics;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import io.fabric.sdk.android.Fabric;
 import timber.log.Timber;
 
 public final class CrashlyticsTree extends Timber.Tree {
+    private int mLogLevel;
+
+    public CrashlyticsTree() {
+        mLogLevel = Log.INFO;
+    }
+
+    public CrashlyticsTree(final int logLevel) {
+        mLogLevel = logLevel;
+    }
+
     @Override
     protected boolean isLoggable(@Nullable final String tag, final int priority) {
-        // defer to the Fabric logger to determine if this message is loggable
-        return Fabric.getLogger().isLoggable(tag, priority);
+        return mLogLevel <= priority;
     }
 
     @Override
