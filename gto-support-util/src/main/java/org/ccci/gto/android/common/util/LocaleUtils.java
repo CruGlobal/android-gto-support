@@ -254,7 +254,7 @@ public class LocaleUtils {
                 return ULocale.forLanguageTag(fixed);
             }
 
-            ULocale fallback = locale.getFallback();
+            final ULocale fallback = locale.getFallback();
             if (fallback != null && !ULocale.ROOT.equals(fallback)) {
                 return fallback;
             }
