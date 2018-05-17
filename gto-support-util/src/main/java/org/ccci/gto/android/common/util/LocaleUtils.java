@@ -96,14 +96,20 @@ public class LocaleUtils {
     static class FroyoCompat implements Compat {
         @Nullable
         private String getFallback(@NonNull final String locale) {
+            // try fixed fallback first
+            final String fallback = FALLBACKS.get(locale);
+            if (fallback != null) {
+                return fallback;
+            }
+
             // try splitting on "-"
             int c = locale.lastIndexOf('-');
             if (c >= 0) {
                 return locale.substring(0, c);
             }
 
-            // try fixed fallbacks
-            return FALLBACKS.get(locale);
+            // default to no fallback
+            return null;
         }
 
         @Nullable
@@ -136,11 +142,22 @@ public class LocaleUtils {
         @Nullable
         @Override
         public Locale getFallback(@NonNull final Locale locale) {
-            return getFallback(locale, toLocaleBuilder(locale));
+            final Locale.Builder builder = new Locale.Builder();
+            populateLocaleBuilder(builder, locale);
+            return getFallback(locale, builder);
         }
 
         @Nullable
         public Locale getFallback(@NonNull final Locale locale, @NonNull final Locale.Builder builder) {
+            // check for a direct fallback
+            final String fallback = FALLBACKS.get(locale.toLanguageTag());
+            if (fallback != null) {
+                final Locale fallbackLocale = Locale.forLanguageTag(fallback);
+                populateLocaleBuilder(builder, fallbackLocale);
+                return fallbackLocale;
+            }
+
+            // try generating a fallback by eliminating parts of a language tag
             if (!TextUtils.isEmpty(locale.getVariant())) {
                 return builder.setVariant(null).build();
             }
@@ -151,7 +168,8 @@ public class LocaleUtils {
                 return builder.setScript(null).build();
             }
 
-            return super.getFallback(locale);
+            // default to no fallback
+            return null;
         }
 
         @NonNull
@@ -162,7 +180,8 @@ public class LocaleUtils {
             locales.add(locale);
 
             // generate all fallback variants
-            final Locale.Builder builder = toLocaleBuilder(locale);
+            final Locale.Builder builder = new Locale.Builder();
+            populateLocaleBuilder(builder, locale);
             for (Locale fallback = locale; fallback != null; fallback = getFallback(fallback, builder)) {
                 locales.add(fallback);
             }
@@ -171,9 +190,8 @@ public class LocaleUtils {
             return locales.toArray(new Locale[locales.size()]);
         }
 
-        private Locale.Builder toLocaleBuilder(@NonNull final Locale locale) {
+        private void populateLocaleBuilder(@NonNull final Locale.Builder builder, @NonNull final Locale locale) {
             // populate builder from provided locale
-            final Locale.Builder builder = new Locale.Builder();
             try {
                 builder.setLocale(locale).clearExtensions();
             } catch (final IllformedLocaleException e) {
@@ -201,8 +219,6 @@ public class LocaleUtils {
                 } catch (final IllformedLocaleException ignored) {
                 }
             }
-
-            return builder;
         }
     }
 
@@ -232,14 +248,19 @@ public class LocaleUtils {
 
         @Nullable
         private ULocale getFallback(@NonNull final ULocale locale) {
+            // check for a fixed fallback
+            final String fixed = FALLBACKS.get(locale.toLanguageTag());
+            if (fixed != null) {
+                return ULocale.forLanguageTag(fixed);
+            }
+
             ULocale fallback = locale.getFallback();
             if (fallback != null && !ULocale.ROOT.equals(fallback)) {
                 return fallback;
             }
 
-            // try a fixed fallback
-            final String fixed = FALLBACKS.get(locale.toLanguageTag());
-            return fixed != null ? ULocale.forLanguageTag(fixed) : null;
+            // default to no fallback
+            return null;
         }
     }
 }
