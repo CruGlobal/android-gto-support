@@ -21,11 +21,11 @@ public class LocaleCompat {
 
     @NonNull
     public static Locale[] getFallbacks(@NonNull final Locale locale) {
-        return org.ccci.gto.android.common.compat.util.LocaleCompat.getFallbacks(locale);
+        return LocaleUtils.getFallbacks(locale);
     }
 
     @NonNull
     public static Locale[] getFallbacks(final Locale... locales) {
-        return org.ccci.gto.android.common.compat.util.LocaleCompat.getFallbacks(locales);
+        return LocaleUtils.getFallbacks(locales);
     }
 }

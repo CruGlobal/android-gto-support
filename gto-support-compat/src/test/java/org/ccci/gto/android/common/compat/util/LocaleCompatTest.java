@@ -14,7 +14,6 @@ import java.util.Collection;
 import java.util.Locale;
 import java.util.Map;
 
-import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 
 @RunWith(Parameterized.class)
@@ -62,19 +61,5 @@ public class LocaleCompatTest {
         for (final Map.Entry<Locale, String> entry : LANGUAGETAGS.entrySet()) {
             assertEquals(entry.getValue(), compat.toLanguageTag(entry.getKey()));
         }
-    }
-
-    @Test
-    public void testGetFallbacks() throws Exception {
-        assertArrayEquals(new Locale[] {Locale.US, Locale.ENGLISH}, compat.getFallbacks(Locale.US));
-        assertArrayEquals(new Locale[] {Locale.ENGLISH}, compat.getFallbacks(Locale.ENGLISH));
-
-        // test batch fallback resolution
-        assertArrayEquals(new Locale[] {Locale.US, Locale.ENGLISH},
-                          LocaleCompat.getFallbacks(Locale.US, Locale.ENGLISH));
-        assertArrayEquals(new Locale[] {Locale.ENGLISH, Locale.US},
-                          LocaleCompat.getFallbacks(Locale.ENGLISH, Locale.US));
-        assertArrayEquals(new Locale[] {Locale.US, Locale.ENGLISH, Locale.CANADA, Locale.CANADA_FRENCH, Locale.FRENCH},
-                          LocaleCompat.getFallbacks(Locale.US, Locale.CANADA, Locale.CANADA_FRENCH));
     }
 }

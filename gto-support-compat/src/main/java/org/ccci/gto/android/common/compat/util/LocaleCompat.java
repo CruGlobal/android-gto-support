@@ -31,12 +31,22 @@ public class LocaleCompat {
         return COMPAT.toLanguageTag(locale);
     }
 
+    /**
+     * @deprecated Since v1.2.1, use {@link org.ccci.gto.android.common.util.LocaleUtils#getFallbacks(Locale)} from
+     * gto-support-util instead.
+     */
     @NonNull
+    @Deprecated
     public static Locale[] getFallbacks(@NonNull final Locale locale) {
         return COMPAT.getFallbacks(locale);
     }
 
+    /**
+     * @deprecated Since v1.2.1, use {@link org.ccci.gto.android.common.util.LocaleUtils#getFallbacks(Locale...)} from
+     * gto-support-util instead.
+     */
     @NonNull
+    @Deprecated
     public static Locale[] getFallbacks(@NonNull final Locale... locales) {
         final LinkedHashSet<Locale> outputs = new LinkedHashSet<>();
 
@@ -56,7 +66,12 @@ public class LocaleCompat {
         @NonNull
         String toLanguageTag(@NonNull Locale locale);
 
+        /**
+         * @deprecated Since v1.2.1, use {@link org.ccci.gto.android.common.util.LocaleUtils} from gto-support-util
+         * instead.
+         */
         @NonNull
+        @Deprecated
         Locale[] getFallbacks(@NonNull Locale locale);
     }
 
@@ -91,8 +106,13 @@ public class LocaleCompat {
             return sb.toString();
         }
 
+        /**
+         * @deprecated Since v1.2.1, use {@link org.ccci.gto.android.common.util.LocaleUtils} from gto-support-util
+         * instead.
+         */
         @NonNull
         @Override
+        @Deprecated
         public Locale[] getFallbacks(@NonNull final Locale locale) {
             // add initial locale
             final LinkedHashSet<Locale> locales = new LinkedHashSet<>();
@@ -126,8 +146,13 @@ public class LocaleCompat {
             return locale.toLanguageTag();
         }
 
+        /**
+         * @deprecated Since v1.2.1, use {@link org.ccci.gto.android.common.util.LocaleUtils} from gto-support-util
+         * instead.
+         */
         @NonNull
         @Override
+        @Deprecated
         public Locale[] getFallbacks(@NonNull final Locale locale) {
             // add initial locale
             final LinkedHashSet<Locale> locales = new LinkedHashSet<>();
