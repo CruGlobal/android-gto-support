@@ -22,7 +22,27 @@ public class LocaleUtils {
     // define a few fixed fallbacks
     static final Map<String, String> FALLBACKS = new HashMap<>();
     static {
+        // macrolanguage fallbacks from https://www.iana.org/assignments/language-subtag-registry/language-subtag-registry
+        // Malagasy macrolanguage
+        FALLBACKS.put("bhr", "mg");
+        FALLBACKS.put("bjq", "mg");
+        FALLBACKS.put("bmm", "mg");
+        FALLBACKS.put("bzc", "mg");
+        FALLBACKS.put("msh", "mg");
+        FALLBACKS.put("plt", "mg");
+        FALLBACKS.put("skg", "mg");
+        FALLBACKS.put("tdx", "mg");
+        FALLBACKS.put("tkg", "mg");
+        FALLBACKS.put("txy", "mg");
+        FALLBACKS.put("xmv", "mg");
+        FALLBACKS.put("xmw", "mg");
+
+        // Malay macrolanguage
+        FALLBACKS.put("abs", "ms");
+        FALLBACKS.put("mfa", "ms");
+        FALLBACKS.put("pmy", "ms");
         FALLBACKS.put("pse", "ms");
+        FALLBACKS.put("zlm", "ms");
     }
 
     private static final Compat COMPAT;
