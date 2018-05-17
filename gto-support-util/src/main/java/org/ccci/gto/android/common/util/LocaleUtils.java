@@ -38,9 +38,7 @@ public class LocaleUtils {
         FALLBACKS.put("xmw", "mg");
 
         // Malay macrolanguage
-        FALLBACKS.put("abs", "ms");
         FALLBACKS.put("mfa", "ms");
-        FALLBACKS.put("pmy", "ms");
         FALLBACKS.put("pse", "ms");
         FALLBACKS.put("zlm", "ms");
     }
@@ -54,6 +52,13 @@ public class LocaleUtils {
         } else {
             COMPAT = new NougatCompat();
         }
+    }
+
+    public static void addFallback(@NonNull final String locale, @NonNull final String fallback) {
+        if (FALLBACKS.get(locale) != null) {
+            throw new IllegalStateException(locale + " already has a fallback language defined");
+        }
+        FALLBACKS.put(locale, fallback);
     }
 
     @Nullable
