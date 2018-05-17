@@ -6,6 +6,7 @@ import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
+import android.text.TextUtils;
 
 import org.ccci.gto.android.common.compat.util.LocaleCompat;
 
@@ -107,6 +108,27 @@ public class LocaleUtils {
     @RestrictTo({RestrictTo.Scope.LIBRARY})
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     static class LollipopCompat extends FroyoCompat {
+        @Nullable
+        @Override
+        public Locale getFallback(@NonNull final Locale locale) {
+            return getFallback(locale, toLocaleBuilder(locale));
+        }
+
+        @Nullable
+        public Locale getFallback(@NonNull final Locale locale, @NonNull final Locale.Builder builder) {
+            if (!TextUtils.isEmpty(locale.getVariant())) {
+                return builder.setVariant(null).build();
+            }
+            if (!TextUtils.isEmpty(locale.getCountry())) {
+                return builder.setRegion(null).build();
+            }
+            if (!TextUtils.isEmpty(locale.getScript())) {
+                return builder.setScript(null).build();
+            }
+
+            return super.getFallback(locale);
+        }
+
         @NonNull
         @Override
         public Locale[] getFallbacks(@NonNull final Locale locale) {
@@ -114,6 +136,17 @@ public class LocaleUtils {
             final LinkedHashSet<Locale> locales = new LinkedHashSet<>();
             locales.add(locale);
 
+            // generate all fallback variants
+            final Locale.Builder builder = toLocaleBuilder(locale);
+            for (Locale fallback = locale; fallback != null; fallback = getFallback(fallback, builder)) {
+                locales.add(fallback);
+            }
+
+            // return the locales as an array
+            return locales.toArray(new Locale[locales.size()]);
+        }
+
+        private Locale.Builder toLocaleBuilder(@NonNull final Locale locale) {
             // populate builder from provided locale
             final Locale.Builder builder = new Locale.Builder();
             try {
@@ -131,11 +164,11 @@ public class LocaleUtils {
                 } catch (final IllformedLocaleException ignored) {
                 }
                 try {
-                    builder.setRegion(locale.getCountry());
+                    builder.setScript(locale.getScript());
                 } catch (final IllformedLocaleException ignored) {
                 }
                 try {
-                    builder.setScript(locale.getScript());
+                    builder.setRegion(locale.getCountry());
                 } catch (final IllformedLocaleException ignored) {
                 }
                 try {
@@ -144,13 +177,7 @@ public class LocaleUtils {
                 }
             }
 
-            // generate all fallback variants
-            locales.add(builder.setVariant(null).build());
-            locales.add(builder.setRegion(null).build());
-            locales.add(builder.setScript(null).build());
-
-            // return the locales as an array
-            return locales.toArray(new Locale[locales.size()]);
+            return builder;
         }
     }
 
