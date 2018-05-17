@@ -1,12 +1,15 @@
 package org.ccci.gto.android.common.util;
 
 import android.annotation.TargetApi;
+import android.icu.util.ULocale;
 import android.os.Build;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
 
 import org.ccci.gto.android.common.compat.util.LocaleCompat;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.IllformedLocaleException;
@@ -15,18 +18,26 @@ import java.util.Locale;
 import java.util.Map;
 
 public class LocaleUtils {
-    static final Map<String, String> ISO3_TO_ISO2_FALLBACKS = new HashMap<>();
+    // define a few fixed fallbacks
+    static final Map<String, String> FALLBACKS = new HashMap<>();
     static {
-        ISO3_TO_ISO2_FALLBACKS.put("pse", "ms");
+        FALLBACKS.put("pse", "ms");
     }
 
     private static final Compat COMPAT;
     static {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
             COMPAT = new FroyoCompat();
-        } else {
+        } else if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
             COMPAT = new LollipopCompat();
+        } else {
+            COMPAT = new NougatCompat();
         }
+    }
+
+    @Nullable
+    public static Locale getFallback(@NonNull final Locale locale) {
+        return COMPAT.getFallback(locale);
     }
 
     @NonNull
@@ -48,12 +59,34 @@ public class LocaleUtils {
 
     @RestrictTo({RestrictTo.Scope.LIBRARY})
     interface Compat {
+        @Nullable
+        Locale getFallback(@NonNull Locale locale);
+
         @NonNull
         Locale[] getFallbacks(@NonNull Locale locale);
     }
 
     @RestrictTo({RestrictTo.Scope.LIBRARY})
     static class FroyoCompat implements Compat {
+        @Nullable
+        private String getFallback(@NonNull final String locale) {
+            // try splitting on "-"
+            int c = locale.lastIndexOf('-');
+            if (c >= 0) {
+                return locale.substring(0, c);
+            }
+
+            // try fixed fallbacks
+            return FALLBACKS.get(locale);
+        }
+
+        @Nullable
+        @Override
+        public Locale getFallback(@NonNull final Locale locale) {
+            final String fallback = getFallback(LocaleCompat.toLanguageTag(locale));
+            return fallback != null ? LocaleCompat.forLanguageTag(fallback) : null;
+        }
+
         @NonNull
         @Override
         public Locale[] getFallbacks(@NonNull final Locale locale) {
@@ -62,10 +95,7 @@ public class LocaleUtils {
             locales.add(locale);
 
             // generate all fallback variants
-            String raw = LocaleCompat.toLanguageTag(locale);
-            int c;
-            while ((c = raw.lastIndexOf('-')) >= 0) {
-                raw = raw.substring(0, c);
+            for (String raw = getFallback(LocaleCompat.toLanguageTag(locale)); raw != null; raw = getFallback(raw)) {
                 locales.add(LocaleCompat.forLanguageTag(raw));
             }
 
@@ -121,6 +151,43 @@ public class LocaleUtils {
 
             // return the locales as an array
             return locales.toArray(new Locale[locales.size()]);
+        }
+    }
+
+    @RestrictTo({RestrictTo.Scope.LIBRARY})
+    @TargetApi(Build.VERSION_CODES.N)
+    static final class NougatCompat extends LollipopCompat {
+        @Nullable
+        @Override
+        public Locale getFallback(@NonNull final Locale locale) {
+            final ULocale fallback = getFallback(ULocale.forLocale(locale));
+            return fallback != null ? fallback.toLocale() : null;
+        }
+
+        @NonNull
+        @Override
+        public Locale[] getFallbacks(@NonNull final Locale rawLocale) {
+            final ArrayList<Locale> locales = new ArrayList<>();
+
+            // handle fallback behavior
+            for (ULocale locale = ULocale.forLocale(rawLocale); locale != null && !locale.equals(ULocale.ROOT);
+                 locale = getFallback(locale)) {
+                locales.add(locale.toLocale());
+            }
+
+            return locales.toArray(new Locale[0]);
+        }
+
+        @Nullable
+        private ULocale getFallback(@NonNull final ULocale locale) {
+            ULocale fallback = locale.getFallback();
+            if (fallback != null && !ULocale.ROOT.equals(fallback)) {
+                return fallback;
+            }
+
+            // try a fixed fallback
+            final String fixed = FALLBACKS.get(locale.toLanguageTag());
+            return fixed != null ? ULocale.forLanguageTag(fixed) : null;
         }
     }
 }
