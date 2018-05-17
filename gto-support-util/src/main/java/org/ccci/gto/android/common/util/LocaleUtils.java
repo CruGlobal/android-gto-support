@@ -1,17 +1,25 @@
-package org.ccci.gto.android.common.compat.util;
+package org.ccci.gto.android.common.util;
 
 import android.annotation.TargetApi;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.RestrictTo;
-import android.support.annotation.VisibleForTesting;
+
+import org.ccci.gto.android.common.compat.util.LocaleCompat;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.IllformedLocaleException;
 import java.util.LinkedHashSet;
 import java.util.Locale;
+import java.util.Map;
 
-public class LocaleCompat {
+public class LocaleUtils {
+    static final Map<String, String> ISO3_TO_ISO2_FALLBACKS = new HashMap<>();
+    static {
+        ISO3_TO_ISO2_FALLBACKS.put("pse", "ms");
+    }
+
     private static final Compat COMPAT;
     static {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
@@ -22,31 +30,11 @@ public class LocaleCompat {
     }
 
     @NonNull
-    public static Locale forLanguageTag(@NonNull final String tag) {
-        return COMPAT.forLanguageTag(tag);
-    }
-
-    @NonNull
-    public static String toLanguageTag(@NonNull final Locale locale) {
-        return COMPAT.toLanguageTag(locale);
-    }
-
-    /**
-     * @deprecated Since v1.2.1, use {@link org.ccci.gto.android.common.util.LocaleUtils#getFallbacks(Locale)} from
-     * gto-support-util instead.
-     */
-    @NonNull
-    @Deprecated
     public static Locale[] getFallbacks(@NonNull final Locale locale) {
         return COMPAT.getFallbacks(locale);
     }
 
-    /**
-     * @deprecated Since v1.2.1, use {@link org.ccci.gto.android.common.util.LocaleUtils#getFallbacks(Locale...)} from
-     * gto-support-util instead.
-     */
     @NonNull
-    @Deprecated
     public static Locale[] getFallbacks(@NonNull final Locale... locales) {
         final LinkedHashSet<Locale> outputs = new LinkedHashSet<>();
 
@@ -58,20 +46,9 @@ public class LocaleCompat {
         return outputs.toArray(new Locale[outputs.size()]);
     }
 
-    @VisibleForTesting
+    @RestrictTo({RestrictTo.Scope.LIBRARY})
     interface Compat {
         @NonNull
-        Locale forLanguageTag(@NonNull String tag);
-
-        @NonNull
-        String toLanguageTag(@NonNull Locale locale);
-
-        /**
-         * @deprecated Since v1.2.1, use {@link org.ccci.gto.android.common.util.LocaleUtils} from gto-support-util
-         * instead.
-         */
-        @NonNull
-        @Deprecated
         Locale[] getFallbacks(@NonNull Locale locale);
     }
 
@@ -79,51 +56,17 @@ public class LocaleCompat {
     static class FroyoCompat implements Compat {
         @NonNull
         @Override
-        public Locale forLanguageTag(@NonNull final String tag) {
-            // XXX: we are ignoring grandfathered tags unless we really need that support
-            final String[] subtags = tag.split("-");
-            final String language = subtags[0] != null ? subtags[0] : "";
-            final String region = subtags.length > 1 && subtags[1] != null ? subtags[1] : "";
-            return new Locale(language, region);
-        }
-
-        @NonNull
-        @Override
-        public String toLanguageTag(@NonNull final Locale locale) {
-            // just perform simple generation
-            final StringBuilder sb = new StringBuilder(5);
-
-            // append the language
-            sb.append(locale.getLanguage().toLowerCase(Locale.US));
-
-            // append the region
-            final String region = locale.getCountry();
-            if (region != null && region.length() > 0) {
-                sb.append('-').append(region.toUpperCase(Locale.US));
-            }
-
-            // output the language tag
-            return sb.toString();
-        }
-
-        /**
-         * @deprecated Since v1.2.1, use {@link org.ccci.gto.android.common.util.LocaleUtils} from gto-support-util
-         * instead.
-         */
-        @NonNull
-        @Override
-        @Deprecated
         public Locale[] getFallbacks(@NonNull final Locale locale) {
             // add initial locale
             final LinkedHashSet<Locale> locales = new LinkedHashSet<>();
             locales.add(locale);
 
             // generate all fallback variants
-            String raw = toLanguageTag(locale);
+            String raw = LocaleCompat.toLanguageTag(locale);
             int c;
             while ((c = raw.lastIndexOf('-')) >= 0) {
                 raw = raw.substring(0, c);
-                locales.add(forLanguageTag(raw));
+                locales.add(LocaleCompat.forLanguageTag(raw));
             }
 
             // return the locales as an array
@@ -133,26 +76,9 @@ public class LocaleCompat {
 
     @RestrictTo({RestrictTo.Scope.LIBRARY})
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    static final class LollipopCompat extends FroyoCompat {
+    static class LollipopCompat extends FroyoCompat {
         @NonNull
         @Override
-        public Locale forLanguageTag(@NonNull final String tag) {
-            return Locale.forLanguageTag(tag);
-        }
-
-        @NonNull
-        @Override
-        public String toLanguageTag(@NonNull final Locale locale) {
-            return locale.toLanguageTag();
-        }
-
-        /**
-         * @deprecated Since v1.2.1, use {@link org.ccci.gto.android.common.util.LocaleUtils} from gto-support-util
-         * instead.
-         */
-        @NonNull
-        @Override
-        @Deprecated
         public Locale[] getFallbacks(@NonNull final Locale locale) {
             // add initial locale
             final LinkedHashSet<Locale> locales = new LinkedHashSet<>();
@@ -190,8 +116,8 @@ public class LocaleCompat {
 
             // generate all fallback variants
             locales.add(builder.setVariant(null).build());
-            locales.add(builder.setScript(null).build());
             locales.add(builder.setRegion(null).build());
+            locales.add(builder.setScript(null).build());
 
             // return the locales as an array
             return locales.toArray(new Locale[locales.size()]);
