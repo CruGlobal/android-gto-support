@@ -195,7 +195,7 @@ public class LocaleUtils {
             // generate all fallback variants
             final Locale.Builder builder = new Locale.Builder();
             populateLocaleBuilder(builder, locale);
-            for (Locale fallback = locale; fallback != null; ) {
+            for (Locale fallback = locale; fallback != null;) {
                 fallback = getFallback(fallback, builder);
                 if (fallback != null) {
                     locales.add(fallback);
@@ -255,7 +255,7 @@ public class LocaleUtils {
             locales.add(rawLocale);
 
             // handle fallback behavior
-            for (ULocale locale = ULocale.forLocale(rawLocale); locale != null && !locale.equals(ULocale.ROOT); ) {
+            for (ULocale locale = ULocale.forLocale(rawLocale); locale != null && !locale.equals(ULocale.ROOT);) {
                 locale = getFallback(locale);
                 if (locale != null) {
                     locales.add(locale.toLocale());
