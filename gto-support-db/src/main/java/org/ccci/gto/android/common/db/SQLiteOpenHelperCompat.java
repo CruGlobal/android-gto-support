@@ -1,6 +1,5 @@
 package org.ccci.gto.android.common.db;
 
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.database.DatabaseErrorHandler;
 import android.database.sqlite.SQLiteDatabase;
@@ -14,7 +13,6 @@ public abstract class SQLiteOpenHelperCompat extends SQLiteOpenHelper {
         super(context, name, factory, version);
     }
 
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     public SQLiteOpenHelperCompat(Context context, String name, CursorFactory factory, int version,
                                   DatabaseErrorHandler errorHandler) {
         super(context, name, factory, version, errorHandler);

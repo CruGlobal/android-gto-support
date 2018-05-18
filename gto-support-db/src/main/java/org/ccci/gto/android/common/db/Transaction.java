@@ -1,8 +1,6 @@
 package org.ccci.gto.android.common.db;
 
-import android.annotation.TargetApi;
 import android.database.sqlite.SQLiteDatabase;
-import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.v4.util.Pools;
 
@@ -66,10 +64,9 @@ public final class Transaction implements Closeable {
     }
 
     @NonNull
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     public Transaction beginTransaction(final boolean exclusive) {
         if (mState < STATE_OPEN) {
-            if (exclusive || Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
+            if (exclusive) {
                 mDb.beginTransaction();
             } else {
                 mDb.beginTransactionNonExclusive();

@@ -33,7 +33,7 @@ class TestDatabase extends WalSQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        throw new IllegalStateException("onUpgrade should no be triggered");
+        throw new IllegalStateException("onUpgrade should not be triggered");
     }
 
     private void resetDatabase(final SQLiteDatabase db) {
