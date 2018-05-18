@@ -17,6 +17,8 @@ import java.util.IllformedLocaleException;
 import java.util.LinkedHashSet;
 import java.util.Locale;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class LocaleUtils {
     // define a few fixed fallbacks
@@ -42,6 +44,8 @@ public class LocaleUtils {
         FALLBACKS.put("pse", "ms");
         FALLBACKS.put("zlm", "ms");
     }
+
+    static final Pattern PATTERN_EXTENSIONS = Pattern.compile("-[a-z0-9]-.*$", Pattern.CASE_INSENSITIVE);
 
     private static final Compat COMPAT;
     static {
@@ -102,6 +106,12 @@ public class LocaleUtils {
                 return fallback;
             }
 
+            // remove extensions as the fallback if any are defined.
+            final Matcher extensionMatcher = PATTERN_EXTENSIONS.matcher(locale);
+            if (extensionMatcher.find(0)) {
+                return extensionMatcher.replaceAll("");
+            }
+
             // try splitting on "-"
             int c = locale.lastIndexOf('-');
             if (c >= 0) {
@@ -158,6 +168,9 @@ public class LocaleUtils {
             }
 
             // try generating a fallback by eliminating parts of a language tag
+            if (!locale.getExtensionKeys().isEmpty()) {
+                return builder.clearExtensions().build();
+            }
             if (!TextUtils.isEmpty(locale.getVariant())) {
                 return builder.setVariant(null).build();
             }
@@ -182,8 +195,11 @@ public class LocaleUtils {
             // generate all fallback variants
             final Locale.Builder builder = new Locale.Builder();
             populateLocaleBuilder(builder, locale);
-            for (Locale fallback = locale; fallback != null; fallback = getFallback(fallback, builder)) {
-                locales.add(fallback);
+            for (Locale fallback = locale; fallback != null;) {
+                fallback = getFallback(fallback, builder);
+                if (fallback != null) {
+                    locales.add(fallback);
+                }
             }
 
             // return the locales as an array
@@ -193,7 +209,7 @@ public class LocaleUtils {
         private void populateLocaleBuilder(@NonNull final Locale.Builder builder, @NonNull final Locale locale) {
             // populate builder from provided locale
             try {
-                builder.setLocale(locale).clearExtensions();
+                builder.setLocale(locale);
             } catch (final IllformedLocaleException e) {
                 /* HACK: There appears to be a bug on Huawei devices running Android 5.0-5.1.1 using Arabic locales.
                          Setting the locale on the Locale Builder throws an IllformedLocaleException for "Invalid
@@ -236,11 +252,14 @@ public class LocaleUtils {
         @Override
         public Locale[] getFallbacks(@NonNull final Locale rawLocale) {
             final ArrayList<Locale> locales = new ArrayList<>();
+            locales.add(rawLocale);
 
             // handle fallback behavior
-            for (ULocale locale = ULocale.forLocale(rawLocale); locale != null && !locale.equals(ULocale.ROOT);
-                 locale = getFallback(locale)) {
-                locales.add(locale.toLocale());
+            for (ULocale locale = ULocale.forLocale(rawLocale); locale != null && !locale.equals(ULocale.ROOT);) {
+                locale = getFallback(locale);
+                if (locale != null) {
+                    locales.add(locale.toLocale());
+                }
             }
 
             return locales.toArray(new Locale[0]);
@@ -254,6 +273,12 @@ public class LocaleUtils {
                 return ULocale.forLanguageTag(fixed);
             }
 
+            // remove extensions as the fallback if any are defined
+            if (!locale.getExtensionKeys().isEmpty()) {
+                return new ULocale.Builder().setLocale(locale).clearExtensions().build();
+            }
+
+            // use normal fallback behavior
             final ULocale fallback = locale.getFallback();
             if (fallback != null && !ULocale.ROOT.equals(fallback)) {
                 return fallback;
