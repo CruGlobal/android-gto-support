@@ -14,7 +14,6 @@ public abstract class WalSQLiteOpenHelper extends SQLiteOpenHelperCompat {
         initWal();
     }
 
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     public WalSQLiteOpenHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version,
                                DatabaseErrorHandler errorHandler) {
         super(context, name, factory, version, errorHandler);
@@ -29,10 +28,9 @@ public abstract class WalSQLiteOpenHelper extends SQLiteOpenHelperCompat {
     }
 
     @Override
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     public void onConfigure(@NonNull final SQLiteDatabase db) {
         super.onConfigure(db);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
             // enable WAL now since we couldn't enable it when creating the database
             db.enableWriteAheadLogging();
         }
