@@ -1,6 +1,7 @@
 package org.ccci.gto.android.common.db;
 
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.v4.util.Pools;
 
@@ -67,6 +68,11 @@ public final class Transaction implements Closeable {
     public Transaction beginTransaction(final boolean exclusive) {
         if (mState < STATE_OPEN) {
             if (exclusive) {
+                mDb.beginTransaction();
+            } else if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1) {
+                // force exclusive transactions for older versions of android to try and fix
+                // "SQLiteDatabaseLockedException".
+                // see: https://gist.github.com/frett/5751c4ae3fb759a76b757f76a85958ee
                 mDb.beginTransaction();
             } else {
                 mDb.beginTransactionNonExclusive();
