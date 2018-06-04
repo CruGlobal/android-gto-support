@@ -22,7 +22,9 @@ public class ComponentNameUtils {
         return component.equals(new Intent(Intent.ACTION_VIEW, uri).resolveActivity(manager));
     }
 
-    public static boolean isDefaultComponentFor(@NonNull final Context context, @NonNull final Class<? extends Activity> clazz, @NonNull final Uri uri) {
+    public static boolean isDefaultComponentFor(@NonNull final Context context,
+                                                @NonNull final Class<? extends Activity> clazz,
+                                                @NonNull final Uri uri) {
         return isDefaultComponentFor(context.getPackageManager(), new ComponentName(context, clazz), uri);
     }
 }
