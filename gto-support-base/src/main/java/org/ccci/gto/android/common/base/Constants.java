@@ -1,11 +1,14 @@
 package org.ccci.gto.android.common.base;
 
+import android.support.annotation.ColorRes;
 import android.support.annotation.DimenRes;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.IdRes;
 import android.support.annotation.StringRes;
 
 public final class Constants {
+    @ColorRes
+    public static final int INVALID_COLOR_RES = 0;
     @DimenRes
     public static final int INVALID_DIMEN_RES = 0;
     @DrawableRes
