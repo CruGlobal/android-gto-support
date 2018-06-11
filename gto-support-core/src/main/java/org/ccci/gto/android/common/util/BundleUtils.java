@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 
 import org.ccci.gto.android.common.compat.util.LocaleCompat;
 import org.jetbrains.annotations.Contract;
@@ -78,6 +79,19 @@ public class BundleUtils {
 
     public static void putLocaleArray(@NonNull final Bundle bundle, @Nullable final String key,
                                       @Nullable final Locale[] locales) {
+        putLocaleArray(bundle, key, locales, false);
+    }
+
+    /**
+     * Store an array of Locales in the provided Bundle
+     *
+     * @param bundle       The bundle to store the locale array in
+     * @param key          The key to store the locale array under
+     * @param locales      The locales being put in the bundle
+     * @param singleString Flag indicating if the locale array should be stored as a single string
+     */
+    public static void putLocaleArray(@NonNull final Bundle bundle, @Nullable final String key,
+                                      @Nullable final Locale[] locales, final boolean singleString) {
         final String[] array;
         if (locales != null) {
             array = new String[locales.length];
@@ -87,12 +101,22 @@ public class BundleUtils {
         } else {
             array = null;
         }
-        bundle.putStringArray(key, array);
+
+        if (singleString) {
+            bundle.putString(key, array != null ? TextUtils.join(",", array) : null);
+        } else {
+            bundle.putStringArray(key, array);
+        }
     }
 
     @Nullable
     public static Locale[] getLocaleArray(@NonNull final Bundle bundle, @Nullable final String key) {
-        final String[] raw = bundle.getStringArray(key);
+        String[] raw = bundle.getStringArray(key);
+        if (raw == null) {
+            final String flat = bundle.getString(key);
+            raw = flat != null ? TextUtils.split(flat, ",") : null;
+        }
+
         final Locale[] locales;
         if (raw != null) {
             locales = new Locale[raw.length];
