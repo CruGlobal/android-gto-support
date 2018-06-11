@@ -13,6 +13,7 @@ android {
 dependencies {
     implementation project(':gto-support-compat')
     implementation project(':gto-support-core')
+    implementation project(':gto-support-util')
 
     testImplementation project(':gto-support-testing')
     testImplementation "junit:junit:${deps.junit}"

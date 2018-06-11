@@ -14,7 +14,7 @@ import org.ccci.gto.android.common.db.Join;
 import org.ccci.gto.android.common.db.Query;
 import org.ccci.gto.android.common.db.Table;
 import org.ccci.gto.android.common.support.v4.content.SimpleCursorLoader;
-import org.ccci.gto.android.common.util.BundleUtils;
+import org.ccci.gto.android.common.util.os.BundleUtils;
 
 import static org.ccci.gto.android.common.db.AbstractDao.ARG_DISTINCT;
 import static org.ccci.gto.android.common.db.AbstractDao.ARG_JOINS;
