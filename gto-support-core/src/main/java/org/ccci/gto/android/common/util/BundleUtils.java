@@ -15,7 +15,8 @@ import java.util.Locale;
 @Deprecated
 public class BundleUtils {
     /**
-     * @deprecated Since v1.2.2, use {@link org.ccci.gto.android.common.util.os.BundleUtils#getParcelableArray(Bundle, String, Class)} instead.
+     * @deprecated Since v1.2.2, use {@link org.ccci.gto.android.common.util.os.BundleUtils#getParcelableArray(Bundle,
+     * String, Class)} instead.
      */
     @Nullable
     @Deprecated
@@ -26,7 +27,8 @@ public class BundleUtils {
     }
 
     /**
-     * @deprecated Since v1.2.2, use {@link org.ccci.gto.android.common.util.os.BundleUtils#putEnum(Bundle, String, Enum)} instead.
+     * @deprecated Since v1.2.2, use {@link org.ccci.gto.android.common.util.os.BundleUtils#putEnum(Bundle, String,
+     * Enum)} instead.
      */
     @Deprecated
     public static void putEnum(@NonNull final Bundle bundle, @Nullable final String key,
@@ -35,7 +37,8 @@ public class BundleUtils {
     }
 
     /**
-     * @deprecated Since v1.2.2, use {@link org.ccci.gto.android.common.util.os.BundleUtils#getEnum(Bundle, Class, String)} instead.
+     * @deprecated Since v1.2.2, use {@link org.ccci.gto.android.common.util.os.BundleUtils#getEnum(Bundle, Class,
+     * String)} instead.
      */
     @Nullable
     @Deprecated
@@ -45,7 +48,8 @@ public class BundleUtils {
     }
 
     /**
-     * @deprecated Since v1.2.2, use {@link org.ccci.gto.android.common.util.os.BundleUtils#getEnum(Bundle, Class, String, Enum)} instead.
+     * @deprecated Since v1.2.2, use {@link org.ccci.gto.android.common.util.os.BundleUtils#getEnum(Bundle, Class,
+     * String, Enum)} instead.
      */
     @Nullable
     @Deprecated
@@ -56,7 +60,8 @@ public class BundleUtils {
     }
 
     /**
-     * @deprecated Since v1.2.2, use {@link org.ccci.gto.android.common.util.os.BundleUtils#putLocale(Bundle, String, Locale)} instead.
+     * @deprecated Since v1.2.2, use {@link org.ccci.gto.android.common.util.os.BundleUtils#putLocale(Bundle, String,
+     * Locale)} instead.
      */
     @Deprecated
     public static void putLocale(@NonNull final Bundle bundle, @Nullable final String key,
@@ -65,7 +70,8 @@ public class BundleUtils {
     }
 
     /**
-     * @deprecated Since v1.2.2, use {@link org.ccci.gto.android.common.util.os.BundleUtils#getLocale(Bundle, String)} instead.
+     * @deprecated Since v1.2.2, use {@link org.ccci.gto.android.common.util.os.BundleUtils#getLocale(Bundle, String)}
+     * instead.
      */
     @Nullable
     @Deprecated
@@ -74,7 +80,8 @@ public class BundleUtils {
     }
 
     /**
-     * @deprecated Since v1.2.2, use {@link org.ccci.gto.android.common.util.os.BundleUtils#getLocale(Bundle, String, Locale)} instead.
+     * @deprecated Since v1.2.2, use {@link org.ccci.gto.android.common.util.os.BundleUtils#getLocale(Bundle, String,
+     * Locale)} instead.
      */
     @Nullable
     @Deprecated
@@ -85,7 +92,8 @@ public class BundleUtils {
     }
 
     /**
-     * @deprecated Since v1.2.2, use {@link org.ccci.gto.android.common.util.os.BundleUtils#putLocaleArray(Bundle, String, Locale[])} instead.
+     * @deprecated Since v1.2.2, use {@link org.ccci.gto.android.common.util.os.BundleUtils#putLocaleArray(Bundle,
+     * String, Locale[])} instead.
      */
     @Deprecated
     public static void putLocaleArray(@NonNull final Bundle bundle, @Nullable final String key,
@@ -94,7 +102,8 @@ public class BundleUtils {
     }
 
     /**
-     * @deprecated Since v1.2.2, use {@link org.ccci.gto.android.common.util.os.BundleUtils#getLocaleArray(Bundle, String)} instead.
+     * @deprecated Since v1.2.2, use {@link org.ccci.gto.android.common.util.os.BundleUtils#getLocaleArray(Bundle,
+     * String)} instead.
      */
     @Nullable
     @Deprecated
