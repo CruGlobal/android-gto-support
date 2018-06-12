@@ -7,6 +7,8 @@ import android.support.annotation.Nullable;
 import android.view.View;
 import android.view.ViewParent;
 
+import timber.log.Timber;
+
 public final class ViewUtils {
     @Nullable
     public static <T> T findView(@Nullable final View root, @NonNull final Class<T> clazz, @IdRes final int id) {
@@ -39,5 +41,18 @@ public final class ViewUtils {
         }
 
         return null;
+    }
+
+    public static <T extends Throwable> boolean handleOnInterceptTouchEventException(@NonNull final T cause) throws T {
+        if (isMotionEventPointerIndexException(cause)) {
+            Timber.tag("View")
+                    .d(cause, "onInterceptTouchEvent() IllegalArgumentException suppressed");
+            return false;
+        }
+        throw cause;
+    }
+
+    private static boolean isMotionEventPointerIndexException(@NonNull final Throwable cause) {
+        return cause instanceof IllegalArgumentException && "pointerIndex out of range".equals(cause.getMessage());
     }
 }
