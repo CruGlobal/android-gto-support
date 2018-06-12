@@ -1,4 +1,4 @@
-package org.ccci.gto.android.common.util;
+package org.ccci.gto.android.common.util.os;
 
 import android.os.Bundle;
 
@@ -6,13 +6,13 @@ import org.junit.Test;
 
 import java.util.Locale;
 
-import static org.ccci.gto.android.common.util.BundleUtils.getEnum;
-import static org.ccci.gto.android.common.util.BundleUtils.getLocale;
-import static org.ccci.gto.android.common.util.BundleUtils.putEnum;
-import static org.ccci.gto.android.common.util.BundleUtils.putLocale;
-import static org.ccci.gto.android.common.util.BundleUtilsTest.TestEnum.DEFVALUE;
-import static org.ccci.gto.android.common.util.BundleUtilsTest.TestEnum.VALUE1;
-import static org.ccci.gto.android.common.util.BundleUtilsTest.TestEnum.VALUE2;
+import static org.ccci.gto.android.common.util.os.BundleUtils.getEnum;
+import static org.ccci.gto.android.common.util.os.BundleUtils.getLocale;
+import static org.ccci.gto.android.common.util.os.BundleUtils.putEnum;
+import static org.ccci.gto.android.common.util.os.BundleUtils.putLocale;
+import static org.ccci.gto.android.common.util.os.BundleUtilsTest.TestEnum.DEFVALUE;
+import static org.ccci.gto.android.common.util.os.BundleUtilsTest.TestEnum.VALUE1;
+import static org.ccci.gto.android.common.util.os.BundleUtilsTest.TestEnum.VALUE2;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;

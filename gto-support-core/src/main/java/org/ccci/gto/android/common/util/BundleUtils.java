@@ -5,103 +5,109 @@ import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import org.ccci.gto.android.common.compat.util.LocaleCompat;
 import org.jetbrains.annotations.Contract;
 
-import java.lang.reflect.Array;
 import java.util.Locale;
 
+/**
+ * @deprecated Since v1.2.2, use {@link org.ccci.gto.android.common.util.os.BundleUtils} instead.
+ */
+@Deprecated
 public class BundleUtils {
+    /**
+     * @deprecated Since v1.2.2, use {@link org.ccci.gto.android.common.util.os.BundleUtils#getParcelableArray(Bundle,
+     * String, Class)} instead.
+     */
     @Nullable
-    @SuppressWarnings({"unchecked", "SuspiciousSystemArraycopy"})
+    @Deprecated
     public static <T extends Parcelable> T[] getParcelableArray(@NonNull final Bundle bundle,
                                                                 @Nullable final String key,
                                                                 @NonNull final Class<T> clazz) {
-        final Parcelable[] raw = bundle.getParcelableArray(key);
-        if (raw == null) {
-            return null;
-        }
-
-        // copy all objects to typed array
-        final T[] arr = (T[]) Array.newInstance(clazz, raw.length);
-        System.arraycopy(raw, 0, arr, 0, raw.length);
-        return arr;
+        return org.ccci.gto.android.common.util.os.BundleUtils.getParcelableArray(bundle, key, clazz);
     }
 
+    /**
+     * @deprecated Since v1.2.2, use {@link org.ccci.gto.android.common.util.os.BundleUtils#putEnum(Bundle, String,
+     * Enum)} instead.
+     */
+    @Deprecated
     public static void putEnum(@NonNull final Bundle bundle, @Nullable final String key,
                                @Nullable final Enum<?> value) {
-        bundle.putString(key, value != null ? value.name() : null);
+        org.ccci.gto.android.common.util.os.BundleUtils.putEnum(bundle, key, value);
     }
 
+    /**
+     * @deprecated Since v1.2.2, use {@link org.ccci.gto.android.common.util.os.BundleUtils#getEnum(Bundle, Class,
+     * String)} instead.
+     */
     @Nullable
+    @Deprecated
     public static <T extends Enum<T>> T getEnum(@NonNull final Bundle bundle, @NonNull final Class<T> type,
                                                 @Nullable final String key) {
-        return getEnum(bundle, type, key, null);
+        return org.ccci.gto.android.common.util.os.BundleUtils.getEnum(bundle, type, key);
     }
 
+    /**
+     * @deprecated Since v1.2.2, use {@link org.ccci.gto.android.common.util.os.BundleUtils#getEnum(Bundle, Class,
+     * String, Enum)} instead.
+     */
     @Nullable
+    @Deprecated
     @Contract("_, _, _, !null -> !null")
     public static <T extends Enum<T>> T getEnum(@NonNull final Bundle bundle, @NonNull final Class<T> type,
                                                 @Nullable final String key, @Nullable final T defValue) {
-        final String raw = bundle.getString(key);
-        if (raw == null) {
-            return defValue;
-        }
-
-        try {
-            return Enum.valueOf(type, raw);
-        } catch (final IllegalArgumentException e) {
-            return defValue;
-        }
+        return org.ccci.gto.android.common.util.os.BundleUtils.getEnum(bundle, type, key, defValue);
     }
 
+    /**
+     * @deprecated Since v1.2.2, use {@link org.ccci.gto.android.common.util.os.BundleUtils#putLocale(Bundle, String,
+     * Locale)} instead.
+     */
+    @Deprecated
     public static void putLocale(@NonNull final Bundle bundle, @Nullable final String key,
                                  @Nullable final Locale locale) {
-        bundle.putString(key, locale != null ? LocaleCompat.toLanguageTag(locale) : null);
+        org.ccci.gto.android.common.util.os.BundleUtils.putLocale(bundle, key, locale);
     }
 
+    /**
+     * @deprecated Since v1.2.2, use {@link org.ccci.gto.android.common.util.os.BundleUtils#getLocale(Bundle, String)}
+     * instead.
+     */
     @Nullable
+    @Deprecated
     public static Locale getLocale(@NonNull final Bundle bundle, @Nullable final String key) {
-        return getLocale(bundle, key, null);
+        return org.ccci.gto.android.common.util.os.BundleUtils.getLocale(bundle, key);
     }
 
+    /**
+     * @deprecated Since v1.2.2, use {@link org.ccci.gto.android.common.util.os.BundleUtils#getLocale(Bundle, String,
+     * Locale)} instead.
+     */
     @Nullable
+    @Deprecated
     @Contract("_, _, !null -> !null")
     public static Locale getLocale(@NonNull final Bundle bundle, @Nullable final String key,
                                    @Nullable final Locale defValue) {
-        final String raw = bundle.getString(key);
-        if (raw == null) {
-            return defValue;
-        }
-        return LocaleCompat.forLanguageTag(raw);
+        return org.ccci.gto.android.common.util.os.BundleUtils.getLocale(bundle, key, defValue);
     }
 
+    /**
+     * @deprecated Since v1.2.2, use {@link org.ccci.gto.android.common.util.os.BundleUtils#putLocaleArray(Bundle,
+     * String, Locale[])} instead.
+     */
+    @Deprecated
     public static void putLocaleArray(@NonNull final Bundle bundle, @Nullable final String key,
                                       @Nullable final Locale[] locales) {
-        final String[] array;
-        if (locales != null) {
-            array = new String[locales.length];
-            for (int i = 0; i < locales.length; i++) {
-                array[i] = locales[i] != null ? LocaleCompat.toLanguageTag(locales[i]) : null;
-            }
-        } else {
-            array = null;
-        }
-        bundle.putStringArray(key, array);
+        org.ccci.gto.android.common.util.os.BundleUtils.putLocaleArray(bundle, key, locales);
     }
 
+    /**
+     * @deprecated Since v1.2.2, use {@link org.ccci.gto.android.common.util.os.BundleUtils#getLocaleArray(Bundle,
+     * String)} instead.
+     */
     @Nullable
+    @Deprecated
     public static Locale[] getLocaleArray(@NonNull final Bundle bundle, @Nullable final String key) {
-        final String[] raw = bundle.getStringArray(key);
-        final Locale[] locales;
-        if (raw != null) {
-            locales = new Locale[raw.length];
-            for (int i = 0; i < raw.length; i++) {
-                locales[i] = raw[i] != null ? LocaleCompat.forLanguageTag(raw[i]) : null;
-            }
-        } else {
-            locales = null;
-        }
-        return locales;
+        return org.ccci.gto.android.common.util.os.BundleUtils.getLocaleArray(bundle, key);
     }
 }
