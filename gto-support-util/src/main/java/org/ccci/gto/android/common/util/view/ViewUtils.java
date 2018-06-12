@@ -1,4 +1,4 @@
-package org.ccci.gto.android.common.util;
+package org.ccci.gto.android.common.util.view;
 
 import android.app.Activity;
 import android.support.annotation.IdRes;
