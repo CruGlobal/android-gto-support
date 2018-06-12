@@ -52,6 +52,15 @@ public final class ViewUtils {
         throw cause;
     }
 
+    public static <T extends Throwable> boolean handleOnTouchEventException(@NonNull final T cause) throws T {
+        if (isMotionEventPointerIndexException(cause)) {
+            Timber.tag("View")
+                    .d(cause, "onTouchEvent() IllegalArgumentException suppressed");
+            return true;
+        }
+        throw cause;
+    }
+
     private static boolean isMotionEventPointerIndexException(@NonNull final Throwable cause) {
         return cause instanceof IllegalArgumentException && "pointerIndex out of range".equals(cause.getMessage());
     }
