@@ -12,7 +12,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import org.ccci.gto.android.common.util.ViewUtils;
+import org.ccci.gto.android.common.util.view.ViewUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;

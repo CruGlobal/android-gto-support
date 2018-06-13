@@ -7,7 +7,7 @@ import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 
-import org.ccci.gto.android.common.viewpager.util.ViewPagerUtils;
+import org.ccci.gto.android.common.util.view.ViewUtils;
 
 public class HackyViewPager extends ViewPager {
     public HackyViewPager(@NonNull final Context context) {
@@ -23,7 +23,7 @@ public class HackyViewPager extends ViewPager {
         try {
             return super.onInterceptTouchEvent(ev);
         } catch (final RuntimeException e) {
-            return ViewPagerUtils.handleOnInterceptTouchEventException(e);
+            return ViewUtils.handleOnInterceptTouchEventException(e);
         }
     }
 }

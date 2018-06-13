@@ -1,4 +1,4 @@
-package org.ccci.gto.android.common.util;
+package org.ccci.gto.android.common.util.view;
 
 import android.app.Activity;
 import android.support.annotation.IdRes;
@@ -6,6 +6,8 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.View;
 import android.view.ViewParent;
+
+import timber.log.Timber;
 
 public final class ViewUtils {
     @Nullable
@@ -39,5 +41,27 @@ public final class ViewUtils {
         }
 
         return null;
+    }
+
+    public static <T extends Throwable> boolean handleOnInterceptTouchEventException(@NonNull final T cause) throws T {
+        if (isMotionEventPointerIndexException(cause)) {
+            Timber.tag("View")
+                    .d(cause, "onInterceptTouchEvent() IllegalArgumentException suppressed");
+            return false;
+        }
+        throw cause;
+    }
+
+    public static <T extends Throwable> boolean handleOnTouchEventException(@NonNull final T cause) throws T {
+        if (isMotionEventPointerIndexException(cause)) {
+            Timber.tag("View")
+                    .d(cause, "onTouchEvent() IllegalArgumentException suppressed");
+            return true;
+        }
+        throw cause;
+    }
+
+    private static boolean isMotionEventPointerIndexException(@NonNull final Throwable cause) {
+        return cause instanceof IllegalArgumentException && "pointerIndex out of range".equals(cause.getMessage());
     }
 }

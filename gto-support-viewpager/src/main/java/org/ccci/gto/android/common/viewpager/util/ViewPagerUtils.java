@@ -2,15 +2,19 @@ package org.ccci.gto.android.common.viewpager.util;
 
 import android.support.annotation.NonNull;
 
-import timber.log.Timber;
+import org.ccci.gto.android.common.util.view.ViewUtils;
 
+/**
+ * @deprecated Since v1.2.2, use {@link org.ccci.gto.android.common.util.view.ViewUtils} instead.
+ */
+@Deprecated
 public class ViewPagerUtils {
+    /**
+     * @deprecated Since v1.2.2, use
+     * {@link org.ccci.gto.android.common.util.view.ViewUtils#handleOnInterceptTouchEventException(Throwable)} instead.
+     */
+    @Deprecated
     public static <T extends Throwable> boolean handleOnInterceptTouchEventException(@NonNull final T cause) throws T {
-        if (cause instanceof IllegalArgumentException) {
-            Timber.tag("ViewPager")
-                    .d(cause, "onInterceptTouchEvent() IllegalArgumentException suppressed");
-            return false;
-        }
-        throw cause;
+        return ViewUtils.handleOnInterceptTouchEventException(cause);
     }
 }
