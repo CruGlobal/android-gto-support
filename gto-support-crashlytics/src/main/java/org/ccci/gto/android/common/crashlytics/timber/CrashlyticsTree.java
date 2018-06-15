@@ -11,13 +11,19 @@ import timber.log.Timber;
 
 public final class CrashlyticsTree extends Timber.Tree {
     private int mLogLevel;
+    private int mExceptionLogLevel;
 
     public CrashlyticsTree() {
-        mLogLevel = Log.INFO;
+        this(Log.INFO, Log.ERROR);
     }
 
     public CrashlyticsTree(final int logLevel) {
+        this(logLevel, logLevel);
+    }
+
+    public CrashlyticsTree(final int logLevel, final int exceptionLogLevel) {
         mLogLevel = logLevel;
+        mExceptionLogLevel = exceptionLogLevel;
     }
 
     @Override
@@ -30,7 +36,7 @@ public final class CrashlyticsTree extends Timber.Tree {
                        @Nullable final Throwable t) {
         Crashlytics.log(priority, tag, message);
 
-        if (t != null) {
+        if (t != null && mExceptionLogLevel <= priority) {
             Crashlytics.logException(t);
         }
     }
