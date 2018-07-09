@@ -8,6 +8,7 @@ import org.ccci.gto.android.common.jsonapi.annotation.JsonApiAttribute;
 import org.ccci.gto.android.common.jsonapi.annotation.JsonApiId;
 import org.ccci.gto.android.common.jsonapi.annotation.JsonApiIgnore;
 import org.ccci.gto.android.common.jsonapi.annotation.JsonApiPlaceholder;
+import org.ccci.gto.android.common.jsonapi.annotation.JsonApiPostCreate;
 import org.ccci.gto.android.common.jsonapi.annotation.JsonApiType;
 import org.ccci.gto.android.common.jsonapi.converter.TypeConverter;
 import org.ccci.gto.android.common.jsonapi.model.JsonApiError;
@@ -19,6 +20,8 @@ import org.json.JSONObject;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -78,6 +81,7 @@ public final class JsonApiConverter {
     private final Map<String, Class<?>> mTypes = new HashMap<>();
     private final Map<Class<?>, FieldInfo> mIdField = new HashMap<>();
     private final Map<Class<?>, FieldInfo> mPlaceholderField = new HashMap<>();
+    private final Map<Class<?>, MethodInfo> mPostCreateMethod = new HashMap<>();
     private final Map<Class<?>, List<FieldInfo>> mFields = new HashMap<>();
 
     JsonApiConverter(@NonNull final List<Class<?>> classes, @NonNull final List<TypeConverter<?>> converters) {
@@ -109,8 +113,9 @@ public final class JsonApiConverter {
                 mTypes.put(alias, c);
             }
 
-            // initialize Fields for the class
+            // initialize Fields and Methods for the class
             initFields(c);
+            initMethods(c);
         }
     }
 
@@ -219,6 +224,11 @@ public final class JsonApiConverter {
             throw new UnsupportedOperationException();
         }
 
+        // call any post-create methods
+        for (final ObjValue obj : objects.values()) {
+            triggerPostCreate(obj);
+        }
+
         // pass the JSONApi meta object back as-is
         output.setRawMeta(jsonObject.optJSONObject(JSON_META));
 
@@ -249,6 +259,27 @@ public final class JsonApiConverter {
             }
         }
         mFields.put(clazz, fields);
+    }
+
+    private void initMethods(@NonNull final Class<?> clazz) {
+        for (final MethodInfo method : getMethods(clazz)) {
+            if (method.mIsPostCreate) {
+                if (mPostCreateMethod.containsKey(clazz)) {
+                    throw new IllegalArgumentException(
+                            "Class " + clazz + " has more than one @JsonApiPostCreate method defined");
+                }
+                if (method.mMethod.getParameterTypes().length > 0) {
+                    throw new IllegalArgumentException(
+                            "Method '" + method + "' cannot have any parameters for @JsonApiPostCreate annotation");
+                }
+                if (method.throwsCheckedException()) {
+                    throw new IllegalArgumentException("Method '" + method +
+                                                               "' cannot throw a checked exception for the @JsonApiPostCreate annotation");
+                }
+
+                mPostCreateMethod.put(clazz, method);
+            }
+        }
     }
 
     @NonNull
@@ -590,6 +621,11 @@ public final class JsonApiConverter {
                 } catch (final IllegalAccessException ignored) {
                 }
             }
+
+            // trigger post create method if there wasn't a key for this object
+            if (key == null) {
+                triggerPostCreate(value);
+            }
         }
 
         // return the object
@@ -645,6 +681,40 @@ public final class JsonApiConverter {
         }
 
         return fields;
+    }
+
+    private List<MethodInfo> getMethods(@Nullable final Class<?> type) {
+        if (type == null || Object.class.equals(type)) {
+            return Collections.emptyList();
+        }
+
+        // process all immediate declared methods
+        final List<MethodInfo> methods = new ArrayList<>();
+        for (final Method method : type.getDeclaredMethods()) {
+            // skip synthetic and bridge methods
+            if (method.isSynthetic() || method.isBridge()) {
+                continue;
+            }
+
+            // skip abstract & static methods
+            final int modifiers = method.getModifiers();
+            if (Modifier.isAbstract(modifiers) || Modifier.isStatic(modifiers)) {
+                continue;
+            }
+
+            final MethodInfo info = new MethodInfo(method);
+
+            // only return relevant methods
+            if (info.isRelevant()) {
+                method.setAccessible(true);
+                methods.add(info);
+            }
+        }
+
+        // process the superclass
+        methods.addAll(getMethods(type.getSuperclass()));
+
+        return methods;
     }
 
     private boolean isSupportedType(@NonNull final Class<?> type) {
@@ -830,6 +900,29 @@ public final class JsonApiConverter {
         return null;
     }
 
+    private void triggerPostCreate(@NonNull final ObjValue object) {
+        final Class<?> type = object.mObject.getClass();
+        final MethodInfo method = mPostCreateMethod.get(type);
+        if (method != null) {
+            try {
+                method.mMethod.invoke(object.mObject);
+            } catch (IllegalAccessException e) {
+                throw new IllegalStateException(e);
+            } catch (InvocationTargetException e) {
+                final Throwable t = e.getCause();
+                if (t instanceof Error) {
+                    throw (Error) t;
+                } else if (t instanceof RuntimeException) {
+                    throw (RuntimeException) t;
+                } else {
+                    throw new IllegalStateException(
+                            "Method '" + method.mMethod + "' threw an unexpected checked exception", t);
+                }
+            }
+        }
+
+    }
+
     static final class FieldInfo {
         @NonNull
         final Field mField;
@@ -899,6 +992,35 @@ public final class JsonApiConverter {
             }
 
             return mAttrName;
+        }
+    }
+
+    static final class MethodInfo {
+        @NonNull
+        final Method mMethod;
+        final boolean mIsPostCreate;
+
+        MethodInfo(@NonNull final Method method) {
+            mMethod = method;
+            mIsPostCreate = method.getAnnotation(JsonApiPostCreate.class) != null;
+        }
+
+        boolean isRelevant() {
+            return mIsPostCreate;
+        }
+
+        boolean throwsCheckedException() {
+            for (final Class<?> exceptionType : mMethod.getExceptionTypes()) {
+                // skip any unchecked exceptions
+                if (Error.class.isAssignableFrom(exceptionType) ||
+                        RuntimeException.class.isAssignableFrom(exceptionType)) {
+                    continue;
+                }
+
+                // this wasn't an unchecked exception, so it's a checked exception
+                return true;
+            }
+            return false;
         }
     }
 
