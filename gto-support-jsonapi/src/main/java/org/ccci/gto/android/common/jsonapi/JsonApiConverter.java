@@ -270,11 +270,11 @@ public final class JsonApiConverter {
                 }
                 if (method.mMethod.getParameterTypes().length > 0) {
                     throw new IllegalArgumentException(
-                            "Method '" + method + "' cannot have any parameters for @JsonApiPostCreate annotation");
+                            "@JsonApiPostCreate annotated method '" + method + "' cannot have any parameters");
                 }
                 if (method.throwsCheckedException()) {
-                    throw new IllegalArgumentException("Method '" + method +
-                                                               "' cannot throw a checked exception for the @JsonApiPostCreate annotation");
+                    throw new IllegalArgumentException(
+                            "@JsonApiPostCreate annotated method '" + method + "' cannot throw a checked exception");
                 }
 
                 mPostCreateMethod.put(clazz, method);
