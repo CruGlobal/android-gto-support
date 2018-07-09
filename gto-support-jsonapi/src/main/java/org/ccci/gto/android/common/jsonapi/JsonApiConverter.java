@@ -97,33 +97,8 @@ public final class JsonApiConverter {
                         "Duplicate @JsonApiType(\"" + type + "\") shared by " + mTypes.get(type) + " and " + c);
             }
 
-            // store this type
+            // store this type and any aliases
             mTypes.put(type, c);
-            final List<FieldInfo> fields = getFields(c);
-            for (final Iterator<FieldInfo> i = fields.iterator(); i.hasNext();) {
-                final FieldInfo field = i.next();
-                if (field.isId()) {
-                    if (mIdField.containsKey(c)) {
-                        throw new IllegalArgumentException("Class " + c + " has more than one @JsonApiId defined");
-                    }
-                    mIdField.put(c, field);
-                }
-                if (field.isPlaceholder()) {
-                    if (mPlaceholderField.containsKey(c)) {
-                        throw new IllegalArgumentException("Class " + c + " has more than one placeholder defined");
-                    }
-                    final Class<?> fieldType = field.getType();
-                    if (!Boolean.class.equals(fieldType) && !boolean.class.equals(fieldType)) {
-                        throw new IllegalArgumentException(
-                                "Class " + c + " has an unsupported placeholder field type " + fieldType);
-                    }
-                    mPlaceholderField.put(c, field);
-                    i.remove();
-                }
-            }
-            mFields.put(c, fields);
-
-            // handle any type aliases
             for (final String alias : getResourceTypeAliases(c)) {
                 // throw an exception if the specified alias is already defined
                 if (mTypes.containsKey(alias)) {
@@ -133,6 +108,9 @@ public final class JsonApiConverter {
 
                 mTypes.put(alias, c);
             }
+
+            // initialize Fields for the class
+            initFields(c);
         }
     }
 
@@ -245,6 +223,32 @@ public final class JsonApiConverter {
         output.setRawMeta(jsonObject.optJSONObject(JSON_META));
 
         return output;
+    }
+
+    private void initFields(@NonNull final Class<?> clazz) {
+        final List<FieldInfo> fields = getFields(clazz);
+        for (final Iterator<FieldInfo> i = fields.iterator(); i.hasNext();) {
+            final FieldInfo field = i.next();
+            if (field.isId()) {
+                if (mIdField.containsKey(clazz)) {
+                    throw new IllegalArgumentException("Class " + clazz + " has more than one @JsonApiId defined");
+                }
+                mIdField.put(clazz, field);
+            }
+            if (field.isPlaceholder()) {
+                if (mPlaceholderField.containsKey(clazz)) {
+                    throw new IllegalArgumentException("Class " + clazz + " has more than one placeholder defined");
+                }
+                final Class<?> fieldType = field.getType();
+                if (!Boolean.class.equals(fieldType) && !boolean.class.equals(fieldType)) {
+                    throw new IllegalArgumentException(
+                            "Class " + clazz + " has an unsupported placeholder field type " + fieldType);
+                }
+                mPlaceholderField.put(clazz, field);
+                i.remove();
+            }
+        }
+        mFields.put(clazz, fields);
     }
 
     @NonNull
