@@ -201,7 +201,7 @@ public final class JsonApiConverter {
         final JSONObject jsonObject = new JSONObject(json);
 
         // parse "included" objects
-        final Map<ObjKey, Object> objects = new HashMap<>();
+        final Map<ObjKey, ObjValue> objects = new HashMap<>();
         final JSONArray included = jsonObject.optJSONArray(JSON_INCLUDED);
         if (included != null) {
             //noinspection unchecked
@@ -441,7 +441,7 @@ public final class JsonApiConverter {
 
     @NonNull
     private <E> E[] resourcesFromJson(@Nullable final JSONArray json, @NonNull final Class<E> type,
-                                      final boolean placeholder, @NonNull final Map<ObjKey, Object> objects) {
+                                      final boolean placeholder, @NonNull final Map<ObjKey, ObjValue> objects) {
         @SuppressWarnings("unchecked")
         final E[] array = (E[]) Array.newInstance(type, json != null ? json.length() : 0);
 
@@ -459,7 +459,7 @@ public final class JsonApiConverter {
                                                              @NonNull final Class<E> type,
                                                              @NonNull final Class<T> collectionType,
                                                              final boolean placeholder,
-                                                             @NonNull final Map<ObjKey, Object> objects) {
+                                                             @NonNull final Map<ObjKey, ObjValue> objects) {
         // create new collection
         final T resources = newCollection(collectionType);
         if (resources == null) {
@@ -478,7 +478,7 @@ public final class JsonApiConverter {
     @Nullable
     @SuppressWarnings("checkstyle:RightCurly")
     private <E> E resourceFromJson(@Nullable final JSONObject json, @NonNull final Class<E> expectedType,
-                                   final boolean placeholder, @NonNull final Map<ObjKey, Object> objects) {
+                                   final boolean placeholder, @NonNull final Map<ObjKey, ObjValue> objects) {
         if (json == null) {
             return null;
         }
@@ -493,29 +493,30 @@ public final class JsonApiConverter {
         // look for the referenced object first
         final String rawId = json.optString(JSON_DATA_ID);
         final ObjKey key = rawId != null && rawType != null ? new ObjKey(rawType, rawId) : null;
-        E instance = null;
+        ObjValue<E> value = null;
         if (key != null) {
             //noinspection unchecked
-            instance = (E) objects.get(key);
+            value = objects.get(key);
         }
         // no object found, create a new instance
-        if (instance == null) {
+        if (value == null) {
             try {
                 //noinspection unchecked
-                instance = (E) type.newInstance();
+                value = new ObjValue<>((E) type.newInstance());
                 if (key != null) {
-                    objects.put(key, instance);
+                    objects.put(key, value);
                 }
 
                 // mark the new object as a placeholder
                 final FieldInfo placeholderField = mPlaceholderField.get(type);
                 if (placeholderField != null) {
-                    placeholderField.mField.set(instance, true);
+                    placeholderField.mField.set(value.mObject, true);
                 }
             } catch (final Exception e) {
                 return null;
             }
         }
+        final E instance = value.mObject;
 
         // populate fields
         final JSONObject attributes = json.optJSONObject(JSON_DATA_ATTRIBUTES);
@@ -574,8 +575,10 @@ public final class JsonApiConverter {
             }
         }
 
-        // clear placeholder state if the full object was just instantiated
+        // was the full object just instantiated
         if (!placeholder) {
+            // clear placeholder state
+            value.mPlaceholder = false;
             final FieldInfo placeholderField = mPlaceholderField.get(type);
             if (placeholderField != null) {
                 try {
@@ -935,6 +938,16 @@ public final class JsonApiConverter {
         @Override
         public int hashCode() {
             return Arrays.hashCode(new Object[] {mType, mId});
+        }
+    }
+
+    static final class ObjValue<T> {
+        @NonNull
+        final T mObject;
+        boolean mPlaceholder = true;
+
+        ObjValue(@NonNull final T object) {
+            mObject = object;
         }
     }
 
