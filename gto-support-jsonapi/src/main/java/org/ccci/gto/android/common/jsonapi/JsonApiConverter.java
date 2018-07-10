@@ -270,11 +270,15 @@ public final class JsonApiConverter {
                 }
                 if (method.mMethod.getParameterTypes().length > 0) {
                     throw new IllegalArgumentException(
-                            "@JsonApiPostCreate annotated method '" + method + "' cannot have any parameters");
+                            "@JsonApiPostCreate annotated method '" + method.mMethod + "' cannot have any parameters");
                 }
                 if (method.throwsCheckedException()) {
+                    throw new IllegalArgumentException("@JsonApiPostCreate annotated method '" + method.mMethod +
+                                                               "' cannot throw a checked exception");
+                }
+                if (!method.isEffectivelyFinal()) {
                     throw new IllegalArgumentException(
-                            "@JsonApiPostCreate annotated method '" + method + "' cannot throw a checked exception");
+                            "@JsonApiPostCreate annotated method '" + method.mMethod + "' must be effectively final");
                 }
 
                 mPostCreateMethod.put(clazz, method);
@@ -1005,16 +1009,26 @@ public final class JsonApiConverter {
 
     static final class MethodInfo {
         @NonNull
+        private final Class<?> mClass;
+        @NonNull
         final Method mMethod;
+        final int mModifiers;
         final boolean mIsPostCreate;
 
         MethodInfo(@NonNull final Method method) {
+            mClass = method.getDeclaringClass();
             mMethod = method;
+            mModifiers = method.getModifiers();
             mIsPostCreate = method.getAnnotation(JsonApiPostCreate.class) != null;
         }
 
         boolean isRelevant() {
             return mIsPostCreate;
+        }
+
+        boolean isEffectivelyFinal() {
+            return Modifier.isFinal(mModifiers) || Modifier.isPrivate(mModifiers) ||
+                    Modifier.isFinal(mClass.getModifiers());
         }
 
         boolean throwsCheckedException() {

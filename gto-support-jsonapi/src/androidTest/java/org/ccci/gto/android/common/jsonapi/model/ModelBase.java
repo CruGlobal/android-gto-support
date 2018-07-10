@@ -15,7 +15,7 @@ public abstract class ModelBase {
     public boolean mPostCreateCalled = false;
 
     @JsonApiPostCreate
-    private void postCreate() {
+    final void finalPostCreate() {
         if (mPostCreateCalled) {
             throw new IllegalStateException("post create already called!!!");
         }

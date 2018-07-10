@@ -15,18 +15,33 @@ import static org.junit.Assert.assertTrue;
 
 public class JsonApiConverterPostCreateIT {
     @Test(expected = IllegalArgumentException.class)
-    public void verifyConverterMultiplePostCreate() throws Exception {
+    public void verifyConverterPostCreateMultiple() throws Exception {
         new JsonApiConverter.Builder().addClasses(ModelDuplicatePostCreate.class).build();
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void verifyConverterMultiplePostCreateParams() throws Exception {
+    public void verifyConverterPostCreateParams() throws Exception {
         new JsonApiConverter.Builder().addClasses(ModelPostCreateParameters.class).build();
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void verifyConverterMultiplePostCreateCheckedException() throws Exception {
+    public void verifyConverterPostCreateCheckedException() throws Exception {
         new JsonApiConverter.Builder().addClasses(ModelPostCreateCheckedException.class).build();
+    }
+
+    @Test
+    public void verifyConverterPostCreateFinalClass() {
+        new JsonApiConverter.Builder().addClasses(ModelPostCreateFinalClass.class).build();
+    }
+
+    @Test
+    public void verifyConverterPostCreateFinalMethod() {
+        new JsonApiConverter.Builder().addClasses(ModelPostCreateFinalClass.class).build();
+    }
+
+    @Test
+    public void verifyConverterPostCreatePrivateMethod() {
+        new JsonApiConverter.Builder().addClasses(ModelPostCreatePrivateMethod.class).build();
     }
 
     @Test
@@ -58,5 +73,23 @@ public class JsonApiConverterPostCreateIT {
     private static class ModelPostCreateCheckedException {
         @JsonApiPostCreate
         private void postCreate() throws Exception {}
+    }
+
+    @JsonApiType("finalclass")
+    private static final class ModelPostCreateFinalClass {
+        @JsonApiPostCreate
+        private void postCreate() {}
+    }
+
+    @JsonApiType("finalmethod")
+    private static final class ModelPostCreateFinalMethod {
+        @JsonApiPostCreate
+        public final void postCreate() {}
+    }
+
+    @JsonApiType("finalmethod")
+    private static final class ModelPostCreatePrivateMethod {
+        @JsonApiPostCreate
+        private void postCreate() {}
     }
 }
