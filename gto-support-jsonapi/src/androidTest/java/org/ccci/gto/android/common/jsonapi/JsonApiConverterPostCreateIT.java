@@ -1,5 +1,6 @@
 package org.ccci.gto.android.common.jsonapi;
 
+import org.ccci.gto.android.common.jsonapi.annotation.JsonApiIgnore;
 import org.ccci.gto.android.common.jsonapi.annotation.JsonApiPostCreate;
 import org.ccci.gto.android.common.jsonapi.annotation.JsonApiType;
 import org.ccci.gto.android.common.jsonapi.model.JsonApiObject;
@@ -14,11 +15,6 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 public class JsonApiConverterPostCreateIT {
-    @Test(expected = IllegalArgumentException.class)
-    public void verifyConverterPostCreateMultiple() throws Exception {
-        new JsonApiConverter.Builder().addClasses(ModelDuplicatePostCreate.class).build();
-    }
-
     @Test(expected = IllegalArgumentException.class)
     public void verifyConverterPostCreateParams() throws Exception {
         new JsonApiConverter.Builder().addClasses(ModelPostCreateParameters.class).build();
@@ -45,7 +41,7 @@ public class JsonApiConverterPostCreateIT {
     }
 
     @Test
-    public void verifyFromJsonSimple() throws Exception {
+    public void verifyConverterPostCreateSimple() throws Exception {
         final JsonApiConverter converter = new JsonApiConverter.Builder().addClasses(ModelSimple.class).build();
 
         final ModelSimple source = new ModelSimple(99);
@@ -57,10 +53,32 @@ public class JsonApiConverterPostCreateIT {
         assertTrue(output.getDataSingle().mPostCreateCalled);
     }
 
+    @Test
+    public void verifyConverterPostCreateMultiple() throws Exception {
+        final JsonApiConverter converter =
+                new JsonApiConverter.Builder().addClasses(ModelDuplicatePostCreate.class).build();
+
+        final ModelDuplicatePostCreate source = new ModelDuplicatePostCreate();
+        final JsonApiObject<ModelDuplicatePostCreate> output =
+                converter.fromJson(converter.toJson(JsonApiObject.single(source)), ModelDuplicatePostCreate.class);
+        assertThat(output.isSingle(), is(true));
+        assertThat(output.getDataSingle(), is(not(nullValue())));
+        assertTrue(output.getDataSingle().mPostCreateCalled);
+        assertTrue(output.getDataSingle().mPrivatePostCreateCalled);
+    }
+
     @JsonApiType("duplicate")
-    private static class ModelDuplicatePostCreate extends ModelBase {
+    public static class ModelDuplicatePostCreate extends ModelBase {
+        @JsonApiIgnore
+        public boolean mPrivatePostCreateCalled = false;
+
         @JsonApiPostCreate
-        private void create() {}
+        private void privatePostCreate() {
+            if (mPrivatePostCreateCalled) {
+                throw new IllegalStateException("privatePostCreate() should only be called once");
+            }
+            mPrivatePostCreateCalled = true;
+        }
     }
 
     @JsonApiType("params")

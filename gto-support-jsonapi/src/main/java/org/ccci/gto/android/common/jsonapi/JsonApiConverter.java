@@ -81,7 +81,7 @@ public final class JsonApiConverter {
     private final Map<String, Class<?>> mTypes = new HashMap<>();
     private final Map<Class<?>, FieldInfo> mIdField = new HashMap<>();
     private final Map<Class<?>, FieldInfo> mPlaceholderField = new HashMap<>();
-    private final Map<Class<?>, MethodInfo> mPostCreateMethod = new HashMap<>();
+    private final Map<Class<?>, List<MethodInfo>> mPostCreateMethod = new HashMap<>();
     private final Map<Class<?>, List<FieldInfo>> mFields = new HashMap<>();
 
     JsonApiConverter(@NonNull final List<Class<?>> classes, @NonNull final List<TypeConverter<?>> converters) {
@@ -264,10 +264,12 @@ public final class JsonApiConverter {
     private void initMethods(@NonNull final Class<?> clazz) {
         for (final MethodInfo method : getMethods(clazz)) {
             if (method.mIsPostCreate) {
-                if (mPostCreateMethod.containsKey(clazz)) {
-                    throw new IllegalArgumentException(
-                            "Class " + clazz + " has more than one @JsonApiPostCreate method defined");
+                List<MethodInfo> postCreateMethods = mPostCreateMethod.get(clazz);
+                if (postCreateMethods == null) {
+                    postCreateMethods = new ArrayList<>();
+                    mPostCreateMethod.put(clazz, postCreateMethods);
                 }
+
                 if (method.mMethod.getParameterTypes().length > 0) {
                     throw new IllegalArgumentException(
                             "@JsonApiPostCreate annotated method '" + method.mMethod + "' cannot have any parameters");
@@ -281,7 +283,7 @@ public final class JsonApiConverter {
                             "@JsonApiPostCreate annotated method '" + method.mMethod + "' must be effectively final");
                 }
 
-                mPostCreateMethod.put(clazz, method);
+                postCreateMethods.add(method);
             }
         }
     }
@@ -912,25 +914,27 @@ public final class JsonApiConverter {
 
         // short-circuit if there isn't a post-create method
         final Class<?> type = object.mObject.getClass();
-        final MethodInfo method = mPostCreateMethod.get(type);
-        if (method == null) {
+        final List<MethodInfo> methods = mPostCreateMethod.get(type);
+        if (methods == null || methods.isEmpty()) {
             return;
         }
 
-        // invoke the Post-Create method
-        try {
-            method.mMethod.invoke(object.mObject);
-        } catch (IllegalAccessException e) {
-            throw new IllegalStateException(e);
-        } catch (InvocationTargetException e) {
-            final Throwable t = e.getCause();
-            if (t instanceof Error) {
-                throw (Error) t;
-            } else if (t instanceof RuntimeException) {
-                throw (RuntimeException) t;
-            } else {
-                throw new IllegalStateException(
-                        "Method '" + method.mMethod + "' threw an unexpected checked exception", t);
+        // invoke the Post-Create methods
+        for (final MethodInfo method : methods) {
+            try {
+                method.mMethod.invoke(object.mObject);
+            } catch (IllegalAccessException e) {
+                throw new IllegalStateException(e);
+            } catch (InvocationTargetException e) {
+                final Throwable t = e.getCause();
+                if (t instanceof Error) {
+                    throw (Error) t;
+                } else if (t instanceof RuntimeException) {
+                    throw (RuntimeException) t;
+                } else {
+                    throw new IllegalStateException(
+                            "Method '" + method.mMethod + "' threw an unexpected checked exception", t);
+                }
             }
         }
     }
