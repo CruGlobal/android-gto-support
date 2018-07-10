@@ -901,26 +901,34 @@ public final class JsonApiConverter {
     }
 
     private void triggerPostCreate(@NonNull final ObjValue object) {
-        final Class<?> type = object.mObject.getClass();
-        final MethodInfo method = mPostCreateMethod.get(type);
-        if (method != null) {
-            try {
-                method.mMethod.invoke(object.mObject);
-            } catch (IllegalAccessException e) {
-                throw new IllegalStateException(e);
-            } catch (InvocationTargetException e) {
-                final Throwable t = e.getCause();
-                if (t instanceof Error) {
-                    throw (Error) t;
-                } else if (t instanceof RuntimeException) {
-                    throw (RuntimeException) t;
-                } else {
-                    throw new IllegalStateException(
-                            "Method '" + method.mMethod + "' threw an unexpected checked exception", t);
-                }
-            }
+        // don't run post-create method for placeholder objects
+        if (object.mPlaceholder) {
+            return;
         }
 
+        // short-circuit if there isn't a post-create method
+        final Class<?> type = object.mObject.getClass();
+        final MethodInfo method = mPostCreateMethod.get(type);
+        if (method == null) {
+            return;
+        }
+
+        // invoke the Post-Create method
+        try {
+            method.mMethod.invoke(object.mObject);
+        } catch (IllegalAccessException e) {
+            throw new IllegalStateException(e);
+        } catch (InvocationTargetException e) {
+            final Throwable t = e.getCause();
+            if (t instanceof Error) {
+                throw (Error) t;
+            } else if (t instanceof RuntimeException) {
+                throw (RuntimeException) t;
+            } else {
+                throw new IllegalStateException(
+                        "Method '" + method.mMethod + "' threw an unexpected checked exception", t);
+            }
+        }
     }
 
     static final class FieldInfo {
