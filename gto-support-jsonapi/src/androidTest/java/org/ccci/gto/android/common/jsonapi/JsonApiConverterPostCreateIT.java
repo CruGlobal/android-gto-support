@@ -100,13 +100,13 @@ public class JsonApiConverterPostCreateIT {
     }
 
     @JsonApiType("finalmethod")
-    private static final class ModelPostCreateFinalMethod {
+    private static class ModelPostCreateFinalMethod {
         @JsonApiPostCreate
         public final void postCreate() {}
     }
 
     @JsonApiType("finalmethod")
-    private static final class ModelPostCreatePrivateMethod {
+    private static class ModelPostCreatePrivateMethod {
         @JsonApiPostCreate
         private void postCreate() {}
     }
