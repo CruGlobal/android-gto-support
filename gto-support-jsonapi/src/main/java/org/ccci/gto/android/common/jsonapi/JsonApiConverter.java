@@ -8,6 +8,7 @@ import org.ccci.gto.android.common.jsonapi.annotation.JsonApiAttribute;
 import org.ccci.gto.android.common.jsonapi.annotation.JsonApiId;
 import org.ccci.gto.android.common.jsonapi.annotation.JsonApiIgnore;
 import org.ccci.gto.android.common.jsonapi.annotation.JsonApiPlaceholder;
+import org.ccci.gto.android.common.jsonapi.annotation.JsonApiPostCreate;
 import org.ccci.gto.android.common.jsonapi.annotation.JsonApiType;
 import org.ccci.gto.android.common.jsonapi.converter.TypeConverter;
 import org.ccci.gto.android.common.jsonapi.model.JsonApiError;
@@ -19,6 +20,8 @@ import org.json.JSONObject;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -78,6 +81,7 @@ public final class JsonApiConverter {
     private final Map<String, Class<?>> mTypes = new HashMap<>();
     private final Map<Class<?>, FieldInfo> mIdField = new HashMap<>();
     private final Map<Class<?>, FieldInfo> mPlaceholderField = new HashMap<>();
+    private final Map<Class<?>, List<MethodInfo>> mPostCreateMethod = new HashMap<>();
     private final Map<Class<?>, List<FieldInfo>> mFields = new HashMap<>();
 
     JsonApiConverter(@NonNull final List<Class<?>> classes, @NonNull final List<TypeConverter<?>> converters) {
@@ -97,33 +101,8 @@ public final class JsonApiConverter {
                         "Duplicate @JsonApiType(\"" + type + "\") shared by " + mTypes.get(type) + " and " + c);
             }
 
-            // store this type
+            // store this type and any aliases
             mTypes.put(type, c);
-            final List<FieldInfo> fields = getFields(c);
-            for (final Iterator<FieldInfo> i = fields.iterator(); i.hasNext();) {
-                final FieldInfo field = i.next();
-                if (field.isId()) {
-                    if (mIdField.containsKey(c)) {
-                        throw new IllegalArgumentException("Class " + c + " has more than one @JsonApiId defined");
-                    }
-                    mIdField.put(c, field);
-                }
-                if (field.isPlaceholder()) {
-                    if (mPlaceholderField.containsKey(c)) {
-                        throw new IllegalArgumentException("Class " + c + " has more than one placeholder defined");
-                    }
-                    final Class<?> fieldType = field.getType();
-                    if (!Boolean.class.equals(fieldType) && !boolean.class.equals(fieldType)) {
-                        throw new IllegalArgumentException(
-                                "Class " + c + " has an unsupported placeholder field type " + fieldType);
-                    }
-                    mPlaceholderField.put(c, field);
-                    i.remove();
-                }
-            }
-            mFields.put(c, fields);
-
-            // handle any type aliases
             for (final String alias : getResourceTypeAliases(c)) {
                 // throw an exception if the specified alias is already defined
                 if (mTypes.containsKey(alias)) {
@@ -133,6 +112,10 @@ public final class JsonApiConverter {
 
                 mTypes.put(alias, c);
             }
+
+            // initialize Fields and Methods for the class
+            initFields(c);
+            initMethods(c);
         }
     }
 
@@ -201,7 +184,7 @@ public final class JsonApiConverter {
         final JSONObject jsonObject = new JSONObject(json);
 
         // parse "included" objects
-        final Map<ObjKey, Object> objects = new HashMap<>();
+        final Map<ObjKey, ObjValue> objects = new HashMap<>();
         final JSONArray included = jsonObject.optJSONArray(JSON_INCLUDED);
         if (included != null) {
             //noinspection unchecked
@@ -241,10 +224,72 @@ public final class JsonApiConverter {
             throw new UnsupportedOperationException();
         }
 
+        // call any post-create methods
+        for (final ObjValue obj : objects.values()) {
+            triggerPostCreate(obj);
+        }
+
         // pass the JSONApi meta object back as-is
         output.setRawMeta(jsonObject.optJSONObject(JSON_META));
 
         return output;
+    }
+
+    private void initFields(@NonNull final Class<?> clazz) {
+        final List<FieldInfo> fields = getFields(clazz);
+        for (final Iterator<FieldInfo> i = fields.iterator(); i.hasNext();) {
+            final FieldInfo field = i.next();
+            if (field.isId()) {
+                if (mIdField.containsKey(clazz)) {
+                    throw new IllegalArgumentException("Class " + clazz + " has more than one @JsonApiId defined");
+                }
+                mIdField.put(clazz, field);
+            }
+            if (field.isPlaceholder()) {
+                if (mPlaceholderField.containsKey(clazz)) {
+                    throw new IllegalArgumentException("Class " + clazz + " has more than one placeholder defined");
+                }
+                final Class<?> fieldType = field.getType();
+                if (!Boolean.class.equals(fieldType) && !boolean.class.equals(fieldType)) {
+                    throw new IllegalArgumentException(
+                            "Class " + clazz + " has an unsupported placeholder field type " + fieldType);
+                }
+                mPlaceholderField.put(clazz, field);
+                i.remove();
+            }
+        }
+        mFields.put(clazz, fields);
+    }
+
+    private void initMethods(@NonNull final Class<?> clazz) {
+        for (final MethodInfo method : getMethods(clazz)) {
+            if (method.mIsPostCreate) {
+                List<MethodInfo> postCreateMethods = mPostCreateMethod.get(clazz);
+                if (postCreateMethods == null) {
+                    postCreateMethods = new ArrayList<>();
+                    mPostCreateMethod.put(clazz, postCreateMethods);
+                }
+
+                if (method.mMethod.getParameterTypes().length > 0) {
+                    throw new IllegalArgumentException(
+                            "@JsonApiPostCreate annotated method '" + method.mMethod + "' cannot have any parameters");
+                }
+                if (method.throwsCheckedException()) {
+                    throw new IllegalArgumentException("@JsonApiPostCreate annotated method '" + method.mMethod +
+                                                               "' cannot throw a checked exception");
+                }
+                if (method.isStatic()) {
+                    throw new IllegalArgumentException(
+                            "@JsonApiPostCreate annotated method '" + method.mMethod + "' cannot be static");
+                }
+                if (!method.isEffectivelyFinal()) {
+                    throw new IllegalArgumentException(
+                            "@JsonApiPostCreate annotated method '" + method.mMethod + "' must be effectively final");
+                }
+
+                postCreateMethods.add(method);
+            }
+        }
     }
 
     @NonNull
@@ -441,7 +486,7 @@ public final class JsonApiConverter {
 
     @NonNull
     private <E> E[] resourcesFromJson(@Nullable final JSONArray json, @NonNull final Class<E> type,
-                                      final boolean placeholder, @NonNull final Map<ObjKey, Object> objects) {
+                                      final boolean placeholder, @NonNull final Map<ObjKey, ObjValue> objects) {
         @SuppressWarnings("unchecked")
         final E[] array = (E[]) Array.newInstance(type, json != null ? json.length() : 0);
 
@@ -459,7 +504,7 @@ public final class JsonApiConverter {
                                                              @NonNull final Class<E> type,
                                                              @NonNull final Class<T> collectionType,
                                                              final boolean placeholder,
-                                                             @NonNull final Map<ObjKey, Object> objects) {
+                                                             @NonNull final Map<ObjKey, ObjValue> objects) {
         // create new collection
         final T resources = newCollection(collectionType);
         if (resources == null) {
@@ -478,7 +523,7 @@ public final class JsonApiConverter {
     @Nullable
     @SuppressWarnings("checkstyle:RightCurly")
     private <E> E resourceFromJson(@Nullable final JSONObject json, @NonNull final Class<E> expectedType,
-                                   final boolean placeholder, @NonNull final Map<ObjKey, Object> objects) {
+                                   final boolean placeholder, @NonNull final Map<ObjKey, ObjValue> objects) {
         if (json == null) {
             return null;
         }
@@ -493,29 +538,30 @@ public final class JsonApiConverter {
         // look for the referenced object first
         final String rawId = json.optString(JSON_DATA_ID);
         final ObjKey key = rawId != null && rawType != null ? new ObjKey(rawType, rawId) : null;
-        E instance = null;
+        ObjValue<E> value = null;
         if (key != null) {
             //noinspection unchecked
-            instance = (E) objects.get(key);
+            value = objects.get(key);
         }
         // no object found, create a new instance
-        if (instance == null) {
+        if (value == null) {
             try {
                 //noinspection unchecked
-                instance = (E) type.newInstance();
+                value = new ObjValue<>((E) type.newInstance());
                 if (key != null) {
-                    objects.put(key, instance);
+                    objects.put(key, value);
                 }
 
                 // mark the new object as a placeholder
                 final FieldInfo placeholderField = mPlaceholderField.get(type);
                 if (placeholderField != null) {
-                    placeholderField.mField.set(instance, true);
+                    placeholderField.mField.set(value.mObject, true);
                 }
             } catch (final Exception e) {
                 return null;
             }
         }
+        final E instance = value.mObject;
 
         // populate fields
         final JSONObject attributes = json.optJSONObject(JSON_DATA_ATTRIBUTES);
@@ -574,14 +620,21 @@ public final class JsonApiConverter {
             }
         }
 
-        // clear placeholder state if the full object was just instantiated
+        // was the full object just instantiated
         if (!placeholder) {
+            // clear placeholder state
+            value.mPlaceholder = false;
             final FieldInfo placeholderField = mPlaceholderField.get(type);
             if (placeholderField != null) {
                 try {
                     placeholderField.mField.set(instance, false);
                 } catch (final IllegalAccessException ignored) {
                 }
+            }
+
+            // trigger post create method if there wasn't a key for this object
+            if (key == null) {
+                triggerPostCreate(value);
             }
         }
 
@@ -638,6 +691,33 @@ public final class JsonApiConverter {
         }
 
         return fields;
+    }
+
+    private List<MethodInfo> getMethods(@Nullable final Class<?> type) {
+        if (type == null || Object.class.equals(type)) {
+            return Collections.emptyList();
+        }
+
+        // process all immediate declared methods
+        final List<MethodInfo> methods = new ArrayList<>();
+        for (final Method method : type.getDeclaredMethods()) {
+            // skip synthetic and bridge methods
+            if (method.isSynthetic() || method.isBridge()) {
+                continue;
+            }
+
+            // only return relevant methods
+            final MethodInfo info = new MethodInfo(method);
+            if (info.isRelevant()) {
+                method.setAccessible(true);
+                methods.add(info);
+            }
+        }
+
+        // process the superclass
+        methods.addAll(getMethods(type.getSuperclass()));
+
+        return methods;
     }
 
     private boolean isSupportedType(@NonNull final Class<?> type) {
@@ -823,6 +903,39 @@ public final class JsonApiConverter {
         return null;
     }
 
+    private void triggerPostCreate(@NonNull final ObjValue object) {
+        // don't run post-create method for placeholder objects
+        if (object.mPlaceholder) {
+            return;
+        }
+
+        // short-circuit if there isn't a post-create method
+        final Class<?> type = object.mObject.getClass();
+        final List<MethodInfo> methods = mPostCreateMethod.get(type);
+        if (methods == null || methods.isEmpty()) {
+            return;
+        }
+
+        // invoke the Post-Create methods
+        for (final MethodInfo method : methods) {
+            try {
+                method.mMethod.invoke(object.mObject);
+            } catch (IllegalAccessException e) {
+                throw new IllegalStateException(e);
+            } catch (InvocationTargetException e) {
+                final Throwable t = e.getCause();
+                if (t instanceof Error) {
+                    throw (Error) t;
+                } else if (t instanceof RuntimeException) {
+                    throw (RuntimeException) t;
+                } else {
+                    throw new IllegalStateException(
+                            "Method '" + method.mMethod + "' threw an unexpected checked exception", t);
+                }
+            }
+        }
+    }
+
     static final class FieldInfo {
         @NonNull
         final Field mField;
@@ -895,6 +1008,49 @@ public final class JsonApiConverter {
         }
     }
 
+    static final class MethodInfo {
+        @NonNull
+        private final Class<?> mClass;
+        @NonNull
+        final Method mMethod;
+        final int mModifiers;
+        final boolean mIsPostCreate;
+
+        MethodInfo(@NonNull final Method method) {
+            mClass = method.getDeclaringClass();
+            mMethod = method;
+            mModifiers = method.getModifiers();
+            mIsPostCreate = method.getAnnotation(JsonApiPostCreate.class) != null;
+        }
+
+        boolean isRelevant() {
+            return mIsPostCreate;
+        }
+
+        boolean isStatic() {
+            return Modifier.isStatic(mModifiers);
+        }
+
+        boolean isEffectivelyFinal() {
+            return Modifier.isFinal(mModifiers) || Modifier.isPrivate(mModifiers) ||
+                    Modifier.isFinal(mClass.getModifiers());
+        }
+
+        boolean throwsCheckedException() {
+            for (final Class<?> exceptionType : mMethod.getExceptionTypes()) {
+                // skip any unchecked exceptions
+                if (Error.class.isAssignableFrom(exceptionType) ||
+                        RuntimeException.class.isAssignableFrom(exceptionType)) {
+                    continue;
+                }
+
+                // this wasn't an unchecked exception, so it's a checked exception
+                return true;
+            }
+            return false;
+        }
+    }
+
     static final class ObjKey {
         @NonNull
         final String mType;
@@ -935,6 +1091,16 @@ public final class JsonApiConverter {
         @Override
         public int hashCode() {
             return Arrays.hashCode(new Object[] {mType, mId});
+        }
+    }
+
+    static final class ObjValue<T> {
+        @NonNull
+        final T mObject;
+        boolean mPlaceholder = true;
+
+        ObjValue(@NonNull final T object) {
+            mObject = object;
         }
     }
 

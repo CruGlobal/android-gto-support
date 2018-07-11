@@ -3,11 +3,24 @@ package org.ccci.gto.android.common.jsonapi.model;
 import android.support.annotation.Nullable;
 
 import org.ccci.gto.android.common.jsonapi.annotation.JsonApiId;
+import org.ccci.gto.android.common.jsonapi.annotation.JsonApiIgnore;
+import org.ccci.gto.android.common.jsonapi.annotation.JsonApiPostCreate;
 
 public abstract class ModelBase {
     @Nullable
     @JsonApiId
     public Integer mId;
+
+    @JsonApiIgnore
+    public boolean mPostCreateCalled = false;
+
+    @JsonApiPostCreate
+    final void finalPostCreate() {
+        if (mPostCreateCalled) {
+            throw new IllegalStateException("post create already called!!!");
+        }
+        mPostCreateCalled = true;
+    }
 
     @Override
     public boolean equals(Object o) {

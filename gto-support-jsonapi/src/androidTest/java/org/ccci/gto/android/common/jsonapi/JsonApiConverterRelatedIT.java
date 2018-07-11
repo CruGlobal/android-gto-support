@@ -191,8 +191,10 @@ public class JsonApiConverterRelatedIT {
         assertThat(target.favorite.name, is(parent.favorite.name));
         assertThat(target.children.size(), is(2));
         assertThat(target.children.get(0).placeholder, is(false));
+        assertThat(target.children.get(0).mPostCreateCalled, is(true));
         assertThat(target.children.get(0), is(sameInstance(target.favorite)));
         assertThat(target.children.get(1).placeholder, is(true));
+        assertThat(target.children.get(1).mPostCreateCalled, is(false));
     }
 
     @Test
