@@ -25,6 +25,16 @@ public class JsonApiConverterPostCreateIT {
         new JsonApiConverter.Builder().addClasses(ModelPostCreateCheckedException.class).build();
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void verifyConverterPostCreateNotFinalMethod() throws Exception {
+        new JsonApiConverter.Builder().addClasses(ModelPostCreateNotFinalClass.class).build();
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void verifyConverterPostCreateStaticMethod() throws Exception {
+        new JsonApiConverter.Builder().addClasses(ModelPostCreateStaticMethod.class).build();
+    }
+
     @Test
     public void verifyConverterPostCreateFinalClass() {
         new JsonApiConverter.Builder().addClasses(ModelPostCreateFinalClass.class).build();
@@ -91,6 +101,18 @@ public class JsonApiConverterPostCreateIT {
     private static class ModelPostCreateCheckedException {
         @JsonApiPostCreate
         private void postCreate() throws Exception {}
+    }
+
+    @JsonApiType("staticmethod")
+    private static final class ModelPostCreateStaticMethod {
+        @JsonApiPostCreate
+        public static void postCreate() {}
+    }
+
+    @JsonApiType("notfinalclass")
+    private static class ModelPostCreateNotFinalClass {
+        @JsonApiPostCreate
+        public void postCreate() {}
     }
 
     @JsonApiType("finalclass")

@@ -278,6 +278,10 @@ public final class JsonApiConverter {
                     throw new IllegalArgumentException("@JsonApiPostCreate annotated method '" + method.mMethod +
                                                                "' cannot throw a checked exception");
                 }
+                if (method.isStatic()) {
+                    throw new IllegalArgumentException(
+                            "@JsonApiPostCreate annotated method '" + method.mMethod + "' cannot be static");
+                }
                 if (!method.isEffectivelyFinal()) {
                     throw new IllegalArgumentException(
                             "@JsonApiPostCreate annotated method '" + method.mMethod + "' must be effectively final");
@@ -702,15 +706,8 @@ public final class JsonApiConverter {
                 continue;
             }
 
-            // skip abstract & static methods
-            final int modifiers = method.getModifiers();
-            if (Modifier.isAbstract(modifiers) || Modifier.isStatic(modifiers)) {
-                continue;
-            }
-
-            final MethodInfo info = new MethodInfo(method);
-
             // only return relevant methods
+            final MethodInfo info = new MethodInfo(method);
             if (info.isRelevant()) {
                 method.setAccessible(true);
                 methods.add(info);
@@ -1028,6 +1025,10 @@ public final class JsonApiConverter {
 
         boolean isRelevant() {
             return mIsPostCreate;
+        }
+
+        boolean isStatic() {
+            return Modifier.isStatic(mModifiers);
         }
 
         boolean isEffectivelyFinal() {
