@@ -36,6 +36,6 @@ public class CrashlyticsLeakService extends DisplayLeakService {
         if (!heapDump.referenceName.equals("")) {
             name += "(" + heapDump.referenceName + ")";
         }
-        Crashlytics.logException(new Exception(name + " has leaked"));
+        Crashlytics.logException(result.leakTraceAsFakeException());
     }
 }
