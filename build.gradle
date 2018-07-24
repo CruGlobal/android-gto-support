@@ -1,8 +1,8 @@
 buildscript {
     repositories {
-        mavenLocal()
-        jcenter()
         google()
+        jcenter()
+        mavenLocal()
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:3.1.2'
@@ -43,8 +43,6 @@ subprojects {
     version '1.2.2-SNAPSHOT'
 
     repositories {
-        mavenLocal()
-        jcenter()
         google()
         maven {
             name "maven.gcx.org"
@@ -57,6 +55,8 @@ subprojects {
         maven { url 'https://maven.fabric.io/public' }
         // XXX: temporary to use beta version of powermock
         maven { url 'https://dl.bintray.com/powermock/maven' }
+        jcenter()
+        mavenLocal()
     }
 
     beforeEvaluate {
