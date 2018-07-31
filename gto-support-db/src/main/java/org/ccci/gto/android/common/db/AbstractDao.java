@@ -266,8 +266,16 @@ public abstract class AbstractDao {
         final String limit = query.buildSqlLimit();
 
         // execute actual query
-        final Cursor c = mDbHelper.getReadableDatabase()
-                .query(query.mDistinct, tables, projection, where.first, args, groupBy, having, orderBy, limit);
+        final SQLiteDatabase db = mDbHelper.getReadableDatabase();
+        final Transaction tx = newTransaction(db);
+        final Cursor c;
+        try {
+            tx.beginTransactionNonExclusive();
+            c = db.query(query.mDistinct, tables, projection, where.first, args, groupBy, having, orderBy, limit);
+            tx.setTransactionSuccessful();
+        } finally {
+            tx.endTransaction().recycle();
+        }
 
         c.moveToPosition(-1);
         return c;
