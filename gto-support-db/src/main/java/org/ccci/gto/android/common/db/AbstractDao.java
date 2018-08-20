@@ -648,6 +648,45 @@ public abstract class AbstractDao {
         return newTransaction().beginTransaction();
     }
 
+    @WorkerThread
+    public final <T, X extends Throwable> T inTransaction(@NonNull final Closure<T, X> closure) throws X {
+        return inTransaction(getWritableDatabase(), closure);
+    }
+
+    @WorkerThread
+    protected final <T, X extends Throwable> T inTransaction(@NonNull final SQLiteDatabase db,
+                                                             @NonNull final Closure<T, X> closure) throws X {
+        final Transaction tx = newTransaction(db);
+        try {
+            tx.beginTransaction();
+            final T result = closure.run();
+            tx.setTransactionSuccessful();
+            return result;
+        } finally {
+            tx.endTransaction().recycle();
+        }
+    }
+
+    @WorkerThread
+    public final <T, X extends Throwable> T inNonExclusiveTransaction(@NonNull final Closure<T, X> closure) throws X {
+        return inNonExclusiveTransaction(getWritableDatabase(), closure);
+    }
+
+    @WorkerThread
+    protected final <T, X extends Throwable> T inNonExclusiveTransaction(@NonNull final SQLiteDatabase db,
+                                                                         @NonNull final Closure<T, X> closure)
+            throws X {
+        final Transaction tx = newTransaction(db);
+        try {
+            tx.beginTransactionNonExclusive();
+            final T result = closure.run();
+            tx.setTransactionSuccessful();
+            return result;
+        } finally {
+            tx.endTransaction().recycle();
+        }
+    }
+
     private static final class TableType {
         @NonNull
         final String mTable;
