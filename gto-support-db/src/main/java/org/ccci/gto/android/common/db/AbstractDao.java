@@ -402,29 +402,16 @@ public abstract class AbstractDao {
 
         // execute insert
         final SQLiteDatabase db = mDbHelper.getWritableDatabase();
-        final Transaction tx = newTransaction(db);
-        try {
-            tx.beginTransactionNonExclusive();
-            final long id = db.insertWithOnConflict(table, null, values, conflictAlgorithm);
-            tx.setTransactionSuccessful();
-            return id;
-        } finally {
-            tx.endTransaction().recycle();
-        }
+        return inNonExclusiveTransaction(db, () -> db.insertWithOnConflict(table, null, values, conflictAlgorithm));
     }
 
     @WorkerThread
     public final void replace(@NonNull final Object obj) {
-        final SQLiteDatabase db = mDbHelper.getWritableDatabase();
-        final Transaction tx = newTransaction(db);
-        try {
-            tx.beginTransactionNonExclusive();
+        inNonExclusiveTransaction(() -> {
             delete(obj);
             insert(obj);
-            tx.setTransactionSuccessful();
-        } finally {
-            tx.endTransaction().recycle();
-        }
+            return null;
+        });
     }
 
     @WorkerThread
@@ -520,16 +507,8 @@ public abstract class AbstractDao {
 
         // execute update
         final SQLiteDatabase db = mDbHelper.getWritableDatabase();
-        final Transaction tx = newTransaction(db);
-        try {
-            tx.beginTransactionNonExclusive();
-            final int result =
-                    db.updateWithOnConflict(table, values, builtWhere.first, builtWhere.second, conflictAlgorithm);
-            tx.setTransactionSuccessful();
-            return result;
-        } finally {
-            tx.endTransaction().recycle();
-        }
+        return inNonExclusiveTransaction(db, () -> db.updateWithOnConflict(table, values, builtWhere.first,
+                                                                           builtWhere.second, conflictAlgorithm));
     }
 
     /**
@@ -564,20 +543,15 @@ public abstract class AbstractDao {
     @WorkerThread
     public final void updateOrInsert(@NonNull final Object obj, final int conflictAlgorithm,
                                      @NonNull final String... projection) {
-        final SQLiteDatabase db = mDbHelper.getWritableDatabase();
-        final Transaction tx = newTransaction(db);
-        try {
-            tx.beginTransactionNonExclusive();
+        inNonExclusiveTransaction(() -> {
             final Object existing = refresh(obj);
             if (existing != null) {
                 update(obj, conflictAlgorithm, projection);
             } else {
                 insert(obj, conflictAlgorithm);
             }
-            tx.setTransactionSuccessful();
-        } finally {
-            tx.endTransaction().recycle();
-        }
+            return null;
+        });
     }
 
     @WorkerThread
@@ -597,14 +571,7 @@ public abstract class AbstractDao {
         final Pair<String, String[]> builtWhere =
                 where != null ? where.buildSql(this) : Pair.<String, String[]>create(null, null);
         final SQLiteDatabase db = mDbHelper.getWritableDatabase();
-        final Transaction tx = newTransaction(db);
-        try {
-            tx.beginTransactionNonExclusive();
-            db.delete(table, builtWhere.first, builtWhere.second);
-            tx.setTransactionSuccessful();
-        } finally {
-            tx.endTransaction().recycle();
-        }
+        inNonExclusiveTransaction(db, () -> db.delete(table, builtWhere.first, builtWhere.second));
     }
 
     public long getLastSyncTime(@NonNull final Object... key) {
@@ -646,6 +613,45 @@ public abstract class AbstractDao {
     @WorkerThread
     public final Transaction beginTransaction() {
         return newTransaction().beginTransaction();
+    }
+
+    @WorkerThread
+    public final <T, X extends Throwable> T inTransaction(@NonNull final Closure<T, X> closure) throws X {
+        return inTransaction(getWritableDatabase(), closure);
+    }
+
+    @WorkerThread
+    protected final <T, X extends Throwable> T inTransaction(@NonNull final SQLiteDatabase db,
+                                                             @NonNull final Closure<T, X> closure) throws X {
+        final Transaction tx = newTransaction(db);
+        try {
+            tx.beginTransaction();
+            final T result = closure.run();
+            tx.setTransactionSuccessful();
+            return result;
+        } finally {
+            tx.endTransaction().recycle();
+        }
+    }
+
+    @WorkerThread
+    public final <T, X extends Throwable> T inNonExclusiveTransaction(@NonNull final Closure<T, X> closure) throws X {
+        return inNonExclusiveTransaction(getWritableDatabase(), closure);
+    }
+
+    @WorkerThread
+    protected final <T, X extends Throwable> T inNonExclusiveTransaction(@NonNull final SQLiteDatabase db,
+                                                                         @NonNull final Closure<T, X> closure)
+            throws X {
+        final Transaction tx = newTransaction(db);
+        try {
+            tx.beginTransactionNonExclusive();
+            final T result = closure.run();
+            tx.setTransactionSuccessful();
+            return result;
+        } finally {
+            tx.endTransaction().recycle();
+        }
     }
 
     private static final class TableType {
