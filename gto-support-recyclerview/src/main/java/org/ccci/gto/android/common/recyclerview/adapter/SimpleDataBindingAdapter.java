@@ -17,7 +17,7 @@ public abstract class SimpleDataBindingAdapter<B extends ViewDataBinding>
     }
 
     @NonNull
-    protected abstract B onCreateViewDataBinding(@NonNull final ViewGroup parent, final int viewType);
+    protected abstract B onCreateViewDataBinding(@NonNull ViewGroup parent, int viewType);
 
     // end Lifecycle Events
 }
