@@ -19,5 +19,19 @@ public abstract class SimpleDataBindingAdapter<B extends ViewDataBinding>
     @NonNull
     protected abstract B onCreateViewDataBinding(@NonNull ViewGroup parent, int viewType);
 
+    @Override
+    public final void onBindViewHolder(@NonNull final DataBindingViewHolder<B> holder, final int position) {
+        onBindViewDataBinding(holder.binding, position);
+    }
+
+    protected abstract void onBindViewDataBinding(B binding, int position);
+
+    @Override
+    public final void onViewRecycled(@NonNull final DataBindingViewHolder<B> holder) {
+        onViewDataBindingRecycled(holder.binding);
+    }
+
+    protected void onViewDataBindingRecycled(@NonNull final B binding) { }
+
     // end Lifecycle Events
 }
