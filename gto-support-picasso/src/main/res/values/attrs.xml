@@ -2,5 +2,7 @@
 <resources>
     <declare-styleable name="PicassoImageView">
         <attr name="placeholder" format="reference"/>
+        <attr name="picassoFile" format="string" />
+        <attr name="picassoUri" format="string" />
     </declare-styleable>
 </resources>

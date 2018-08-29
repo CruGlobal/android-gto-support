@@ -62,6 +62,12 @@ interface PicassoImageView {
         init {
             imageView.context.withStyledAttributes(attrs, R.styleable.PicassoImageView, defStyleAttr, defStyleRes) {
                 placeholderResId = getResourceId(R.styleable.PicassoImageView_placeholder, placeholderResId)
+
+                val file = getString(R.styleable.PicassoImageView_picassoFile)
+                val uri = getString(R.styleable.PicassoImageView_picassoUri)
+                check(file == null || uri == null) { "Cannot have both app:picassoFile and app:picassoUri defined" }
+                picassoFile = file?.let { File(file) }
+                picassoUri = uri?.let { Uri.parse(uri) }
             }
         }
 
