@@ -27,7 +27,7 @@ ext.deps = [
         jsonUnit             : '1.29.0',
         junit                : '4.12',
         leakcanary           : '1.6.1',
-        lightweightStream    : '1.2.0',
+        lightweightStream    : '1.2.1',
         mockito              : '2.18.0',
         okhttp3              : '3.10.0',
         picasso              : '2.5.2',
