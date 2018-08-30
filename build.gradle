@@ -14,7 +14,7 @@ plugins {
 
 // define dependency versions for this project
 ext.deps = [
-        advrecyclerview      : '0.10.6',
+        advrecyclerview      : '0.11.0',
         androidDataBinding   : '3.1.4',
         androidSupport       : '27.1.1',
         androidTestingSupport: '1.0.2',
