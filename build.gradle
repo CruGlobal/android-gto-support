@@ -79,7 +79,7 @@ subprojects {
         }
 
         dependencies {
-            compileOnly 'org.jetbrains:annotations:15.0'
+            compileOnly 'org.jetbrains:annotations:16.0.1'
             compileOnly "com.android.support:support-annotations:${deps.androidSupport}"
 
             androidTestImplementation "com.android.support.test:runner:${deps.androidTestingSupport}"
