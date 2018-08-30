@@ -19,7 +19,7 @@ ext.deps = [
         androidSupport       : '27.1.1',
         androidTestingSupport: '1.0.2',
         crashlytics          : '2.9.4',
-        eventbus             : '3.0.0',
+        eventbus             : '3.1.1',
         facebookStetho       : '1.5.0',
         gson                 : '2.8.4',
         guava                : '26.0-android',
