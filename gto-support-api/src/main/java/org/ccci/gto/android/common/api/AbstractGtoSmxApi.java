@@ -1,7 +1,5 @@
 package org.ccci.gto.android.common.api;
 
-import static java.net.HttpURLConnection.HTTP_OK;
-
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.Uri;
@@ -19,7 +17,9 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 
 import me.thekey.android.TheKey;
-import me.thekey.android.TheKeySocketException;
+import me.thekey.android.exception.TheKeySocketException;
+
+import static java.net.HttpURLConnection.HTTP_OK;
 
 public abstract class AbstractGtoSmxApi
         extends AbstractTheKeyApi<Request, ExecutionContext<TheKeySession>, TheKeySession> {
