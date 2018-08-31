@@ -1,3 +1,9 @@
+android {
+    defaultConfig {
+        consumerProguardFiles 'proguard-consumer.pro'
+    }
+}
+
 dependencies {
     api "com.android.support:recyclerview-v7:${deps.androidSupport}"
 
