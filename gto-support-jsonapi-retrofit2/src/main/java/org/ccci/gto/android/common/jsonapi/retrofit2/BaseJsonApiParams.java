@@ -13,6 +13,7 @@ import java.util.Map;
 public abstract class BaseJsonApiParams<T extends BaseJsonApiParams> extends ForwardingMap<String, String> {
     @VisibleForTesting
     static final String PARAM_INCLUDE = "include";
+    private static final String PARAM_FIELDS = "fields";
 
     private static final Joiner INCLUDE_JOINER = Joiner.on(",").skipNulls();
 
@@ -35,6 +36,18 @@ public abstract class BaseJsonApiParams<T extends BaseJsonApiParams> extends For
     @NonNull
     public final T clearIncludes() {
         remove(PARAM_INCLUDE);
+        return self();
+    }
+
+    @NonNull
+    public final T fields(@NonNull final String type, @NonNull final String... fields) {
+        final String param = PARAM_FIELDS + "[" + type + "]";
+        put(param, INCLUDE_JOINER.join(Strings.emptyToNull(get(param)), null, (Object[]) fields));
+        return self();
+    }
+
+    public final T clearFields(@NonNull final String type) {
+        remove(PARAM_FIELDS + "[" + type + "]");
         return self();
     }
 }

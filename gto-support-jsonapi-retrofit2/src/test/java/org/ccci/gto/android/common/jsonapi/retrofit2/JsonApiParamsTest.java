@@ -1,26 +1,12 @@
 package org.ccci.gto.android.common.jsonapi.retrofit2;
 
-import android.text.TextUtils;
-
-import org.ccci.gto.android.common.testing.CommonMocks;
-import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({TextUtils.class})
 public class JsonApiParamsTest {
-    @Before
-    public void setup() throws Exception {
-        CommonMocks.mockTextUtils();
-    }
-
     @Test
     public void verifyInclude() throws Exception {
         final JsonApiParams params = new JsonApiParams();
@@ -57,5 +43,20 @@ public class JsonApiParamsTest {
         params.clearIncludes();
         assertThat(params.size(), is(0));
         assertThat(params.get(JsonApiParams.PARAM_INCLUDE), is(nullValue()));
+    }
+
+    @Test
+    public void verifyFields() throws Exception {
+        final JsonApiParams params = new JsonApiParams();
+        params.fields("a", "a1", "a2");
+        params.fields("b", "b1", "b2");
+        params.fields("a", "c1", "c2");
+        params.put("param1", "value");
+
+        assertThat(params.size(), is(3));
+        assertThat(params.get("param1"), is("value"));
+        assertThat(params.get("fields[a]"), is("a1,a2,c1,c2"));
+        assertThat(params.get("fields[b]"), is("b1,b2"));
+        assertThat(params.get("param2"), is(nullValue()));
     }
 }
