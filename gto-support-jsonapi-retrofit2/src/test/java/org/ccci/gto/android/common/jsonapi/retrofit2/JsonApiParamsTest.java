@@ -44,4 +44,19 @@ public class JsonApiParamsTest {
         assertThat(params.size(), is(0));
         assertThat(params.get(JsonApiParams.PARAM_INCLUDE), is(nullValue()));
     }
+
+    @Test
+    public void verifyFields() throws Exception {
+        final JsonApiParams params = new JsonApiParams();
+        params.fields("a", "a1", "a2");
+        params.fields("b", "b1", "b2");
+        params.fields("a", "c1", "c2");
+        params.put("param1", "value");
+
+        assertThat(params.size(), is(3));
+        assertThat(params.get("param1"), is("value"));
+        assertThat(params.get("fields[a]"), is("a1,a2,c1,c2"));
+        assertThat(params.get("fields[b]"), is("b1,b2"));
+        assertThat(params.get("param2"), is(nullValue()));
+    }
 }
