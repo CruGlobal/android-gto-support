@@ -9,6 +9,10 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
+/**
+ * @deprecated Since v1.3.1, use {@link android.support.v7.widget.DividerItemDecoration} instead.
+ */
+@Deprecated
 public class DividerItemDecoration extends RecyclerView.ItemDecoration {
     private static final int[] ATTRS = new int[] {
             android.R.attr.listDivider
