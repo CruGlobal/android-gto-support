@@ -9,7 +9,7 @@ import java.lang.reflect.Field;
 public class FrameworkSQLiteUtils {
     @Nullable
     public static SQLiteDatabase getFrameworkDb(@Nullable final SupportSQLiteDatabase db) {
-        if(db instanceof FrameworkSQLiteDatabase) {
+        if (db instanceof FrameworkSQLiteDatabase) {
             try {
                 final Field field = FrameworkSQLiteDatabase.class.getDeclaredField("mDelegate");
                 field.setAccessible(true);

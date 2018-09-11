@@ -21,7 +21,7 @@ public final class RoomStethoDatabaseProvider extends BaseStethoDatabaseProvider
         // create an indexed map of databases
         mDatabases = new HashMap<>(databases.length);
         for (final RoomDatabase database : databases) {
-            final File file = new File(database.getOpenHelper().getDatabaseName());;
+            final File file = new File(database.getOpenHelper().getDatabaseName());
             mDatabases.put(file, database);
         }
 
