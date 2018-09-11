@@ -33,7 +33,6 @@ ext.deps = [
         picasso              : '2.5.2',
         powermock            : '2.0.0-beta.9',
         retrofit2            : '2.4.0',
-        room                 : '1.1.1',
         thekey               : '2.0.0',
         timber               : '4.7.1'
 ]
