@@ -1,11 +1,16 @@
 package org.ccci.gto.android.common.stetho.db;
 
+import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+
+import com.facebook.stetho.inspector.database.DatabaseConnectionProvider;
+import com.facebook.stetho.inspector.database.DatabaseFilesProvider;
+import com.facebook.stetho.inspector.database.SqliteDatabaseDriver;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -14,7 +19,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class SQLiteOpenHelperStethoDatabaseProvider extends BaseStethoDatabaseProvider {
+public class SQLiteOpenHelperStethoDatabaseProvider implements DatabaseFilesProvider, DatabaseConnectionProvider {
     private final List<File> mFiles;
     private final Map<File, SQLiteOpenHelper> mDatabases;
 
@@ -47,5 +52,10 @@ public class SQLiteOpenHelperStethoDatabaseProvider extends BaseStethoDatabasePr
     public SQLiteDatabase openDatabase(@Nullable final File file) throws SQLiteException {
         final SQLiteOpenHelper helper = mDatabases.get(file);
         return helper != null ? helper.getWritableDatabase() : null;
+    }
+
+    @NonNull
+    public SqliteDatabaseDriver toDatabaseDriver(@NonNull final Context context) {
+        return new SqliteDatabaseDriver(context, this, this);
     }
 }
