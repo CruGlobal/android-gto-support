@@ -1,3 +1,5 @@
 dependencies {
     implementation "com.facebook.stetho:stetho:${deps.facebookStetho}"
+
+    compileOnly "android.arch.persistence.room:runtime:${deps.room}"
 }
