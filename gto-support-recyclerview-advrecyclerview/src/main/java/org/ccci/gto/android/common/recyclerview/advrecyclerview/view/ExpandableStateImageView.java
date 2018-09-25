@@ -1,15 +1,16 @@
 package org.ccci.gto.android.common.recyclerview.advrecyclerview.view;
 
 import android.content.Context;
-import android.support.annotation.Nullable;
-import android.support.v7.widget.AppCompatImageView;
-import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewParent;
 
 import com.h6ah4i.android.widget.advrecyclerview.expandable.ExpandableItemConstants;
 import com.h6ah4i.android.widget.advrecyclerview.expandable.ExpandableItemViewHolder;
+
+import androidx.annotation.Nullable;
+import androidx.appcompat.widget.AppCompatImageView;
+import androidx.recyclerview.widget.RecyclerView;
 
 public class ExpandableStateImageView extends AppCompatImageView {
     /**
