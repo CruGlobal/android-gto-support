@@ -4,6 +4,8 @@ buildscript {
             advrecyclerview      : '0.11.0',
             androidDataBinding   : '3.1.4',
             androidSupport       : '27.1.1',
+            androidXAnnotation   : '1.0.0',
+            androidXAppCompat    : '1.0.0',
             androidTestingSupport: '1.0.2',
             crashlytics          : '2.9.5',
             eventbus             : '3.1.1',
@@ -81,6 +83,7 @@ subprojects {
         }
 
         dependencies {
+            compileOnly "androidx.annotation:annotation:${deps.androidXAnnotation}"
             compileOnly 'org.jetbrains:annotations:16.0.1'
             compileOnly "com.android.support:support-annotations:${deps.androidSupport}"
 

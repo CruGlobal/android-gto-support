@@ -1,10 +1,8 @@
-package android.support.v7.widget;
+package androidx.appcompat.widget;
 
 import android.content.res.ColorStateList;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.widget.TextView;
 
@@ -12,7 +10,10 @@ import org.ccci.gto.android.common.appcompat.R;
 
 import java.lang.reflect.Field;
 
-import static android.support.v7.widget.ReflectionUtils.getDeclaredField;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
+import static androidx.appcompat.widget.ReflectionUtils.getDeclaredField;
 
 @SuppressWarnings("RestrictedApi")
 final class AppCompatCompoundDrawableHelper {
@@ -21,13 +22,13 @@ final class AppCompatCompoundDrawableHelper {
     private final AppCompatTextHelper mTextHelper;
 
     @Nullable
-    private static final Field START_TINT = getDeclaredField(AppCompatTextHelperV17.class, "mDrawableStartTint");
+    private static final Field START_TINT = getDeclaredField(AppCompatTextHelper.class, "mDrawableStartTint");
     @Nullable
     private static final Field LEFT_TINT = getDeclaredField(AppCompatTextHelper.class, "mDrawableLeftTint");
     @Nullable
     private static final Field TOP_TINT = getDeclaredField(AppCompatTextHelper.class, "mDrawableTopTint");
     @Nullable
-    private static final Field END_TINT = getDeclaredField(AppCompatTextHelperV17.class, "mDrawableEndTint");
+    private static final Field END_TINT = getDeclaredField(AppCompatTextHelper.class, "mDrawableEndTint");
     @Nullable
     private static final Field RIGHT_TINT = getDeclaredField(AppCompatTextHelper.class, "mDrawableRightTint");
     @Nullable

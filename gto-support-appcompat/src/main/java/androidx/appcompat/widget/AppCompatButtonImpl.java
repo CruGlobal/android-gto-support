@@ -1,12 +1,14 @@
-package android.support.v7.widget;
+package androidx.appcompat.widget;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v7.appcompat.R;
 import android.util.AttributeSet;
 
-import static android.support.v7.widget.ReflectionUtils.getDeclaredField;
+import org.ccci.gto.android.common.appcompat.R;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
+import static androidx.appcompat.widget.ReflectionUtils.getDeclaredField;
 
 public class AppCompatButtonImpl extends AppCompatButton {
     private final AppCompatCompoundDrawableHelper mCompoundDrawableHelper;
