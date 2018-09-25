@@ -5,11 +5,11 @@ buildscript {
         mavenLocal()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.1.4'
+        classpath 'com.android.tools.build:gradle:3.2.0'
     }
 }
 plugins {
-    id 'digital.wup.android-maven-publish' version '3.3.0' apply false
+    id 'digital.wup.android-maven-publish' version '3.6.2' apply false
 }
 
 // define dependency versions for this project
