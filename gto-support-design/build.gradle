@@ -1,5 +1,5 @@
 dependencies {
-    implementation "com.android.support:design:${deps.androidSupport}"
+    compileOnly "androidx.appcompat:appcompat:${deps.androidXAppCompat}"
     implementation "com.google.android.material:material:${deps.materialDesign}"
 
     implementation "com.jakewharton.timber:timber:${deps.timber}"
