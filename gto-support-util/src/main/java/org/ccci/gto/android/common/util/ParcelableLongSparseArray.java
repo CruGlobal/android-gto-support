@@ -2,9 +2,9 @@ package org.ccci.gto.android.common.util;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.util.LongSparseArray;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.collection.LongSparseArray;
 
 public class ParcelableLongSparseArray<T extends Parcelable> extends LongSparseArray<T> implements Parcelable {
     public ParcelableLongSparseArray() {}
