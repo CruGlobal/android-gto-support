@@ -1,6 +1,6 @@
 package org.ccci.gto.android.common.jsonapi;
 
-import android.support.test.runner.AndroidJUnit4;
+import androidx.test.runner.AndroidJUnit4;
 
 import org.ccci.gto.android.common.jsonapi.JsonApiConverter.Options;
 import org.ccci.gto.android.common.jsonapi.annotation.JsonApiType;

@@ -1,7 +1,7 @@
 package org.ccci.gto.android.common.jsonapi.retrofit2;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.VisibleForTesting;
+import androidx.annotation.NonNull;
+import androidx.annotation.VisibleForTesting;
 
 import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
