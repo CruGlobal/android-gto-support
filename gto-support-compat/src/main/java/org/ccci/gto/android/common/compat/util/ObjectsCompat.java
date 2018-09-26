@@ -1,6 +1,6 @@
 package org.ccci.gto.android.common.compat.util;
 
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 public final class ObjectsCompat {
     public static boolean equals(@Nullable final Object a, @Nullable final Object b) {
