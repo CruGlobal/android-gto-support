@@ -7,6 +7,7 @@ buildscript {
             androidXAnnotation   : '1.0.0',
             androidXAppCompat    : '1.0.0',
             androidXCollection   : '1.0.0',
+            androidXDataBinding  : '3.2.0',
             androidXFragment     : '1.0.0',
             androidXLoader       : '1.0.0',
             androidXRecyclerView : '1.0.0',
