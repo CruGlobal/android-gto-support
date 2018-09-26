@@ -1,7 +1,5 @@
 dependencies {
     implementation project(':gto-support-db')
 
-    implementation "com.android.support:support-compat:${deps.androidSupport}"
-
     api "com.google.guava:guava:${deps.guava}"
 }

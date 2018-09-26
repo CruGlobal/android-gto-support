@@ -1,6 +1,6 @@
 package org.ccci.gto.android.common.db;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.annimon.stream.Stream;
 

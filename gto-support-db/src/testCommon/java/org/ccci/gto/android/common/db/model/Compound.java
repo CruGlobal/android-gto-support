@@ -1,6 +1,6 @@
 package org.ccci.gto.android.common.db.model;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 public class Compound {
     @NonNull

@@ -5,7 +5,7 @@ import android.content.Context;
 import android.database.DatabaseErrorHandler;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 public abstract class WalSQLiteOpenHelper extends SQLiteOpenHelperCompat {
     public WalSQLiteOpenHelper(@NonNull final Context context, final String name,

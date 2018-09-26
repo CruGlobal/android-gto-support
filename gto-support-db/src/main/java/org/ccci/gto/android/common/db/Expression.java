@@ -4,14 +4,15 @@ import android.annotation.TargetApi;
 import android.os.Build;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.util.Pair;
 
 import org.ccci.gto.android.common.compat.os.ParcelCompat;
 import org.ccci.gto.android.common.util.ArrayUtils;
 
 import java.util.Arrays;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import static org.ccci.gto.android.common.db.AbstractDao.bindValues;
 

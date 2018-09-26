@@ -1,7 +1,7 @@
 package org.ccci.gto.android.common.db.stream;
 
 import android.database.sqlite.SQLiteOpenHelper;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.annimon.stream.Stream;
 

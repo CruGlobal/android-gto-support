@@ -1,8 +1,8 @@
 package org.ccci.gto.android.common.db.util;
 
 import android.database.Cursor;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import org.ccci.gto.android.common.compat.util.LocaleCompat;
 import org.jetbrains.annotations.Contract;
