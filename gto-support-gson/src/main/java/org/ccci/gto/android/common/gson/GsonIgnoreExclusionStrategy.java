@@ -1,9 +1,9 @@
 package org.ccci.gto.android.common.gson;
 
-import android.support.annotation.NonNull;
-
 import com.google.gson.ExclusionStrategy;
 import com.google.gson.FieldAttributes;
+
+import androidx.annotation.NonNull;
 
 public class GsonIgnoreExclusionStrategy implements ExclusionStrategy {
     @Override
