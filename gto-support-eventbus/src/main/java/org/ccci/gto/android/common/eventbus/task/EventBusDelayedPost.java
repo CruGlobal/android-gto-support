@@ -1,8 +1,8 @@
 package org.ccci.gto.android.common.eventbus.task;
 
-import android.support.annotation.NonNull;
-
 import org.greenrobot.eventbus.EventBus;
+
+import androidx.annotation.NonNull;
 
 public final class EventBusDelayedPost implements Runnable {
     @NonNull

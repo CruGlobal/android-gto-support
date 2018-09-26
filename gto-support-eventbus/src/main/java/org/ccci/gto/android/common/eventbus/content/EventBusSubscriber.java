@@ -1,8 +1,8 @@
 package org.ccci.gto.android.common.eventbus.content;
 
-import android.support.annotation.MainThread;
-import android.support.annotation.NonNull;
-import android.support.v4.content.Loader;
+import androidx.annotation.MainThread;
+import androidx.annotation.NonNull;
+import androidx.loader.content.Loader;
 
 public abstract class EventBusSubscriber {
     @NonNull

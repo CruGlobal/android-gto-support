@@ -1,12 +1,13 @@
 package org.ccci.gto.android.common.eventbus.content;
 
 import android.content.Context;
-import android.support.annotation.MainThread;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 import org.ccci.gto.android.common.support.v4.content.CachingAsyncTaskLoader;
 import org.greenrobot.eventbus.EventBus;
+
+import androidx.annotation.MainThread;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 public abstract class CachingAsyncTaskEventBusLoader<D> extends CachingAsyncTaskLoader<D>
         implements EventBusLoaderHelper.Interface {
