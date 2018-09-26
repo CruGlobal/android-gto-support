@@ -2,10 +2,11 @@ package org.ccci.gto.android.common.picasso.transformation;
 
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 import com.squareup.picasso.Transformation;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 public class ScaleTransformation implements Transformation {
     private final int mMinWidth;

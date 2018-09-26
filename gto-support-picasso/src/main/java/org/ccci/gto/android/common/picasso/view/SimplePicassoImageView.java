@@ -6,9 +6,6 @@ import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
-import android.support.annotation.DrawableRes;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.widget.ImageView;
 
@@ -16,6 +13,10 @@ import com.squareup.picasso.Transformation;
 
 import java.io.File;
 import java.util.List;
+
+import androidx.annotation.DrawableRes;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 @SuppressLint("AppCompatCustomView")
 public class SimplePicassoImageView extends ImageView implements PicassoImageView {

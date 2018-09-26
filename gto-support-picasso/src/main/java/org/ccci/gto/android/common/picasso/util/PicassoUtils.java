@@ -3,13 +3,13 @@ package org.ccci.gto.android.common.picasso.util;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Build;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.TintContextWrapper;
 
 import com.squareup.picasso.Picasso;
 
 import java.lang.reflect.Field;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.widget.TintContextWrapper;
 import timber.log.Timber;
 
 public final class PicassoUtils {
