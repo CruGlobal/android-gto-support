@@ -2,8 +2,8 @@ package org.ccci.gto.android.common.util;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.support.annotation.NonNull;
-import android.support.v4.util.LongSparseArray;
+import androidx.annotation.NonNull;
+import androidx.collection.LongSparseArray;
 
 public class LongSparseBooleanArray extends LongSparseArray<Boolean> implements Parcelable {
     public static final Parcelable.Creator<LongSparseBooleanArray> CREATOR =

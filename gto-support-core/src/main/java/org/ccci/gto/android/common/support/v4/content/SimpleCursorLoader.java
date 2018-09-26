@@ -2,10 +2,10 @@ package org.ccci.gto.android.common.support.v4.content;
 
 import android.content.Context;
 import android.database.Cursor;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.annotation.WorkerThread;
-import android.support.v4.content.CursorLoader;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.WorkerThread;
+import androidx.loader.content.CursorLoader;
 
 public abstract class SimpleCursorLoader extends CursorLoader {
     public SimpleCursorLoader(@NonNull final Context context) {

@@ -3,8 +3,8 @@ package org.ccci.gto.android.common.support.v4.content;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.support.annotation.NonNull;
-import android.support.v4.content.Loader;
+import androidx.annotation.NonNull;
+import androidx.loader.content.Loader;
 
 public class LoaderBroadcastReceiver extends BroadcastReceiver {
     @NonNull

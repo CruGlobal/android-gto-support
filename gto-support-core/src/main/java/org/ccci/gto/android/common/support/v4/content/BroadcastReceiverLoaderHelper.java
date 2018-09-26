@@ -2,10 +2,10 @@ package org.ccci.gto.android.common.support.v4.content;
 
 import android.content.BroadcastReceiver;
 import android.content.IntentFilter;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.content.Loader;
-import android.support.v4.content.LocalBroadcastManager;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.loader.content.Loader;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import java.util.ArrayList;
 

@@ -2,7 +2,7 @@ package org.ccci.gto.android.common.app;
 
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 public class ApplicationUtils {
     /**

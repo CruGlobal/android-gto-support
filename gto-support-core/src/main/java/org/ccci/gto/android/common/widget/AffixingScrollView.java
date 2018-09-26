@@ -2,13 +2,14 @@ package org.ccci.gto.android.common.widget;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.support.annotation.IdRes;
-import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ScrollView;
 
 import org.ccci.gto.android.common.R;
+
+import androidx.annotation.IdRes;
+import androidx.annotation.Nullable;
 
 public class AffixingScrollView extends ScrollView {
     private static final int INVALID_RESOURCE = -1;

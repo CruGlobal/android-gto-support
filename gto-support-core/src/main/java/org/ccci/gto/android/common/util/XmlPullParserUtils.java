@@ -1,12 +1,13 @@
 package org.ccci.gto.android.common.util;
 
-import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
+
+import androidx.annotation.NonNull;
 
 public class XmlPullParserUtils {
     /**

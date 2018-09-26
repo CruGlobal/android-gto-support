@@ -2,7 +2,7 @@ package org.ccci.gto.android.common.preference;
 
 import android.preference.Preference;
 import android.preference.PreferenceGroup;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 public class PreferenceUtils {
     @Nullable

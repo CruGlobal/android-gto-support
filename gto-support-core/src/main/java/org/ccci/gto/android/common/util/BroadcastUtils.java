@@ -3,7 +3,7 @@ package org.ccci.gto.android.common.util;
 import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.PatternMatcher;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 public final class BroadcastUtils {
     public static void addDataUri(@NonNull final IntentFilter filter, @NonNull final Uri uri) {

@@ -2,7 +2,7 @@ package org.ccci.gto.android.common.util;
 
 import android.net.Uri;
 import android.net.Uri.Builder;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import java.util.regex.Pattern;
 

@@ -2,7 +2,7 @@ package org.ccci.gto.android.common.content;
 
 import android.content.Context;
 import android.content.Intent;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import java.util.Arrays;
 import java.util.HashSet;

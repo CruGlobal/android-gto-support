@@ -1,10 +1,10 @@
 package org.ccci.gto.android.common.support.v4.util;
 
-import android.support.annotation.NonNull;
-import android.support.v4.util.LongSparseArray;
-
 import java.util.HashMap;
 import java.util.Map;
+
+import androidx.annotation.NonNull;
+import androidx.collection.LongSparseArray;
 
 public class IdUtils {
     // no need to use AtomicLong because it is only referenced in blocks synchronized on IDS_REVERSE

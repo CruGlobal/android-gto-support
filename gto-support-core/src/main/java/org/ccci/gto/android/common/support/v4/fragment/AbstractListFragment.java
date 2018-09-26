@@ -2,11 +2,12 @@ package org.ccci.gto.android.common.support.v4.fragment;
 
 import android.database.Cursor;
 import android.os.Build;
-import android.support.v4.app.ListFragment;
 import android.widget.CursorAdapter;
 import android.widget.ListAdapter;
 
 import org.ccci.gto.android.common.support.v4.util.FragmentUtils;
+
+import androidx.fragment.app.ListFragment;
 
 public class AbstractListFragment extends ListFragment {
     protected final <T> T findView(final Class<T> clazz, final int id) {
@@ -32,8 +33,8 @@ public class AbstractListFragment extends ListFragment {
             } else {
                 ((CursorAdapter) adapter).changeCursor(cursor);
             }
-        } else if (adapter instanceof android.support.v4.widget.CursorAdapter) {
-            return ((android.support.v4.widget.CursorAdapter) adapter).swapCursor(cursor);
+        } else if (adapter instanceof androidx.cursoradapter.widget.CursorAdapter) {
+            return ((androidx.cursoradapter.widget.CursorAdapter) adapter).swapCursor(cursor);
         }
 
         return null;

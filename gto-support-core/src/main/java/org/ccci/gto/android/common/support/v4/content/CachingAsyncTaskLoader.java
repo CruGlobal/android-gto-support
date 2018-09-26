@@ -1,10 +1,10 @@
 package org.ccci.gto.android.common.support.v4.content;
 
 import android.content.Context;
-import android.support.annotation.MainThread;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.content.AsyncTaskLoader;
+import androidx.annotation.MainThread;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.loader.content.AsyncTaskLoader;
 
 public abstract class CachingAsyncTaskLoader<D> extends AsyncTaskLoader<D> {
     @Nullable
