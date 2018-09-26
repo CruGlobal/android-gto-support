@@ -1,11 +1,11 @@
 package org.ccci.gto.android.common.leakcanary;
 
-import android.support.annotation.NonNull;
-
 import com.crashlytics.android.Crashlytics;
 import com.squareup.leakcanary.AnalysisResult;
 import com.squareup.leakcanary.DisplayLeakService;
 import com.squareup.leakcanary.HeapDump;
+
+import androidx.annotation.NonNull;
 
 public class CrashlyticsLeakService extends DisplayLeakService {
     private static final int LOG_LIMIT = 64 * 1024;
