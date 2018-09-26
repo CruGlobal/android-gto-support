@@ -5,8 +5,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Build;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 import com.facebook.stetho.inspector.database.DatabaseConnectionProvider;
 import com.facebook.stetho.inspector.database.DatabaseFilesProvider;
@@ -18,6 +16,9 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 public class SQLiteOpenHelperStethoDatabaseProvider implements DatabaseFilesProvider, DatabaseConnectionProvider {
     private final List<File> mFiles;
