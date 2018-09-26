@@ -1,5 +1,5 @@
 dependencies {
     implementation project(':gto-support-compat')
 
-    implementation "android.arch.persistence.room:common:${deps.room}"
+    implementation "androidx.room:room-common:${deps.androidXRoom}"
 }

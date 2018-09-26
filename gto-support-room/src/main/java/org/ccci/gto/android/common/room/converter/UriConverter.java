@@ -1,8 +1,9 @@
 package org.ccci.gto.android.common.room.converter;
 
-import android.arch.persistence.room.TypeConverter;
 import android.net.Uri;
-import android.support.annotation.Nullable;
+
+import androidx.annotation.Nullable;
+import androidx.room.TypeConverter;
 
 public class UriConverter {
     @Nullable

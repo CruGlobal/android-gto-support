@@ -11,6 +11,7 @@ buildscript {
             androidXFragment     : '1.0.0',
             androidXLoader       : '1.0.0',
             androidXRecyclerView : '1.0.0',
+            androidXRoom         : '2.0.0-rc01',
             androidXTest         : '1.0.0',
             androidTestingSupport: '1.0.2',
             crashlytics          : '2.9.5',
