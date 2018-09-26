@@ -8,7 +8,7 @@ dependencies {
     implementation project(':gto-support-base')
     implementation project(':gto-support-compat')
 
-    compileOnly "androidx.appcompat:appcompat:${deps.androidXAppCompat}"
+    compileOnly "androidx.appcompat:appcompat:${deps.androidX.appCompat}"
 
     implementation "com.jakewharton.timber:timber:${deps.timber}"
     implementation "com.squareup.picasso:picasso:${deps.picasso}"

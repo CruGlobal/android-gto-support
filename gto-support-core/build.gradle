@@ -14,8 +14,8 @@ dependencies {
     implementation project(':gto-support-compat')
     implementation project(':gto-support-util')
 
-    api "androidx.loader:loader:${deps.androidXLoader}"
-    implementation "androidx.fragment:fragment:${deps.androidXFragment}"
+    api "androidx.loader:loader:${deps.androidX.loader}"
+    implementation "androidx.fragment:fragment:${deps.androidX.fragment}"
 
     testImplementation "junit:junit:${deps.junit}"
     testImplementation "com.google.guava:guava:${deps.guava}"

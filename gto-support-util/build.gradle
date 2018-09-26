@@ -1,7 +1,7 @@
 dependencies {
     implementation project(':gto-support-compat')
 
-    compileOnly "androidx.collection:collection:${deps.androidXCollection}"
+    compileOnly "androidx.collection:collection:${deps.androidX.collection}"
 
     implementation "com.jakewharton.timber:timber:${deps.timber}"
 }

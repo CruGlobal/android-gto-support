@@ -2,5 +2,5 @@ dependencies {
     implementation project(':gto-support-core')
     implementation project(':gto-support-util')
 
-    implementation "androidx.appcompat:appcompat:${deps.androidXAppCompat}"
+    implementation "androidx.appcompat:appcompat:${deps.androidX.appCompat}"
 }
