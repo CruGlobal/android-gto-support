@@ -1,7 +1,7 @@
 package org.ccci.gto.android.common.api.okhttp3.interceptor;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import org.ccci.gto.android.common.api.okhttp3.SessionApiException;
 

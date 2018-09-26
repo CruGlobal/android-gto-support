@@ -3,8 +3,8 @@ package org.ccci.gto.android.common.api;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.Uri;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import org.ccci.gto.android.common.api.AbstractTheKeyApi.ExecutionContext;
 import org.ccci.gto.android.common.api.AbstractTheKeyApi.Request;

@@ -1,6 +1,6 @@
 package org.ccci.gto.android.common.api.retrofit2.converter;
 
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 import org.ccci.gto.android.common.compat.util.LocaleCompat;
 
