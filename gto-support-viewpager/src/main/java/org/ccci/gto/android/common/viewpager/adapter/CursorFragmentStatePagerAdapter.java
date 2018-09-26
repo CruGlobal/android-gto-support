@@ -3,10 +3,10 @@ package org.ccci.gto.android.common.viewpager.adapter;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.provider.BaseColumns;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentStatePagerAdapter;
-import android.support.v4.util.LongSparseArray;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentStatePagerAdapter;
+import androidx.collection.LongSparseArray;
 
 public abstract class CursorFragmentStatePagerAdapter extends FragmentStatePagerAdapter {
     private static final String ARG_ID = CursorFragmentStatePagerAdapter.class.getName() + ".ARG_ID";

@@ -14,6 +14,7 @@ buildscript {
             androidXRoom         : '2.0.0-rc01',
             androidXSwipeRefreshLayout: '1.0.0',
             androidXTest         : '1.0.0',
+            androidXViewPager         : '1.0.0',
             androidTestingSupport: '1.0.2',
             crashlytics          : '2.9.5',
             eventbus             : '3.1.1',
