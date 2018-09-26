@@ -2,8 +2,6 @@ buildscript {
     // define dependency versions for this project
     ext.deps = [
             advrecyclerview      : '0.11.0',
-            androidDataBinding   : '3.1.4',
-            androidSupport       : '27.1.1',
             androidXAnnotation   : '1.0.0',
             androidXAppCompat    : '1.0.0',
             androidXCollection   : '1.0.0',
@@ -15,7 +13,6 @@ buildscript {
             androidXSwipeRefreshLayout: '1.0.0',
             androidXTest         : '1.0.0',
             androidXViewPager         : '1.0.0',
-            androidTestingSupport: '1.0.2',
             crashlytics          : '2.9.5',
             eventbus             : '3.1.1',
             facebookStetho       : '1.5.0',
@@ -32,7 +29,6 @@ buildscript {
             picasso              : '2.5.2',
             powermock            : '2.0.0-beta.9',
             retrofit2            : '2.4.0',
-            room                 : '1.1.1',
             snowplow             : '0.8.0',
             thekey               : '2.0.0',
             timber               : '4.7.1'
@@ -95,9 +91,7 @@ subprojects {
         dependencies {
             compileOnly "androidx.annotation:annotation:${deps.androidXAnnotation}"
             compileOnly 'org.jetbrains:annotations:16.0.1'
-            compileOnly "com.android.support:support-annotations:${deps.androidSupport}"
 
-            androidTestImplementation "com.android.support.test:runner:${deps.androidTestingSupport}"
             androidTestImplementation "androidx.test:runner:${deps.androidXTest}"
             androidTestImplementation "androidx.test:rules:${deps.androidXTest}"
             androidTestImplementation "com.android.support.test:rules:${deps.androidTestingSupport}"
