@@ -1,5 +1,6 @@
 dependencies {
     implementation project(':gto-support-api-base')
+    implementation project(':gto-support-okhttp3')
 
     implementation "com.squareup.okhttp3:okhttp:${deps.okhttp3}"
 }

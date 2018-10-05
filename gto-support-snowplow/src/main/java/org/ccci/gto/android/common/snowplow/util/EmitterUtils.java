@@ -4,7 +4,7 @@ import android.support.annotation.NonNull;
 
 import com.snowplowanalytics.snowplow.tracker.Emitter;
 
-import org.ccci.gto.android.common.api.okhttp3.util.OkHttpClientUtil;
+import org.ccci.gto.android.common.okhttp3.util.OkHttpClientUtil;
 
 import java.lang.reflect.Field;
 
