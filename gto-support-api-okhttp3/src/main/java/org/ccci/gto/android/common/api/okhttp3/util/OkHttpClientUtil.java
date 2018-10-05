@@ -2,24 +2,35 @@ package org.ccci.gto.android.common.api.okhttp3.util;
 
 import android.support.annotation.NonNull;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 
+/**
+ * @see org.ccci.gto.android.common.okhttp3.util.OkHttpClientUtil
+ * @deprecated Since v1.3.2, use {@link org.ccci.gto.android.common.okhttp3.util.OkHttpClientUtil} instead.
+ */
+@Deprecated
 public class OkHttpClientUtil {
-    private static final List<Interceptor> GLOBAL_NETWORK_INTERCEPTORS = new ArrayList<>();
-
+    /**
+     * @see org.ccci.gto.android.common.okhttp3.util.OkHttpClientUtil#addGlobalNetworkInterceptor(Interceptor)
+     * @deprecated Since v1.3.2, use
+     * {@link org.ccci.gto.android.common.okhttp3.util.OkHttpClientUtil#addGlobalNetworkInterceptor(Interceptor)}
+     * directly.
+     */
+    @Deprecated
     public static void addGlobalNetworkInterceptor(@NonNull final Interceptor interceptor) {
-        GLOBAL_NETWORK_INTERCEPTORS.add(interceptor);
+        org.ccci.gto.android.common.okhttp3.util.OkHttpClientUtil.addGlobalNetworkInterceptor(interceptor);
     }
 
+    /**
+     * @see org.ccci.gto.android.common.okhttp3.util.OkHttpClientUtil#attachGlobalInterceptors(OkHttpClient.Builder)
+     * @deprecated Since v1.3.2, use
+     * {@link org.ccci.gto.android.common.okhttp3.util.OkHttpClientUtil#attachGlobalInterceptors(OkHttpClient.Builder)}
+     * directly.
+     */
+    @Deprecated
     @NonNull
     public static OkHttpClient.Builder attachGlobalInterceptors(@NonNull final OkHttpClient.Builder builder) {
-        for (final Interceptor interceptor : GLOBAL_NETWORK_INTERCEPTORS) {
-            builder.addNetworkInterceptor(interceptor);
-        }
-        return builder;
+        return org.ccci.gto.android.common.okhttp3.util.OkHttpClientUtil.attachGlobalInterceptors(builder);
     }
 }
