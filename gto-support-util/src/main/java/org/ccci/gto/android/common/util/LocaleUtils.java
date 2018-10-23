@@ -58,6 +58,18 @@ public class LocaleUtils {
         }
     }
 
+    @Nullable
+    public static String getOptionalDisplayName(@NonNull final Locale locale, @Nullable final Locale inLocale) {
+        final String languageName =
+                inLocale != null ? locale.getDisplayLanguage(inLocale) : locale.getDisplayLanguage();
+        if (languageName.equals(locale.getLanguage())) {
+            return null;
+        }
+        return inLocale != null ? locale.getDisplayName(inLocale) : locale.getDisplayName();
+    }
+
+    // region Language fallback methods
+
     public static void addFallback(@NonNull final String locale, @NonNull final String fallback) {
         if (FALLBACKS.get(locale) != null) {
             throw new IllegalStateException(locale + " already has a fallback language defined");
@@ -84,8 +96,10 @@ public class LocaleUtils {
             Collections.addAll(outputs, getFallbacks(locale));
         }
 
-        return outputs.toArray(new Locale[outputs.size()]);
+        return outputs.toArray(new Locale[0]);
     }
+
+    // endregion Language fallback methods
 
     @RestrictTo({RestrictTo.Scope.LIBRARY})
     interface Compat {

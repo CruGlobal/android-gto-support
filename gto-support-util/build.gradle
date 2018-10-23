@@ -4,4 +4,6 @@ dependencies {
     compileOnly "com.android.support:support-compat:${deps.androidSupport}"
 
     implementation "com.jakewharton.timber:timber:${deps.timber}"
+
+    testImplementation "junit:junit:${deps.junit}"
 }
