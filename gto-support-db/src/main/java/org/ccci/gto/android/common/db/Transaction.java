@@ -2,8 +2,8 @@ package org.ccci.gto.android.common.db;
 
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
-import android.support.annotation.NonNull;
-import android.support.v4.util.Pools;
+import androidx.annotation.NonNull;
+import androidx.core.util.Pools;
 
 import java.io.Closeable;
 

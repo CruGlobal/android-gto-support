@@ -7,13 +7,14 @@ import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.drawable.Drawable;
-import android.support.annotation.DrawableRes;
-import android.support.annotation.NonNull;
-import android.support.v4.content.ContextCompat;
 
 import com.squareup.picasso.Transformation;
 
 import java.lang.ref.WeakReference;
+
+import androidx.annotation.DrawableRes;
+import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 
 public class MaskTransformation implements Transformation {
     private static final Paint PAINT_MASK = new Paint();

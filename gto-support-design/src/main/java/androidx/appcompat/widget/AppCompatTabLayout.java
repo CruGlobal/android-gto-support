@@ -1,18 +1,20 @@
-package android.support.v7.widget;
+package androidx.appcompat.widget;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
-import android.support.annotation.DrawableRes;
-import android.support.annotation.Nullable;
-import android.support.annotation.RestrictTo;
-import android.support.design.widget.TabLayout;
-import android.support.v4.view.TintableBackgroundView;
 import android.util.AttributeSet;
 
-import static android.support.annotation.RestrictTo.Scope.LIBRARY;
+import com.google.android.material.tabs.TabLayout;
+
+import androidx.annotation.DrawableRes;
+import androidx.annotation.Nullable;
+import androidx.annotation.RestrictTo;
+import androidx.core.view.TintableBackgroundView;
+
+import static androidx.annotation.RestrictTo.Scope.LIBRARY;
 
 @SuppressLint("RestrictedApi")
 public class AppCompatTabLayout extends TabLayout implements TintableBackgroundView {
@@ -51,7 +53,7 @@ public class AppCompatTabLayout extends TabLayout implements TintableBackgroundV
 
     /**
      * This should be accessed via
-     * {@link android.support.v4.view.ViewCompat#setBackgroundTintList(android.view.View, ColorStateList)}
+     * {@link androidx.core.view.ViewCompat#setBackgroundTintList(android.view.View, ColorStateList)}
      *
      * @hide
      */
@@ -65,7 +67,7 @@ public class AppCompatTabLayout extends TabLayout implements TintableBackgroundV
 
     /**
      * This should be accessed via
-     * {@link android.support.v4.view.ViewCompat#getBackgroundTintList(android.view.View)}
+     * {@link androidx.core.view.ViewCompat#getBackgroundTintList(android.view.View)}
      *
      * @hide
      */
@@ -78,7 +80,7 @@ public class AppCompatTabLayout extends TabLayout implements TintableBackgroundV
 
     /**
      * This should be accessed via
-     * {@link android.support.v4.view.ViewCompat#setBackgroundTintMode(android.view.View, PorterDuff.Mode)}
+     * {@link androidx.core.view.ViewCompat#setBackgroundTintMode(android.view.View, PorterDuff.Mode)}
      *
      * @hide
      */
@@ -92,7 +94,7 @@ public class AppCompatTabLayout extends TabLayout implements TintableBackgroundV
 
     /**
      * This should be accessed via
-     * {@link android.support.v4.view.ViewCompat#getBackgroundTintMode(android.view.View)}
+     * {@link androidx.core.view.ViewCompat#getBackgroundTintMode(android.view.View)}
      *
      * @hide
      */

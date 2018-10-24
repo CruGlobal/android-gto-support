@@ -1,11 +1,12 @@
 package org.ccci.gto.android.common.api;
 
 import android.content.SharedPreferences;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
 import java.util.Arrays;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 /**
  * Object representing an individual session for this API. Can be extended to track additional session data.

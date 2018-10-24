@@ -1,11 +1,12 @@
 package org.ccci.gto.android.common.db;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.util.Pair;
 
 import org.ccci.gto.android.common.db.Expression.Field;
 import org.ccci.gto.android.common.util.ArrayUtils;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import static org.ccci.gto.android.common.db.AbstractDao.bindValues;
 

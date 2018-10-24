@@ -2,13 +2,14 @@ package org.ccci.gto.android.common.eventbus.content;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 import org.ccci.gto.android.common.db.AbstractDao;
 import org.ccci.gto.android.common.db.Table;
 import org.ccci.gto.android.common.db.support.v4.content.DaoCursorLoader;
 import org.greenrobot.eventbus.EventBus;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 public class DaoCursorEventBusLoader<T> extends DaoCursorLoader<T> implements EventBusLoaderHelper.Interface {
     private final EventBusLoaderHelper mHelper;

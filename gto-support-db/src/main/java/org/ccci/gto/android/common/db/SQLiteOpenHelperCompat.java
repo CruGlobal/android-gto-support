@@ -6,7 +6,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteDatabase.CursorFactory;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Build;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 public abstract class SQLiteOpenHelperCompat extends SQLiteOpenHelper {
     public SQLiteOpenHelperCompat(Context context, String name, CursorFactory factory, int version) {

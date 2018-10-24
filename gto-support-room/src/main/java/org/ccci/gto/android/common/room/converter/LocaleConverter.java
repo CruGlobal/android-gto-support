@@ -1,11 +1,11 @@
 package org.ccci.gto.android.common.room.converter;
 
-import android.arch.persistence.room.TypeConverter;
-import android.support.annotation.Nullable;
-
 import org.ccci.gto.android.common.compat.util.LocaleCompat;
 
 import java.util.Locale;
+
+import androidx.annotation.Nullable;
+import androidx.room.TypeConverter;
 
 public final class LocaleConverter {
     @Nullable

@@ -1,8 +1,8 @@
 dependencies {
     implementation project(':gto-support-util')
 
-    api "com.android.support:support-core-ui:${deps.androidSupport}"
-    compileOnly "com.android.support:support-fragment:${deps.androidSupport}"
+    api "androidx.viewpager:viewpager:${deps.androidX.viewPager}"
+    compileOnly "androidx.fragment:fragment:${deps.androidX.fragment}"
 
     implementation "com.jakewharton.timber:timber:${deps.timber}"
 }

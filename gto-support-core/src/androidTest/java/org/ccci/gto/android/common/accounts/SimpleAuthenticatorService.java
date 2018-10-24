@@ -3,7 +3,7 @@ package org.ccci.gto.android.common.accounts;
 import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 public class SimpleAuthenticatorService extends Service {
     private SimpleAccountAuthenticator mAuthenticator;

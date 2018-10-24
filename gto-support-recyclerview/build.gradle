@@ -5,7 +5,7 @@ android {
 }
 
 dependencies {
-    api "com.android.support:recyclerview-v7:${deps.androidSupport}"
+    api "androidx.recyclerview:recyclerview:${deps.androidX.recyclerView}"
 
-    compileOnly "com.android.databinding:library:${deps.androidDataBinding}"
+    compileOnly "androidx.databinding:databinding-runtime:${deps.androidX.dataBinding}"
 }

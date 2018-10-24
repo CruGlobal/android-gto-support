@@ -2,12 +2,6 @@ package org.ccci.gto.android.common.viewpager.adapter;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.support.annotation.CallSuper;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.annotation.UiThread;
-import android.support.v4.view.AbsSavedState;
-import android.support.v4.view.PagerAdapter;
 import android.util.SparseArray;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +10,13 @@ import org.ccci.gto.android.common.util.ParcelableLongSparseArray;
 import org.ccci.gto.android.common.util.ParcelableSparseArray;
 
 import java.util.LinkedList;
+
+import androidx.annotation.CallSuper;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.UiThread;
+import androidx.customview.view.AbsSavedState;
+import androidx.viewpager.widget.PagerAdapter;
 
 public abstract class ViewHolderPagerAdapter<VH extends ViewHolderPagerAdapter.ViewHolder> extends PagerAdapter {
     public static final long NO_ID = -1;

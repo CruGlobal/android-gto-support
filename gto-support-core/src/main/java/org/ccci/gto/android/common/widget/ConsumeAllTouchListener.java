@@ -1,8 +1,9 @@
 package org.ccci.gto.android.common.widget;
 
-import android.support.annotation.NonNull;
 import android.view.MotionEvent;
 import android.view.View;
+
+import androidx.annotation.NonNull;
 
 public final class ConsumeAllTouchListener implements View.OnTouchListener {
     @Override

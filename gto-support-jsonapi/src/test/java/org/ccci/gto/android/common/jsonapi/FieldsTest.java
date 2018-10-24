@@ -1,6 +1,6 @@
 package org.ccci.gto.android.common.jsonapi;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import org.ccci.gto.android.common.jsonapi.JsonApiConverter.Fields;
 import org.junit.Test;

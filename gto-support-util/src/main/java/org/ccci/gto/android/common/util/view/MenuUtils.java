@@ -1,7 +1,7 @@
 package org.ccci.gto.android.common.util.view;
 
-import android.support.annotation.IdRes;
-import android.support.annotation.Nullable;
+import androidx.annotation.IdRes;
+import androidx.annotation.Nullable;
 import android.view.Menu;
 import android.view.MenuItem;
 

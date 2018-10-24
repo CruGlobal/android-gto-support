@@ -1,6 +1,6 @@
 package org.ccci.gto.android.common.support.v4.util;
 
-import android.support.v4.util.ArrayMap;
+import androidx.collection.ArrayMap;
 
 import java.lang.ref.WeakReference;
 import java.util.Map;

@@ -1,12 +1,13 @@
 package org.ccci.gto.android.common.api;
 
 import android.content.SharedPreferences;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
 import java.util.Arrays;
 import java.util.Locale;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 public class TheKeySession extends Session {
     @Nullable

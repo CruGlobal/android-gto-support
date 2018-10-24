@@ -1,9 +1,9 @@
 package org.ccci.gto.android.common.util;
 
-import android.support.annotation.NonNull;
-
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
+
+import androidx.annotation.NonNull;
 
 public final class WeakTask<T> implements Runnable {
     private final Reference<T> mRef;

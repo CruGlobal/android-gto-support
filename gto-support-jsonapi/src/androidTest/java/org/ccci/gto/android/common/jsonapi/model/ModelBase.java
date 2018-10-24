@@ -1,6 +1,6 @@
 package org.ccci.gto.android.common.jsonapi.model;
 
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 import org.ccci.gto.android.common.jsonapi.annotation.JsonApiId;
 import org.ccci.gto.android.common.jsonapi.annotation.JsonApiIgnore;

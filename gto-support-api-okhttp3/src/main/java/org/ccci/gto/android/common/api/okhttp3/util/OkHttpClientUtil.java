@@ -1,6 +1,6 @@
 package org.ccci.gto.android.common.api.okhttp3.util;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;

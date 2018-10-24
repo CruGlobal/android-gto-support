@@ -3,9 +3,6 @@ package org.ccci.gto.android.common.util;
 import android.annotation.TargetApi;
 import android.icu.util.ULocale;
 import android.os.Build;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.annotation.RestrictTo;
 import android.text.TextUtils;
 
 import org.ccci.gto.android.common.compat.util.LocaleCompat;
@@ -19,6 +16,10 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.RestrictTo;
 
 public class LocaleUtils {
     // define a few fixed fallbacks

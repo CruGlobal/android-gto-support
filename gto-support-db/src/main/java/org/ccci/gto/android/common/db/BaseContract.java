@@ -1,8 +1,9 @@
 package org.ccci.gto.android.common.db;
 
 import android.provider.BaseColumns;
-import android.support.annotation.NonNull;
 import android.text.TextUtils;
+
+import androidx.annotation.NonNull;
 
 @SuppressWarnings("checkstyle:InterfaceIsType")
 public abstract class BaseContract {

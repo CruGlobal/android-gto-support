@@ -1,13 +1,14 @@
 package org.ccci.gto.android.common.appcompat.widget;
 
 import android.content.Context;
-import android.support.v7.widget.AppCompatRadioButton;
 import android.util.AttributeSet;
 import android.widget.RadioGroup;
 
 import org.ccci.gto.android.common.util.view.ViewUtils;
 
-public class ToggleableAppCompatRadioButton extends AppCompatRadioButton {
+import androidx.appcompat.widget.AppCompatRadioButtonImpl;
+
+public class ToggleableAppCompatRadioButton extends AppCompatRadioButtonImpl {
     public ToggleableAppCompatRadioButton(Context context) {
         super(context);
     }

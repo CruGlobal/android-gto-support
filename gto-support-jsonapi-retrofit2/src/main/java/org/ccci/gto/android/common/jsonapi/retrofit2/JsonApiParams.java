@@ -1,6 +1,6 @@
 package org.ccci.gto.android.common.jsonapi.retrofit2;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 public final class JsonApiParams extends BaseJsonApiParams<JsonApiParams> {
     @NonNull

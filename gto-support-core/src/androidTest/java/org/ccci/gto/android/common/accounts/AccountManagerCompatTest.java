@@ -2,7 +2,7 @@ package org.ccci.gto.android.common.accounts;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
-import android.support.test.InstrumentationRegistry;
+import androidx.test.InstrumentationRegistry;
 
 import org.junit.Ignore;
 import org.junit.Test;

@@ -1,7 +1,7 @@
 package org.ccci.gto.android.common;
 
-import android.support.annotation.DrawableRes;
-import android.support.annotation.StringRes;
+import androidx.annotation.DrawableRes;
+import androidx.annotation.StringRes;
 
 public final class Constants {
     /**

@@ -1,8 +1,8 @@
 package org.ccci.gto.android.common.support.v4.fragment;
 
-import android.support.v4.app.Fragment;
-
 import org.ccci.gto.android.common.support.v4.util.FragmentUtils;
+
+import androidx.fragment.app.Fragment;
 
 public abstract class AbstractFragment extends Fragment {
     protected final <T> T findView(final Class<T> clazz, final int id) {

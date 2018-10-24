@@ -5,11 +5,6 @@ import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
-import android.support.annotation.DrawableRes;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.annotation.UiThread;
-import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -28,6 +23,12 @@ import org.ccci.gto.android.common.picasso.transformation.ScaleTransformation;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+
+import androidx.annotation.DrawableRes;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.UiThread;
+import androidx.core.view.ViewCompat;
 
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 import static org.ccci.gto.android.common.base.Constants.INVALID_DRAWABLE_RES;

@@ -1,6 +1,6 @@
 package org.ccci.gto.android.common.util;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import java.util.Locale;
 

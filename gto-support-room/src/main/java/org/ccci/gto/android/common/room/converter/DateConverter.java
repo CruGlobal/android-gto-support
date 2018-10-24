@@ -1,9 +1,9 @@
 package org.ccci.gto.android.common.room.converter;
 
-import android.arch.persistence.room.TypeConverter;
-import android.support.annotation.Nullable;
-
 import java.util.Date;
+
+import androidx.annotation.Nullable;
+import androidx.room.TypeConverter;
 
 public class DateConverter {
     @Nullable

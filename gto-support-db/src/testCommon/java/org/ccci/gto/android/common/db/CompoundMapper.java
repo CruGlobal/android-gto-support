@@ -2,7 +2,7 @@ package org.ccci.gto.android.common.db;
 
 import android.content.ContentValues;
 import android.database.Cursor;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import org.ccci.gto.android.common.db.model.Compound;
 

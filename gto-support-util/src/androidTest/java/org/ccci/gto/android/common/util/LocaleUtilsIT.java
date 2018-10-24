@@ -1,13 +1,14 @@
 package org.ccci.gto.android.common.util;
 
 import android.os.Build;
-import android.support.test.runner.AndroidJUnit4;
 
 import org.ccci.gto.android.common.compat.util.LocaleCompat;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.util.Locale;
+
+import androidx.test.runner.AndroidJUnit4;
 
 import static java.util.Locale.CANADA_FRENCH;
 import static java.util.Locale.ENGLISH;

@@ -1,10 +1,11 @@
 package org.ccci.gto.android.common.viewpager.view;
 
-import android.support.annotation.NonNull;
-import android.support.v4.view.ViewPager;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
+
+import androidx.annotation.NonNull;
+import androidx.viewpager.widget.ViewPager;
 
 public final class ViewPagerFakeDragTouchListener implements View.OnTouchListener {
     private static final int INVALID_POINTER_ID = -1;

@@ -1,8 +1,8 @@
 package org.ccci.gto.android.common.db.util;
 
 import android.database.Cursor;
-import android.support.test.InstrumentationRegistry;
-import android.support.test.runner.AndroidJUnit4;
+import androidx.test.InstrumentationRegistry;
+import androidx.test.runner.AndroidJUnit4;
 
 import org.ccci.gto.android.common.db.Contract.RootTable;
 import org.ccci.gto.android.common.db.Query;

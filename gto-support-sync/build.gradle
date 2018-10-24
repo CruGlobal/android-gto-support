@@ -1,5 +1,5 @@
 dependencies {
     implementation project(':gto-support-core')
 
-    implementation "com.android.support:support-core-ui:${deps.androidSupport}"
+    implementation "androidx.swiperefreshlayout:swiperefreshlayout:${deps.androidX.swipeRefreshLayout}"
 }

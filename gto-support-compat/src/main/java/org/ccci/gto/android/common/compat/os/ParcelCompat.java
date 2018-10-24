@@ -1,7 +1,7 @@
 package org.ccci.gto.android.common.compat.os;
 
 import android.os.Parcel;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 public class ParcelCompat {
     public static void writeBoolean(@NonNull final Parcel parcel, final boolean value) {

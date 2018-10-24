@@ -1,6 +1,6 @@
 package org.ccci.gto.android.common.support.v4.util;
 
-import android.support.v4.util.LruCache;
+import androidx.collection.LruCache;
 
 import org.junit.Test;
 

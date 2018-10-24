@@ -1,10 +1,11 @@
-package android.support.v7.widget;
+package androidx.appcompat.widget;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 
-import static android.support.v7.widget.ReflectionUtils.getDeclaredField;
+import androidx.annotation.NonNull;
+
+import static androidx.appcompat.widget.ReflectionUtils.getDeclaredField;
 
 public class AppCompatTextViewImpl extends AppCompatTextView {
     @NonNull

@@ -2,17 +2,17 @@ package org.ccci.gto.android.common.recyclerview.advrecyclerview.adapter;
 
 import android.database.Cursor;
 import android.provider.BaseColumns;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.annotation.UiThread;
-import android.support.v7.widget.RecyclerView.ViewHolder;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.UiThread;
+import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
 import com.h6ah4i.android.widget.advrecyclerview.utils.AbstractExpandableItemAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static android.support.v7.widget.RecyclerView.NO_ID;
+import static androidx.recyclerview.widget.RecyclerView.NO_ID;
 
 public abstract class CursorExpandableItemAdapter<GVH extends ViewHolder, CVH extends ViewHolder>
         extends AbstractExpandableItemAdapter<GVH, CVH> {

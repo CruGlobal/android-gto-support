@@ -3,7 +3,7 @@ package org.ccci.gto.android.common.content;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 public abstract class ForwardingBroadcastReceiver extends BroadcastReceiver {
     private BroadcastReceiver mDelegate;

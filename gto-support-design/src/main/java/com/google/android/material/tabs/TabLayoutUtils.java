@@ -1,27 +1,28 @@
-package android.support.design.widget;
+package com.google.android.material.tabs;
 
 import android.graphics.drawable.Drawable;
-import android.support.annotation.ColorInt;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.graphics.drawable.DrawableCompat;
-import android.support.v4.view.ViewCompat;
+
+import androidx.annotation.ColorInt;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.graphics.drawable.DrawableCompat;
+import androidx.core.view.ViewCompat;
 
 public final class TabLayoutUtils {
     @Nullable
     public static Drawable getBackground(@NonNull final TabLayout.Tab tab) {
-        return tab.mView.getBackground();
+        return tab.view.getBackground();
     }
 
     @NonNull
     public static TabLayout.Tab setBackground(@NonNull final TabLayout.Tab tab, @Nullable final Drawable background) {
-        ViewCompat.setBackground(tab.mView, background);
+        ViewCompat.setBackground(tab.view, background);
         return tab;
     }
 
     @NonNull
     public static TabLayout.Tab setBackgroundTint(@NonNull final TabLayout.Tab tab, @ColorInt final int tint) {
-        Drawable bkg = tab.mView.getBackground();
+        Drawable bkg = tab.view.getBackground();
         if (bkg != null) {
             bkg = DrawableCompat.wrap(bkg).mutate();
             DrawableCompat.setTint(bkg, tint);
@@ -32,7 +33,7 @@ public final class TabLayoutUtils {
 
     @NonNull
     public static TabLayout.Tab setVisibility(@NonNull final TabLayout.Tab tab, final int visibility) {
-        tab.mView.setVisibility(visibility);
+        tab.view.setVisibility(visibility);
         return tab;
     }
 }
