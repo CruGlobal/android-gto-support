@@ -1,8 +1,6 @@
 package org.ccci.gto.android.common.db.util;
 
 import android.database.Cursor;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 import org.ccci.gto.android.common.compat.util.LocaleCompat;
 import org.jetbrains.annotations.Contract;
@@ -12,6 +10,9 @@ import org.json.JSONObject;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.Locale;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 public final class CursorUtils {
     /**
@@ -102,17 +103,6 @@ public final class CursorUtils {
         return value != null ? value : defValue;
     }
 
-    /**
-     * @deprecated Since 1.1.1, use {@link CursorUtils#getString(Cursor, String, String)} instead now that there is an
-     * IntelliJ Contract defined for it.
-     */
-    @NonNull
-    @Deprecated
-    public static String getNonNullString(@NonNull final Cursor c, @NonNull final String field,
-                                          @NonNull final String defValue) {
-        return getString(c, field, defValue);
-    }
-
     @Nullable
     public static BigDecimal getBigDecimal(@NonNull final Cursor c, @NonNull final String field,
                                            @Nullable final BigDecimal defValue) {
@@ -162,17 +152,6 @@ public final class CursorUtils {
         }
 
         return defValue;
-    }
-
-    /**
-     * @deprecated Since 1.1.1, use {@link CursorUtils#getEnum(Cursor, String, Class, Enum)} instead now that there is
-     * an IntelliJ Contract defined for it.
-     */
-    @NonNull
-    @Deprecated
-    public static <E extends Enum<E>> E getNonNullEnum(@NonNull final Cursor c, @NonNull final String field,
-                                                       final Class<E> clazz, @NonNull final E defValue) {
-        return getEnum(c, field, clazz, defValue);
     }
 
     @Nullable
@@ -228,16 +207,5 @@ public final class CursorUtils {
             }
         }
         return defValue;
-    }
-
-    /**
-     * @deprecated Since 1.1.1, use {@link CursorUtils#getLocale(Cursor, String, Locale)} instead now that there is an
-     * IntelliJ Contract defined for it.
-     */
-    @NonNull
-    @Deprecated
-    public static Locale getNonNullLocale(@NonNull final Cursor c, @NonNull final String field,
-                                          @NonNull final Locale defValue) {
-        return getLocale(c, field, defValue);
     }
 }

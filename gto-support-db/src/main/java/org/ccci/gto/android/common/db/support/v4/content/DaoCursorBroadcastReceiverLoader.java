@@ -6,7 +6,6 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 
 import org.ccci.gto.android.common.db.AbstractDao;
-import org.ccci.gto.android.common.db.Expression;
 import org.ccci.gto.android.common.db.Table;
 import org.ccci.gto.android.common.support.v4.content.BroadcastReceiverLoaderHelper;
 
@@ -14,7 +13,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import static org.ccci.gto.android.common.db.AbstractDao.ARG_WHERE;
-import static org.ccci.gto.android.common.db.AbstractDao.ARG_WHERE_ARGS;
 
 public class DaoCursorBroadcastReceiverLoader<T> extends DaoCursorLoader<T>
         implements BroadcastReceiverLoaderHelper.Interface {
@@ -36,7 +34,8 @@ public class DaoCursorBroadcastReceiverLoader<T> extends DaoCursorLoader<T>
         if (args != null) {
             final String where = args.getString(ARG_WHERE, null);
             if (where != null) {
-                setWhere(where, args.getStringArray(ARG_WHERE_ARGS));
+                throw new IllegalArgumentException(
+                        "ARG_WHERE no longer supports a string where clause, pass an Expression instead.");
             }
         }
     }
@@ -71,13 +70,5 @@ public class DaoCursorBroadcastReceiverLoader<T> extends DaoCursorLoader<T>
     @Override
     public final void setBroadcastReceiver(@Nullable final BroadcastReceiver receiver) {
         mHelper.setBroadcastReceiver(receiver);
-    }
-
-    /**
-     * @deprecated Since v0.9.0, use {@link DaoCursorBroadcastReceiverLoader#setWhere(Expression)} instead.
-     */
-    @Deprecated
-    public void setWhere(@Nullable final String where, @Nullable final String... args) {
-        setWhere(where != null ? Expression.raw(where, args) : null);
     }
 }
