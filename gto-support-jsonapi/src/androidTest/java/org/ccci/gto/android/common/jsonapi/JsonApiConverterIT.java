@@ -23,12 +23,15 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 
 @RunWith(AndroidJUnit4.class)
 public class JsonApiConverterIT {
+    private static final float DELTA = 0.000001f;
+
     @Test(expected = IllegalArgumentException.class)
     public void verifyConverterNoType() throws Exception {
         new JsonApiConverter.Builder().addClasses(ModelNoType.class).build();
@@ -85,6 +88,8 @@ public class JsonApiConverterIT {
         assertThatJson(json).node("data").isObject();
         assertThatJson(json).node("data.attributes").isObject();
         assertThatJson(json).node("data.attributes.attrArrayDouble").isArray().ofLength(2);
+        assertThatJson(json).node("data.attributes.attrArrayFloat").isArray().ofLength(2);
+        assertThatJson(json).node("data.attributes.attrArrayFloatBoxed").isArray().ofLength(2);
         assertThatJson(json).node("data.attributes.attrArrayInt").isArray().ofLength(2);
         assertThatJson(json).node("data.attributes.attrArrayLong").isArray().ofLength(2);
         assertThatJson(json).node("data.attributes.attrArrayBoolean").isArray().ofLength(2);
@@ -92,6 +97,8 @@ public class JsonApiConverterIT {
         assertThat(json, jsonPartEquals("data.type", ModelAttributes.TYPE));
         assertThat(json, jsonPartEquals("data.attributes.attrStr1", "attrStr1"));
         assertThat(json, jsonPartEquals("data.attributes.attrInt1", 1));
+        assertThat(json, jsonPartEquals("data.attributes.attrFloat", 1.5f));
+        assertThat(json, jsonPartEquals("data.attributes.attrFloatBoxed", 2.5f));
         assertThat(json, jsonPartEquals("data.attributes.attrBool1", true));
         assertThat(json, jsonPartEquals("data.attributes.attrAnn1", "attrAnn1"));
         assertThat(json, jsonPartEquals("data.attributes.attrAnn2", "attrAnn2"));
@@ -99,6 +106,10 @@ public class JsonApiConverterIT {
                                jsonNodeAbsent("data.attributes.staticAttr")));
         assertThat(json, jsonPartEquals("data.attributes.attrArrayDouble[0]", 1.5));
         assertThat(json, jsonPartEquals("data.attributes.attrArrayDouble[1]", 2.5));
+        assertThat(json, jsonPartEquals("data.attributes.attrArrayFloat[0]", 1.25f));
+        assertThat(json, jsonPartEquals("data.attributes.attrArrayFloat[1]", 2.75f));
+        assertThat(json, jsonPartEquals("data.attributes.attrArrayFloatBoxed[0]", 3.25f));
+        assertThat(json, jsonPartEquals("data.attributes.attrArrayFloatBoxed[1]", 4.75f));
         assertThat(json, jsonPartEquals("data.attributes.attrArrayLong[0]", 1));
         assertThat(json, jsonPartEquals("data.attributes.attrArrayLong[1]", 2));
         assertThat(json, jsonPartEquals("data.attributes.attrArrayInt[0]", 3));
@@ -172,12 +183,16 @@ public class JsonApiConverterIT {
         source.mId = 19;
         source.transientAttr = "tneisnart";
         source.attrStr1 = "1rtSrtta";
+        source.attrFloat = 3.4f;
+        source.attrFloatBoxed = null;
         source.attrInt1 = 2;
         source.attrBool1 = false;
         source.attrAnn1 = "1nnArtta";
         source.ann2 = "2nnArtta";
         source.attrArrayBoolean = new boolean[] {false};
         source.attrArrayDouble = new double[] {2.73, 3.14};
+        source.attrArrayFloat = new float[] {1.34f, -2.19f};
+        source.attrArrayFloatBoxed = new Float[] {1.34f, null, -2.19f};
         source.attrArrayInt = new int[] {11, 12, 13};
         source.attrArrayLong = new long[] {21, 22};
         source.attrArrayString = new String[] {null, "str1", "str2"};
@@ -190,12 +205,16 @@ public class JsonApiConverterIT {
         assertThat(target.transientAttr, is("transient"));
         assertThat(target.finalAttr, is("final"));
         assertThat(target.attrStr1, is(source.attrStr1));
+        assertEquals(source.attrFloat, target.attrFloat, DELTA);
+        assertNull(target.attrFloatBoxed);
         assertThat(target.attrInt1, is(source.attrInt1));
         assertThat(target.attrBool1, is(source.attrBool1));
         assertThat(target.attrAnn1, is(source.attrAnn1));
         assertThat(target.ann2, is(source.ann2));
         assertArrayEquals(source.attrArrayBoolean, target.attrArrayBoolean);
-        assertArrayEquals(source.attrArrayDouble, target.attrArrayDouble, 0.000001);
+        assertArrayEquals(source.attrArrayDouble, target.attrArrayDouble, DELTA);
+        assertArrayEquals(source.attrArrayFloat, target.attrArrayFloat, DELTA);
+        assertArrayEquals(source.attrArrayFloatBoxed, target.attrArrayFloatBoxed);
         assertArrayEquals(source.attrArrayInt, target.attrArrayInt);
         assertArrayEquals(source.attrArrayLong, target.attrArrayLong);
         assertArrayEquals(source.attrArrayString, target.attrArrayString);
@@ -252,10 +271,14 @@ public class JsonApiConverterIT {
         final String finalAttr = "final";
 
         private String attrStr1 = "attrStr1";
+        float attrFloat = 1.5f;
+        Float attrFloatBoxed = 2.5f;
         public int attrInt1 = 1;
         boolean attrBool1 = true;
 
         private double[] attrArrayDouble = {1.5, 2.5};
+        private float[] attrArrayFloat = {1.25f, 2.75f};
+        private Float[] attrArrayFloatBoxed = {3.25f, 4.75f};
         private long[] attrArrayLong = {1, 2};
         private int[] attrArrayInt = {3, 4};
         private boolean[] attrArrayBoolean = {true, false};
