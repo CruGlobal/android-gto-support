@@ -734,10 +734,11 @@ public final class JsonApiConverter {
         }
 
         // is it a native type?
-        return boolean.class.equals(type) || double.class.equals(type) || int.class.equals(type) ||
-                long.class.equals(type) || Boolean.class.equals(type) || Double.class.equals(type) ||
-                Integer.class.equals(type) || Long.class.equals(type) || String.class.equals(type) ||
-                JSONObject.class.equals(type) || JSONArray.class.equals(type);
+        return boolean.class.equals(type) || double.class.equals(type) || float.class.equals(type) ||
+                int.class.equals(type) || long.class.equals(type) || Boolean.class.equals(type) ||
+                Double.class.equals(type) || Float.class.equals(type) || Integer.class.equals(type) ||
+                Long.class.equals(type) || String.class.equals(type) || JSONObject.class.equals(type) ||
+                JSONArray.class.equals(type);
     }
 
     @Nullable
@@ -810,6 +811,8 @@ public final class JsonApiConverter {
         // handle native types
         if (type.isAssignableFrom(double.class)) {
             return json.getDouble(index);
+        } else if (type.isAssignableFrom(float.class)) {
+            return (float) json.getDouble(index);
         } else if (type.isAssignableFrom(int.class)) {
             return json.getInt(index);
         } else if (type.isAssignableFrom(long.class)) {
@@ -821,8 +824,8 @@ public final class JsonApiConverter {
         } else if (type.isAssignableFrom(JSONArray.class)) {
             return json.getJSONArray(index);
         } else if (type.isAssignableFrom(Boolean.class) || type.isAssignableFrom(Double.class) ||
-                type.isAssignableFrom(Integer.class) || type.isAssignableFrom(Long.class) ||
-                type.isAssignableFrom(String.class)) {
+                type.isAssignableFrom(Float.class) || type.isAssignableFrom(Integer.class) ||
+                type.isAssignableFrom(Long.class) || type.isAssignableFrom(String.class)) {
             final String value = !json.isNull(index) ? json.optString(index, null) : null;
             if (value == null) {
                 return null;
@@ -832,6 +835,8 @@ public final class JsonApiConverter {
                     return Boolean.valueOf(value);
                 } else if (type.isAssignableFrom(Double.class)) {
                     return Double.valueOf(value);
+                } else if (type.isAssignableFrom(Float.class)) {
+                    return Float.valueOf(value);
                 } else if (type.isAssignableFrom(Integer.class)) {
                     return Integer.valueOf(value);
                 } else if (type.isAssignableFrom(Long.class)) {
@@ -866,6 +871,8 @@ public final class JsonApiConverter {
         // handle native types
         if (type.isAssignableFrom(double.class)) {
             return json.getDouble(name);
+        } else if (type.isAssignableFrom(float.class)) {
+            return (float) json.getDouble(name);
         } else if (type.isAssignableFrom(int.class)) {
             return json.getInt(name);
         } else if (type.isAssignableFrom(long.class)) {
@@ -877,8 +884,8 @@ public final class JsonApiConverter {
         } else if (type.isAssignableFrom(JSONArray.class)) {
             return json.getJSONArray(name);
         } else if (type.isAssignableFrom(Boolean.class) || type.isAssignableFrom(Double.class) ||
-                type.isAssignableFrom(Integer.class) || type.isAssignableFrom(Long.class) ||
-                type.isAssignableFrom(String.class)) {
+                type.isAssignableFrom(Float.class) || type.isAssignableFrom(Integer.class) ||
+                type.isAssignableFrom(Long.class) || type.isAssignableFrom(String.class)) {
             final String value = !json.isNull(name) ? json.optString(name, null) : null;
             if (value == null) {
                 return null;
@@ -888,6 +895,8 @@ public final class JsonApiConverter {
                     return Boolean.valueOf(value);
                 } else if (type.isAssignableFrom(Double.class)) {
                     return Double.valueOf(value);
+                } else if (type.isAssignableFrom(Float.class)) {
+                    return Float.valueOf(value);
                 } else if (type.isAssignableFrom(Integer.class)) {
                     return Integer.valueOf(value);
                 } else if (type.isAssignableFrom(Long.class)) {
