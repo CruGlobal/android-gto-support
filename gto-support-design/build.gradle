@@ -1,3 +1,9 @@
+android {
+    defaultConfig {
+        consumerProguardFile "proguard-consumer-tablayout.pro"
+    }
+}
+
 dependencies {
     compileOnly "androidx.appcompat:appcompat:${deps.androidXAppCompat}"
     implementation "com.google.android.material:material:${deps.materialDesign}"
