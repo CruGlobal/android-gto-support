@@ -3,4 +3,5 @@ dependencies {
     compileOnly project(':gto-support-db')
 
     api "org.greenrobot:eventbus:${deps.eventbus}"
+    compileOnly "com.jakewharton.timber:timber:${deps.timber}"
 }
