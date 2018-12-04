@@ -89,15 +89,6 @@ public final class Query<T> {
         return new Query<>(mTable, mDistinct, mJoins, mProjection, where, mOrderBy, mGroupBy, mHaving, mLimit, mOffset);
     }
 
-    /**
-     * @deprecated Since v0.9.0, use {@link Query#where(Expression)} instead.
-     */
-    @NonNull
-    @Deprecated
-    Query<T> where(@Nullable final Pair<String, String[]> where) {
-        return where(where != null ? Expression.raw(where.first, where.second) : null);
-    }
-
     @NonNull
     public Query<T> where(@Nullable final String where, @NonNull final Object... args) {
         return where(where, bindValues(args));

@@ -11,8 +11,6 @@ import org.ccci.gto.android.common.util.ArrayUtils;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import static org.ccci.gto.android.common.db.AbstractDao.bindValues;
-
 public final class Join<S, T> implements Parcelable {
     public static final Join[] NO_JOINS = new Join[0];
 
@@ -51,42 +49,6 @@ public final class Join<S, T> implements Parcelable {
         mOn = in.readParcelable(loader);
     }
 
-    /**
-     * @deprecated Since v0.9.0, use {@link Join#create(Table, Table)} instead.
-     */
-    @NonNull
-    @Deprecated
-    public static <S, T> Join<S, T> create(@NonNull final Class<S> source, @NonNull final Class<T> target) {
-        return create(Table.forClass(target));
-    }
-
-    /**
-     * @deprecated Since v0.9.0, use {@link Join#create(Table, Table)} instead.
-     */
-    @NonNull
-    @Deprecated
-    public static <S, T> Join<S, T> create(@NonNull final Class<S> source, @NonNull final Table<T> target) {
-        return create(target);
-    }
-
-    /**
-     * @deprecated Since v0.9.0, use {@link Join#create(Table, Table)} instead.
-     */
-    @NonNull
-    @Deprecated
-    public static <S, T> Join<S, T> create(@NonNull final Table<S> source, @NonNull final Class<T> target) {
-        return create(Table.forClass(target));
-    }
-
-    /**
-     * @deprecated Since v0.9.0, use {@link Join#create(Table)} instead.
-     */
-    @NonNull
-    @Deprecated
-    public static <S, T> Join<S, T> create(@NonNull final Class<T> target) {
-        return create(Table.forClass(target));
-    }
-
     @NonNull
     public static <S, T> Join<S, T> create(@NonNull final Table<S> source, @NonNull final Table<T> target) {
         return create(target);
@@ -110,42 +72,6 @@ public final class Join<S, T> implements Parcelable {
     @NonNull
     public Join<S, T> andOn(@NonNull final Expression on) {
         return new Join<>(mBase, mTarget, mType, mOn != null ? mOn.and(on) : on);
-    }
-
-    /**
-     * @deprecated Since v0.9.0, use {@link Join#on(Expression)} instead.
-     */
-    @NonNull
-    @Deprecated
-    public Join<S, T> on(@Nullable final String on, @NonNull final Object... args) {
-        return on(on, bindValues(args));
-    }
-
-    /**
-     * @deprecated Since v0.9.0, use {@link Join#on(Expression)} instead.
-     */
-    @NonNull
-    @Deprecated
-    public Join<S, T> on(@Nullable final String on, @NonNull final String... args) {
-        return new Join<>(mBase, mTarget, mType, on != null ? Expression.raw(on, args) : null);
-    }
-
-    /**
-     * @deprecated Since v0.9.0, use {@link Join#andOn(Expression)} instead.
-     */
-    @NonNull
-    @Deprecated
-    public Join<S, T> andOn(@NonNull final String on, @NonNull final Object... args) {
-        return andOn(on, bindValues(args));
-    }
-
-    /**
-     * @deprecated Since v0.9.0, use {@link Join#andOn(Expression)} instead.
-     */
-    @NonNull
-    @Deprecated
-    public Join<S, T> andOn(@NonNull final String on, @NonNull final String... args) {
-        return andOn(Expression.raw(on, args));
     }
 
     @NonNull
