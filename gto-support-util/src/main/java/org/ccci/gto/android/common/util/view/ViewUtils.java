@@ -1,12 +1,12 @@
 package org.ccci.gto.android.common.util.view;
 
 import android.app.Activity;
-import androidx.annotation.IdRes;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import android.view.View;
 import android.view.ViewParent;
 
+import androidx.annotation.IdRes;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import timber.log.Timber;
 
 public final class ViewUtils {
@@ -62,6 +62,7 @@ public final class ViewUtils {
     }
 
     private static boolean isMotionEventPointerIndexException(@NonNull final Throwable cause) {
-        return cause instanceof IllegalArgumentException && "pointerIndex out of range".equals(cause.getMessage());
+        return cause instanceof IllegalArgumentException && cause.getMessage() != null &&
+                cause.getMessage().startsWith("pointerIndex out of range");
     }
 }
