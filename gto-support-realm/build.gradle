@@ -1,3 +1,7 @@
+apply plugin: 'kotlin-android'
+
 dependencies {
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:${deps.kotlin}"
+
     api "io.realm:realm-android-library:${deps.realm}"
 }
