@@ -4,4 +4,9 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:${deps.kotlin}"
 
     api "io.realm:realm-android-library:${deps.realm}"
+
+    // RecyclerViewAdapter dependencies
+    compileOnly "io.realm:android-adapters:${deps.realmAdapters}"
+    compileOnly project(':gto-support-recyclerview')
+    compileOnly "androidx.databinding:databinding-runtime:${deps.androidX.dataBinding}"
 }
