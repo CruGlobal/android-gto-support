@@ -123,7 +123,6 @@ subprojects {
         project.tasks.findByName("check")?.dependsOn('checkstyle')
     }
 
-
     // configure ktlint
     configurations {
         ktlint
