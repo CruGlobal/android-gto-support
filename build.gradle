@@ -30,6 +30,7 @@ buildscript {
             okhttp3          : '3.11.0',
             picasso          : '2.5.2',
             powermock        : '2.0.0-beta.9',
+            realm            : '5.7.1',
             retrofit2        : '2.4.0',
             snowplow         : '0.8.0',
             thekey           : '3.0.0',

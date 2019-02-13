@@ -1,0 +1,3 @@
+dependencies {
+    api "io.realm:realm-android-library:${deps.realm}"
+}
