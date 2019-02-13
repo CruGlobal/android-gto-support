@@ -26,4 +26,7 @@ abstract class RealmDataBindingAdapter<T : RealmModel, B : ViewDataBinding>(data
     protected fun onViewDataBindingRecycled(binding: B) {}
 
     // end Lifecycle Events
+
+    override fun updateData(data: OrderedRealmCollection<T>?) =
+        if (data !== this.data || data?.isManaged == false) super.updateData(data) else Unit
 }
