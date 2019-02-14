@@ -1,20 +1,11 @@
 package org.ccci.gto.android.common.recyclerview.adapter;
 
-import org.ccci.gto.android.common.recyclerview.adapter.BaseDataBindingAdapter.DataBindingViewHolder;
-
-import androidx.annotation.NonNull;
 import androidx.databinding.ViewDataBinding;
 import androidx.recyclerview.widget.RecyclerView;
 
+/**
+ * @deprecated Since v2.1.0, this class gains us nothing, use SimpleDataBindingAdapter instead.
+ */
+@Deprecated
 public abstract class BaseDataBindingAdapter<B extends ViewDataBinding, VH extends DataBindingViewHolder<B>>
-        extends RecyclerView.Adapter<VH> {
-    public static class DataBindingViewHolder<B extends ViewDataBinding> extends RecyclerView.ViewHolder {
-        @NonNull
-        public final B binding;
-
-        public DataBindingViewHolder(@NonNull final B binding) {
-            super(binding.getRoot());
-            this.binding = binding;
-        }
-    }
-}
+        extends RecyclerView.Adapter<VH> {}

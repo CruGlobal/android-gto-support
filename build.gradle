@@ -23,6 +23,8 @@ buildscript {
             hamcrest         : '1.3',
             jsonUnit         : '1.31.1',
             junit            : '4.12',
+            kotlin           : '1.3.21',
+            ktlint           : '0.29.0',
             leakcanary       : '1.6.1',
             lightweightStream: '1.2.1',
             materialDesign   : '1.0.0',
@@ -30,6 +32,8 @@ buildscript {
             okhttp3          : '3.11.0',
             picasso          : '2.5.2',
             powermock        : '2.0.0-beta.9',
+            realm            : '5.9.0',
+            realmAdapters    : '3.1.0',
             retrofit2        : '2.4.0',
             snowplow         : '0.8.0',
             thekey           : '3.0.0',
@@ -43,6 +47,7 @@ buildscript {
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:3.2.1'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:${deps.kotlin}"
     }
 }
 plugins {
@@ -53,7 +58,7 @@ subprojects {
     apply plugin: 'com.android.library'
 
     group 'org.ccci.gto.android'
-    version '2.0.2-SNAPSHOT'
+    version '2.1.0-SNAPSHOT'
 
     repositories {
         google()
@@ -115,9 +120,27 @@ subprojects {
         classpath = files()
     }
     afterEvaluate {
-        if (project.tasks.findByName('check')) {
-            check.dependsOn('checkstyle')
-        }
+        project.tasks.findByName("check")?.dependsOn('checkstyle')
+    }
+
+    // configure ktlint
+    configurations {
+        ktlint
+    }
+    dependencies {
+        // ktlint
+        ktlint "com.github.shyiko:ktlint:${deps.ktlint}"
+    }
+    task ktlint(type: JavaExec, group: "verification") {
+        description = "Check Kotlin code style."
+        classpath = configurations.ktlint
+        main = "com.github.shyiko.ktlint.Main"
+        args "src/**/*.kt"
+        args "--reporter=plain?group_by_file"
+        args "--reporter=checkstyle,output=${buildDir}/reports/ktlint/ktlint.xml"
+    }
+    afterEvaluate {
+        project.tasks.findByName("check")?.dependsOn('ktlint')
     }
 
     // configure publishing
