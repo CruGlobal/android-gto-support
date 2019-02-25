@@ -2,14 +2,19 @@ package org.ccci.gto.android.common.realm.adapter
 
 import android.view.ViewGroup
 import androidx.databinding.ViewDataBinding
+import androidx.lifecycle.Observer
 import io.realm.OrderedRealmCollection
 import io.realm.RealmModel
 import io.realm.RealmRecyclerViewAdapter
 import org.ccci.gto.android.common.recyclerview.adapter.DataBindingViewHolder
 
 abstract class RealmDataBindingAdapter<T : RealmModel, B : ViewDataBinding>(data: OrderedRealmCollection<T>? = null) :
-    RealmRecyclerViewAdapter<T, DataBindingViewHolder<B>>(data, true) {
+    RealmRecyclerViewAdapter<T, DataBindingViewHolder<B>>(data, true), Observer<OrderedRealmCollection<T>?> {
     // region Lifecycle Events
+
+    override fun onChanged(t: OrderedRealmCollection<T>?) {
+        updateData(t)
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
         DataBindingViewHolder(onCreateViewDataBinding(parent, viewType))
