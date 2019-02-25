@@ -8,5 +8,5 @@ dependencies {
     // RecyclerViewAdapter dependencies
     compileOnly "io.realm:android-adapters:${deps.realmAdapters}"
     compileOnly project(':gto-support-recyclerview')
-    compileOnly "androidx.databinding:databinding-runtime:${deps.androidX.dataBinding}"
+    compileOnly "androidx.databinding:databinding-runtime:${deps.gradle.androidPlugin}"
 }
