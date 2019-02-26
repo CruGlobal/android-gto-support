@@ -7,5 +7,5 @@ android {
 dependencies {
     api "androidx.recyclerview:recyclerview:${deps.androidX.recyclerView}"
 
-    compileOnly "androidx.databinding:databinding-runtime:${deps.androidX.dataBinding}"
+    compileOnly "androidx.databinding:databinding-runtime:${deps.gradle.androidPlugin}"
 }

@@ -11,15 +11,15 @@ import org.ccci.gto.android.common.R;
 import androidx.annotation.IdRes;
 import androidx.annotation.Nullable;
 
-public class AffixingScrollView extends ScrollView {
-    private static final int INVALID_RESOURCE = -1;
+import static org.ccci.gto.android.common.base.Constants.INVALID_ID_RES;
 
+public class AffixingScrollView extends ScrollView {
     @IdRes
-    private int mAffixingId = INVALID_RESOURCE;
+    private int mAffixingId = INVALID_ID_RES;
     @Nullable
     private View mAffixingView;
     @IdRes
-    private int mAnchorId = INVALID_RESOURCE;
+    private int mAnchorId = INVALID_ID_RES;
     @Nullable
     private View mAnchorView;
 
@@ -39,8 +39,8 @@ public class AffixingScrollView extends ScrollView {
 
     private void init(final AttributeSet attrs) {
         final TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.AffixingScrollView);
-        mAffixingId = a.getResourceId(R.styleable.AffixingScrollView_affixingView, INVALID_RESOURCE);
-        mAnchorId = a.getResourceId(R.styleable.AffixingScrollView_anchorView, INVALID_RESOURCE);
+        mAffixingId = a.getResourceId(R.styleable.AffixingScrollView_affixingView, INVALID_ID_RES);
+        mAnchorId = a.getResourceId(R.styleable.AffixingScrollView_anchorView, INVALID_ID_RES);
         a.recycle();
     }
 
@@ -66,18 +66,18 @@ public class AffixingScrollView extends ScrollView {
         updateAffixingView();
     }
 
-    /* BEGIN lifecycle */
+    // region Lifecycle
 
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
-        if (mAnchorId > 0) {
+        if (mAnchorId != INVALID_ID_RES) {
             mAnchorView = this.findViewById(mAnchorId);
-            mAnchorId = INVALID_RESOURCE;
+            mAnchorId = INVALID_ID_RES;
         }
-        if (mAffixingId > 0) {
+        if (mAffixingId != INVALID_ID_RES) {
             mAffixingView = this.findViewById(mAffixingId);
-            mAffixingId = INVALID_RESOURCE;
+            mAffixingId = INVALID_ID_RES;
         }
         updateAffixingView();
     }
@@ -94,7 +94,7 @@ public class AffixingScrollView extends ScrollView {
         updateAffixingView();
     }
 
-    /* END lifecycle */
+    // endregion Lifecycle
 
     private void updateAffixingView() {
         if (mAnchorView == null || mAffixingView == null) {
