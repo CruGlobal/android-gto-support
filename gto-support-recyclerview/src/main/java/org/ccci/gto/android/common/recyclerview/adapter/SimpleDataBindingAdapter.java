@@ -22,6 +22,7 @@ public abstract class SimpleDataBindingAdapter<B extends ViewDataBinding>
     @Override
     public final void onBindViewHolder(@NonNull final DataBindingViewHolder<B> holder, final int position) {
         onBindViewDataBinding(holder.binding, position);
+        holder.binding.executePendingBindings();
     }
 
     protected abstract void onBindViewDataBinding(@NonNull B binding, int position);

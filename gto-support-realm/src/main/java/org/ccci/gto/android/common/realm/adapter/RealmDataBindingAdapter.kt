@@ -21,8 +21,10 @@ abstract class RealmDataBindingAdapter<T : RealmModel, B : ViewDataBinding>(data
 
     protected abstract fun onCreateViewDataBinding(parent: ViewGroup, viewType: Int): B
 
-    override fun onBindViewHolder(holder: DataBindingViewHolder<B>, position: Int) =
+    override fun onBindViewHolder(holder: DataBindingViewHolder<B>, position: Int) {
         onBindViewDataBinding(holder.binding, position)
+        holder.binding.executePendingBindings()
+    }
 
     protected abstract fun onBindViewDataBinding(binding: B, position: Int)
 
