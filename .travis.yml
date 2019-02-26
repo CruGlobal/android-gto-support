@@ -70,7 +70,7 @@ jobs:
     stage: compile
 
     install: skip
-    script: ./gradlew clean assembleDebug assembleRelease --continue --stacktrace --parallel
+    script: ./gradlew clean assemble --continue --stacktrace --parallel
 
   - name: "Static Analysis"
     stage: compile
