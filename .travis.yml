@@ -8,11 +8,11 @@ env:
     # DEPLOY_PASSWORD={password}
     - secure: "NpKiD/OhxURch8MhFvVohqNDgS6SVPfjiM2Qm/mQbjLmeEmdlfDQ3lPF+X2HNL960eWulhvpcTPr5TS8eUMUA83U5HBUaADQEnqnHN75oC1OYJtB54ELP2b+vXOEVD3hFQFFnBWsPLJKd6DK8XMpVe+eG+MnmGPM5AWC0a4cw6I="
   matrix:
-    - ANDROID_TARGET=android-24 ANDROID_ABI=armeabi-v7a
     - ANDROID_TARGET=android-15 ANDROID_ABI=armeabi-v7a
     - ANDROID_TARGET=android-21 ANDROID_ABI=armeabi-v7a
     - ANDROID_TARGET=android-22 ANDROID_ABI=armeabi-v7a
 #    - ANDROID_TARGET=android-23 ANDROID_ABI=armeabi-v7a
+    - ANDROID_TARGET=android-24 ANDROID_ABI=armeabi-v7a
 branches:
   only:
     - master
