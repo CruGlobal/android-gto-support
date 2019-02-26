@@ -57,12 +57,12 @@ install:
 #  --max-workers   : limit the number of workers gradle will spawn
 #  --no-daemon     : disable the background gradle build daemon
 #  -PdisablePreDex : disable library pre-dex to improve build server performance
-- ./gradlew clean assembleAndroidTest -PdisablePreDex --parallel --continue --stacktrace --no-daemon --max-workers 4
+- ./gradlew clean assembleAndroidTest -PdisablePreDex --parallel --continue --stacktrace
 
 script:
 - android-wait-for-emulator
 - adb shell input keyevent 82 &
-- ./gradlew connectedCheck -PdisablePreDex --parallel --continue --stacktrace --no-daemon --max-workers 4
+- ./gradlew connectedCheck -PdisablePreDex --parallel --continue --stacktrace
 
 jobs:
   include:
