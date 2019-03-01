@@ -788,6 +788,66 @@ public final class JsonApiConverter {
     }
 
     @Nullable
+    private Object convertFromJSONObject(@NonNull final JSONObject json, @NonNull final String name,
+                                         @NonNull final Class<?> type) throws JSONException {
+        // utilize configured TypeConverters first
+        for (final TypeConverter<?> converter : mConverters) {
+            if (converter.supports(type)) {
+                final String value = !json.isNull(name) ? json.optString(name, null) : null;
+                return converter.fromString(value);
+            }
+        }
+
+        // handle array types
+        if (type.isArray() && type.getComponentType() != null) {
+            return convertFromJSONArray(json.getJSONArray(name), type.getComponentType());
+        }
+
+        // handle native types
+        if (type.isAssignableFrom(double.class)) {
+            return json.getDouble(name);
+        } else if (type.isAssignableFrom(float.class)) {
+            return (float) json.getDouble(name);
+        } else if (type.isAssignableFrom(int.class)) {
+            return json.getInt(name);
+        } else if (type.isAssignableFrom(long.class)) {
+            return json.getLong(name);
+        } else if (type.isAssignableFrom(boolean.class)) {
+            return json.getBoolean(name);
+        } else if (type.isAssignableFrom(JSONObject.class)) {
+            return json.getJSONObject(name);
+        } else if (type.isAssignableFrom(JSONArray.class)) {
+            return json.getJSONArray(name);
+        } else if (type.isAssignableFrom(Boolean.class) || type.isAssignableFrom(Double.class) ||
+                type.isAssignableFrom(Float.class) || type.isAssignableFrom(Integer.class) ||
+                type.isAssignableFrom(Long.class) || type.isAssignableFrom(String.class)) {
+            final String value = !json.isNull(name) ? json.optString(name, null) : null;
+            if (value == null) {
+                return null;
+            }
+            try {
+                if (type.isAssignableFrom(Boolean.class)) {
+                    return Boolean.valueOf(value);
+                } else if (type.isAssignableFrom(Double.class)) {
+                    return Double.valueOf(value);
+                } else if (type.isAssignableFrom(Float.class)) {
+                    return Float.valueOf(value);
+                } else if (type.isAssignableFrom(Integer.class)) {
+                    return Integer.valueOf(value);
+                } else if (type.isAssignableFrom(Long.class)) {
+                    return Long.valueOf(value);
+                } else if (type.isAssignableFrom(String.class)) {
+                    return value;
+                }
+            } catch (final Exception e) {
+                return null;
+            }
+        }
+
+        return null;
+    }
+
+    @NonNull
     private Object convertFromJSONArray(@NonNull final JSONArray json, @NonNull final Class<?> arrayType)
             throws JSONException {
         final Object array = Array.newInstance(arrayType, json.length());
@@ -827,66 +887,6 @@ public final class JsonApiConverter {
                 type.isAssignableFrom(Float.class) || type.isAssignableFrom(Integer.class) ||
                 type.isAssignableFrom(Long.class) || type.isAssignableFrom(String.class)) {
             final String value = !json.isNull(index) ? json.optString(index, null) : null;
-            if (value == null) {
-                return null;
-            }
-            try {
-                if (type.isAssignableFrom(Boolean.class)) {
-                    return Boolean.valueOf(value);
-                } else if (type.isAssignableFrom(Double.class)) {
-                    return Double.valueOf(value);
-                } else if (type.isAssignableFrom(Float.class)) {
-                    return Float.valueOf(value);
-                } else if (type.isAssignableFrom(Integer.class)) {
-                    return Integer.valueOf(value);
-                } else if (type.isAssignableFrom(Long.class)) {
-                    return Long.valueOf(value);
-                } else if (type.isAssignableFrom(String.class)) {
-                    return value;
-                }
-            } catch (final Exception e) {
-                return null;
-            }
-        }
-
-        return null;
-    }
-
-    @Nullable
-    private Object convertFromJSONObject(@NonNull final JSONObject json, @NonNull final String name,
-                                         @NonNull final Class<?> type) throws JSONException {
-        // utilize configured TypeConverters first
-        for (final TypeConverter<?> converter : mConverters) {
-            if (converter.supports(type)) {
-                final String value = !json.isNull(name) ? json.optString(name, null) : null;
-                return converter.fromString(value);
-            }
-        }
-
-        // handle array types
-        if (type.isArray() && type.getComponentType() != null) {
-            return convertFromJSONArray(json.getJSONArray(name), type.getComponentType());
-        }
-
-        // handle native types
-        if (type.isAssignableFrom(double.class)) {
-            return json.getDouble(name);
-        } else if (type.isAssignableFrom(float.class)) {
-            return (float) json.getDouble(name);
-        } else if (type.isAssignableFrom(int.class)) {
-            return json.getInt(name);
-        } else if (type.isAssignableFrom(long.class)) {
-            return json.getLong(name);
-        } else if (type.isAssignableFrom(boolean.class)) {
-            return json.getBoolean(name);
-        } else if (type.isAssignableFrom(JSONObject.class)) {
-            return json.getJSONObject(name);
-        } else if (type.isAssignableFrom(JSONArray.class)) {
-            return json.getJSONArray(name);
-        } else if (type.isAssignableFrom(Boolean.class) || type.isAssignableFrom(Double.class) ||
-                type.isAssignableFrom(Float.class) || type.isAssignableFrom(Integer.class) ||
-                type.isAssignableFrom(Long.class) || type.isAssignableFrom(String.class)) {
-            final String value = !json.isNull(name) ? json.optString(name, null) : null;
             if (value == null) {
                 return null;
             }
