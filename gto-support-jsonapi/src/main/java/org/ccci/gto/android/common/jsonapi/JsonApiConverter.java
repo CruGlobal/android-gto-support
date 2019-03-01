@@ -575,7 +575,7 @@ public final class JsonApiConverter {
             try {
                 // handle id fields
                 if (field.isId()) {
-                    field.mField.set(instance, convertFromJSONObject(json, JSON_DATA_ID, fieldType));
+                    field.mField.set(instance, convertFromJSONObject(json, JSON_DATA_ID, field));
                 }
                 // handle relationships
                 else if (supports(fieldType)) {
@@ -613,7 +613,7 @@ public final class JsonApiConverter {
                 // anything else is an attribute
                 else {
                     if (attributes != null) {
-                        field.mField.set(instance, convertFromJSONObject(attributes, attrName, fieldType));
+                        field.mField.set(instance, convertFromJSONObject(attributes, attrName, field));
                     }
                 }
             } catch (final JSONException | IllegalAccessException ignored) {
@@ -677,7 +677,7 @@ public final class JsonApiConverter {
                 final Class<?> fieldArrayType = info.getArrayType();
                 final Class<?> fieldCollectionType = info.getCollectionType();
                 if (!(isSupportedType(fieldType) || (fieldType.isArray() && isSupportedType(fieldArrayType)) ||
-                        supports(fieldCollectionType))) {
+                        (Collection.class.isAssignableFrom(fieldType) && isSupportedType(fieldCollectionType)))) {
                     continue;
                 }
 
@@ -720,7 +720,11 @@ public final class JsonApiConverter {
         return methods;
     }
 
-    private boolean isSupportedType(@NonNull final Class<?> type) {
+    private boolean isSupportedType(@Nullable final Class<?> type) {
+        if (type == null) {
+            return false;
+        }
+
         // check if this is a supported model type
         if (supports(type)) {
             return true;
@@ -772,6 +776,11 @@ public final class JsonApiConverter {
             return convertArrayToJsonValue(raw);
         }
 
+        // handle collection values
+        if (raw instanceof Collection) {
+            return convertCollectionToJsonValue((Collection) raw);
+        }
+
         // just return native types
         return raw;
     }
@@ -787,10 +796,19 @@ public final class JsonApiConverter {
         return array;
     }
 
+    private JSONArray convertCollectionToJsonValue(@NonNull final Collection raw) throws JSONException {
+        final JSONArray array = new JSONArray();
+        for (final Object elem : raw) {
+            array.put(convertToJsonValue(elem));
+        }
+        return array;
+    }
+
     @Nullable
     private Object convertFromJSONObject(@NonNull final JSONObject json, @NonNull final String name,
-                                         @NonNull final Class<?> type) throws JSONException {
+                                         @NonNull FieldInfo info) throws JSONException {
         // utilize configured TypeConverters first
+        final Class<?> type = info.getType();
         for (final TypeConverter<?> converter : mConverters) {
             if (converter.supports(type)) {
                 final String value = !json.isNull(name) ? json.optString(name, null) : null;
@@ -799,8 +817,16 @@ public final class JsonApiConverter {
         }
 
         // handle array types
-        if (type.isArray() && type.getComponentType() != null) {
-            return convertFromJSONArray(json.getJSONArray(name), type.getComponentType());
+        final Class<?> arrayElementType = info.getArrayType();
+        if (type.isArray() && arrayElementType != null) {
+            return convertArrayFromJSONArray(json.getJSONArray(name), arrayElementType);
+        }
+
+        // handle collection types
+        final Class<?> collectionElementType = info.getCollectionType();
+        if (Collection.class.isAssignableFrom(type) && collectionElementType != null) {
+            return convertCollectionFromJSONArray(json.getJSONArray(name), (Class<? extends Collection>) type,
+                                                  collectionElementType);
         }
 
         // handle native types
@@ -844,17 +870,34 @@ public final class JsonApiConverter {
             }
         }
 
+        // default to null
         return null;
     }
 
     @NonNull
-    private Object convertFromJSONArray(@NonNull final JSONArray json, @NonNull final Class<?> arrayType)
+    private Object convertArrayFromJSONArray(@NonNull final JSONArray json, @NonNull final Class<?> arrayType)
             throws JSONException {
         final Object array = Array.newInstance(arrayType, json.length());
         for (int i = 0; i < json.length(); i++) {
             Array.set(array, i, convertFromJSONArray(json, i, arrayType));
         }
         return array;
+    }
+
+    @SuppressWarnings("unchecked")
+    private <T extends Collection> T convertCollectionFromJSONArray(
+            @NonNull final JSONArray json, @NonNull final Class<T> collectionType, @NonNull final Class<?> elementType)
+            throws JSONException {
+        final T collection = newCollection(collectionType);
+        if (collection == null) {
+            throw new IllegalArgumentException("Invalid Collection Type: " + collectionType);
+        }
+
+        for (int i = 0; i < json.length(); i++) {
+            collection.add(convertFromJSONArray(json, i, elementType));
+        }
+
+        return collection;
     }
 
     @Nullable
