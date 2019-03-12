@@ -14,7 +14,7 @@ buildscript {
                     test              : '1.1.0-alpha4',
                     viewPager         : '1.0.0',
             ],
-            crashlytics         : '2.9.5',
+            crashlytics         : '2.9.9',
             eventbus            : '3.1.1',
             facebookStetho      : '1.5.0',
             gradle              : [
