@@ -4,7 +4,8 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import androidx.viewpager.widget.ViewPager
 import com.karumi.weak.weakVar
 
-class SwipeRefreshLayoutPageChangeListener(layout: SwipeRefreshLayout? = null) : ViewPager.SimpleOnPageChangeListener() {
+class SwipeRefreshLayoutPageChangeListener(layout: SwipeRefreshLayout? = null) :
+    ViewPager.SimpleOnPageChangeListener() {
     var swipeRefreshLayout: SwipeRefreshLayout? by weakVar()
     init {
         swipeRefreshLayout = layout
