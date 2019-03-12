@@ -4,7 +4,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import androidx.viewpager.widget.ViewPager
 import com.karumi.weak.weakVar
 
-class SwipeRefreshLayoutPageChangeListener(layout: SwipeRefreshLayout? = null) : ViewPager.OnPageChangeListener {
+class SwipeRefreshLayoutPageChangeListener(layout: SwipeRefreshLayout? = null) : ViewPager.SimpleOnPageChangeListener() {
     var swipeRefreshLayout: SwipeRefreshLayout? by weakVar()
     init {
         swipeRefreshLayout = layout
@@ -13,7 +13,4 @@ class SwipeRefreshLayoutPageChangeListener(layout: SwipeRefreshLayout? = null) :
     override fun onPageScrollStateChanged(state: Int) {
         swipeRefreshLayout?.isEnabled = state == ViewPager.SCROLL_STATE_IDLE
     }
-
-    override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
-    override fun onPageSelected(position: Int) {}
 }
