@@ -1,4 +1,5 @@
 dependencies {
+    implementation "androidx.appcompat:appcompat:${deps.androidX.appCompat}"
     api "androidx.recyclerview:recyclerview:${deps.androidX.recyclerView}"
 
     api "com.h6ah4i.android.widget.advrecyclerview:advrecyclerview:${deps.advrecyclerview}"
