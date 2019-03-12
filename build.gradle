@@ -1,20 +1,20 @@
 buildscript {
     // define dependency versions for this project
     ext.deps = [
-            advrecyclerview     : '0.11.0',
+            advrecyclerview     : '1.0.0',
             androidX            : [
-                    annotation        : '1.0.0',
-                    appCompat         : '1.0.0',
+                    annotation        : '1.0.2',
+                    appCompat         : '1.0.2',
                     collection        : '1.0.0',
                     fragment          : '1.0.0',
                     loader            : '1.0.0',
                     recyclerView      : '1.0.0',
                     room              : '2.0.0-rc01',
                     swipeRefreshLayout: '1.0.0',
-                    test              : '1.1.0-alpha4',
+                    test              : '1.1.0',
                     viewPager         : '1.0.0',
             ],
-            crashlytics         : '2.9.5',
+            crashlytics         : '2.9.9',
             eventbus            : '3.1.1',
             facebookStetho      : '1.5.0',
             gradle              : [

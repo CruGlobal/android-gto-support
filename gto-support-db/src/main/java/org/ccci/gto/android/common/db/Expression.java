@@ -1,7 +1,5 @@
 package org.ccci.gto.android.common.db;
 
-import android.annotation.TargetApi;
-import android.os.Build;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.Pair;
@@ -376,11 +374,9 @@ public abstract class Expression implements Parcelable {
             ParcelCompat.writeBoolean(out, mConstant);
         }
 
-        public static final Creator<Literal> CREATOR =
-                Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB_MR2 ? new HoneycombMR1LiteralCreator() :
-                        new LiteralCreator();
+        public static final Creator<Literal> CREATOR = new LiteralCreator();
 
-        private static class HoneycombMR1LiteralCreator implements Creator<Literal> {
+        private static class LiteralCreator implements ClassLoaderCreator<Literal> {
             @Override
             public Literal createFromParcel(@NonNull final Parcel in) {
                 return new Literal(in, null);
@@ -390,10 +386,7 @@ public abstract class Expression implements Parcelable {
             public Literal[] newArray(final int size) {
                 return new Literal[size];
             }
-        }
 
-        @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
-        private static class LiteralCreator extends HoneycombMR1LiteralCreator implements ClassLoaderCreator<Literal> {
             @Override
             public Literal createFromParcel(@NonNull final Parcel in, @Nullable final ClassLoader loader) {
                 return new Literal(in, loader);
@@ -483,11 +476,9 @@ public abstract class Expression implements Parcelable {
             out.writeString(mName);
         }
 
-        public static final Creator<Field> CREATOR =
-                Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB_MR2 ? new HoneycombMR1FieldCreator() :
-                        new FieldCreator();
+        public static final Creator<Field> CREATOR = new FieldCreator();
 
-        private static class HoneycombMR1FieldCreator implements Creator<Field> {
+        private static class FieldCreator implements ClassLoaderCreator<Field> {
             @Override
             public Field createFromParcel(@NonNull final Parcel in) {
                 return new Field(in, null);
@@ -497,10 +488,7 @@ public abstract class Expression implements Parcelable {
             public Field[] newArray(final int size) {
                 return new Field[size];
             }
-        }
 
-        @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
-        private static class FieldCreator extends HoneycombMR1FieldCreator implements ClassLoaderCreator<Field> {
             @Override
             public Field createFromParcel(@NonNull final Parcel in, @Nullable final ClassLoader loader) {
                 return new Field(in, loader);
@@ -560,11 +548,9 @@ public abstract class Expression implements Parcelable {
             out.writeStringArray(mArgs);
         }
 
-        public static final Creator<Raw> CREATOR =
-                Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB_MR2 ? new HoneycombMR1RawCreator() :
-                        new RawCreator();
+        public static final Creator<Raw> CREATOR = new RawCreator();
 
-        private static class HoneycombMR1RawCreator implements Creator<Raw> {
+        private static class RawCreator implements ClassLoaderCreator<Raw> {
             @Override
             public Raw createFromParcel(@NonNull final Parcel in) {
                 return new Raw(in, null);
@@ -574,11 +560,7 @@ public abstract class Expression implements Parcelable {
             public Raw[] newArray(final int size) {
                 return new Raw[size];
             }
-        }
 
-        @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
-        private static class RawCreator extends HoneycombMR1RawCreator
-                implements ClassLoaderCreator<Raw> {
             @Override
             public Raw createFromParcel(@NonNull final Parcel in, @Nullable final ClassLoader loader) {
                 return new Raw(in, loader);
@@ -750,11 +732,9 @@ public abstract class Expression implements Parcelable {
             out.writeParcelableArray(mExprs, 0);
         }
 
-        public static final Creator<Binary> CREATOR =
-                Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB_MR2 ? new HoneycombMR1BinaryExpressionCreator() :
-                        new BinaryExpressionCreator();
+        public static final Creator<Binary> CREATOR = new BinaryExpressionCreator();
 
-        private static class HoneycombMR1BinaryExpressionCreator implements Creator<Binary> {
+        private static class BinaryExpressionCreator implements ClassLoaderCreator<Binary> {
             @Override
             public Binary createFromParcel(@NonNull final Parcel in) {
                 return new Binary(in, null);
@@ -764,11 +744,7 @@ public abstract class Expression implements Parcelable {
             public Binary[] newArray(final int size) {
                 return new Binary[size];
             }
-        }
 
-        @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
-        private static class BinaryExpressionCreator extends HoneycombMR1BinaryExpressionCreator
-                implements ClassLoaderCreator<Binary> {
             @Override
             public Binary createFromParcel(@NonNull final Parcel in, @Nullable final ClassLoader loader) {
                 return new Binary(in, loader);
@@ -843,11 +819,9 @@ public abstract class Expression implements Parcelable {
             out.writeParcelable(mExpr, 0);
         }
 
-        public static final Creator<Unary> CREATOR =
-                Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB_MR2 ? new HoneycombMR1UnaryExpressionCreator() :
-                        new UnaryExpressionCreator();
+        public static final Creator<Unary> CREATOR = new UnaryExpressionCreator();
 
-        private static class HoneycombMR1UnaryExpressionCreator implements Creator<Unary> {
+        private static class UnaryExpressionCreator implements ClassLoaderCreator<Unary> {
             @Override
             public Unary createFromParcel(@NonNull final Parcel in) {
                 return new Unary(in, null);
@@ -857,11 +831,7 @@ public abstract class Expression implements Parcelable {
             public Unary[] newArray(final int size) {
                 return new Unary[size];
             }
-        }
 
-        @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
-        private static class UnaryExpressionCreator extends HoneycombMR1UnaryExpressionCreator
-                implements ClassLoaderCreator<Unary> {
             @Override
             public Unary createFromParcel(@NonNull final Parcel in, @Nullable final ClassLoader loader) {
                 return new Unary(in, loader);
@@ -942,11 +912,9 @@ public abstract class Expression implements Parcelable {
             out.writeParcelable(mField, 0);
         }
 
-        public static final Creator<Aggregate> CREATOR =
-        Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB_MR2 ? new HoneycombMR1AggregateExpressionCreator() :
-                new AggregateExpressionCreator();
+        public static final Creator<Aggregate> CREATOR = new AggregateExpressionCreator();
 
-        private static class HoneycombMR1AggregateExpressionCreator implements Creator<Aggregate> {
+        private static class AggregateExpressionCreator implements ClassLoaderCreator<Aggregate> {
             @Override
             public Aggregate createFromParcel(@NonNull final Parcel in) {
                 return new Aggregate(in, null);
@@ -956,11 +924,7 @@ public abstract class Expression implements Parcelable {
             public Aggregate[] newArray(final int size) {
                 return new Aggregate[size];
             }
-        }
 
-        @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
-        private static class AggregateExpressionCreator extends HoneycombMR1AggregateExpressionCreator
-                implements ClassLoaderCreator<Aggregate> {
             @Override
             public Aggregate createFromParcel(@NonNull final Parcel in, @Nullable final ClassLoader loader) {
                 return new Aggregate(in, loader);
