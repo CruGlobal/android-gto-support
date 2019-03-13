@@ -10,9 +10,11 @@ import androidx.lifecycle.Observer
  * This method will combine 2 LiveData objects into a new LiveData object by running the {@param mapFunction} on the
  * current values of both source LiveData objects.
  * Returning either of the original LiveData objects will cause an Exception.
+ *
+ * @see androidx.lifecycle.Transformations.switchMap
  */
-@JvmName("combine")
-fun <X, Y, Z> LiveData<X>.combineWith(other: LiveData<Y>, mapFunction: (X?, Y?) -> LiveData<Z>): LiveData<Z> {
+@JvmName("switchCombine")
+fun <X, Y, Z> LiveData<X>.switchCombineWith(other: LiveData<Y>, mapFunction: (X?, Y?) -> LiveData<Z>): LiveData<Z> {
     val result = MediatorLiveData<Z>()
     val observer = object : Observer<Any?> {
         private var source: LiveData<Z>? = null
