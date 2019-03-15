@@ -8,7 +8,7 @@ import timber.log.Timber
 
 fun ViewPager.setScroller(scroller: Scroller) {
     try {
-        ViewPager::class.java.getField("mScroller")
+        ViewPager::class.java.getDeclaredField("mScroller")
             .apply { isAccessible = true }
             .set(this, scroller)
     } catch (e: Exception) {
