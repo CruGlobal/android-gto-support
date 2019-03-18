@@ -67,10 +67,8 @@ subprojects {
     repositories {
         google()
         maven { url 'https://maven.fabric.io/public' }
-        // XXX: temporary to use beta version of powermock
-        maven { url 'https://dl.bintray.com/powermock/maven' }
-        maven { url "https://jitpack.io" }
         jcenter()
+        maven { url "https://jitpack.io" }
         maven { url 'https://cruglobal.jfrog.io/cruglobal/list/maven-locals/' }
         mavenLocal()
     }
