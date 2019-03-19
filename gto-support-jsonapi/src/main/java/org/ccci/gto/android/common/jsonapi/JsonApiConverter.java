@@ -1053,7 +1053,13 @@ public final class JsonApiConverter {
         String getAttrName() {
             if (mAttrName == null) {
                 final JsonApiAttribute attr = mField.getAnnotation(JsonApiAttribute.class);
-                mAttrName = attr != null && attr.name().length() > 0 ? attr.name() : mField.getName();
+                if (attr != null && attr.name().length() > 0) {
+                    mAttrName = attr.name();
+                } else if (attr != null && attr.value().length() > 0) {
+                    mAttrName = attr.value();
+                } else {
+                    mAttrName = mField.getName();
+                }
             }
 
             return mAttrName;

@@ -8,5 +8,13 @@ import java.lang.annotation.Target;
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface JsonApiAttribute {
+    /**
+     * Specify the name of this attribute when serialized to/deserialized from jsonapi.
+     */
     String name() default "";
+
+    /**
+     * Alias for {@link JsonApiAttribute#name()}.
+     */
+    String value() default "";
 }

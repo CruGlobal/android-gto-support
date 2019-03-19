@@ -102,6 +102,9 @@ public class JsonApiConverterIT {
         assertThat(json, jsonPartEquals("data.attributes.attrBool1", true));
         assertThat(json, jsonPartEquals("data.attributes.attrAnn1", "attrAnn1"));
         assertThat(json, jsonPartEquals("data.attributes.attrAnn2", "attrAnn2"));
+        assertThat(json, jsonPartEquals("data.attributes.attrAnn3", "attrAnn3"));
+        assertThat(json, jsonPartEquals("data.attributes.attrAnn4", "attrAnn4"));
+        assertThat(json, jsonNodeAbsent("data.attributes.ignoredName"));
         assertThat(json, allOf(jsonNodeAbsent("data.attributes.transientAttr"),
                                jsonNodeAbsent("data.attributes.staticAttr")));
         assertThat(json, jsonPartEquals("data.attributes.attrArrayDouble[0]", 1.5));
@@ -189,6 +192,8 @@ public class JsonApiConverterIT {
         source.attrBool1 = false;
         source.attrAnn1 = "1nnArtta";
         source.ann2 = "2nnArtta";
+        source.ann3 = "3nnArtta";
+        source.ann4 = "4nnArtta";
         source.attrArrayBoolean = new boolean[] {false};
         source.attrArrayDouble = new double[] {2.73, 3.14};
         source.attrArrayFloat = new float[] {1.34f, -2.19f};
@@ -211,6 +216,8 @@ public class JsonApiConverterIT {
         assertThat(target.attrBool1, is(source.attrBool1));
         assertThat(target.attrAnn1, is(source.attrAnn1));
         assertThat(target.ann2, is(source.ann2));
+        assertThat(target.ann3, is(source.ann3));
+        assertThat(target.ann4, is(source.ann4));
         assertArrayEquals(source.attrArrayBoolean, target.attrArrayBoolean);
         assertArrayEquals(source.attrArrayDouble, target.attrArrayDouble, DELTA);
         assertArrayEquals(source.attrArrayFloat, target.attrArrayFloat, DELTA);
@@ -288,5 +295,9 @@ public class JsonApiConverterIT {
         String attrAnn1 = "attrAnn1";
         @JsonApiAttribute(name = "attrAnn2")
         String ann2 = "attrAnn2";
+        @JsonApiAttribute("attrAnn3")
+        String ann3 = "attrAnn3";
+        @JsonApiAttribute(name = "attrAnn4", value = "ignoredName")
+        String ann4 = "attrAnn4";
     }
 }
