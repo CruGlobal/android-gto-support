@@ -465,7 +465,7 @@ public final class JsonApiConverter {
 
             // skip null values if we aren't serializing nulls for this type
             final Object value = convertToJsonValue(resource, field);
-            if (value == null && !options.serializeNulls(type)) {
+            if (value == null && !options.serializeNullAttributes(type)) {
                 continue;
             }
 
@@ -1170,15 +1170,15 @@ public final class JsonApiConverter {
         @NonNull
         private final Map<String, Fields> mFields;
         @NonNull
-        final SimpleArrayMap<String, Boolean> mSerializeNulls;
+        final SimpleArrayMap<String, Boolean> mSerializeNullAttributes;
 
         Options(@NonNull final Includes includes, final boolean includeObjectsWithNoId,
                 @NonNull final Map<String, Fields> fields,
-                @NonNull final SimpleArrayMap<String, Boolean> serializeNulls) {
+                @NonNull final SimpleArrayMap<String, Boolean> serializeNullAttributes) {
             mIncludes = includes;
             mIncludeObjectsWithNoId = includeObjectsWithNoId;
             mFields = fields;
-            mSerializeNulls = serializeNulls;
+            mSerializeNullAttributes = serializeNullAttributes;
         }
 
         @NonNull
@@ -1194,13 +1194,14 @@ public final class JsonApiConverter {
                 fields.put(key, options.mFields.get(key).merge(fields.get(key)));
             }
 
-            // Merge serializeNulls, preferring the options being merged in
-            final SimpleArrayMap<String, Boolean> serializeNulls = new SimpleArrayMap<>();
-            serializeNulls.putAll(mSerializeNulls);
-            serializeNulls.putAll(options.mSerializeNulls);
+            // Merge serializeNullAttributes, preferring the options being merged in
+            final SimpleArrayMap<String, Boolean> serializeNullAttributes = new SimpleArrayMap<>();
+            serializeNullAttributes.putAll(mSerializeNullAttributes);
+            serializeNullAttributes.putAll(options.mSerializeNullAttributes);
 
             return new Options(mIncludes.merge(options.mIncludes),
-                               mIncludeObjectsWithNoId || options.mIncludeObjectsWithNoId, fields, serializeNulls);
+                               mIncludeObjectsWithNoId || options.mIncludeObjectsWithNoId, fields,
+                               serializeNullAttributes);
         }
 
         @NonNull
@@ -1219,8 +1220,8 @@ public final class JsonApiConverter {
             return fields != null ? fields : Fields.ALL;
         }
 
-        boolean serializeNulls(@Nullable final String type) {
-            final Boolean serialize = mSerializeNulls.get(type);
+        boolean serializeNullAttributes(@Nullable final String type) {
+            final Boolean serialize = mSerializeNullAttributes.get(type);
             return serialize != null ? serialize : false;
         }
 
@@ -1228,7 +1229,7 @@ public final class JsonApiConverter {
             private List<String> mIncludes = null;
             private boolean mIncludeObjectsWithNoId = false;
             private final Map<String, Set<String>> mFields = new ArrayMap<>();
-            private final SimpleArrayMap<String, Boolean> mSerializeNulls = new SimpleArrayMap<>();
+            private final SimpleArrayMap<String, Boolean> mSerializeNullAttributes = new SimpleArrayMap<>();
 
             @NonNull
             public Builder includeAll() {
@@ -1262,21 +1263,21 @@ public final class JsonApiConverter {
                 return this;
             }
 
-            public Builder serializeNulls(@NonNull final String type, @Nullable final Boolean state) {
+            public Builder serializeNullAttributes(@NonNull final String type, @Nullable final Boolean state) {
                 if (state == null) {
-                    mSerializeNulls.remove(type);
+                    mSerializeNullAttributes.remove(type);
                 } else {
-                    mSerializeNulls.put(type, state);
+                    mSerializeNullAttributes.put(type, state);
                 }
                 return this;
             }
 
-            public Builder serializeNulls(@NonNull final String type) {
-                return serializeNulls(type, true);
+            public Builder serializeNullAttributes(@NonNull final String type) {
+                return serializeNullAttributes(type, true);
             }
 
-            public Builder dontSerializeNulls(@NonNull final String type) {
-                return serializeNulls(type, false);
+            public Builder dontSerializeNullAttributes(@NonNull final String type) {
+                return serializeNullAttributes(type, false);
             }
 
             @NonNull
@@ -1289,7 +1290,7 @@ public final class JsonApiConverter {
                 }
 
                 return new Options(new Includes(mIncludes), mIncludeObjectsWithNoId, fields,
-                                   new SimpleArrayMap<>(mSerializeNulls));
+                                   new SimpleArrayMap<>(mSerializeNullAttributes));
             }
         }
     }

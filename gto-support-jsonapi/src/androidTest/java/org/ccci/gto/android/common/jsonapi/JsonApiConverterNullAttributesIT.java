@@ -28,7 +28,7 @@ public class JsonApiConverterNullAttributesIT {
         final ModelParent parent = createObj();
         final String json = mConverter.toJson(JsonApiObject.single(parent),
                                               JsonApiConverter.Options.builder()
-                                                      .serializeNulls(ModelChild.TYPE)
+                                                      .serializeNullAttributes(ModelChild.TYPE)
                                                       .build());
 
         assertThatJson(json).node("data").isObject();
