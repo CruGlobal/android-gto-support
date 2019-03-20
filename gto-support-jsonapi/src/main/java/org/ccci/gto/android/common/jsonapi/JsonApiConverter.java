@@ -378,6 +378,11 @@ public final class JsonApiConverter {
                 continue;
             }
 
+            // skip fields that shouldn't be serialized
+            if (!field.serialize()) {
+                continue;
+            }
+
             // skip fields we are not including
             final String attrName = field.getAttrName();
             if (!fields.include(attrName)) {
@@ -567,6 +572,11 @@ public final class JsonApiConverter {
         final JSONObject attributes = json.optJSONObject(JSON_DATA_ATTRIBUTES);
         final JSONObject relationships = json.optJSONObject(JSON_DATA_RELATIONSHIPS);
         for (final FieldInfo field : mFields.get(type)) {
+            // skip fields that shouldn't be deserialized
+            if (!field.deserialize()) {
+                continue;
+            }
+
             final String attrName = field.getAttrName();
             final Class<?> fieldType = field.getType();
             final Class<?> fieldArrayType = field.getArrayType();
@@ -992,6 +1002,8 @@ public final class JsonApiConverter {
         @NonNull
         final Field mField;
         @Nullable
+        private final JsonApiAttribute mAttribute;
+        @Nullable
         private final JsonApiPlaceholder mPlaceholder;
 
         @Nullable
@@ -1006,6 +1018,7 @@ public final class JsonApiConverter {
 
         FieldInfo(@NonNull final Field field) {
             mField = field;
+            mAttribute = mField.getAnnotation(JsonApiAttribute.class);
             mPlaceholder = mField.getAnnotation(JsonApiPlaceholder.class);
         }
 
@@ -1052,17 +1065,24 @@ public final class JsonApiConverter {
         @NonNull
         String getAttrName() {
             if (mAttrName == null) {
-                final JsonApiAttribute attr = mField.getAnnotation(JsonApiAttribute.class);
-                if (attr != null && attr.name().length() > 0) {
-                    mAttrName = attr.name();
-                } else if (attr != null && attr.value().length() > 0) {
-                    mAttrName = attr.value();
+                if (mAttribute != null && mAttribute.name().length() > 0) {
+                    mAttrName = mAttribute.name();
+                } else if (mAttribute != null && mAttribute.value().length() > 0) {
+                    mAttrName = mAttribute.value();
                 } else {
                     mAttrName = mField.getName();
                 }
             }
 
             return mAttrName;
+        }
+
+        boolean serialize() {
+            return mAttribute == null || mAttribute.serialize();
+        }
+
+        boolean deserialize() {
+            return mAttribute == null || mAttribute.deserialize();
         }
     }
 
