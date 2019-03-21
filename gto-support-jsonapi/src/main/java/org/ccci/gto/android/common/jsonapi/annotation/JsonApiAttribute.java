@@ -1,5 +1,7 @@
 package org.ccci.gto.android.common.jsonapi.annotation;
 
+import org.ccci.gto.android.common.jsonapi.JsonApiConverter;
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -17,4 +19,14 @@ public @interface JsonApiAttribute {
      * Alias for {@link JsonApiAttribute#name()}.
      */
     String value() default "";
+
+    /**
+     * Should this attribute be serialized by the {@link JsonApiConverter}
+     */
+    boolean serialize() default true;
+
+    /**
+     * Should this attribute be deserialized by the {@link JsonApiConverter}
+     */
+    boolean deserialize() default true;
 }

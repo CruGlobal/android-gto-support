@@ -261,6 +261,36 @@ public class JsonApiConverterIT {
         assertThatJson(output.getRawMeta().toString()).isEqualTo(obj.getRawMeta().toString());
     }
 
+    // region Serialize flags
+
+    @Test
+    public void verifyToJsonSerializeFlags() throws Exception {
+        final JsonApiConverter converter = new JsonApiConverter.Builder().addClasses(ModelAttributes.class).build();
+
+        final String json = converter.toJson(JsonApiObject.single(new ModelAttributes()));
+        assertThatJson(json).node("data").isObject();
+        assertThatJson(json).node("data.attributes").isObject();
+        assertThat(json, jsonPartEquals("data.type", ModelAttributes.TYPE));
+        assertThat(json, jsonPartEquals("data.attributes.attrSerializeOnly", "serialize"));
+        assertThat(json, jsonNodeAbsent("data.attributes.attrDeserializeOnly"));
+    }
+
+    @Test
+    public void verifyFromJsonSerializeFlags() throws Exception {
+        final String raw = "{data:{id:5,type:'attrs',attributes:{attrSerializeOnly:'a',attrDeserializeOnly:'b'}}}";
+
+        final JsonApiConverter converter = new JsonApiConverter.Builder().addClasses(ModelAttributes.class).build();
+        final JsonApiObject<ModelAttributes> output =
+                converter.fromJson(raw, ModelAttributes.class);
+        assertThat(output.isSingle(), is(true));
+        final ModelAttributes target = output.getDataSingle();
+        assertThat(target, is(not(nullValue())));
+        assertEquals("serialize", target.attrSerializeOnly);
+        assertEquals("b", target.attrDeserializeOnly);
+    }
+
+    // endregion Serialize flags
+
     public static final class ModelNoType {}
 
     @JsonApiType("type")
@@ -291,6 +321,7 @@ public class JsonApiConverterIT {
         private boolean[] attrArrayBoolean = {true, false};
         private String[] attrArrayString = {"a", null, "b"};
 
+        // attribute naming test
         @JsonApiAttribute
         String attrAnn1 = "attrAnn1";
         @JsonApiAttribute(name = "attrAnn2")
@@ -299,5 +330,11 @@ public class JsonApiConverterIT {
         String ann3 = "attrAnn3";
         @JsonApiAttribute(name = "attrAnn4", value = "ignoredName")
         String ann4 = "attrAnn4";
+
+        // serialize & deserialize flags test
+        @JsonApiAttribute(deserialize = false)
+        String attrSerializeOnly = "serialize";
+        @JsonApiAttribute(serialize = false)
+        String attrDeserializeOnly = "deserialize";
     }
 }
