@@ -104,6 +104,7 @@ subprojects {
 
             androidTestImplementation "androidx.test:runner:${deps.androidX.test}"
             androidTestImplementation "androidx.test:rules:${deps.androidX.test}"
+            androidTestImplementation "androidx.test.ext:junit:${deps.androidX.test}"
             androidTestImplementation "org.hamcrest:hamcrest-library:${deps.hamcrest}"
         }
 
