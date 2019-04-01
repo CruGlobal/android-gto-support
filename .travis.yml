@@ -22,6 +22,10 @@ stages:
 - test
 - name: deploy
   if: branch = master AND type = push
+matrix:
+  fast_finish: true
+  allow_failures:
+  - env: ANDROID_TARGET=android-22 ANDROID_ABI=armeabi-v7a
 
 before_cache:
 - rm -f $HOME/.gradle/caches/modules-2/modules-2.lock
