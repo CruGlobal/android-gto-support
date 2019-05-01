@@ -72,4 +72,11 @@ fun <T : Parcelable> Bundle.getParcelableArray(key: String?, clazz: Class<T>) =
         arr
     }
 
+inline fun <reified T : Parcelable> Bundle.getParcelableArray(key: String?) =
+    getParcelableArray(key)?.let { it: Array<Parcelable?> ->
+        val arr = arrayOfNulls<T>(it.size)
+        System.arraycopy(it, 0, arr, 0, it.size)
+        arr
+    }
+
 // endregion Parcelables
