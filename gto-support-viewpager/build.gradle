@@ -1,5 +1,3 @@
-apply plugin: 'kotlin-android'
-
 android {
     defaultConfig {
         consumerProguardFiles 'proguard-consumer.pro'
@@ -8,8 +6,6 @@ android {
 
 dependencies {
     implementation project(':gto-support-util')
-
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:${deps.kotlin}"
 
     api "androidx.viewpager:viewpager:${deps.androidX.viewPager}"
     compileOnly "androidx.fragment:fragment:${deps.androidX.fragment}"
