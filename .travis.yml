@@ -8,7 +8,8 @@ env:
     # DEPLOY_PASSWORD={password}
     - secure: "NpKiD/OhxURch8MhFvVohqNDgS6SVPfjiM2Qm/mQbjLmeEmdlfDQ3lPF+X2HNL960eWulhvpcTPr5TS8eUMUA83U5HBUaADQEnqnHN75oC1OYJtB54ELP2b+vXOEVD3hFQFFnBWsPLJKd6DK8XMpVe+eG+MnmGPM5AWC0a4cw6I="
   matrix:
-    - ANDROID_TARGET=android-15 ANDROID_ABI=armeabi-v7a
+#    - ANDROID_TARGET=android-15 ANDROID_ABI=armeabi-v7a
+    - ANDROID_TARGET=android-16 ANDROID_ABI=armeabi-v7a
     - ANDROID_TARGET=android-21 ANDROID_ABI=armeabi-v7a
     - ANDROID_TARGET=android-22 ANDROID_ABI=armeabi-v7a
 #    - ANDROID_TARGET=android-23 ANDROID_ABI=armeabi-v7a
@@ -25,6 +26,7 @@ stages:
 matrix:
   fast_finish: true
   allow_failures:
+  - env: ANDROID_TARGET=android-21 ANDROID_ABI=armeabi-v7a
   - env: ANDROID_TARGET=android-22 ANDROID_ABI=armeabi-v7a
 
 before_cache:
@@ -65,7 +67,7 @@ install:
 
 script:
 - android-wait-for-emulator
-- adb shell input keyevent 82 &
+- adb shell input keyevent 82
 - ./gradlew connectedCheck -PdisablePreDex --parallel --continue --stacktrace
 
 jobs:
