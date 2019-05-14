@@ -41,9 +41,9 @@ fun Bundle.getLocale(key: String?, defValue: Locale? = null) =
 /**
  * Store an array of Locales in the provided Bundle
  *
- * @receiver           The bundle to store the locale array in
- * @param key          The key to store the locale array under
- * @param locales      The locales being put in the bundle
+ * @receiver The bundle to store the locale array in
+ * @param key The key to store the locale array under
+ * @param locales The locales being put in the bundle
  * @param singleString Flag indicating if the locale array should be stored as a single string
  */
 @JvmOverloads
