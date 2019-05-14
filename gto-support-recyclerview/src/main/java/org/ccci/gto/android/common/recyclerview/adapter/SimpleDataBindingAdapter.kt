@@ -2,13 +2,20 @@ package org.ccci.gto.android.common.recyclerview.adapter
 
 import android.view.ViewGroup
 import androidx.databinding.ViewDataBinding
+import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.RecyclerView
+import com.karumi.weak.weak
 
-abstract class SimpleDataBindingAdapter<B : ViewDataBinding> : RecyclerView.Adapter<DataBindingViewHolder<B>>() {
+abstract class SimpleDataBindingAdapter<B : ViewDataBinding>(lifecycleOwner: LifecycleOwner? = null) :
+    RecyclerView.Adapter<DataBindingViewHolder<B>>() {
+    private val lifecycleOwner: LifecycleOwner? by weak(lifecycleOwner)
+
     // region Lifecycle
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
-        DataBindingViewHolder(onCreateViewDataBinding(parent, viewType))
+        onCreateViewDataBinding(parent, viewType)
+            .also { it.lifecycleOwner = lifecycleOwner }
+            .let { DataBindingViewHolder(it) }
 
     override fun onBindViewHolder(holder: DataBindingViewHolder<B>, position: Int) {
         onBindViewDataBinding(holder.binding, position)
