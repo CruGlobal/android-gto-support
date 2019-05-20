@@ -3,13 +3,14 @@ package org.ccci.gto.android.common.recyclerview.advrecyclerview.adapter
 import android.view.ViewGroup
 import androidx.databinding.ViewDataBinding
 import androidx.lifecycle.LifecycleOwner
+import com.h6ah4i.android.widget.advrecyclerview.expandable.ExpandableItemViewHolder
 import com.h6ah4i.android.widget.advrecyclerview.utils.AbstractExpandableItemAdapter
 import com.karumi.weak.weak
 import org.ccci.gto.android.common.recyclerview.adapter.DataBindingViewHolder
 
 abstract class DataBindingExpandableItemAdapter<GB : ViewDataBinding, CB : ViewDataBinding>(
     lifecycleOwner: LifecycleOwner? = null
-) : AbstractExpandableItemAdapter<DataBindingViewHolder<GB>, DataBindingViewHolder<CB>>() {
+) : AbstractExpandableItemAdapter<DataBindingExpandableViewHolder<GB>, DataBindingExpandableViewHolder<CB>>() {
     private val lifecycleOwner: LifecycleOwner? by weak(lifecycleOwner)
 
     // region Lifecycle
@@ -17,9 +18,13 @@ abstract class DataBindingExpandableItemAdapter<GB : ViewDataBinding, CB : ViewD
     final override fun onCreateGroupViewHolder(parent: ViewGroup, viewType: Int) =
         onCreateGroupViewDataBinding(parent, viewType)
             .also { it.lifecycleOwner = lifecycleOwner }
-            .let { DataBindingViewHolder(it) }
+            .let { DataBindingExpandableViewHolder(it) }
 
-    final override fun onBindGroupViewHolder(holder: DataBindingViewHolder<GB>, groupPosition: Int, viewType: Int) {
+    final override fun onBindGroupViewHolder(
+        holder: DataBindingExpandableViewHolder<GB>,
+        groupPosition: Int,
+        viewType: Int
+    ) {
         onBindGroupViewDataBinding(holder.binding, groupPosition, viewType)
         holder.binding.executePendingBindings()
     }
@@ -27,10 +32,10 @@ abstract class DataBindingExpandableItemAdapter<GB : ViewDataBinding, CB : ViewD
     final override fun onCreateChildViewHolder(parent: ViewGroup, viewType: Int) =
         onCreateChildViewDataBinding(parent, viewType)
             .also { it.lifecycleOwner = lifecycleOwner }
-            .let { DataBindingViewHolder(it) }
+            .let { DataBindingExpandableViewHolder(it) }
 
     final override fun onBindChildViewHolder(
-        holder: DataBindingViewHolder<CB>,
+        holder: DataBindingExpandableViewHolder<CB>,
         groupPosition: Int,
         childPosition: Int,
         viewType: Int
@@ -51,3 +56,6 @@ abstract class DataBindingExpandableItemAdapter<GB : ViewDataBinding, CB : ViewD
 
     // endregion Lifecycle
 }
+
+class DataBindingExpandableViewHolder<B : ViewDataBinding>(binding: B) : DataBindingViewHolder<B>(binding),
+    ExpandableItemViewHolder by DelegateExpandableItemViewHolder()
