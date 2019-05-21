@@ -1,7 +1,5 @@
 package org.ccci.gto.android.common.db;
 
-import android.annotation.TargetApi;
-import android.os.Build;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.Pair;
@@ -123,11 +121,14 @@ public final class Join<S, T> implements Parcelable {
         out.writeParcelable(mOn, flags);
     }
 
-    public static final Creator<Join> CREATOR =
-            Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB_MR2 ? new HoneycombMR1JoinCreator() :
-                    new JoinCreator();
+    public static final Creator<Join> CREATOR = new JoinCreator();
 
-    private static class HoneycombMR1JoinCreator implements Creator<Join> {
+    private static class JoinCreator implements ClassLoaderCreator<Join> {
+        @Override
+        public Join createFromParcel(@NonNull final Parcel in, @Nullable final ClassLoader loader) {
+            return new Join(in, loader);
+        }
+
         @Override
         public Join createFromParcel(@NonNull final Parcel in) {
             return new Join(in, null);
@@ -136,14 +137,6 @@ public final class Join<S, T> implements Parcelable {
         @Override
         public Join[] newArray(final int size) {
             return new Join[size];
-        }
-    }
-
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
-    private static class JoinCreator extends HoneycombMR1JoinCreator implements ClassLoaderCreator<Join> {
-        @Override
-        public Join createFromParcel(@NonNull final Parcel in, @Nullable final ClassLoader loader) {
-            return new Join(in, loader);
         }
     }
 }
