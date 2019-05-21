@@ -1,13 +1,12 @@
 package org.ccci.gto.android.common.db;
 
-import android.annotation.TargetApi;
-import android.os.Build;
 import android.os.Parcel;
 import android.os.Parcelable;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 import org.ccci.gto.android.common.db.Expression.Field;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 public final class Table<T> implements Parcelable {
     @NonNull
@@ -84,17 +83,12 @@ public final class Table<T> implements Parcelable {
         out.writeString(mAlias);
     }
 
-    public static final Creator<Table> CREATOR;
-
-    static {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB_MR2) {
-            CREATOR = new HoneycombMR1TableCreator();
-        } else {
-            CREATOR = new TableCreator();
+    public static final Creator<Table> CREATOR = new ClassLoaderCreator<Table>() {
+        @Override
+        public Table createFromParcel(@NonNull final Parcel in, @Nullable final ClassLoader loader) {
+            return new Table(in, loader);
         }
-    }
 
-    private static class HoneycombMR1TableCreator implements Creator<Table> {
         @Override
         public Table createFromParcel(@NonNull final Parcel in) {
             return new Table(in, null);
@@ -104,13 +98,5 @@ public final class Table<T> implements Parcelable {
         public Table[] newArray(final int size) {
             return new Table[size];
         }
-    }
-
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
-    private static class TableCreator extends HoneycombMR1TableCreator implements ClassLoaderCreator<Table> {
-        @Override
-        public Table createFromParcel(@NonNull final Parcel in, @Nullable final ClassLoader loader) {
-            return new Table(in, loader);
-        }
-    }
+    };
 }
