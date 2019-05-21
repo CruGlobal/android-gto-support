@@ -28,30 +28,6 @@ public class ListPreferenceCompat extends ListPreference {
     }
 
     /**
-     * Returns the summary of this ListPreference. If the summary
-     * has a {@linkplain java.lang.String#format String formatting}
-     * marker in it (i.e. "%s" or "%1$s"), then the current entry
-     * value will be substituted in its place.
-     *
-     * @return the summary with appropriate string substitution
-     */
-    @Override
-    public CharSequence getSummary() {
-        // Android pre-Honeycomb didn't support String formatting for the Summary, so we replicate that behavior here
-        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.GINGERBREAD_MR1) {
-            final CharSequence summary = super.getSummary();
-            final CharSequence entry = getEntry();
-            if (summary == null || entry == null) {
-                return summary;
-            } else {
-                return String.format(summary.toString(), entry);
-            }
-        } else {
-            return super.getSummary();
-        }
-    }
-
-    /**
      * Sets the value of the key. This should be one of the entries in
      * {@link #getEntryValues()}.
      *
