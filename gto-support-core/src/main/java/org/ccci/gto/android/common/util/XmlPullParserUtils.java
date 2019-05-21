@@ -13,12 +13,14 @@ public class XmlPullParserUtils {
     /**
      * safely call nextText on all versions of Android.
      *
+     * @deprecated Since v3.0.0, This is no longer necessary since we don't support ICS or earlier.
      * @param parser the current parser
      * @return the next text node from the XmlPullParser
      * @throws IOException
      * @throws XmlPullParserException
      * @see <a href="http://android-developers.blogspot.com/2011/12/watch-out-for-xmlpullparsernexttext.html">Watch out for XmlPullParser.nextText()</a>
      */
+    @Deprecated
     public static String safeNextText(@NonNull final XmlPullParser parser) throws IOException, XmlPullParserException {
         final String result = parser.nextText();
         if (parser.getEventType() != XmlPullParser.END_TAG) {
