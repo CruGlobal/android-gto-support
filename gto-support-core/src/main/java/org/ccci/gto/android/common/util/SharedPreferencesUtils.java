@@ -1,51 +1,32 @@
 package org.ccci.gto.android.common.util;
 
-import android.annotation.TargetApi;
 import android.content.SharedPreferences;
-import android.os.Build;
+
+import java.util.Set;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-
-import java.util.HashSet;
-import java.util.Set;
-
+/**
+ * @deprecated Since v3.0.0, there are official alternatives for all of this logic
+ */
+@Deprecated
 public class SharedPreferencesUtils {
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
+    /**
+     * @deprecated Since v3.0.0, use {@link SharedPreferences.Editor#putStringSet(String, Set)} directly instead.
+     */
+    @Deprecated
     public static SharedPreferences.Editor putStringSet(@NonNull final SharedPreferences.Editor prefs,
                                                         @NonNull final String key, @Nullable final Set<String> values) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-            prefs.putStringSet(key, values);
-        } else {
-            // work around missing putStringSet in pre-Honeycomb
-            prefs.putString(key, values != null ? new JSONArray(values).toString() : null);
-        }
-
-        return prefs;
+        return prefs.putStringSet(key, values);
     }
 
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
+    /**
+     * @deprecated Since v3.0.0, use {@link SharedPreferences.Editor#getStringSet(String, Set)} directly instead.
+     */
+    @Deprecated
     public static Set<String> getStringSet(@NonNull final SharedPreferences prefs, @NonNull final String key,
                                            @Nullable final Set<String> defValue) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-            return prefs.getStringSet(key, defValue);
-        } else {
-            // work around missing getStringSet
-            final String raw = prefs.getString(key, null);
-            if (raw != null) {
-                try {
-                    final JSONArray json = new JSONArray(raw);
-                    final Set<String> values = new HashSet<>();
-                    for (int i = 0; i < json.length(); i++) {
-                        values.add(json.getString(i));
-                    }
-                    return values;
-                } catch (final JSONException ignored) {
-                }
-            }
-            return defValue;
-        }
+        return prefs.getStringSet(key, defValue);
     }
 }
