@@ -5,11 +5,9 @@ import android.animation.AnimatorSet;
 import android.animation.TimeInterpolator;
 import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.database.DataSetObservable;
 import android.database.DataSetObserver;
-import android.os.Build;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
@@ -69,9 +67,7 @@ public class AccordionView extends LinearLayout {
     public AccordionView(final Context context, final AttributeSet attrs) {
         super(context, attrs);
         setOrientation(VERTICAL);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-            setAnimationManager(new AnimatorAnimationManager());
-        }
+        setAnimationManager(new AnimatorAnimationManager());
     }
 
     @Override
@@ -525,7 +521,6 @@ public class AccordionView extends LinearLayout {
         void setDuration(long duration);
     }
 
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     public static class AnimatorAnimationManager implements AnimationManager {
         @Nullable
         private Animator mCurrentAnimation;

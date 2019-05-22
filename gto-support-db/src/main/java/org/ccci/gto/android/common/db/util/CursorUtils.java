@@ -57,7 +57,6 @@ public final class CursorUtils {
 
     public static long getLong(@NonNull final Cursor c, @NonNull final String field) {
         // if defValue is @NonNull, then getLong() will return @NonNull
-        //noinspection ConstantConditions
         return getLong(c, field, 0L);
     }
 
