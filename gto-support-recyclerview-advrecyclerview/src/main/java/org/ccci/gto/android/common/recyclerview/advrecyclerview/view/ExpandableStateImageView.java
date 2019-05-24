@@ -5,7 +5,6 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewParent;
 
-import com.h6ah4i.android.widget.advrecyclerview.expandable.ExpandableItemConstants;
 import com.h6ah4i.android.widget.advrecyclerview.expandable.ExpandableItemViewHolder;
 
 import androidx.annotation.Nullable;
@@ -34,7 +33,7 @@ public class ExpandableStateImageView extends AppCompatImageView {
     public int[] onCreateDrawableState(final int extraSpace) {
         final ExpandableItemViewHolder holder = findViewHolder(this);
 
-        if (holder != null && (holder.getExpandStateFlags() & ExpandableItemConstants.STATE_FLAG_IS_EXPANDED) != 0) {
+        if (holder != null && holder.getExpandState().isExpanded()) {
             return mergeDrawableStates(super.onCreateDrawableState(extraSpace + 1), GROUP_EXPANDED_STATE_SET);
         } else {
             return super.onCreateDrawableState(extraSpace);
