@@ -25,7 +25,7 @@ abstract class DataBindingExpandableItemAdapter<GB : ViewDataBinding, CB : ViewD
         groupPosition: Int,
         viewType: Int
     ) {
-        onBindGroupViewDataBinding(holder.binding, groupPosition, viewType)
+        onBindGroupViewDataBinding(holder, holder.binding, groupPosition, viewType)
         holder.binding.executePendingBindings()
     }
 
@@ -40,14 +40,20 @@ abstract class DataBindingExpandableItemAdapter<GB : ViewDataBinding, CB : ViewD
         childPosition: Int,
         viewType: Int
     ) {
-        onBindChildViewDataBinding(holder.binding, groupPosition, childPosition, viewType)
+        onBindChildViewDataBinding(holder, holder.binding, groupPosition, childPosition, viewType)
         holder.binding.executePendingBindings()
     }
 
     protected abstract fun onCreateGroupViewDataBinding(parent: ViewGroup, viewType: Int): GB
-    protected abstract fun onBindGroupViewDataBinding(binding: GB, groupPosition: Int, viewType: Int)
+    protected abstract fun onBindGroupViewDataBinding(
+        holder: DataBindingExpandableViewHolder<GB>,
+        binding: GB,
+        groupPosition: Int,
+        viewType: Int
+    )
     protected abstract fun onCreateChildViewDataBinding(parent: ViewGroup, viewType: Int): CB
     protected abstract fun onBindChildViewDataBinding(
+        holder: DataBindingExpandableViewHolder<CB>,
         binding: CB,
         groupPosition: Int,
         childPosition: Int,
