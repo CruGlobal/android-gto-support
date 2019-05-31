@@ -40,5 +40,5 @@ class SwipeRefreshLayoutViewPagerHelper(layout: SwipeRefreshLayout? = null) : Vi
 }
 
 @Deprecated("Since v3.0.0, use SwipeRefreshLayoutViewPagerHelper instead")
-class SwipeRefreshLayoutOnPageChangeListener(layout: SwipeRefreshLayout? = null) :
+class SwipeRefreshLayoutPageChangeListener(layout: SwipeRefreshLayout? = null) :
     ViewPager.OnPageChangeListener by SwipeRefreshLayoutViewPagerHelper(layout)
