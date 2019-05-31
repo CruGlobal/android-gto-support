@@ -2,10 +2,13 @@ package org.ccci.gto.android.common.viewpager.widget
 
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import androidx.viewpager.widget.ViewPager
-import com.karumi.weak.weak
+import com.karumi.weak.weakVar
 
 class SwipeRefreshLayoutViewPagerHelper(layout: SwipeRefreshLayout? = null) : ViewPager.SimpleOnPageChangeListener() {
-    private val swipeRefreshLayout: SwipeRefreshLayout? by weak(layout)
+    var swipeRefreshLayout: SwipeRefreshLayout? by weakVar()
+    init {
+        swipeRefreshLayout = layout
+    }
 
     private var _isRefreshing: Boolean? = null
     var isRefreshing: Boolean
@@ -40,5 +43,13 @@ class SwipeRefreshLayoutViewPagerHelper(layout: SwipeRefreshLayout? = null) : Vi
 }
 
 @Deprecated("Since v3.0.0, use SwipeRefreshLayoutViewPagerHelper instead")
-class SwipeRefreshLayoutPageChangeListener(layout: SwipeRefreshLayout? = null) :
-    ViewPager.OnPageChangeListener by SwipeRefreshLayoutViewPagerHelper(layout)
+class SwipeRefreshLayoutPageChangeListener(
+    layout: SwipeRefreshLayout? = null,
+    private val delegate: SwipeRefreshLayoutViewPagerHelper = SwipeRefreshLayoutViewPagerHelper(layout)
+) : ViewPager.OnPageChangeListener by delegate {
+    var swipeRefreshLayout: SwipeRefreshLayout?
+        get() = delegate.swipeRefreshLayout
+        set(value) {
+            delegate.swipeRefreshLayout = value
+        }
+}
