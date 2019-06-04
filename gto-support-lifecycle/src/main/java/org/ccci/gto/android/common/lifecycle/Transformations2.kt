@@ -35,4 +35,4 @@ fun <X, Y, Z> LiveData<X>.switchCombineWith(other: LiveData<Y>, mapFunction: (X?
 // Provide Kotlin extensions for existing transformations
 
 fun <X, Y> LiveData<X>.map(block: (X) -> Y) = Transformations.map(this, block::invoke)!!
-fun <X, Y> LiveData<X>.switchMap(block: (X) -> LiveData<Y>) = Transformations.switchMap(this, block::invoke)!!
+fun <X, Y> LiveData<X>.flatMap(block: (X) -> LiveData<Y>) = Transformations.switchMap(this, block::invoke)!!
