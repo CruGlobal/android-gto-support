@@ -5,6 +5,7 @@ package org.ccci.gto.android.common.lifecycle
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.Observer
+import androidx.lifecycle.Transformations
 
 /**
  * This method will combine 2 LiveData objects into a new LiveData object by running the {@param mapFunction} on the
@@ -30,3 +31,8 @@ fun <X, Y, Z> LiveData<X>.switchCombineWith(other: LiveData<Y>, mapFunction: (X?
     result.addSource(other, observer)
     return result
 }
+
+// Provide Kotlin extensions for existing transformations
+
+fun <X, Y> LiveData<X>.map(block: (X) -> Y) = Transformations.map(this, block::invoke)!!
+fun <X, Y> LiveData<X>.flatMap(block: (X) -> LiveData<Y>) = Transformations.switchMap(this, block::invoke)!!
