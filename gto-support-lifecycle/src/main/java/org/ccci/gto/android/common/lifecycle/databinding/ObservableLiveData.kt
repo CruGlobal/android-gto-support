@@ -7,13 +7,13 @@ import kotlin.reflect.KProperty0
 
 private class ObservablePropertyLiveData<T>(
     private val observable: Observable,
-    private val propertyId: Int,
-    private val property: KProperty0<T>
+    private val property: KProperty0<T>,
+    private vararg val propertyIds: Int
 ) : LiveData<T>() {
     private val listener = object : OnPropertyChangedCallback() {
         override fun onPropertyChanged(sender: Observable?, propertyId: Int) {
-            when (propertyId) {
-                0, this@ObservablePropertyLiveData.propertyId -> value = property.get()
+            if (propertyId == 0 || propertyIds.isEmpty() || propertyIds.contains(propertyId)) {
+                value = property.get()
             }
         }
     }
@@ -26,5 +26,5 @@ private class ObservablePropertyLiveData<T>(
     override fun onInactive() = observable.removeOnPropertyChangedCallback(listener)
 }
 
-fun <T> Observable.getPropertyLiveData(propertyId: Int, property: KProperty0<T>): LiveData<T> =
-    ObservablePropertyLiveData(this, propertyId, property)
+fun <T> Observable.getPropertyLiveData(property: KProperty0<T>, vararg propertyIds: Int): LiveData<T> =
+    ObservablePropertyLiveData(this, property, *propertyIds)
