@@ -1,3 +1,6 @@
 dependencies {
     implementation "androidx.lifecycle:lifecycle-livedata:${deps.androidX.lifecycle}"
+
+    // Data Binding adapter dependencies
+    compileOnly "androidx.databinding:databinding-runtime:${deps.gradle.androidPlugin}"
 }
