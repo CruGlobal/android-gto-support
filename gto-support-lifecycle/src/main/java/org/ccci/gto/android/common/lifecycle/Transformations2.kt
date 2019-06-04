@@ -32,6 +32,21 @@ fun <X, Y, Z> LiveData<X>.switchCombineWith(other: LiveData<Y>, mapFunction: (X?
     return result
 }
 
+/**
+ * This method will combine 2 LiveData objects into a new LiveData object by running the {@param mapFunction} on the
+ * current values of both source LiveData objects.
+ *
+ * @see androidx.lifecycle.Transformations.map
+ */
+@JvmName("combine")
+fun <X, Y, Z> LiveData<X>.combineWith(other: LiveData<Y>, mapFunction: (X?, Y?) -> Z?): LiveData<Z> {
+    val result = MediatorLiveData<Z>()
+    val observer = Observer<Any?> { result.value = mapFunction(value, other.value) }
+    result.addSource(this, observer)
+    result.addSource(other, observer)
+    return result
+}
+
 // Provide Kotlin extensions for existing transformations
 
 fun <X, Y> LiveData<X>.map(block: (X) -> Y) = Transformations.map(this, block::invoke)!!
