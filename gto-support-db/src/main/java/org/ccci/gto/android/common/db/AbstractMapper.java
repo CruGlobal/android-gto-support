@@ -126,17 +126,6 @@ public abstract class AbstractMapper<T> implements Mapper<T> {
         return CursorUtils.getLocale(c, field, defValue);
     }
 
-    /**
-     * @deprecated Since 1.1.1, use {@link AbstractMapper#getLocale(Cursor, String, Locale)} instead now that there is
-     * an IntelliJ Contract defined for it.
-     */
-    @NonNull
-    @Deprecated
-    protected final Locale getNonNullLocale(@NonNull final Cursor c, @NonNull final String field,
-                                            @NonNull final Locale defValue) {
-        return CursorUtils.getLocale(c, field, defValue);
-    }
-
     @Nullable
     protected final Long serialize(@Nullable final Date date) {
         return date != null ? date.getTime() : null;
