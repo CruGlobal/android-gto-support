@@ -56,24 +56,13 @@ public abstract class AbstractMapper<T> implements Mapper<T> {
 
     @Nullable
     protected final String getString(@NonNull final Cursor c, @NonNull final String field) {
-        return CursorUtils.getString(c, field);
+        return org.ccci.gto.android.common.util.database.CursorUtils.getString(c, field);
     }
 
     @Nullable
     protected final String getString(@NonNull final Cursor c, @NonNull final String field,
                                      @Nullable final String defValue) {
-        return CursorUtils.getString(c, field, defValue);
-    }
-
-    /**
-     * @deprecated Since 1.1.1, use {@link AbstractMapper#getString(Cursor, String, String)} instead now that there is
-     * an IntelliJ Contract defined for it.
-     */
-    @NonNull
-    @Deprecated
-    protected final String getNonNullString(@NonNull final Cursor c, @NonNull final String field,
-                                            @NonNull final String defValue) {
-        return CursorUtils.getString(c, field, defValue);
+        return org.ccci.gto.android.common.util.database.CursorUtils.getString(c, field, defValue);
     }
 
     @Nullable
