@@ -8,6 +8,16 @@ import org.jetbrains.annotations.Contract
 /**
  * @receiver The Cursor we are fetching the value from
  * @param columnName The column we are requesting the value of
+ * @param defValue The default value to return when the column doesn't exist, is invalid, or is null
+ * @return the value for the specified column in the current row of the specified Cursor. Or the default value if the column is invalid, null or non-existent
+ */
+@JvmOverloads
+@Contract("_, _, !null -> !null")
+fun Cursor.getLong(columnName: String, defValue: Long? = null) = getString(columnName)?.toLongOrNull() ?: defValue
+
+/**
+ * @receiver The Cursor we are fetching the value from
+ * @param columnName The column we are requesting the value of
  * @param defValue The default value to return when the column doesn't exist or is null
  * @return the value for the specified column in the current row of the specified Cursor. Or the default value if the column is null or non-existent
  */

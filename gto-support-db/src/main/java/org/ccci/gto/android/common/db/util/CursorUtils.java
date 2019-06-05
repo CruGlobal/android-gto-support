@@ -55,30 +55,22 @@ public final class CursorUtils {
         return index != -1 ? c.getInt(index) : defValue;
     }
 
+    /**
+     * @deprecated Since v3.0.0, use {@link org.ccci.gto.android.common.util.database.CursorUtils#getString(Cursor, String)} instead.
+     */
+    @Deprecated
     public static long getLong(@NonNull final Cursor c, @NonNull final String field) {
-        // if defValue is @NonNull, then getLong() will return @NonNull
-        return getLong(c, field, 0L);
+        return org.ccci.gto.android.common.util.database.CursorUtils.getLong(c, field, 0L);
     }
 
     /**
-     * @param c        The Cursor we are fetching the value from
-     * @param field    The column we are requesting the value of
-     * @param defValue The default value to return when the column doesn't exist, is invalid, or is null
-     * @return the value for the specified column in the current row of the specified Cursor. Or the default value if
-     * the column is invalid, null or non-existent
+     * @deprecated Since v3.0.0, use {@link org.ccci.gto.android.common.util.database.CursorUtils#getString(Cursor, String)} instead.
      */
     @Nullable
+    @Deprecated
     @Contract("_, _, !null -> !null")
     public static Long getLong(@NonNull final Cursor c, @NonNull final String field, @Nullable final Long defValue) {
-        final int index = c.getColumnIndex(field);
-        if (index != -1 && !c.isNull(index)) {
-            try {
-                return Long.parseLong(c.getString(index));
-            } catch (final NumberFormatException ignored) {
-            }
-        }
-
-        return defValue;
+        return org.ccci.gto.android.common.util.database.CursorUtils.getLong(c, field, defValue);
     }
 
     /**

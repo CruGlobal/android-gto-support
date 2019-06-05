@@ -46,12 +46,12 @@ public abstract class AbstractMapper<T> implements Mapper<T> {
     }
 
     protected final long getLong(@NonNull final Cursor c, @NonNull final String field) {
-        return CursorUtils.getLong(c, field);
+        return org.ccci.gto.android.common.util.database.CursorUtils.getLong(c, field, 0L);
     }
 
     @Nullable
     protected final Long getLong(@NonNull final Cursor c, @NonNull final String field, @Nullable final Long defValue) {
-        return CursorUtils.getLong(c, field, defValue);
+        return org.ccci.gto.android.common.util.database.CursorUtils.getLong(c, field, defValue);
     }
 
     @Nullable
