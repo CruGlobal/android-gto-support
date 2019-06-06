@@ -38,3 +38,11 @@ fun Cursor.getLong(columnName: String, defValue: Long? = null) = getString(colum
 @Contract("_, _, !null -> !null")
 fun Cursor.getString(columnName: String, defValue: String? = null) =
     getColumnIndex(columnName).takeIf { it != -1 }?.let { getString(it) } ?: defValue
+
+inline fun <R> Cursor.map(transform: (Cursor) -> R): List<R> = mapTo(ArrayList(count), transform)
+
+inline fun <R, C : MutableCollection<in R>> Cursor.mapTo(destination: C, transform: (Cursor) -> R): C {
+    moveToPosition(-1)
+    while (moveToNext()) destination.add(transform(this))
+    return destination
+}
