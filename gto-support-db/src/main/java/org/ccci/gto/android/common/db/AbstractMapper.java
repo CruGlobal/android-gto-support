@@ -38,42 +38,31 @@ public abstract class AbstractMapper<T> implements Mapper<T> {
     }
 
     protected final int getInt(@NonNull final Cursor c, @NonNull final String field) {
-        return CursorUtils.getInt(c, field);
+        return org.ccci.gto.android.common.util.database.CursorUtils.getInt(c, field, 0);
     }
 
     protected final int getInt(@NonNull final Cursor c, @NonNull final String field, final int defValue) {
-        return CursorUtils.getInt(c, field, defValue);
+        return org.ccci.gto.android.common.util.database.CursorUtils.getInt(c, field, defValue);
     }
 
     protected final long getLong(@NonNull final Cursor c, @NonNull final String field) {
-        return CursorUtils.getLong(c, field);
+        return org.ccci.gto.android.common.util.database.CursorUtils.getLong(c, field, 0L);
     }
 
     @Nullable
     protected final Long getLong(@NonNull final Cursor c, @NonNull final String field, @Nullable final Long defValue) {
-        return CursorUtils.getLong(c, field, defValue);
+        return org.ccci.gto.android.common.util.database.CursorUtils.getLong(c, field, defValue);
     }
 
     @Nullable
     protected final String getString(@NonNull final Cursor c, @NonNull final String field) {
-        return CursorUtils.getString(c, field);
+        return org.ccci.gto.android.common.util.database.CursorUtils.getString(c, field);
     }
 
     @Nullable
     protected final String getString(@NonNull final Cursor c, @NonNull final String field,
                                      @Nullable final String defValue) {
-        return CursorUtils.getString(c, field, defValue);
-    }
-
-    /**
-     * @deprecated Since 1.1.1, use {@link AbstractMapper#getString(Cursor, String, String)} instead now that there is
-     * an IntelliJ Contract defined for it.
-     */
-    @NonNull
-    @Deprecated
-    protected final String getNonNullString(@NonNull final Cursor c, @NonNull final String field,
-                                            @NonNull final String defValue) {
-        return CursorUtils.getString(c, field, defValue);
+        return org.ccci.gto.android.common.util.database.CursorUtils.getString(c, field, defValue);
     }
 
     @Nullable
@@ -134,17 +123,6 @@ public abstract class AbstractMapper<T> implements Mapper<T> {
     @Nullable
     protected final Locale getLocale(@NonNull final Cursor c, @NonNull final String field,
                                      @Nullable final Locale defValue) {
-        return CursorUtils.getLocale(c, field, defValue);
-    }
-
-    /**
-     * @deprecated Since 1.1.1, use {@link AbstractMapper#getLocale(Cursor, String, Locale)} instead now that there is
-     * an IntelliJ Contract defined for it.
-     */
-    @NonNull
-    @Deprecated
-    protected final Locale getNonNullLocale(@NonNull final Cursor c, @NonNull final String field,
-                                            @NonNull final Locale defValue) {
         return CursorUtils.getLocale(c, field, defValue);
     }
 

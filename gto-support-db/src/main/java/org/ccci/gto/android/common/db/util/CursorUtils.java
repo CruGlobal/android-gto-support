@@ -46,66 +46,70 @@ public final class CursorUtils {
         return index != -1 ? c.getDouble(index) : defValue;
     }
 
+    /**
+     * @deprecated Since v3.0.0,
+     * use {@link org.ccci.gto.android.common.util.database.CursorUtils#getInt(Cursor, String, Integer)} instead.
+     */
+    @Deprecated
     public static int getInt(@NonNull final Cursor c, @NonNull final String field) {
-        return getInt(c, field, 0);
-    }
-
-    public static int getInt(@NonNull final Cursor c, @NonNull final String field, final int defValue) {
-        final int index = c.getColumnIndex(field);
-        return index != -1 ? c.getInt(index) : defValue;
-    }
-
-    public static long getLong(@NonNull final Cursor c, @NonNull final String field) {
-        // if defValue is @NonNull, then getLong() will return @NonNull
-        return getLong(c, field, 0L);
+        return org.ccci.gto.android.common.util.database.CursorUtils.getInt(c, field, 0);
     }
 
     /**
-     * @param c        The Cursor we are fetching the value from
-     * @param field    The column we are requesting the value of
-     * @param defValue The default value to return when the column doesn't exist, is invalid, or is null
-     * @return the value for the specified column in the current row of the specified Cursor. Or the default value if
-     * the column is invalid, null or non-existent
+     * @deprecated Since v3.0.0,
+     * use {@link org.ccci.gto.android.common.util.database.CursorUtils#getInt(Cursor, String, Integer)} instead.
+     */
+    @Deprecated
+    public static int getInt(@NonNull final Cursor c, @NonNull final String field, final int defValue) {
+        return org.ccci.gto.android.common.util.database.CursorUtils.getInt(c, field, defValue);
+    }
+
+    /**
+     * @deprecated Since v3.0.0,
+     * use {@link org.ccci.gto.android.common.util.database.CursorUtils#getLong(Cursor, String, Long)} instead.
+     */
+    @Deprecated
+    public static long getLong(@NonNull final Cursor c, @NonNull final String field) {
+        return org.ccci.gto.android.common.util.database.CursorUtils.getLong(c, field, 0L);
+    }
+
+    /**
+     * @deprecated Since v3.0.0,
+     * use {@link org.ccci.gto.android.common.util.database.CursorUtils#getLong(Cursor, String, Long)} instead.
      */
     @Nullable
+    @Deprecated
     @Contract("_, _, !null -> !null")
     public static Long getLong(@NonNull final Cursor c, @NonNull final String field, @Nullable final Long defValue) {
-        final int index = c.getColumnIndex(field);
-        if (index != -1 && !c.isNull(index)) {
-            try {
-                return Long.parseLong(c.getString(index));
-            } catch (final NumberFormatException ignored) {
-            }
-        }
-
-        return defValue;
-    }
-
-    @Nullable
-    public static String getString(@NonNull final Cursor c, @NonNull final String field) {
-        return getString(c, field, null);
+        return org.ccci.gto.android.common.util.database.CursorUtils.getLong(c, field, defValue);
     }
 
     /**
-     * @param c        The Cursor we are fetching the value from
-     * @param column   The column we are requesting the value of
-     * @param defValue The default value to return when the column doesn't exist or is null
-     * @return the value for the specified column in the current row of the specified Cursor. Or the default value if
-     * the column is null or non-existent
+     * @deprecated Since v3.0.0,
+     * use {@link org.ccci.gto.android.common.util.database.CursorUtils#getString(Cursor, String)} instead.
      */
     @Nullable
+    @Deprecated
+    public static String getString(@NonNull final Cursor c, @NonNull final String field) {
+        return org.ccci.gto.android.common.util.database.CursorUtils.getString(c, field);
+    }
+
+    /**
+     * @deprecated Since v3.0.0,
+     * use {@link org.ccci.gto.android.common.util.database.CursorUtils#getString(Cursor, String, String)} instead.
+     */
+    @Nullable
+    @Deprecated
     @Contract("_, _, !null -> !null")
     public static String getString(@NonNull final Cursor c, @NonNull final String column,
                                    @Nullable final String defValue) {
-        final int index = c.getColumnIndex(column);
-        final String value = index != -1 ? c.getString(index) : null;
-        return value != null ? value : defValue;
+        return org.ccci.gto.android.common.util.database.CursorUtils.getString(c, column, defValue);
     }
 
     @Nullable
     public static BigDecimal getBigDecimal(@NonNull final Cursor c, @NonNull final String field,
                                            @Nullable final BigDecimal defValue) {
-        final String raw = getString(c, field, null);
+        final String raw = org.ccci.gto.android.common.util.database.CursorUtils.getString(c, field);
         if (raw != null) {
             try {
                 return new BigDecimal(raw);
@@ -122,7 +126,7 @@ public final class CursorUtils {
 
     @Nullable
     public static Date getDate(@NonNull final Cursor c, @NonNull final String field, @Nullable final Date defValue) {
-        final String raw = getString(c, field, null);
+        final String raw = org.ccci.gto.android.common.util.database.CursorUtils.getString(c, field);
         if (raw != null) {
             try {
                 return new Date(Long.parseLong(raw));
@@ -142,7 +146,7 @@ public final class CursorUtils {
     @Contract("_, _, _, !null -> !null")
     public static <E extends Enum<E>> E getEnum(@NonNull final Cursor c, @NonNull final String field,
                                                 @NonNull final Class<E> clazz, @Nullable final E defValue) {
-        final String raw = getString(c, field, null);
+        final String raw = org.ccci.gto.android.common.util.database.CursorUtils.getString(c, field);
         if (raw != null) {
             try {
                 return Enum.valueOf(clazz, raw);
@@ -161,7 +165,7 @@ public final class CursorUtils {
     @Nullable
     public static JSONArray getJSONArray(@NonNull final Cursor c, @NonNull final String field,
                                          @Nullable final JSONArray defValue) {
-        final String raw = getString(c, field, null);
+        final String raw = org.ccci.gto.android.common.util.database.CursorUtils.getString(c, field);
         if (raw != null) {
             try {
                 return new JSONArray(raw);
@@ -179,7 +183,7 @@ public final class CursorUtils {
     @Nullable
     public static JSONObject getJSONObject(@NonNull final Cursor c, @NonNull final String field,
                                            @Nullable final JSONObject defValue) {
-        final String raw = getString(c, field, null);
+        final String raw = org.ccci.gto.android.common.util.database.CursorUtils.getString(c, field);
         if (raw != null) {
             try {
                 return new JSONObject(raw);
@@ -198,7 +202,7 @@ public final class CursorUtils {
     @Contract("_, _, !null -> !null")
     public static Locale getLocale(@NonNull final Cursor c, @NonNull final String field,
                                    @Nullable final Locale defValue) {
-        final String raw = getString(c, field, null);
+        final String raw = org.ccci.gto.android.common.util.database.CursorUtils.getString(c, field);
         if (raw != null) {
             try {
                 return LocaleCompat.forLanguageTag(raw);

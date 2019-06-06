@@ -23,7 +23,7 @@ import androidx.annotation.WorkerThread;
 import androidx.collection.SimpleArrayMap;
 
 import static android.database.sqlite.SQLiteDatabase.CONFLICT_NONE;
-import static org.ccci.gto.android.common.db.util.CursorUtils.getLong;
+import static org.ccci.gto.android.common.util.database.CursorUtils.getLong;
 
 public abstract class AbstractDao {
     public static final String ARG_DISTINCT = AbstractDao.class.getName() + ".ARG_DISTINCT";
