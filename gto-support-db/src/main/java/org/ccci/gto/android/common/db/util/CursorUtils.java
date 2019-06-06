@@ -47,7 +47,8 @@ public final class CursorUtils {
     }
 
     /**
-     * @deprecated Since v3.0.0, use {@link org.ccci.gto.android.common.util.database.CursorUtils#getInt(Cursor, String, Integer)} instead.
+     * @deprecated Since v3.0.0,
+     * use {@link org.ccci.gto.android.common.util.database.CursorUtils#getInt(Cursor, String, Integer)} instead.
      */
     @Deprecated
     public static int getInt(@NonNull final Cursor c, @NonNull final String field) {
@@ -55,7 +56,8 @@ public final class CursorUtils {
     }
 
     /**
-     * @deprecated Since v3.0.0, use {@link org.ccci.gto.android.common.util.database.CursorUtils#getInt(Cursor, String, Integer)} instead.
+     * @deprecated Since v3.0.0,
+     * use {@link org.ccci.gto.android.common.util.database.CursorUtils#getInt(Cursor, String, Integer)} instead.
      */
     @Deprecated
     public static int getInt(@NonNull final Cursor c, @NonNull final String field, final int defValue) {
@@ -63,7 +65,8 @@ public final class CursorUtils {
     }
 
     /**
-     * @deprecated Since v3.0.0, use {@link org.ccci.gto.android.common.util.database.CursorUtils#getLong(Cursor, String)} instead.
+     * @deprecated Since v3.0.0,
+     * use {@link org.ccci.gto.android.common.util.database.CursorUtils#getLong(Cursor, String, Long)} instead.
      */
     @Deprecated
     public static long getLong(@NonNull final Cursor c, @NonNull final String field) {
@@ -71,7 +74,8 @@ public final class CursorUtils {
     }
 
     /**
-     * @deprecated Since v3.0.0, use {@link org.ccci.gto.android.common.util.database.CursorUtils#getLong(Cursor, String, Long)} instead.
+     * @deprecated Since v3.0.0,
+     * use {@link org.ccci.gto.android.common.util.database.CursorUtils#getLong(Cursor, String, Long)} instead.
      */
     @Nullable
     @Deprecated
@@ -81,7 +85,8 @@ public final class CursorUtils {
     }
 
     /**
-     * @deprecated Since v3.0.0, use {@link org.ccci.gto.android.common.util.database.CursorUtils#getString(Cursor, String)} instead.
+     * @deprecated Since v3.0.0,
+     * use {@link org.ccci.gto.android.common.util.database.CursorUtils#getString(Cursor, String)} instead.
      */
     @Nullable
     @Deprecated
@@ -90,7 +95,8 @@ public final class CursorUtils {
     }
 
     /**
-     * @deprecated Since v3.0.0, use {@link org.ccci.gto.android.common.util.database.CursorUtils#getString(Cursor, String, String)} instead.
+     * @deprecated Since v3.0.0,
+     * use {@link org.ccci.gto.android.common.util.database.CursorUtils#getString(Cursor, String, String)} instead.
      */
     @Nullable
     @Deprecated
