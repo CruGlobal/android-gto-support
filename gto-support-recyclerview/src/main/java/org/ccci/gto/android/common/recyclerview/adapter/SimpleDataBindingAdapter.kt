@@ -8,7 +8,7 @@ import com.karumi.weak.weak
 
 abstract class SimpleDataBindingAdapter<B : ViewDataBinding>(lifecycleOwner: LifecycleOwner? = null) :
     RecyclerView.Adapter<DataBindingViewHolder<B>>() {
-    private val lifecycleOwner: LifecycleOwner? by weak(lifecycleOwner)
+    private val lifecycleOwner by weak(lifecycleOwner)
 
     // region Lifecycle
 
