@@ -5,7 +5,6 @@ android {
 }
 
 dependencies {
-    compileOnly "androidx.appcompat:appcompat:${deps.androidXAppCompat}"
     implementation "com.google.android.material:material:${deps.materialDesign}"
 
     implementation "com.jakewharton.timber:timber:${deps.timber}"
