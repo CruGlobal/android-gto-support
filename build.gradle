@@ -39,6 +39,7 @@ buildscript {
             room              : '2.1.0',
             swipeRefreshLayout: '1.0.0',
             test              : '1.1.1',
+            testJUnit         : '1.1.1',
             viewPager         : '1.0.0',
     ]
 
@@ -105,7 +106,7 @@ subprojects {
 
             androidTestImplementation "androidx.test:runner:${deps.androidX.test}"
             androidTestImplementation "androidx.test:rules:${deps.androidX.test}"
-            androidTestImplementation "androidx.test.ext:junit:${deps.androidX.test}"
+            androidTestImplementation "androidx.test.ext:junit:${deps.androidX.testJUnit}"
             androidTestImplementation "org.hamcrest:hamcrest-library:${deps.hamcrest}"
         }
 
