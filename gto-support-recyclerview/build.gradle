@@ -11,5 +11,5 @@ dependencies {
     }
 
     // Data Binding adapter dependencies
-    compileOnly "androidx.databinding:databinding-runtime:${deps.gradle.androidPlugin}"
+    compileOnly "androidx.databinding:databinding-runtime:${deps.gradleAndroidPlugin}"
 }

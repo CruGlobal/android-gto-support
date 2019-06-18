@@ -10,5 +10,5 @@ dependencies {
 
     // Data Binding adapter dependencies
     compileOnly project(':gto-support-recyclerview')
-    compileOnly "androidx.databinding:databinding-runtime:${deps.gradle.androidPlugin}"
+    compileOnly "androidx.databinding:databinding-runtime:${deps.gradleAndroidPlugin}"
 }
