@@ -24,7 +24,7 @@ buildscript {
             realm               : '5.9.0',
             realmAdapters       : '3.1.0',
             retrofit2           : '2.6.0',
-            snowplow            : '0.8.0',
+            snowplow            : '1.1.0',
             thekey              : '3.0.0',
             timber              : '4.7.1'
     ]
