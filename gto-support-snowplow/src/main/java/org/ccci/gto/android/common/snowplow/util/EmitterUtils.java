@@ -11,6 +11,10 @@ import okhttp3.OkHttpClient;
 import timber.log.Timber;
 
 public final class EmitterUtils {
+    /**
+     * @deprecated Since v3.0.0, this should be handled via {@link Emitter.EmitterBuilder#client(OkHttpClient)}.
+     */
+    @Deprecated
     public static void attachOkHttp3GlobalInterceptors(@NonNull final Emitter emitter) {
         try {
             final Field field = Emitter.class.getDeclaredField("client");
