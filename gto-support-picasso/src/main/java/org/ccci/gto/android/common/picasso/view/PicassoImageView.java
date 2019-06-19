@@ -196,7 +196,7 @@ public interface PicassoImageView {
             }
 
             // create base request
-            final RequestCreator update = onCreateUpdate(Picasso.with(mView.getContext()));
+            final RequestCreator update = onCreateUpdate(Picasso.get());
 
             // set placeholder & any transform options
             if (mPlaceholderResId != INVALID_DRAWABLE_RES) {
