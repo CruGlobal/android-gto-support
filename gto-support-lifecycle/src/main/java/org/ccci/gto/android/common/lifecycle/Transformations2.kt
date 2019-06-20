@@ -50,6 +50,7 @@ fun <X, Y, Z> LiveData<X>.combineWith(other: LiveData<Y>, mapFunction: (X?, Y?) 
 // Provide Kotlin extensions for existing transformations
 
 fun <X, Y> LiveData<X>.map(block: (X?) -> Y?): LiveData<Y> = Transformations.map(this, block::invoke)
-fun <X, Y> LiveData<X>.flatMap(block: (X?) -> LiveData<Y>?): LiveData<Y> = Transformations.switchMap(this, block::invoke)
+fun <X, Y> LiveData<X>.flatMap(block: (X?) -> LiveData<Y>?): LiveData<Y> =
+    Transformations.switchMap(this, block::invoke)
 
 fun <T> LiveData<out Iterable<T>>.sortedWith(comparator: Comparator<in T>) = map { it?.sortedWith(comparator) }
