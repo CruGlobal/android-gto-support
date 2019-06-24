@@ -15,16 +15,16 @@ import androidx.lifecycle.Transformations
  * @see androidx.lifecycle.Transformations.switchMap
  */
 @JvmName("switchCombine")
-fun <X, Y, Z> LiveData<X>.switchCombineWith(other: LiveData<Y>, mapFunction: (X?, Y?) -> LiveData<Z>): LiveData<Z> {
-    val result = MediatorLiveData<Z>()
+fun <IN1, IN2, OUT> LiveData<IN1>.switchCombineWith(other: LiveData<IN2>, mapFunction: (IN1?, IN2?) -> LiveData<OUT>?): LiveData<OUT> {
+    val result = MediatorLiveData<OUT>()
     val observer = object : Observer<Any?> {
-        private var source: LiveData<Z>? = null
+        private var source: LiveData<OUT>? = null
         override fun onChanged(t: Any?) {
             val newSource = mapFunction(value, other.value)
             if (source == newSource) return
             source?.let { result.removeSource(it) }
             source = newSource
-            source?.let { result.addSource(it) { value: Z? -> result.value = value } }
+            source?.let { result.addSource(it) { value: OUT? -> result.value = value } }
         }
     }
     result.addSource(this, observer)
@@ -39,8 +39,8 @@ fun <X, Y, Z> LiveData<X>.switchCombineWith(other: LiveData<Y>, mapFunction: (X?
  * @see androidx.lifecycle.Transformations.map
  */
 @JvmName("combine")
-fun <X, Y, Z> LiveData<X>.combineWith(other: LiveData<Y>, mapFunction: (X?, Y?) -> Z?): LiveData<Z> {
-    val result = MediatorLiveData<Z>()
+fun <IN1, IN2, OUT> LiveData<IN1>.combineWith(other: LiveData<IN2>, mapFunction: (IN1?, IN2?) -> OUT?): LiveData<OUT> {
+    val result = MediatorLiveData<OUT>()
     val observer = Observer<Any?> { result.value = mapFunction(value, other.value) }
     result.addSource(this, observer)
     result.addSource(other, observer)
@@ -49,8 +49,8 @@ fun <X, Y, Z> LiveData<X>.combineWith(other: LiveData<Y>, mapFunction: (X?, Y?) 
 
 // Provide Kotlin extensions for existing transformations
 
-fun <X, Y> LiveData<X>.map(block: (X?) -> Y?): LiveData<Y> = Transformations.map(this, block::invoke)
-fun <X, Y> LiveData<X>.flatMap(block: (X?) -> LiveData<Y>?): LiveData<Y> =
+fun <IN, OUT> LiveData<IN>.map(block: (IN?) -> OUT?): LiveData<OUT> = Transformations.map(this, block::invoke)
+fun <IN, OUT> LiveData<IN>.flatMap(block: (IN?) -> LiveData<OUT>?): LiveData<OUT> =
     Transformations.switchMap(this, block::invoke)
 
 fun <T> LiveData<out Iterable<T>>.sortedWith(comparator: Comparator<in T>) = map { it?.sortedWith(comparator) }
