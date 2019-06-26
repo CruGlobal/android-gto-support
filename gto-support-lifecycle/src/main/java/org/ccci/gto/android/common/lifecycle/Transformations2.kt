@@ -32,6 +32,21 @@ fun <IN1, IN2, IN3, OUT> LiveData<IN1>.switchCombineWith(
     mapFunction: (IN1?, IN2?, IN3?) -> LiveData<OUT>?
 ) = switchCombineWithInt(this, other, other2) { mapFunction(value, other.value, other2.value) }
 
+/**
+ * This method will combine 4 LiveData objects into a new LiveData object by running the {@param mapFunction} on the
+ * current values of the source LiveData objects.
+ * Returning any of the original LiveData objects will cause an Exception.
+ *
+ * @see androidx.lifecycle.Transformations.switchMap
+ */
+@JvmName("switchCombine")
+fun <P, P1, P2, P3, R> LiveData<P>.switchCombineWith(
+    other: LiveData<P1>,
+    other2: LiveData<P2>,
+    other3: LiveData<P3>,
+    mapFunction: (P?, P1?, P2?, P3?) -> LiveData<R>?
+) = switchCombineWithInt(this, other, other2, other3) { mapFunction(value, other.value, other2.value, other3.value) }
+
 private inline fun <OUT> switchCombineWithInt(
     vararg input: LiveData<*>,
     crossinline mapFunction: () -> LiveData<OUT>?
