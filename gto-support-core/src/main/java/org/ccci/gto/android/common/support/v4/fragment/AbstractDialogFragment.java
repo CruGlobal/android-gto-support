@@ -1,9 +1,10 @@
 package org.ccci.gto.android.common.support.v4.fragment;
 
 import android.app.Dialog;
-import androidx.fragment.app.DialogFragment;
 
 import org.ccci.gto.android.common.support.v4.util.FragmentUtils;
+
+import androidx.fragment.app.DialogFragment;
 
 public class AbstractDialogFragment extends DialogFragment {
 
@@ -23,10 +24,18 @@ public class AbstractDialogFragment extends DialogFragment {
 
     /* END lifecycle */
 
+    /**
+     * @deprecated Since v3.0.1, use FragmentUtils directly
+     */
+    @Deprecated
     protected final <T> T findView(final Class<T> clazz, final int id) {
         return FragmentUtils.findView(this, clazz, id);
     }
 
+    /**
+     * @deprecated Since v3.0.1, use FragmentUtils directly
+     */
+    @Deprecated
     protected final <T> T getListener(final Class<T> clazz) {
         return FragmentUtils.getListener(this, clazz);
     }

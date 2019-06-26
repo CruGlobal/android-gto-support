@@ -4,6 +4,10 @@ import org.ccci.gto.android.common.support.v4.util.FragmentUtils;
 
 import androidx.fragment.app.Fragment;
 
+/**
+ * @deprecated Since v3.0.1, use {@link FragmentUtils} directly instead.
+ */
+@Deprecated
 public abstract class AbstractFragment extends Fragment {
     protected final <T> T findView(final Class<T> clazz, final int id) {
         return FragmentUtils.findView(this, clazz, id);
