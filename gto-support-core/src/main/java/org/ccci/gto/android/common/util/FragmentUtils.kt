@@ -11,4 +11,4 @@ inline fun <reified T> Fragment.findAncestorFragment(): T? {
     return null
 }
 
-inline fun <reified T> Fragment.findListener(): T? = findAncestorFragment() ?: activity as? T
+inline fun <reified T> Fragment.findListener(): T? = targetFragment as? T ?: findAncestorFragment() ?: activity as? T
