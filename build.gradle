@@ -18,7 +18,7 @@ buildscript {
             lightweightStream   : '1.2.1',
             materialDesign      : '1.0.0',
             mockito             : '2.28.2',
-            okhttp3             : '3.12.3',
+            okhttp3             : '4.0.0',
             picasso             : '2.71828',
             powermock           : '2.0.2',
             realm               : '5.12.0',
