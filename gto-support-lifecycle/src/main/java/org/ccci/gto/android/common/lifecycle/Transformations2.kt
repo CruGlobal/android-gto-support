@@ -53,13 +53,13 @@ private inline fun <OUT> switchCombineWithInt(
 ): LiveData<OUT> {
     val result = MediatorLiveData<OUT>()
     val observer = object : Observer<Any?> {
-        private var source: LiveData<OUT>? = null
+        private var source: LiveData<OUT> = emptyLiveData()
         override fun onChanged(t: Any?) {
             val newSource = mapFunction()
             if (source == newSource) return
-            source?.let { result.removeSource(it) }
-            source = newSource
-            source?.let { result.addSource(it) { value: OUT? -> result.value = value } }
+            result.removeSource(source)
+            source = newSource.orEmpty()
+            result.addSource(source) { value: OUT? -> result.value = value }
         }
     }
     input.forEach { result.addSource(it, observer) }
