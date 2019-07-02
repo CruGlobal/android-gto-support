@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 
 internal object EmptyLiveData : LiveData<Nothing>() {
     init {
+        // TODO: this can be moved to the constructor after we upgrade to Lifecycle 2.1.0
         value = null
     }
 }
