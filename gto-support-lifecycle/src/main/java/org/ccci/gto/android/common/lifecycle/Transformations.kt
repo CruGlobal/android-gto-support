@@ -53,13 +53,13 @@ private inline fun <OUT> switchCombineWithInt(
 ): LiveData<OUT> {
     val result = MediatorLiveData<OUT>()
     val observer = object : Observer<Any?> {
-        private var source: LiveData<OUT>? = null
+        private var source: LiveData<OUT> = emptyLiveData()
         override fun onChanged(t: Any?) {
             val newSource = mapFunction()
             if (source == newSource) return
-            source?.let { result.removeSource(it) }
-            source = newSource
-            source?.let { result.addSource(it) { value: OUT? -> result.value = value } }
+            result.removeSource(source)
+            source = newSource.orEmpty()
+            result.addSource(source) { value: OUT? -> result.value = value }
         }
     }
     input.forEach { result.addSource(it, observer) }
@@ -81,10 +81,13 @@ fun <IN1, IN2, OUT> LiveData<IN1>.combineWith(other: LiveData<IN2>, mapFunction:
     return result
 }
 
-// Provide Kotlin extensions for existing transformations
-
-fun <IN, OUT> LiveData<IN>.map(block: (IN?) -> OUT?): LiveData<OUT> = Transformations.map(this, block::invoke)
-fun <IN, OUT> LiveData<IN>.flatMap(block: (IN?) -> LiveData<OUT>?): LiveData<OUT> =
-    Transformations.switchMap(this, block::invoke)
-
 fun <T> LiveData<out Iterable<T>>.sortedWith(comparator: Comparator<in T>) = map { it?.sortedWith(comparator) }
+
+// Provide Kotlin extensions for existing transformations
+// TODO: these can be deprecated after Lifecycle 2.1.0 is released
+
+inline fun <IN, OUT> LiveData<IN>.map(crossinline transform: (IN?) -> OUT?): LiveData<OUT> =
+    Transformations.map(this) { transform(it) }
+
+inline fun <X, Y> LiveData<X>.flatMap(crossinline transform: (X) -> LiveData<Y>?): LiveData<Y> =
+    Transformations.switchMap(this) { transform(it).orEmpty() }
