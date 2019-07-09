@@ -11,5 +11,5 @@ dependencies {
     compileOnly "androidx.appcompat:appcompat:${deps.androidX.appCompat}"
 
     implementation "com.jakewharton.timber:timber:${deps.timber}"
-    implementation "com.squareup.picasso:picasso:${deps.picasso}"
+    api "com.squareup.picasso:picasso:${deps.picasso}"
 }
