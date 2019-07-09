@@ -30,11 +30,6 @@ public abstract class AbstractDao {
     public static final String ARG_JOINS = AbstractDao.class.getName() + ".ARG_JOINS";
     public static final String ARG_PROJECTION = AbstractDao.class.getName() + ".ARG_PROJECTION";
     public static final String ARG_WHERE = AbstractDao.class.getName() + ".ARG_WHERE";
-    /**
-     * @deprecated Since v0.9.0, use {@link AbstractDao#ARG_WHERE} with an {@link Expression} object instead.
-     */
-    @Deprecated
-    public static final String ARG_WHERE_ARGS = AbstractDao.class.getName() + ".ARG_WHERE_ARGS";
     public static final String ARG_ORDER_BY = AbstractDao.class.getName() + ".ARG_ORDER_BY";
 
     @NonNull
@@ -158,60 +153,6 @@ public abstract class AbstractDao {
         return getCursor(Query.select(clazz).where(whereClause, whereBindValues).orderBy(orderBy));
     }
 
-    /**
-     * @deprecated Since v0.9.0, use {@link AbstractDao#getCursor(Query)} instead.
-     */
-    @NonNull
-    @Deprecated
-    @WorkerThread
-    public final Cursor getCursor(@NonNull final Class<?> clazz, @NonNull final String[] projection,
-                                  @Nullable final String whereClause, @Nullable final String[] whereBindValues,
-                                  @Nullable final String orderBy) {
-        return getCursor(
-                Query.select(clazz).projection(projection).where(whereClause, whereBindValues).orderBy(orderBy));
-    }
-
-    /**
-     * @deprecated Since v0.9.0, use {@link AbstractDao#getCursor(Query)} instead.
-     */
-    @NonNull
-    @Deprecated
-    @WorkerThread
-    public final <T> Cursor getCursor(@NonNull final Class<T> clazz, @NonNull final Join<T, ?> join,
-                                      @NonNull final String[] projection, @Nullable final String whereClause,
-                                      @Nullable final String[] whereBindValues, @Nullable final String orderBy) {
-        return getCursor(Query.select(clazz).join(join).projection(projection).where(whereClause, whereBindValues)
-                                 .orderBy(orderBy));
-    }
-
-    /**
-     * @deprecated Since v0.9.0, use {@link AbstractDao#getCursor(Query)} instead.
-     */
-    @NonNull
-    @Deprecated
-    @WorkerThread
-    public final <T> Cursor getCursor(@NonNull final Class<T> clazz, @NonNull final Join<T, ?> join1,
-                                      @NonNull final Join<T, ?> join2, @NonNull final String[] projection,
-                                      @Nullable final String whereClause, @Nullable final String[] whereBindValues,
-                                      @Nullable final String orderBy) {
-        return getCursor(
-                Query.select(clazz).join(join1, join2).projection(projection).where(whereClause, whereBindValues)
-                        .orderBy(orderBy));
-    }
-
-    /**
-     * @deprecated Since v0.9.0, use {@link AbstractDao#getCursor(Query)} instead.
-     */
-    @NonNull
-    @Deprecated
-    @WorkerThread
-    public final <T> Cursor getCursor(@NonNull final Class<T> clazz, @NonNull final Join<T, ?>[] joins,
-                                      @NonNull final String[] projection, @Nullable final String whereClause,
-                                      @Nullable final String[] whereArgs, @Nullable String orderBy) {
-        return getCursor(
-                Query.select(clazz).joins(joins).projection(projection).where(whereClause, whereArgs).orderBy(orderBy));
-    }
-
     @NonNull
     @WorkerThread
     public final Cursor getCursor(@NonNull final Query<?> query) {
@@ -312,28 +253,6 @@ public abstract class AbstractDao {
     @WorkerThread
     public final <T> List<T> get(@NonNull final Class<T> clazz) {
         return get(Query.select(clazz));
-    }
-
-    /**
-     * @deprecated Since v1.1.2, use {@link AbstractDao#get(Query)} instead.
-     */
-    @NonNull
-    @Deprecated
-    @WorkerThread
-    public final <T> List<T> get(@NonNull final Class<T> clazz, @Nullable final String whereClause,
-                                 @Nullable final String[] whereBindValues) {
-        return get(Query.select(clazz).where(whereClause, whereBindValues));
-    }
-
-    /**
-     * @deprecated Since v1.1.2, use {@link AbstractDao#get(Query)} instead.
-     */
-    @NonNull
-    @Deprecated
-    @WorkerThread
-    public final <T> List<T> get(@NonNull final Class<T> clazz, @Nullable final String whereClause,
-                                 @Nullable final String[] whereBindValues, @Nullable final String orderBy) {
-        return get(Query.select(clazz).where(whereClause, whereBindValues).orderBy(orderBy));
     }
 
     @NonNull
@@ -510,25 +429,6 @@ public abstract class AbstractDao {
         final SQLiteDatabase db = mDbHelper.getWritableDatabase();
         return inNonExclusiveTransaction(db, () -> db.updateWithOnConflict(table, values, builtWhere.first,
                                                                            builtWhere.second, conflictAlgorithm));
-    }
-
-    /**
-     * This method updates all objects of type {@code type} in the database with the {@code projection} values from the
-     * {@code sample} object. The objects actually updated can be restricted via the {@code where} expression.
-     *
-     * @param type       the type of objects being updated
-     * @param where      a where clause that restricts which objects get updated. If this is null all objects are
-     *                   updated.
-     * @param sample     a sample object that is used to generated the values being set on other objects.
-     * @param projection the fields to update in this call
-     * @param <T>        the type of objects being updated
-     * @deprecated Since 1.0.2, use {@link AbstractDao#update(Object, Expression, String...)} instead.
-     */
-    @Deprecated
-    @WorkerThread
-    public final <T> void updateAll(@NonNull final Class<T> type, @Nullable final Expression where,
-                                    @NonNull final T sample, @NonNull final String... projection) {
-        update(sample, where, projection);
     }
 
     @WorkerThread

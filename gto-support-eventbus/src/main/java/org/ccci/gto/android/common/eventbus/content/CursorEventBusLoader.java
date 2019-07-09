@@ -22,28 +22,6 @@ public abstract class CursorEventBusLoader extends SimpleCursorLoader implements
         mHelper = new EventBusLoaderHelper(this, eventBus);
     }
 
-    /**
-     * @deprecated Since v1.1.1, use {@link CursorEventBusLoader#addEventBusSubscriber(EventBusSubscriber)} to attach
-     * subscribers
-     */
-    @Deprecated
-    public CursorEventBusLoader(@NonNull final Context context, @Nullable final EventBusSubscriber subscriber) {
-        this(context, subscriber, null);
-    }
-
-    /**
-     * @deprecated Since v1.1.1, use {@link CursorEventBusLoader#addEventBusSubscriber(EventBusSubscriber)} to attach
-     * subscribers
-     */
-    @Deprecated
-    public CursorEventBusLoader(@NonNull final Context context, @Nullable final EventBusSubscriber subscriber,
-                                @Nullable final EventBus eventBus) {
-        this(context, eventBus);
-        if (subscriber != null) {
-            addEventBusSubscriber(subscriber);
-        }
-    }
-
     /* BEGIN lifecycle */
 
     @Override
