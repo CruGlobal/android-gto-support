@@ -114,6 +114,10 @@ subprojects {
             resolutionStrategy {
                 force "androidx.annotation:annotation:${deps.androidX.annotation}"
                 force "org.jetbrains:annotations:${deps.jetbrainsAnnotations}"
+
+                dependencySubstitution {
+                    substitute module('org.hamcrest:hamcrest-core') with module("org.hamcrest:hamcrest:${deps.hamcrest}")
+                }
             }
         }
     }

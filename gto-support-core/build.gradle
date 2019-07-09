@@ -19,5 +19,5 @@ dependencies {
 
     testImplementation "junit:junit:${deps.junit}"
     testImplementation "com.google.guava:guava:${deps.guava}"
-    androidTestImplementation "org.hamcrest:hamcrest-library:${deps.hamcrest}"
+    androidTestImplementation "org.hamcrest:hamcrest:${deps.hamcrest}"
 }
