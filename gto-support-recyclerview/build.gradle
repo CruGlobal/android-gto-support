@@ -12,4 +12,7 @@ dependencies {
 
     // Data Binding adapter dependencies
     compileOnly "androidx.databinding:databinding-runtime:${deps.gradleAndroidPlugin}"
+
+    // Lifecycle dependencies
+    compileOnly "androidx.lifecycle:lifecycle-common:${deps.androidX.lifecycle}"
 }
