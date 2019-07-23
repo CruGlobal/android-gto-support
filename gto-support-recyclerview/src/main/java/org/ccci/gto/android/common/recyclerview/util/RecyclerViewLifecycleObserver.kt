@@ -17,7 +17,6 @@ private class RecyclerViewLifecycleObserver(private val recyclerView: RecyclerVi
             field?.lifecycle?.addObserver(this)
         }
 
-
     @OnLifecycleEvent(Lifecycle.Event.ON_ANY)
     fun onLifecycleEvent() {
         if (lifecycleOwner?.lifecycle?.currentState == Lifecycle.State.DESTROYED) {
