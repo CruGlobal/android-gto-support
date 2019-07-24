@@ -4,9 +4,7 @@ dependencies {
 
     api "com.h6ah4i.android.widget.advrecyclerview:advrecyclerview:${deps.advrecyclerview}"
 
-    implementation('com.github.Karumi:WeakDelegate:1.0.0') {
-        exclude group: 'org.jetbrains.kotlin', module: 'kotlin-stdlib-jdk8'
-    }
+    implementation 'com.github.Karumi:WeakDelegate:1.0.0'
 
     // Data Binding adapter dependencies
     compileOnly project(':gto-support-recyclerview')
