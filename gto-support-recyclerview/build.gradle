@@ -6,9 +6,7 @@ android {
 
 dependencies {
     api "androidx.recyclerview:recyclerview:${deps.androidX.recyclerView}"
-    implementation('com.github.Karumi:WeakDelegate:1.0.0') {
-        exclude group: 'org.jetbrains.kotlin', module: 'kotlin-stdlib-jdk8'
-    }
+    implementation 'com.github.Karumi:WeakDelegate:1.0.0'
 
     // Data Binding adapter dependencies
     compileOnly "androidx.databinding:databinding-runtime:${deps.gradleAndroidPlugin}"

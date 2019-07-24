@@ -1,8 +1,6 @@
 dependencies {
     api "io.realm:realm-android-library:${deps.realm}"
-    implementation('com.github.Karumi:WeakDelegate:1.0.0') {
-        exclude group: 'org.jetbrains.kotlin', module: 'kotlin-stdlib-jdk8'
-    }
+    implementation 'com.github.Karumi:WeakDelegate:1.0.0'
 
     // RecyclerViewAdapter dependencies
     compileOnly "io.realm:android-adapters:${deps.realmAdapters}"
