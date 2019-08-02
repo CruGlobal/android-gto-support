@@ -1,8 +1,5 @@
 package org.ccci.gto.android.common.compat.util
 
-import org.ccci.gto.android.common.compat.util.LocaleCompat.Compat
-import org.ccci.gto.android.common.compat.util.LocaleCompat.FroyoCompat
-import org.ccci.gto.android.common.compat.util.LocaleCompat.LollipopCompat
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -10,7 +7,7 @@ import org.junit.runners.Parameterized
 import java.util.Locale
 
 @RunWith(Parameterized::class)
-internal class LocaleCompatTest(private val compat: Compat) {
+internal class LocaleCompatTest(private val compat: LocaleCompatMethods) {
 
     @Test
     @Throws(Exception::class)
@@ -32,7 +29,7 @@ internal class LocaleCompatTest(private val compat: Compat) {
         @JvmStatic
         @Parameterized.Parameters
         fun data(): Collection<Array<*>> {
-            return listOf(arrayOf(FroyoCompat()), arrayOf(LollipopCompat()))
+            return listOf(arrayOf(JellyBeanLocaleCompatMethods()), arrayOf(LollipopLocaleCompatMethods()))
         }
 
         private val LANGUAGETAGS = mapOf<Locale, String>(
