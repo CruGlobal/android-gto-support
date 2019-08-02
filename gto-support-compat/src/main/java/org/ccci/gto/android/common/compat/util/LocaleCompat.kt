@@ -8,29 +8,34 @@ import java.util.Locale
 
 object LocaleCompat {
     private val COMPAT: LocaleCompatMethods = when {
-        Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP -> JellyBeanLocaleCompatMethods()
-        else -> LollipopLocaleCompatMethods()
+        Build.VERSION.SDK_INT >= Build.VERSION_CODES.N -> NougatLocaleCompatMethods()
+        Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP -> LollipopLocaleCompatMethods()
+        else -> BaseLocaleCompatMethods()
     }
 
     @JvmStatic
-    fun forLanguageTag(tag: String): Locale {
-        return COMPAT.forLanguageTag(tag)
-    }
+    fun getDefault(category: Category) = COMPAT.getDefault(category)
 
     @JvmStatic
-    fun toLanguageTag(locale: Locale): String {
-        return COMPAT.toLanguageTag(locale)
-    }
+    fun forLanguageTag(tag: String) = COMPAT.forLanguageTag(tag)
+
+    @JvmStatic
+    fun toLanguageTag(locale: Locale) = COMPAT.toLanguageTag(locale)
+
+    enum class Category { DISPLAY, FORMAT }
 }
 
 @VisibleForTesting
 internal sealed class LocaleCompatMethods {
+    abstract fun getDefault(category: LocaleCompat.Category): Locale
     abstract fun forLanguageTag(tag: String): Locale
     abstract fun toLanguageTag(locale: Locale): String
 }
 
 @RestrictTo(RestrictTo.Scope.LIBRARY)
-internal open class JellyBeanLocaleCompatMethods : LocaleCompatMethods() {
+internal open class BaseLocaleCompatMethods : LocaleCompatMethods() {
+    override fun getDefault(category: LocaleCompat.Category): Locale = Locale.getDefault()
+
     override fun forLanguageTag(tag: String): Locale {
         // XXX: we are ignoring grandfathered tags unless we really need that support
         val subtags = tag.split("-")
@@ -57,7 +62,18 @@ internal open class JellyBeanLocaleCompatMethods : LocaleCompatMethods() {
 
 @RestrictTo(RestrictTo.Scope.LIBRARY)
 @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-internal class LollipopLocaleCompatMethods : JellyBeanLocaleCompatMethods() {
+internal open class LollipopLocaleCompatMethods : BaseLocaleCompatMethods() {
     override fun forLanguageTag(tag: String): Locale = Locale.forLanguageTag(tag)
     override fun toLanguageTag(locale: Locale): String = locale.toLanguageTag()
+}
+
+@RestrictTo(RestrictTo.Scope.LIBRARY)
+@TargetApi(Build.VERSION_CODES.N)
+internal class NougatLocaleCompatMethods : LollipopLocaleCompatMethods() {
+    override fun getDefault(category: LocaleCompat.Category): Locale = Locale.getDefault(
+        when (category) {
+            LocaleCompat.Category.DISPLAY -> Locale.Category.DISPLAY
+            LocaleCompat.Category.FORMAT -> Locale.Category.FORMAT
+        }
+    )
 }

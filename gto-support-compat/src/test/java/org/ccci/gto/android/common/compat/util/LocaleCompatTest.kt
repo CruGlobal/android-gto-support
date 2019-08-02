@@ -29,7 +29,11 @@ internal class LocaleCompatTest(private val compat: LocaleCompatMethods) {
         @JvmStatic
         @Parameterized.Parameters
         fun data(): Collection<Array<*>> {
-            return listOf(arrayOf(JellyBeanLocaleCompatMethods()), arrayOf(LollipopLocaleCompatMethods()))
+            return listOf(
+                arrayOf(BaseLocaleCompatMethods()),
+                arrayOf(LollipopLocaleCompatMethods()),
+                arrayOf(NougatLocaleCompatMethods())
+            )
         }
 
         private val LANGUAGETAGS = mapOf<Locale, String>(
