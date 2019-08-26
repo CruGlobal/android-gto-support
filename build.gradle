@@ -98,6 +98,9 @@ subprojects {
             dexOptions {
                 preDexLibraries !project.hasProperty('disablePreDex')
             }
+            kotlinOptions {
+                jvmTarget = JavaVersion.VERSION_1_8.toString()
+            }
         }
 
         dependencies {
