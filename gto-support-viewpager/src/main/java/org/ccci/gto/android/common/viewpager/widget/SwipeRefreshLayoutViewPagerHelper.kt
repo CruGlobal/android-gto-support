@@ -2,10 +2,10 @@ package org.ccci.gto.android.common.viewpager.widget
 
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import androidx.viewpager.widget.ViewPager
-import com.karumi.weak.weakVar
+import com.karumi.weak.weak
 
 class SwipeRefreshLayoutViewPagerHelper(layout: SwipeRefreshLayout? = null) : ViewPager.SimpleOnPageChangeListener() {
-    var swipeRefreshLayout: SwipeRefreshLayout? by weakVar()
+    var swipeRefreshLayout: SwipeRefreshLayout? by weak()
     init {
         swipeRefreshLayout = layout
     }
