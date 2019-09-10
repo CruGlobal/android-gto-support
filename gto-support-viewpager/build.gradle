@@ -9,6 +9,7 @@ dependencies {
 
     api "androidx.viewpager:viewpager:${deps.androidX.viewPager}"
     compileOnly "androidx.fragment:fragment:${deps.androidX.fragment}"
+    compileOnly "androidx.swiperefreshlayout:swiperefreshlayout:${deps.androidX.swipeRefreshLayout}"
 
     implementation 'com.github.Karumi:WeakDelegate:1.0.1'
     implementation "com.jakewharton.timber:timber:${deps.timber}"
