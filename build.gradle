@@ -24,7 +24,7 @@ buildscript {
             powermock           : '2.0.2',
             realm               : '5.15.1',
             realmAdapters       : '3.1.0',
-            retrofit2           : '2.6.1',
+            retrofit2           : '2.6.2',
             snowplow            : '1.2.1',
             thekey              : '3.0.0',
             timber              : '4.7.1'
