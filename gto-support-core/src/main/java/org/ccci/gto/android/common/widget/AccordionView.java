@@ -1,6 +1,7 @@
 package org.ccci.gto.android.common.widget;
 
 import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.TimeInterpolator;
 import android.animation.ValueAnimator;
@@ -15,8 +16,6 @@ import android.view.ViewParent;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
-
-import org.ccci.gto.android.common.animation.SimpleAnimatorListener;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -539,7 +538,7 @@ public class AccordionView extends LinearLayout {
             final Animator animation = buildAnimation(opening, closing);
 
             // listen for completion to reset the current animation
-            animation.addListener(new SimpleAnimatorListener() {
+            animation.addListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(@NonNull final Animator animation) {
                     if (animation == mCurrentAnimation) {
@@ -594,7 +593,7 @@ public class AccordionView extends LinearLayout {
             return animator;
         }
 
-        public abstract static class AnimatorListener extends SimpleAnimatorListener {
+        public abstract static class AnimatorListener extends AnimatorListenerAdapter {
             @NonNull
             protected final ViewHolder mHolder;
             @State
