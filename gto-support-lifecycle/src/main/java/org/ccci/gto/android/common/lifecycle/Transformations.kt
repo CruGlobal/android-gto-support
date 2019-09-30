@@ -41,11 +41,11 @@ fun <IN1, IN2, IN3, OUT> LiveData<IN1>.switchCombineWith(
  * @see androidx.lifecycle.Transformations.switchMap
  */
 @JvmName("switchCombine")
-fun <P, P1, P2, P3, R> LiveData<P>.switchCombineWith(
-    other: LiveData<P1>,
-    other2: LiveData<P2>,
-    other3: LiveData<P3>,
-    mapFunction: (P?, P1?, P2?, P3?) -> LiveData<R>?
+fun <IN1, IN2, IN3, IN4, OUT> LiveData<IN1>.switchCombineWith(
+    other: LiveData<IN2>,
+    other2: LiveData<IN3>,
+    other3: LiveData<IN4>,
+    mapFunction: (IN1?, IN2?, IN3?, IN4?) -> LiveData<OUT>?
 ) = switchCombineWithInt(this, other, other2, other3) { mapFunction(value, other.value, other2.value, other3.value) }
 
 private inline fun <OUT> switchCombineWithInt(
