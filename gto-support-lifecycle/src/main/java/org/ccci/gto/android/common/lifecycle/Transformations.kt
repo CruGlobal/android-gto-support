@@ -82,7 +82,7 @@ fun <IN1, IN2, OUT> LiveData<IN1>.combineWith(other: LiveData<IN2>, mapFunction:
     return result
 }
 
-fun <T> LiveData<out Iterable<T>>.sortedWith(comparator: Comparator<in T>) = map { it?.sortedWith(comparator) }
+fun <T> LiveData<out Iterable<T>>.sortedWith(comparator: Comparator<in T>) = map { it.sortedWith(comparator) }
 
 // Provide Kotlin extensions for existing transformations
 
