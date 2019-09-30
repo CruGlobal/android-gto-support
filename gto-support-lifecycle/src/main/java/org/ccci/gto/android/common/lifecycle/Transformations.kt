@@ -5,7 +5,8 @@ package org.ccci.gto.android.common.lifecycle
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.Observer
-import androidx.lifecycle.Transformations
+import androidx.lifecycle.map
+import androidx.lifecycle.switchMap
 
 /**
  * This method will combine 2 LiveData objects into a new LiveData object by running the {@param mapFunction} on the
@@ -84,10 +85,15 @@ fun <IN1, IN2, OUT> LiveData<IN1>.combineWith(other: LiveData<IN2>, mapFunction:
 fun <T> LiveData<out Iterable<T>>.sortedWith(comparator: Comparator<in T>) = map { it?.sortedWith(comparator) }
 
 // Provide Kotlin extensions for existing transformations
-// TODO: these can be deprecated after Lifecycle 2.1.0 is released
 
-inline fun <IN, OUT> LiveData<IN>.map(crossinline transform: (IN?) -> OUT?): LiveData<OUT> =
-    Transformations.map(this) { transform(it) }
+@Deprecated(
+    "Since v3.1.0, use Lifecycle 2.1.0+ ktx function instead",
+    ReplaceWith("map(transform)", "androidx.lifecycle.map")
+)
+inline fun <IN, OUT> LiveData<IN>.map(crossinline transform: (IN) -> OUT): LiveData<OUT> = map(transform)
 
-inline fun <X, Y> LiveData<X>.flatMap(crossinline transform: (X) -> LiveData<Y>?): LiveData<Y> =
-    Transformations.switchMap(this) { transform(it).orEmpty() }
+@Deprecated(
+    "Since v3.1.0, use Lifecycle 2.1.0+ ktx function instead",
+    ReplaceWith("switchMap(transform)", "androidx.lifecycle.switchMap")
+)
+inline fun <X, Y> LiveData<X>.flatMap(crossinline transform: (X) -> LiveData<Y>): LiveData<Y> = switchMap(transform)
