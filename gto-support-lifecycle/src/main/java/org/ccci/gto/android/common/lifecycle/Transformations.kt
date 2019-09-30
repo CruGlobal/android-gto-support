@@ -74,7 +74,7 @@ private inline fun <OUT> switchCombineWithInt(
  * @see androidx.lifecycle.Transformations.map
  */
 @JvmName("combine")
-fun <IN1, IN2, OUT> LiveData<IN1>.combineWith(other: LiveData<IN2>, mapFunction: (IN1?, IN2?) -> OUT?): LiveData<OUT> {
+fun <IN1, IN2, OUT> LiveData<IN1>.combineWith(other: LiveData<IN2>, mapFunction: (IN1?, IN2?) -> OUT): LiveData<OUT> {
     val result = MediatorLiveData<OUT>()
     val observer = Observer<Any?> { result.value = mapFunction(value, other.value) }
     result.addSource(this, observer)
