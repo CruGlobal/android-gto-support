@@ -6,7 +6,7 @@ import androidx.lifecycle.LiveData
 private sealed class SharedPreferenceLiveData<T>(
     protected val prefs: SharedPreferences,
     protected val key: String,
-    protected val defValue: T?
+    protected val defValue: T
 ) : LiveData<T>() {
     private val listener = SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
         if (key == this.key) value = readValue()
@@ -19,36 +19,36 @@ private sealed class SharedPreferenceLiveData<T>(
 
     override fun onInactive() = prefs.unregisterOnSharedPreferenceChangeListener(listener)
 
-    protected abstract fun readValue(): T?
+    protected abstract fun readValue(): T
 }
 
 private class SharedPreferenceBooleanLiveData(prefs: SharedPreferences, key: String, defValue: Boolean) :
     SharedPreferenceLiveData<Boolean>(prefs, key, defValue) {
-    override fun readValue() = prefs.getBoolean(key, defValue!!)
+    override fun readValue() = prefs.getBoolean(key, defValue)
 }
 
 private class SharedPreferenceFloatLiveData(sharedPrefs: SharedPreferences, key: String, defValue: Float) :
     SharedPreferenceLiveData<Float>(sharedPrefs, key, defValue) {
-    override fun readValue() = prefs.getFloat(key, defValue!!)
+    override fun readValue() = prefs.getFloat(key, defValue)
 }
 
 private class SharedPreferenceIntLiveData(prefs: SharedPreferences, key: String, defValue: Int) :
     SharedPreferenceLiveData<Int>(prefs, key, defValue) {
-    override fun readValue() = prefs.getInt(key, defValue!!)
+    override fun readValue() = prefs.getInt(key, defValue)
 }
 
 private class SharedPreferenceLongLiveData(prefs: SharedPreferences, key: String, defValue: Long) :
     SharedPreferenceLiveData<Long>(prefs, key, defValue) {
-    override fun readValue() = prefs.getLong(key, defValue!!)
+    override fun readValue() = prefs.getLong(key, defValue)
 }
 
 private class SharedPreferenceStringLiveData(sharedPrefs: SharedPreferences, key: String, defValue: String?) :
-    SharedPreferenceLiveData<String>(sharedPrefs, key, defValue) {
+    SharedPreferenceLiveData<String?>(sharedPrefs, key, defValue) {
     override fun readValue(): String? = prefs.getString(key, defValue)
 }
 
 private class SharedPreferenceStringSetLiveData(sharedPrefs: SharedPreferences, key: String, defValue: Set<String>?) :
-    SharedPreferenceLiveData<Set<String>>(sharedPrefs, key, defValue) {
+    SharedPreferenceLiveData<Set<String>?>(sharedPrefs, key, defValue) {
     override fun readValue(): Set<String>? = prefs.getStringSet(key, defValue)
 }
 
@@ -64,8 +64,8 @@ fun SharedPreferences.getIntLiveData(key: String, defValue: Int): LiveData<Int> 
 fun SharedPreferences.getLongLiveData(key: String, defValue: Long): LiveData<Long> =
     SharedPreferenceLongLiveData(this, key, defValue)
 
-fun SharedPreferences.getStringLiveData(key: String, defValue: String?): LiveData<String> =
+fun SharedPreferences.getStringLiveData(key: String, defValue: String?): LiveData<String?> =
     SharedPreferenceStringLiveData(this, key, defValue)
 
-fun SharedPreferences.getStringSetLiveData(key: String, defValue: Set<String>?): LiveData<Set<String>> =
+fun SharedPreferences.getStringSetLiveData(key: String, defValue: Set<String>?): LiveData<Set<String>?> =
     SharedPreferenceStringSetLiveData(this, key, defValue)

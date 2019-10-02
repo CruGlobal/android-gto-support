@@ -5,7 +5,8 @@ package org.ccci.gto.android.common.lifecycle
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.Observer
-import androidx.lifecycle.Transformations
+import androidx.lifecycle.map
+import androidx.lifecycle.switchMap
 
 /**
  * This method will combine 2 LiveData objects into a new LiveData object by running the {@param mapFunction} on the
@@ -15,7 +16,7 @@ import androidx.lifecycle.Transformations
  * @see androidx.lifecycle.Transformations.switchMap
  */
 @JvmName("switchCombine")
-fun <IN1, IN2, OUT> LiveData<IN1>.switchCombineWith(other: LiveData<IN2>, mapFunction: (IN1?, IN2?) -> LiveData<OUT>?) =
+fun <IN1, IN2, OUT> LiveData<IN1>.switchCombineWith(other: LiveData<IN2>, mapFunction: (IN1?, IN2?) -> LiveData<OUT>) =
     switchCombineWithInt(this, other) { mapFunction(value, other.value) }
 
 /**
@@ -29,7 +30,7 @@ fun <IN1, IN2, OUT> LiveData<IN1>.switchCombineWith(other: LiveData<IN2>, mapFun
 fun <IN1, IN2, IN3, OUT> LiveData<IN1>.switchCombineWith(
     other: LiveData<IN2>,
     other2: LiveData<IN3>,
-    mapFunction: (IN1?, IN2?, IN3?) -> LiveData<OUT>?
+    mapFunction: (IN1?, IN2?, IN3?) -> LiveData<OUT>
 ) = switchCombineWithInt(this, other, other2) { mapFunction(value, other.value, other2.value) }
 
 /**
@@ -40,11 +41,11 @@ fun <IN1, IN2, IN3, OUT> LiveData<IN1>.switchCombineWith(
  * @see androidx.lifecycle.Transformations.switchMap
  */
 @JvmName("switchCombine")
-fun <P, P1, P2, P3, R> LiveData<P>.switchCombineWith(
-    other: LiveData<P1>,
-    other2: LiveData<P2>,
-    other3: LiveData<P3>,
-    mapFunction: (P?, P1?, P2?, P3?) -> LiveData<R>?
+fun <IN1, IN2, IN3, IN4, OUT> LiveData<IN1>.switchCombineWith(
+    other: LiveData<IN2>,
+    other2: LiveData<IN3>,
+    other3: LiveData<IN4>,
+    mapFunction: (IN1?, IN2?, IN3?, IN4?) -> LiveData<OUT>
 ) = switchCombineWithInt(this, other, other2, other3) { mapFunction(value, other.value, other2.value, other3.value) }
 
 private inline fun <OUT> switchCombineWithInt(
@@ -53,13 +54,13 @@ private inline fun <OUT> switchCombineWithInt(
 ): LiveData<OUT> {
     val result = MediatorLiveData<OUT>()
     val observer = object : Observer<Any?> {
-        private var source: LiveData<OUT> = emptyLiveData()
+        private var source: LiveData<OUT>? = null
         override fun onChanged(t: Any?) {
             val newSource = mapFunction()
             if (source == newSource) return
-            result.removeSource(source)
-            source = newSource.orEmpty()
-            result.addSource(source) { value: OUT? -> result.value = value }
+            source?.let { result.removeSource(it) }
+            source = newSource
+            source?.let { result.addSource(it) { value: OUT -> result.value = value } }
         }
     }
     input.forEach { result.addSource(it, observer) }
@@ -73,7 +74,7 @@ private inline fun <OUT> switchCombineWithInt(
  * @see androidx.lifecycle.Transformations.map
  */
 @JvmName("combine")
-fun <IN1, IN2, OUT> LiveData<IN1>.combineWith(other: LiveData<IN2>, mapFunction: (IN1?, IN2?) -> OUT?): LiveData<OUT> {
+fun <IN1, IN2, OUT> LiveData<IN1>.combineWith(other: LiveData<IN2>, mapFunction: (IN1?, IN2?) -> OUT): LiveData<OUT> {
     val result = MediatorLiveData<OUT>()
     val observer = Observer<Any?> { result.value = mapFunction(value, other.value) }
     result.addSource(this, observer)
@@ -81,13 +82,18 @@ fun <IN1, IN2, OUT> LiveData<IN1>.combineWith(other: LiveData<IN2>, mapFunction:
     return result
 }
 
-fun <T> LiveData<out Iterable<T>>.sortedWith(comparator: Comparator<in T>) = map { it?.sortedWith(comparator) }
+fun <T> LiveData<out Iterable<T>>.sortedWith(comparator: Comparator<in T>) = map { it.sortedWith(comparator) }
 
 // Provide Kotlin extensions for existing transformations
-// TODO: these can be deprecated after Lifecycle 2.1.0 is released
 
-inline fun <IN, OUT> LiveData<IN>.map(crossinline transform: (IN?) -> OUT?): LiveData<OUT> =
-    Transformations.map(this) { transform(it) }
+@Deprecated(
+    "Since v3.1.0, use Lifecycle 2.1.0+ ktx function instead",
+    ReplaceWith("map(transform)", "androidx.lifecycle.map")
+)
+inline fun <IN, OUT> LiveData<IN>.map(crossinline transform: (IN) -> OUT): LiveData<OUT> = map(transform)
 
-inline fun <X, Y> LiveData<X>.flatMap(crossinline transform: (X) -> LiveData<Y>?): LiveData<Y> =
-    Transformations.switchMap(this) { transform(it).orEmpty() }
+@Deprecated(
+    "Since v3.1.0, use Lifecycle 2.1.0+ ktx function instead",
+    ReplaceWith("switchMap(transform)", "androidx.lifecycle.switchMap")
+)
+inline fun <X, Y> LiveData<X>.flatMap(crossinline transform: (X) -> LiveData<Y>): LiveData<Y> = switchMap(transform)
