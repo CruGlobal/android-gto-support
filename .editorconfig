@@ -2,4 +2,5 @@
 insert_final_newline=true
 
 [*.{kt,kts}]
+disabled_rules=import-ordering
 max_line_length = 120
