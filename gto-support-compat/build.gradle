@@ -1,4 +1,0 @@
-dependencies {
-    testImplementation "junit:junit:${deps.junit}"
-    testImplementation "com.google.guava:guava:${deps.guava}"
-}

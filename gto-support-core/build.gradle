@@ -20,7 +20,5 @@ dependencies {
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:${deps.androidX.swipeRefreshLayout}"
     compileOnly 'androidx.cursoradapter:cursoradapter:1.0.0'
 
-    testImplementation "junit:junit:${deps.junit}"
-    testImplementation "com.google.guava:guava:${deps.guava}"
     androidTestImplementation "org.hamcrest:hamcrest:${deps.hamcrest}"
 }

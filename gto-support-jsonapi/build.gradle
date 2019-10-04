@@ -11,6 +11,4 @@ dependencies {
     androidTestImplementation "net.javacrumbs.json-unit:json-unit:${deps.jsonUnit}"
     androidTestImplementation "net.javacrumbs.json-unit:json-unit-fluent:${deps.jsonUnit}"
     androidTestImplementation "com.google.code.gson:gson:${deps.gson}"
-
-    testImplementation "junit:junit:${deps.junit}"
 }

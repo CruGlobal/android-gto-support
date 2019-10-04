@@ -1,10 +1,9 @@
 package org.ccci.gto.android.common.util;
 
-import com.google.common.collect.ImmutableList;
-
 import org.junit.Test;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -23,8 +22,8 @@ public class CollectionUtilsTest {
 
     @Test
     public void verifyNewCollectionSupported() throws Exception {
-        for (final Class<? extends Collection> type : ImmutableList
-                .of(Collection.class, List.class, ArrayList.class, LinkedList.class, Set.class, HashSet.class)) {
+        for (final Class<? extends Collection> type : Arrays
+                .asList(Collection.class, List.class, ArrayList.class, LinkedList.class, Set.class, HashSet.class)) {
             assertTrue(type.isInstance(newCollection(type)));
         }
     }
