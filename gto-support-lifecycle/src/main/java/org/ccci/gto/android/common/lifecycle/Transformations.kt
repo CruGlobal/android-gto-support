@@ -62,7 +62,7 @@ private inline fun <OUT> switchCombineWithInt(
             if (source == newSource) return
             source?.let { result.removeSource(it) }
             source = newSource
-            source?.let { result.addSource(it) { value: OUT -> result.value = value } }
+            source?.let { result.addSource(it, result::setValue) }
         }
     }
     input.forEach { result.addSource(it, observer) }
