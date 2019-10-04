@@ -4,4 +4,6 @@ dependencies {
 
     // Data Binding adapter dependencies
     compileOnly "androidx.databinding:databinding-runtime:${deps.gradleAndroidPlugin}"
+
+    testImplementation "androidx.arch.core:core-testing:${deps.androidX.arch}"
 }
