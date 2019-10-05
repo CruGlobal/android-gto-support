@@ -52,7 +52,7 @@ fun <IN1, IN2, IN3, IN4, OUT> LiveData<IN1>.switchCombineWith(
 
 private inline fun <OUT> switchCombineWithInt(
     vararg input: LiveData<*>,
-    crossinline mapFunction: () -> LiveData<out OUT>?
+    crossinline mapFunction: () -> LiveData<out OUT>
 ): LiveData<OUT> {
     val result = MediatorLiveData<OUT>()
     val observer = object : Observer<Any?> {
