@@ -8,7 +8,7 @@ buildscript {
             eventbus            : '3.1.1',
             facebookStetho      : '1.5.1',
             gradleAndroidPlugin : '3.5.1',
-            gson                : '2.8.5',
+            gson                : '2.8.6',
             guava               : '28.1-android',
             hamcrest            : '2.1',
             jetbrainsAnnotations: '17.0.0',
