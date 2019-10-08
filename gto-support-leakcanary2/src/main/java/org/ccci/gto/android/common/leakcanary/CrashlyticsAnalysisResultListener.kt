@@ -1,23 +1,30 @@
 package org.ccci.gto.android.common.leakcanary
 
 import com.crashlytics.android.Crashlytics
+import leakcanary.DefaultOnHeapAnalyzedListener
 import leakcanary.OnHeapAnalyzedListener
+import org.ccci.gto.android.common.leakcanary.util.asFakeException
 import shark.HeapAnalysis
 import shark.HeapAnalysisSuccess
 
 private const val LOG_LIMIT = 64 * 1024
 
 class CrashlyticsOnHeapAnalyzedListener : OnHeapAnalyzedListener {
-    override fun onHeapAnalyzed(heapAnalysis: HeapAnalysis) {
-        if (heapAnalysis !is HeapAnalysisSuccess) return
-        if (heapAnalysis.allLeaks.isEmpty()) return
+    private val defaultListener = DefaultOnHeapAnalyzedListener.create()
 
-        // log the memory leak to Crashlytics
-        Crashlytics.log("*** Memory Leak ***")
-        heapAnalysis.toString().take(LOG_LIMIT).lines().asSequence().filterNot { it.isEmpty() }.forEach {
-            Crashlytics.log(it)
+    override fun onHeapAnalyzed(heapAnalysis: HeapAnalysis) {
+        if (heapAnalysis is HeapAnalysisSuccess) {
+            heapAnalysis.allLeaks.forEach { leak ->
+                // log the memory leak to Crashlytics
+                Crashlytics.log("*** Memory Leak ***")
+                leak.leakTrace.toString().take(LOG_LIMIT).lines().asSequence().filterNot { it.isEmpty() }.forEach {
+                    Crashlytics.log(it)
+                }
+
+                Crashlytics.logException(leak.asFakeException())
+            }
         }
 
-        Crashlytics.logException(RuntimeException("Memory Leak"))
+        defaultListener.onHeapAnalyzed(heapAnalysis)
     }
 }
