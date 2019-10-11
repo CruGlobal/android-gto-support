@@ -29,6 +29,16 @@ public abstract class BaseJsonApiParams<T extends BaseJsonApiParams> extends For
     protected abstract T self();
 
     @NonNull
+    public final T addAll(@NonNull final Map<String, String>... params) {
+        for (final Map<String, String> param : params) {
+            if (param != null) {
+                putAll(param);
+            }
+        }
+        return self();
+    }
+
+    @NonNull
     public final T include(final String... paths) {
         put(PARAM_INCLUDE, CSV_JOINER.join(Strings.emptyToNull(get(PARAM_INCLUDE)), null, (Object[]) paths));
         return self();
@@ -47,11 +57,13 @@ public abstract class BaseJsonApiParams<T extends BaseJsonApiParams> extends For
         return self();
     }
 
+    @NonNull
     public final T clearFields(@NonNull final String type) {
         remove(PARAM_FIELDS + "[" + type + "]");
         return self();
     }
 
+    @NonNull
     public final T sort(@NonNull final String... keys) {
         put(PARAM_SORT, CSV_JOINER.join(keys));
         return self();
