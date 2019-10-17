@@ -10,7 +10,7 @@ buildscript {
             gradleAndroidPlugin : '3.5.1',
             gson                : '2.8.6',
             guava               : '28.1-android',
-            hamcrest            : '2.1',
+            hamcrest            : '2.2',
             jetbrainsAnnotations: '17.0.0',
             jsonUnit            : '1.31.1',
             junit               : '4.12',
