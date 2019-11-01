@@ -44,7 +44,7 @@ public class ChildHeightAwareViewPager extends HackyViewPager {
                 // calculate the max height for all the (current) children
                 final int paddingVertical = getPaddingTop() + getPaddingBottom();
                 for (int i = 0; i < count; i++) {
-                    final View child = getChildAt(0);
+                    final View child = getChildAt(i);
                     height = Math.max(height, child.getMeasuredHeight() + paddingVertical);
                 }
 
