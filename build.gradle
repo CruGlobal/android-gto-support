@@ -7,7 +7,7 @@ buildscript {
             crashlytics         : '2.10.1',
             eventbus            : '3.1.1',
             facebookStetho      : '1.5.1',
-            gradleAndroidPlugin : '3.5.2',
+            gradleAndroidPlugin : '3.5.3',
             gson                : '2.8.6',
             guava               : '28.1-android',
             hamcrest            : '2.2',
