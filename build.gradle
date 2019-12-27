@@ -9,7 +9,7 @@ buildscript {
             facebookStetho      : '1.5.1',
             gradleAndroidPlugin : '3.5.3',
             gson                : '2.8.6',
-            guava               : '28.1-android',
+            guava               : '28.2-android',
             hamcrest            : '2.2',
             jetbrainsAnnotations: '18.0.0',
             jsonUnit            : '1.31.1',
