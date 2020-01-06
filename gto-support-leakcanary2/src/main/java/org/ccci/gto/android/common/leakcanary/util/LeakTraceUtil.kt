@@ -1,16 +1,20 @@
 package org.ccci.gto.android.common.leakcanary.util
 
-import shark.Leak
+import shark.LeakTrace
 
-fun Leak.asFakeException(): Exception {
-    val firstElement = leakTrace.elements[0]
+fun LeakTrace.asFakeException(): Exception {
+    val firstElement = referencePath[0]
 
     return RuntimeException(
-        "$classSimpleName leak from ${firstElement.classSimpleName} " +
-                "(holder=${firstElement.holder}, type=${firstElement.reference?.type})"
+        "${leakingObject.classSimpleName} leak from ${firstElement.originObject.classSimpleName} " +
+                "(name=${firstElement.referenceName}, type=${firstElement.referenceType})"
     ).also { exception ->
-        exception.stackTrace = leakTrace.elements
-            .map { StackTraceElement(it.className, it.reference?.name ?: "leaking", "${it.classSimpleName}.java", 42) }
+        exception.stackTrace = referencePath
+            .map {
+                StackTraceElement(
+                    it.originObject.className, it.referenceName, "${it.originObject.classSimpleName}.java", 42
+                )
+            }
             .toTypedArray()
     }
 }

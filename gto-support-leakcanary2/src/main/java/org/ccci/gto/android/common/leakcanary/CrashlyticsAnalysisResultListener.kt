@@ -14,10 +14,10 @@ class CrashlyticsOnHeapAnalyzedListener : OnHeapAnalyzedListener {
 
     override fun onHeapAnalyzed(heapAnalysis: HeapAnalysis) {
         if (heapAnalysis is HeapAnalysisSuccess) {
-            heapAnalysis.allLeaks.forEach { leak ->
+            heapAnalysis.allLeaks.asSequence().flatMap { it.leakTraces.asSequence() }.forEach { leak ->
                 // log the memory leak to Crashlytics
                 Crashlytics.log("*** Memory Leak ***")
-                leak.leakTrace.toString().take(LOG_LIMIT).lines().asSequence().filterNot { it.isEmpty() }.forEach {
+                leak.toString().take(LOG_LIMIT).lines().asSequence().filterNot { it.isEmpty() }.forEach {
                     Crashlytics.log(it)
                 }
 
