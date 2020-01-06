@@ -3,4 +3,6 @@ dependencies {
     implementation project(':gto-support-util')
 
     implementation "androidx.appcompat:appcompat:${deps.androidX.appCompat}"
+
+    implementation "com.jakewharton.timber:timber:${deps.timber}"
 }

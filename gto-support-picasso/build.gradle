@@ -7,6 +7,7 @@ android {
 dependencies {
     implementation project(':gto-support-base')
     implementation project(':gto-support-compat')
+    implementation project(':gto-support-util')
 
     compileOnly "androidx.appcompat:appcompat:${deps.androidX.appCompat}"
 
