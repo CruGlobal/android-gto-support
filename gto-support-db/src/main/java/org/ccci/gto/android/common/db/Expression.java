@@ -4,8 +4,8 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.Pair;
 
-import org.ccci.gto.android.common.compat.os.ParcelCompat;
 import org.ccci.gto.android.common.util.ArrayUtils;
+import org.ccci.gto.android.common.util.os.ParcelUtils;
 
 import java.util.Arrays;
 
@@ -325,7 +325,7 @@ public abstract class Expression implements Parcelable {
         Literal(@NonNull final Parcel in, @Nullable final ClassLoader loader) {
             mStrValue = in.readString();
             mNumValue = (Number) in.readValue(loader);
-            mConstant = ParcelCompat.readBoolean(in);
+            mConstant = ParcelUtils.readBoolean(in);
         }
 
         @Override
@@ -371,7 +371,7 @@ public abstract class Expression implements Parcelable {
             super.writeToParcel(out, flags);
             out.writeString(mStrValue);
             out.writeValue(mNumValue);
-            ParcelCompat.writeBoolean(out, mConstant);
+            ParcelUtils.writeBoolean(out, mConstant);
         }
 
         public static final Creator<Literal> CREATOR = new LiteralCreator();
