@@ -1,7 +1,5 @@
 package org.ccci.gto.android.common.api;
 
-import androidx.annotation.NonNull;
-
 import com.google.common.io.Closer;
 
 import org.ccci.gto.android.common.api.AbstractApi.Request.MediaType;
@@ -15,6 +13,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import androidx.annotation.NonNull;
+
+/**
+ * @deprecated Since v3.3.0, use gto-support-api-okhttp3 for building API clients instead.
+ */
+@Deprecated
 final class MultipartFormOutputWriter implements Closeable {
     private static final String PREFIX = "--";
     private static final String NEWLINE = "\r\n";
