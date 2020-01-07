@@ -3,26 +3,27 @@ package org.ccci.gto.android.common.api
 import android.content.SharedPreferences
 import java.util.Locale
 
-class TheKeySession : Session {
-    private val guid: String?
+class TheKeySession private constructor(
+    prefs: SharedPreferences?,
+    id: String?,
+    guid: String?,
+    baseAttrName: String
+) : Session(prefs = prefs, id = id, baseAttrName = guid.sanitizeGuid(".") + baseAttrName) {
+    private val guid = guid?.sanitizeGuid()
 
     @JvmOverloads
     constructor(
         id: String?,
         guid: String?,
         baseAttrName: String = PREF_SESSION_BASE_NAME
-    ) : super(id, guid.sanitizeGuid(".") + baseAttrName) {
-        this.guid = guid?.sanitizeGuid()
-    }
+    ) : this(prefs = null, id = id, guid = guid, baseAttrName = baseAttrName)
 
     @JvmOverloads
     constructor(
         prefs: SharedPreferences,
         guid: String?,
         baseAttrName: String = PREF_SESSION_BASE_NAME
-    ) : super(prefs, guid.sanitizeGuid(".") + baseAttrName) {
-        this.guid = guid?.sanitizeGuid()
-    }
+    ) : this(prefs = prefs, id = null, guid = guid, baseAttrName = baseAttrName)
 
     override fun isValid() = super.isValid() && guid != null
 
