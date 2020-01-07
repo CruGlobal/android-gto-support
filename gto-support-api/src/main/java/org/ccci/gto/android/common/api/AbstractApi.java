@@ -3,9 +3,6 @@ package org.ccci.gto.android.common.api;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.Uri;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.annotation.WorkerThread;
 
 import com.google.common.io.Closer;
 
@@ -32,6 +29,14 @@ import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.WorkerThread;
+
+/**
+ * @deprecated Since v3.3.0, use gto-support-api-okhttp3 for building API clients instead.
+ */
+@Deprecated
 public abstract class AbstractApi<R extends Request<C, S>, C extends ExecutionContext<S>, S extends Session> {
     private static final int DEFAULT_ATTEMPTS = 3;
 

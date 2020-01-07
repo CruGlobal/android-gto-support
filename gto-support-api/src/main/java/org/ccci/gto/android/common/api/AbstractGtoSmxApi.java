@@ -3,9 +3,6 @@ package org.ccci.gto.android.common.api;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.Uri;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.annotation.WorkerThread;
 
 import org.ccci.gto.android.common.api.AbstractApi.Request.MediaType;
 import org.ccci.gto.android.common.api.AbstractGtoSmxApi.Request;
@@ -16,11 +13,18 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.WorkerThread;
 import me.thekey.android.TheKey;
 import me.thekey.android.exception.TheKeySocketException;
 
 import static java.net.HttpURLConnection.HTTP_OK;
 
+/**
+ * @deprecated Since v3.3.0, use gto-support-api-okhttp3 for building API clients instead.
+ */
+@Deprecated
 public abstract class AbstractGtoSmxApi
         extends AbstractTheKeyApi<Request, ExecutionContext<TheKeySession>, TheKeySession> {
     private static final String PARAM_APPVERSION = "_appVersion";

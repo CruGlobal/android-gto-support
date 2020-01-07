@@ -3,8 +3,6 @@ package org.ccci.gto.android.common.api;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.Uri;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 import org.ccci.gto.android.common.api.AbstractTheKeyApi.ExecutionContext;
 import org.ccci.gto.android.common.api.AbstractTheKeyApi.Request;
@@ -13,10 +11,16 @@ import org.ccci.gto.android.common.util.HttpHeaderUtils;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import me.thekey.android.TheKey;
 
 import static java.net.HttpURLConnection.HTTP_UNAUTHORIZED;
 
+/**
+ * @deprecated Since v3.3.0, use gto-support-api-okhttp3 for building API clients instead.
+ */
+@Deprecated
 public abstract class AbstractTheKeyApi<R extends Request<C, S>, C extends ExecutionContext<S>, S extends TheKeySession>
         extends AbstractApi<R, C, S> {
     private static final String PREF_CACHED_SERVICE = "service";
