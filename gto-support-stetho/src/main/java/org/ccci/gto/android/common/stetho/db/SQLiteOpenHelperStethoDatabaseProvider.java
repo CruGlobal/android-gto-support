@@ -4,7 +4,6 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.os.Build;
 
 import com.facebook.stetho.inspector.database.DatabaseConnectionProvider;
 import com.facebook.stetho.inspector.database.DatabaseFilesProvider;
@@ -28,14 +27,7 @@ public class SQLiteOpenHelperStethoDatabaseProvider implements DatabaseFilesProv
         // create an indexed map of databases
         mDatabases = new HashMap<>(helpers.length);
         for (final SQLiteOpenHelper helper : helpers) {
-            final File file;
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
-                file = new File(helper.getDatabaseName());
-            } else {
-                file = new File(helper.getClass().toString());
-            }
-
-            mDatabases.put(file, helper);
+            mDatabases.put(new File(helper.getDatabaseName()), helper);
         }
 
         // generate sorted list of databases
