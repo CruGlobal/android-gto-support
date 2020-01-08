@@ -25,7 +25,7 @@ import androidx.collection.SimpleArrayMap;
 import static android.database.sqlite.SQLiteDatabase.CONFLICT_NONE;
 import static org.ccci.gto.android.common.util.database.CursorUtils.getLong;
 
-public abstract class AbstractDao {
+public abstract class AbstractDao implements Dao {
     public static final String ARG_DISTINCT = AbstractDao.class.getName() + ".ARG_DISTINCT";
     public static final String ARG_JOINS = AbstractDao.class.getName() + ".ARG_JOINS";
     public static final String ARG_PROJECTION = AbstractDao.class.getName() + ".ARG_PROJECTION";
@@ -154,6 +154,7 @@ public abstract class AbstractDao {
     }
 
     @NonNull
+    @Override
     @WorkerThread
     public final Cursor getCursor(@NonNull final Query<?> query) {
         // prefix projection and orderBy when we have joins
@@ -256,6 +257,7 @@ public abstract class AbstractDao {
     }
 
     @NonNull
+    @Override
     @WorkerThread
     public final <T> List<T> get(@NonNull final Query<T> query) {
         // load all rows from the cursor
@@ -275,6 +277,7 @@ public abstract class AbstractDao {
     }
 
     @Nullable
+    @Override
     @WorkerThread
     public final <T> T find(@NonNull final Class<T> clazz, @NonNull final Object... key) {
         return find(clazz, getPrimaryKeyWhere(clazz, key));
