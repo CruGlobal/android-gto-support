@@ -79,5 +79,5 @@ class LiveDataRegistry {
     }
 }
 
-fun <T> Query<T>.asLiveData(dao: LiveDataDao) = dao.getLiveData(this)
+fun <T> Query<T>.getAsLiveData(dao: LiveDataDao) = dao.getLiveData(this)
 fun <T> Query<T>.getCursorAsLiveData(dao: LiveDataDao) = dao.getCursorLiveData(this)
