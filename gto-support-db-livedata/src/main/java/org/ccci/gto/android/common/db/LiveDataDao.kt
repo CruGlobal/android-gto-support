@@ -2,12 +2,14 @@ package org.ccci.gto.android.common.db
 
 import android.database.Cursor
 import androidx.annotation.MainThread
+import androidx.annotation.RestrictTo
 import androidx.collection.SimpleArrayMap
 import androidx.lifecycle.ComputableLiveData
 import androidx.lifecycle.LiveData
 import java.util.WeakHashMap
 
 interface LiveDataDao : Dao {
+    @get:RestrictTo(RestrictTo.Scope.SUBCLASSES)
     val liveDataRegistry: LiveDataRegistry
 
     @MainThread
