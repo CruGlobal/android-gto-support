@@ -20,6 +20,3 @@ interface Dao {
     @get:RestrictTo(RestrictTo.Scope.LIBRARY_GROUP, RestrictTo.Scope.SUBCLASSES)
     val backgroundExecutor: Executor get() = AsyncTask.THREAD_POOL_EXECUTOR
 }
-
-@RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
-inline fun Dao.executeInBackground(crossinline task: () -> Unit) = executeInBackground(Runnable { task() })

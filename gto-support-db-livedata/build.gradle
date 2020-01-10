@@ -1,5 +1,6 @@
 dependencies {
     api project(':gto-support-db')
 
+    implementation "androidx.collection:collection:${deps.androidX.collection}"
     api "androidx.lifecycle:lifecycle-livedata:${deps.androidX.lifecycle}"
 }

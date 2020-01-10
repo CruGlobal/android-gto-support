@@ -8,15 +8,18 @@ import org.ccci.gto.android.common.util.ArrayUtils;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RestrictTo;
 
 public final class Join<S, T> implements Parcelable {
     public static final Join[] NO_JOINS = new Join[0];
 
     @Nullable
-    private final Join<S, ?> mBase;
+    @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
+    final Join<S, ?> mBase;
 
     @NonNull
-    private final Table<T> mTarget;
+    @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
+    final Table<T> mTarget;
 
     @NonNull
     private final String mType;
