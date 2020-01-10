@@ -30,6 +30,7 @@ interface LiveDataDao : Dao {
         .also { with(liveDataRegistry) { it.registerFor(query) } }
         .liveData
 
+    @MainThread
     fun invalidateLiveData(clazz: Class<*>) = liveDataRegistry.invalidate(clazz)
 }
 
@@ -53,15 +54,14 @@ private class DaoGetCursorComputableLiveData<T>(dao: LiveDataDao, private val qu
 }
 // endregion DaoComputableLiveData
 
+@MainThread
 class LiveDataRegistry {
     private val registry: SimpleArrayMap<Class<*>, MutableMap<ComputableLiveData<*>, Unit>> = SimpleArrayMap()
 
-    @MainThread
     internal fun DaoComputableLiveData<*>.registerFor(clazz: Class<*>) {
         (registry[clazz] ?: WeakHashMap<ComputableLiveData<*>, Unit>().also { registry.put(clazz, it) })[this] = Unit
     }
 
-    @MainThread
     internal fun DaoComputableLiveData<*>.registerFor(query: Query<*>) {
         registerFor(query.mTable)
         query.mJoins.forEach { registerFor(it) }
