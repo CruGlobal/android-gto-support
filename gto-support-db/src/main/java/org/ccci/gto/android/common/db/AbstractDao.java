@@ -4,148 +4,26 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.os.AsyncTask;
 import android.text.TextUtils;
 import android.util.Pair;
 
-import org.ccci.gto.android.common.compat.util.LocaleCompat;
 import org.ccci.gto.android.common.db.CommonTables.LastSyncTable;
 import org.ccci.gto.android.common.db.Expression.Field;
 import org.ccci.gto.android.common.util.ArrayUtils;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
-import java.util.concurrent.Executor;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.WorkerThread;
-import androidx.collection.SimpleArrayMap;
 
 import static android.database.sqlite.SQLiteDatabase.CONFLICT_NONE;
 import static org.ccci.gto.android.common.util.database.CursorUtils.getLong;
 
-public abstract class AbstractDao implements Dao {
-    public static final String ARG_DISTINCT = AbstractDao.class.getName() + ".ARG_DISTINCT";
-    public static final String ARG_JOINS = AbstractDao.class.getName() + ".ARG_JOINS";
-    public static final String ARG_PROJECTION = AbstractDao.class.getName() + ".ARG_PROJECTION";
-    public static final String ARG_WHERE = AbstractDao.class.getName() + ".ARG_WHERE";
-    public static final String ARG_ORDER_BY = AbstractDao.class.getName() + ".ARG_ORDER_BY";
-
-    @NonNull
-    private final SQLiteOpenHelper mDbHelper;
-    private final SimpleArrayMap<Class<?>, TableType> mTableTypes = new SimpleArrayMap<>();
-
+public abstract class AbstractDao extends AbstractDao2 {
     protected AbstractDao(@NonNull final SQLiteOpenHelper helper) {
-        mDbHelper = helper;
-
-        registerType(LastSyncTable.class, LastSyncTable.TABLE_NAME, null, null, LastSyncTable.SQL_WHERE_PRIMARY_KEY);
-    }
-
-    @NonNull
-    @Override
-    public Executor getBackgroundExecutor() {
-        return AsyncTask.THREAD_POOL_EXECUTOR;
-    }
-
-    @WorkerThread
-    protected final SQLiteDatabase getReadableDatabase() {
-        return mDbHelper.getReadableDatabase();
-    }
-
-    @WorkerThread
-    protected final SQLiteDatabase getWritableDatabase() {
-        return mDbHelper.getWritableDatabase();
-    }
-
-    protected final <T> void registerType(@NonNull final Class<T> clazz, @NonNull final String table,
-                                          @Nullable final String[] projection, @Nullable final Mapper<T> mapper,
-                                          @Nullable final Expression pkWhere) {
-        mTableTypes.put(clazz, new TableType(table, projection, mapper, pkWhere));
-    }
-
-    @NonNull
-    protected String getTable(@NonNull final Class<?> clazz) {
-        // check for a registered type
-        final TableType type = mTableTypes.get(clazz);
-        if (type != null) {
-            return type.getTable();
-        }
-
-        throw new IllegalArgumentException("invalid class specified: " + clazz.getName());
-    }
-
-    @NonNull
-    public String[] getFullProjection(@NonNull final Class<?> clazz) {
-        // check for a registered type
-        final TableType type = mTableTypes.get(clazz);
-        if (type != null && type.getProjection() != null) {
-            return type.getProjection();
-        }
-
-        throw new IllegalArgumentException("invalid class specified: " + clazz.getName());
-    }
-
-    @NonNull
-    public final String[] getFullProjection(@NonNull final Table<?> table) {
-        return getFullProjection(table.mType);
-    }
-
-    @NonNull
-    protected Expression getPrimaryKeyWhere(@NonNull final Class<?> clazz) {
-        // check for a registered type
-        final TableType type = mTableTypes.get(clazz);
-        if (type != null && type.getPrimaryWhere() != null) {
-            return type.getPrimaryWhere();
-        }
-
-        throw new IllegalArgumentException("invalid class specified: " + clazz.getName());
-    }
-
-    @NonNull
-    protected Expression getPrimaryKeyWhere(@NonNull final Class<?> clazz, @NonNull final Object... key) {
-        return getPrimaryKeyWhere(clazz).args(key);
-    }
-
-    @NonNull
-    protected Expression getPrimaryKeyWhere(@NonNull final Object obj) {
-        throw new IllegalArgumentException("unsupported object: " + obj.getClass());
-    }
-
-    @NonNull
-    @SuppressWarnings("unchecked")
-    protected <T> Mapper<T> getMapper(@NonNull final Class<T> clazz) {
-        // check for a registered type
-        final TableType type = mTableTypes.get(clazz);
-        if (type != null && type.getMapper() != null) {
-            return (Mapper<T>) type.getMapper();
-        }
-
-        throw new IllegalArgumentException("invalid class specified");
-    }
-
-    @NonNull
-    public static String[] bindValues(@NonNull final Object... raw) {
-        final String[] values = new String[raw.length];
-        for (int i = 0; i < raw.length; i++) {
-            if (raw[i] instanceof String) {
-                values[i] = (String) raw[i];
-            } else if (raw[i] instanceof Boolean) {
-                values[i] = ((Boolean) raw[i]) ? "1" : "0";
-            } else if (raw[i] instanceof Date) {
-                values[i] = Long.toString(((Date) raw[i]).getTime());
-            } else if (raw[i] instanceof Locale) {
-                values[i] = LocaleCompat.toLanguageTag((Locale) raw[i]);
-            } else {
-                if (raw[i] == null) {
-                    throw new IllegalArgumentException("Bind Values cannot be null");
-                }
-                values[i] = raw[i].toString();
-            }
-        }
-        return values;
+        super(helper);
     }
 
     @NonNull
@@ -217,7 +95,7 @@ public abstract class AbstractDao implements Dao {
         final String limit = query.buildSqlLimit();
 
         // execute actual query
-        final SQLiteDatabase db = mDbHelper.getReadableDatabase();
+        final SQLiteDatabase db = getReadableDatabase();
         final Transaction tx = newTransaction(db);
         final Cursor c;
         try {
@@ -332,7 +210,7 @@ public abstract class AbstractDao implements Dao {
         final ContentValues values = getMapper(clazz).toContentValues(obj, this.getFullProjection(clazz));
 
         // execute insert
-        final SQLiteDatabase db = mDbHelper.getWritableDatabase();
+        final SQLiteDatabase db = getWritableDatabase();
         return inNonExclusiveTransaction(db, () -> db.insertWithOnConflict(table, null, values, conflictAlgorithm));
     }
 
@@ -437,7 +315,7 @@ public abstract class AbstractDao implements Dao {
                 where != null ? where.buildSql(this) : Pair.<String, String[]>create(null, null);
 
         // execute update
-        final SQLiteDatabase db = mDbHelper.getWritableDatabase();
+        final SQLiteDatabase db = getWritableDatabase();
         return inNonExclusiveTransaction(db, () -> db.updateWithOnConflict(table, values, builtWhere.first,
                                                                            builtWhere.second, conflictAlgorithm));
     }
@@ -482,7 +360,7 @@ public abstract class AbstractDao implements Dao {
         final String table = getTable(clazz);
         final Pair<String, String[]> builtWhere =
                 where != null ? where.buildSql(this) : Pair.<String, String[]>create(null, null);
-        final SQLiteDatabase db = mDbHelper.getWritableDatabase();
+        final SQLiteDatabase db = getWritableDatabase();
         inNonExclusiveTransaction(db, () -> db.delete(table, builtWhere.first, builtWhere.second));
     }
 
@@ -512,7 +390,7 @@ public abstract class AbstractDao implements Dao {
     @NonNull
     @WorkerThread
     public final Transaction newTransaction() {
-        return newTransaction(mDbHelper.getWritableDatabase());
+        return newTransaction(getWritableDatabase());
     }
 
     @NonNull
