@@ -72,6 +72,46 @@ abstract class AbstractDao2(private val helper: SQLiteOpenHelper) : Dao {
         ?: throw IllegalArgumentException("invalid class specified: ${clazz.name}")
     // endregion Registered Types
 
+    // region Transaction Management
+    @WorkerThread
+    fun newTransaction() = newTransaction(writableDatabase)
+
+    @WorkerThread
+    protected fun newTransaction(db: SQLiteDatabase) = Transaction.newTransaction(db)
+
+    @WorkerThread
+    fun beginTransaction() = newTransaction().beginTransaction()
+
+    @WorkerThread
+    fun <T, X : Throwable?> inTransaction(closure: Closure<T, X>): T = inTransaction(writableDatabase, true, closure)
+
+    @WorkerThread
+    fun <T, X : Throwable?> inNonExclusiveTransaction(closure: Closure<T, X>): T =
+        inTransaction(writableDatabase, false, closure)
+
+    @WorkerThread
+    fun <T, X : Throwable?> inNonExclusiveTransaction(db: SQLiteDatabase, closure: Closure<T, X>): T =
+        inTransaction(db, false, closure)
+
+    @WorkerThread
+    protected fun <T, X : Throwable?> inTransaction(
+        db: SQLiteDatabase,
+        exclusive: Boolean = true,
+        closure: Closure<T, X>
+    ): T {
+        with(newTransaction(db)) {
+            return try {
+                beginTransaction(exclusive)
+                val result = closure.run()
+                setTransactionSuccessful()
+                result
+            } finally {
+                endTransaction().recycle()
+            }
+        }
+    }
+    // endregion Transaction Management
+
     // region LastSync tracking
     init {
         registerType(
