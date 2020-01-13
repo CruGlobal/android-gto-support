@@ -40,11 +40,6 @@ public final class Transaction implements Closeable {
     }
 
     @NonNull
-    public static Transaction begin(@NonNull final SQLiteDatabase db) {
-        return newTransaction(db).beginTransaction(true);
-    }
-
-    @NonNull
     public Transaction begin() {
         return beginTransaction(true);
     }
