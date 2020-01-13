@@ -22,7 +22,7 @@ public final class Transaction implements Closeable {
 
     private static final Pools.Pool<Transaction> POOL = new Pools.SynchronizedPool<>(10);
 
-    public Transaction(@NonNull final SQLiteDatabase db) {
+    private Transaction(@NonNull final SQLiteDatabase db) {
         mDb = db;
     }
 
