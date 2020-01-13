@@ -71,7 +71,7 @@ public abstract class AbstractDao implements Dao {
         // check for a registered type
         final TableType type = mTableTypes.get(clazz);
         if (type != null) {
-            return type.mTable;
+            return type.getTable();
         }
 
         throw new IllegalArgumentException("invalid class specified: " + clazz.getName());
@@ -81,8 +81,8 @@ public abstract class AbstractDao implements Dao {
     public String[] getFullProjection(@NonNull final Class<?> clazz) {
         // check for a registered type
         final TableType type = mTableTypes.get(clazz);
-        if (type != null && type.mProjection != null) {
-            return type.mProjection;
+        if (type != null && type.getProjection() != null) {
+            return type.getProjection();
         }
 
         throw new IllegalArgumentException("invalid class specified: " + clazz.getName());
@@ -97,8 +97,8 @@ public abstract class AbstractDao implements Dao {
     protected Expression getPrimaryKeyWhere(@NonNull final Class<?> clazz) {
         // check for a registered type
         final TableType type = mTableTypes.get(clazz);
-        if (type != null && type.mPrimaryWhere != null) {
-            return type.mPrimaryWhere;
+        if (type != null && type.getPrimaryWhere() != null) {
+            return type.getPrimaryWhere();
         }
 
         throw new IllegalArgumentException("invalid class specified: " + clazz.getName());
@@ -119,8 +119,8 @@ public abstract class AbstractDao implements Dao {
     protected <T> Mapper<T> getMapper(@NonNull final Class<T> clazz) {
         // check for a registered type
         final TableType type = mTableTypes.get(clazz);
-        if (type != null && type.mMapper != null) {
-            return (Mapper<T>) type.mMapper;
+        if (type != null && type.getMapper() != null) {
+            return (Mapper<T>) type.getMapper();
         }
 
         throw new IllegalArgumentException("invalid class specified");
@@ -563,25 +563,6 @@ public abstract class AbstractDao implements Dao {
             return result;
         } finally {
             tx.endTransaction().recycle();
-        }
-    }
-
-    private static final class TableType {
-        @NonNull
-        final String mTable;
-        @Nullable
-        final String[] mProjection;
-        @Nullable
-        final Mapper<?> mMapper;
-        @Nullable
-        final Expression mPrimaryWhere;
-
-        TableType(@NonNull final String table, @Nullable final String[] projection, @Nullable final Mapper<?> mapper,
-                  @Nullable final Expression where) {
-            mTable = table;
-            mProjection = projection;
-            mMapper = mapper;
-            mPrimaryWhere = where;
         }
     }
 }
