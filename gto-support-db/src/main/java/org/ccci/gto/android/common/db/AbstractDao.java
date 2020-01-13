@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.os.AsyncTask;
 import android.text.TextUtils;
 import android.util.Pair;
 
@@ -16,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.Executor;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -40,6 +42,12 @@ public abstract class AbstractDao implements Dao {
         mDbHelper = helper;
 
         registerType(LastSyncTable.class, LastSyncTable.TABLE_NAME, null, null, LastSyncTable.SQL_WHERE_PRIMARY_KEY);
+    }
+
+    @NonNull
+    @Override
+    public Executor getBackgroundExecutor() {
+        return AsyncTask.THREAD_POOL_EXECUTOR;
     }
 
     @WorkerThread

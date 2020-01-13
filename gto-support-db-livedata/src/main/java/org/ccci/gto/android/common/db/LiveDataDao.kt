@@ -31,6 +31,7 @@ interface LiveDataDao : Dao {
         .liveData
 
     @MainThread
+    @JvmDefault
     fun invalidateLiveData(clazz: Class<*>) = liveDataRegistry.invalidate(clazz)
 }
 
