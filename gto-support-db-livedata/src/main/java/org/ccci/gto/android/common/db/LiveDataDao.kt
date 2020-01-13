@@ -75,7 +75,7 @@ class LiveDataRegistry {
         registerFor(join.mTarget)
     }
 
-    internal fun invalidate(clazz: Class<*>) {
+    fun invalidate(clazz: Class<*>) {
         registry[clazz]?.keys?.forEach { it.invalidate() }
     }
 }
