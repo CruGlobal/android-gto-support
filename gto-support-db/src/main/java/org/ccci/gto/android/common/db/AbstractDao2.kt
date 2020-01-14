@@ -9,6 +9,7 @@ import androidx.collection.SimpleArrayMap
 import org.ccci.gto.android.common.compat.util.LocaleCompat
 import org.ccci.gto.android.common.db.CommonTables.LastSyncTable
 import org.ccci.gto.android.common.util.database.getLong
+import org.ccci.gto.android.common.util.database.map
 import java.util.Date
 import java.util.Locale
 import java.util.concurrent.Executor
@@ -93,6 +94,21 @@ abstract class AbstractDao2(private val helper: SQLiteOpenHelper) : Dao {
 
         // default to null
         return null
+    }
+
+    /**
+     * retrieve all objects of the specified type
+     *
+     * @param clazz the type of object to retrieve
+     * @return
+     */
+    @WorkerThread
+    fun <T> get(clazz: Class<T>): List<T> = get(Query.select(clazz))
+
+    @WorkerThread
+    override fun <T> get(query: Query<T>) = getCursor(query.projection()).use { c ->
+        val mapper = getMapper(query.mTable.mType)
+        c.map { mapper.toObject(it) }
     }
     // endregion Read-Only
     // endregion Queries

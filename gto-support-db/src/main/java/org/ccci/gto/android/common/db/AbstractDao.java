@@ -10,9 +10,6 @@ import android.util.Pair;
 import org.ccci.gto.android.common.db.Expression.Field;
 import org.ccci.gto.android.common.util.ArrayUtils;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.WorkerThread;
@@ -126,38 +123,6 @@ public abstract class AbstractDao extends AbstractDao2 {
             }
         }
         return null;
-    }
-
-    /**
-     * retrieve all objects of the specified type
-     *
-     * @param clazz the type of object to retrieve
-     * @return
-     */
-    @NonNull
-    @WorkerThread
-    public final <T> List<T> get(@NonNull final Class<T> clazz) {
-        return get(Query.select(clazz));
-    }
-
-    @NonNull
-    @Override
-    @WorkerThread
-    public final <T> List<T> get(@NonNull final Query<T> query) {
-        // load all rows from the cursor
-        final List<T> results = new ArrayList<>();
-        final Cursor c = getCursor(query.projection());
-        c.moveToPosition(-1);
-        final Mapper<T> mapper = getMapper(query.mTable.mType);
-        while (c.moveToNext()) {
-            results.add(mapper.toObject(c));
-        }
-
-        // close the cursor to prevent leaking it
-        c.close();
-
-        // return the results
-        return results;
     }
 
     @WorkerThread
