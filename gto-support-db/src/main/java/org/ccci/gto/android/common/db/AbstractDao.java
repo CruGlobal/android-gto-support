@@ -1,6 +1,5 @@
 package org.ccci.gto.android.common.db;
 
-import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -132,25 +131,6 @@ public abstract class AbstractDao extends AbstractDao2 {
             insert(obj);
             return null;
         });
-    }
-
-    @WorkerThread
-    public final int update(@NonNull final Object obj) {
-        return update(obj, getFullProjection(obj.getClass()));
-    }
-
-    @WorkerThread
-    public final <T> int update(@NonNull final T obj, @NonNull final String... projection) {
-        return update(obj, CONFLICT_NONE, projection);
-    }
-
-    @WorkerThread
-    public final <T> int update(@NonNull final T obj, final int conflictAlgorithm,
-                                @NonNull final String... projection) {
-        @SuppressWarnings("unchecked")
-        final Class<T> type = (Class<T>) obj.getClass();
-        final ContentValues values = getMapper(type).toContentValues(obj, projection);
-        return update(type, values, getPrimaryKeyWhere(obj), conflictAlgorithm);
     }
 
     @WorkerThread
