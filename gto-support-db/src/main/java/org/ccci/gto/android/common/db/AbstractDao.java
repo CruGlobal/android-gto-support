@@ -157,26 +157,6 @@ public abstract class AbstractDao extends AbstractDao2 {
         });
     }
 
-    @WorkerThread
-    public final void delete(@NonNull final Object obj) {
-        delete(obj.getClass(), getPrimaryKeyWhere(obj));
-    }
-
-    /**
-     * Delete all objects that match the provided where clause. Sending a null where clause will delete all objects.
-     *
-     * @param clazz The Class of the objects to be deleted
-     * @param where An expression describing which objects to delete. Null indicates all objects should be deleted.
-     */
-    @WorkerThread
-    public final void delete(@NonNull final Class<?> clazz, @Nullable final Expression where) {
-        final String table = getTable(clazz);
-        final Pair<String, String[]> builtWhere =
-                where != null ? where.buildSql(this) : Pair.<String, String[]>create(null, null);
-        final SQLiteDatabase db = getWritableDatabase();
-        inNonExclusiveTransaction(db, () -> db.delete(table, builtWhere.first, builtWhere.second));
-    }
-
     @NonNull
     protected final Pair<String, String[]> compileExpression(@NonNull final Expression expression) {
         return expression.buildSql(this);

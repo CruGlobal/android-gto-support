@@ -46,6 +46,18 @@ interface Dao {
      */
     @WorkerThread
     fun <T : Any> update(obj: T, where: Expression?, conflictAlgorithm: Int, vararg projection: String): Int
+
+    @WorkerThread
+    fun delete(obj: Any)
+
+    /**
+     * Delete all objects that match the provided where clause. Sending a null where clause will delete all objects.
+     *
+     * @param clazz The Class of the objects to be deleted
+     * @param where An expression describing which objects to delete. Null indicates all objects should be deleted.
+     */
+    @WorkerThread
+    fun delete(clazz: Class<*>, where: Expression?)
     // endregion Read-Write
     // endregion Queries
 }

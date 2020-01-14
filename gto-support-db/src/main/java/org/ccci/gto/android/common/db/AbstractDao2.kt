@@ -171,6 +171,15 @@ abstract class AbstractDao2(private val helper: SQLiteOpenHelper) : Dao {
             updateWithOnConflict(table, values, w?.first, w?.second, conflictAlgorithm)
         }
     }
+
+    @WorkerThread
+    final override fun delete(obj: Any) = delete(obj.javaClass, getPrimaryKeyWhere(obj))
+
+    @WorkerThread
+    final override fun delete(clazz: Class<*>, where: Expression?) {
+        val w = where?.buildSql(this)
+        writableDatabase.transaction(false) { delete(getTable(clazz), w?.first, w?.second) }
+    }
     // endregion Read-Write
     // endregion Queries
 
