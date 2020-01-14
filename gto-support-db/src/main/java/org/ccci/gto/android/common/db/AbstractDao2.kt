@@ -278,4 +278,6 @@ abstract class AbstractDao2(private val helper: SQLiteOpenHelper) : Dao {
         writableDatabase.transaction(false) { replace(getTable(LastSyncTable::class.java), null, values) }
     }
     // endregion LastSync tracking
+
+    protected fun compileExpression(expression: Expression) = expression.buildSql(this)
 }

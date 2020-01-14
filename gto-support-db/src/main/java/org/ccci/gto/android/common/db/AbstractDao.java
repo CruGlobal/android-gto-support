@@ -107,9 +107,4 @@ public abstract class AbstractDao extends AbstractDao2 {
         }
         return null;
     }
-
-    @NonNull
-    protected final Pair<String, String[]> compileExpression(@NonNull final Expression expression) {
-        return expression.buildSql(this);
-    }
 }
