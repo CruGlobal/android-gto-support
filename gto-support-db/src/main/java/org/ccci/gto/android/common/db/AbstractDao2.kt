@@ -98,16 +98,24 @@ abstract class AbstractDao2(private val helper: SQLiteOpenHelper) : Dao {
         db: SQLiteDatabase,
         exclusive: Boolean = true,
         closure: Closure<T, X>
-    ): T {
-        with(newTransaction(db)) {
-            return try {
-                beginTransaction(exclusive)
-                val result = closure.run()
-                setTransactionSuccessful()
-                result
-            } finally {
-                endTransaction().recycle()
-            }
+    ): T = db.transaction(exclusive) { closure.run() }
+
+    @WorkerThread
+    fun <T> transaction(exclusive: Boolean = true, body: SQLiteDatabase.() -> T): T =
+        writableDatabase.transaction(exclusive, body)
+
+    @WorkerThread
+    protected inline fun <T> SQLiteDatabase.transaction(
+        exclusive: Boolean = true,
+        body: SQLiteDatabase.() -> T
+    ): T = with(newTransaction(this)) {
+        try {
+            beginTransaction(exclusive)
+            val result = body(this@transaction)
+            setTransactionSuccessful()
+            return result
+        } finally {
+            endTransaction().recycle()
         }
     }
     // endregion Transaction Management
