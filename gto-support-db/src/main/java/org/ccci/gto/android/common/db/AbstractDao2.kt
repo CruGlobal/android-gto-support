@@ -74,6 +74,29 @@ abstract class AbstractDao2(private val helper: SQLiteOpenHelper) : Dao {
         ?: throw IllegalArgumentException("invalid class specified: ${clazz.name}")
     // endregion Registered Types
 
+    // region Queries
+    // region Read-Only
+    @WorkerThread
+    fun <T : Any> refresh(obj: T): T? = find(obj.javaClass, getPrimaryKeyWhere(obj))
+
+    @WorkerThread
+    override fun <T> find(clazz: Class<T>, vararg key: Any): T? = find(clazz, getPrimaryKeyWhere(clazz, *key))
+
+    @WorkerThread
+    private fun <T> find(clazz: Class<T>, where: Expression): T? {
+        Query.select(clazz).where(where).getCursor(this).use { c ->
+            if (c.count > 0) {
+                c.moveToFirst()
+                return getMapper(clazz).toObject(c)
+            }
+        }
+
+        // default to null
+        return null
+    }
+    // endregion Read-Only
+    // endregion Queries
+
     // region Transaction Management
     @WorkerThread
     fun newTransaction() = newTransaction(writableDatabase)

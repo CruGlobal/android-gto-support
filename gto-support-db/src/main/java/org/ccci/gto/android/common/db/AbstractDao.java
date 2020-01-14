@@ -160,41 +160,6 @@ public abstract class AbstractDao extends AbstractDao2 {
         return results;
     }
 
-    @Nullable
-    @Override
-    @WorkerThread
-    public final <T> T find(@NonNull final Class<T> clazz, @NonNull final Object... key) {
-        return find(clazz, getPrimaryKeyWhere(clazz, key));
-    }
-
-    @Nullable
-    @WorkerThread
-    private <T> T find(@NonNull final Class<T> clazz, @NonNull final Expression where) {
-        // return the first record if it exists
-        Cursor c = null;
-        try {
-            c = getCursor(Query.select(clazz).where(where));
-            if (c.getCount() > 0) {
-                c.moveToFirst();
-                return this.getMapper(clazz).toObject(c);
-            }
-        } finally {
-            if (c != null) {
-                c.close();
-            }
-        }
-
-        // default to null
-        return null;
-    }
-
-    @Nullable
-    @WorkerThread
-    @SuppressWarnings("unchecked")
-    public final <T> T refresh(@NonNull T obj) {
-        return find((Class<T>) obj.getClass(), getPrimaryKeyWhere(obj));
-    }
-
     @WorkerThread
     public final long insert(@NonNull final Object obj) {
         return insert(obj, CONFLICT_NONE);
