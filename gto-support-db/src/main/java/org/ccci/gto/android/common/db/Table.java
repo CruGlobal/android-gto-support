@@ -64,7 +64,7 @@ public final class Table<T> implements Parcelable {
     }
 
     @NonNull
-    String sqlPrefix(@NonNull final AbstractDao dao) {
+    String sqlPrefix(@NonNull final AbstractDao2 dao) {
         if (mSqlPrefix == null) {
             mSqlPrefix = (mAlias != null ? mAlias : dao.getTable(mType)) + ".";
         }
