@@ -81,7 +81,7 @@ abstract class AbstractDao2(private val helper: SQLiteOpenHelper) : Dao {
     fun <T : Any> refresh(obj: T): T? = find(obj.javaClass, getPrimaryKeyWhere(obj))
 
     @WorkerThread
-    override fun <T> find(clazz: Class<T>, vararg key: Any): T? = find(clazz, getPrimaryKeyWhere(clazz, *key))
+    final override fun <T> find(clazz: Class<T>, vararg key: Any): T? = find(clazz, getPrimaryKeyWhere(clazz, *key))
 
     @WorkerThread
     private fun <T> find(clazz: Class<T>, where: Expression): T? {
@@ -106,7 +106,7 @@ abstract class AbstractDao2(private val helper: SQLiteOpenHelper) : Dao {
     fun <T> get(clazz: Class<T>): List<T> = get(Query.select(clazz))
 
     @WorkerThread
-    override fun <T> get(query: Query<T>) = getCursor(query.projection()).use { c ->
+    final override fun <T> get(query: Query<T>) = getCursor(query.projection()).use { c ->
         val mapper = getMapper(query.mTable.mType)
         c.map { mapper.toObject(it) }
     }
@@ -114,7 +114,7 @@ abstract class AbstractDao2(private val helper: SQLiteOpenHelper) : Dao {
 
     // region Read-Write
     @WorkerThread
-    override fun <T : Any> insert(obj: T, conflictAlgorithm: Int): Long {
+    final override fun <T : Any> insert(obj: T, conflictAlgorithm: Int): Long {
         val clazz = obj.javaClass
         val table = getTable(clazz)
         val values = getMapper(clazz).toContentValues(obj, getFullProjection(clazz))
