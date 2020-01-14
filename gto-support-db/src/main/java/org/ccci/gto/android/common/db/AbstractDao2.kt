@@ -122,6 +122,14 @@ abstract class AbstractDao2(private val helper: SQLiteOpenHelper) : Dao {
     }
 
     @WorkerThread
+    fun replace(obj: Any) {
+        transaction {
+            delete(obj)
+            insert(obj)
+        }
+    }
+
+    @WorkerThread
     fun update(obj: Any) = update(obj, projection = *getFullProjection(obj.javaClass))
 
     @JvmOverloads

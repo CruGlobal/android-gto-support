@@ -111,15 +111,6 @@ public abstract class AbstractDao extends AbstractDao2 {
     }
 
     @WorkerThread
-    public final void replace(@NonNull final Object obj) {
-        inNonExclusiveTransaction(() -> {
-            delete(obj);
-            insert(obj);
-            return null;
-        });
-    }
-
-    @WorkerThread
     public final void updateOrInsert(@NonNull final Object obj) {
         updateOrInsert(obj, getFullProjection(obj.getClass()));
     }
