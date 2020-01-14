@@ -25,4 +25,10 @@ public final class JavaLiveDataDao extends AbstractDao implements LiveDataDao {
         insert(new Object());
         insert(new Object(), SQLiteDatabase.CONFLICT_IGNORE);
     }
+
+    private void updateMethods() {
+        // This makes sure method signatures for java don't change
+        update(new Object(), Expression.NULL, "a");
+        update(new Object(), Expression.NULL, SQLiteDatabase.CONFLICT_IGNORE, "a");
+    }
 }

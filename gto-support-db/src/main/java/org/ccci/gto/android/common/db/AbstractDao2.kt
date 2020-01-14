@@ -120,6 +120,42 @@ abstract class AbstractDao2(private val helper: SQLiteOpenHelper) : Dao {
         val values = getMapper(clazz).toContentValues(obj, getFullProjection(clazz))
         return writableDatabase.transaction(false) { insertWithOnConflict(table, null, values, conflictAlgorithm) }
     }
+
+    @WorkerThread
+    final override fun <T : Any> update(
+        obj: T,
+        where: Expression?,
+        conflictAlgorithm: Int,
+        vararg projection: String
+    ): Int {
+        val type = obj.javaClass
+        return update(type, getMapper(type).toContentValues(obj, projection), where, conflictAlgorithm)
+    }
+
+    /**
+     * Update the specified `values` for objects of type `type` that match the specified `where` clause.
+     * If `where` is null, all objects of type `type` will be updated
+     *
+     * @param type the type of Object to update
+     * @param values the new values for the specified object
+     * @param where an optional [Expression] to narrow the scope of which objects are updated
+     * @param conflictAlgorithm the conflict algorithm to use when updating the database
+     * @return the number of rows affected
+     */
+    @JvmOverloads
+    @WorkerThread
+    protected fun update(
+        type: Class<*>,
+        values: ContentValues,
+        where: Expression?,
+        conflictAlgorithm: Int = SQLiteDatabase.CONFLICT_NONE
+    ): Int {
+        val table = getTable(type)
+        val w = where?.buildSql(this)
+        return writableDatabase.transaction(false) {
+            updateWithOnConflict(table, values, w?.first, w?.second, conflictAlgorithm)
+        }
+    }
     // endregion Read-Write
     // endregion Queries
 

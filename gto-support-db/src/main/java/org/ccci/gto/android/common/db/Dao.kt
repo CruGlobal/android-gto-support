@@ -29,6 +29,23 @@ interface Dao {
 
     @WorkerThread
     fun <T : Any> insert(obj: T, conflictAlgorithm: Int): Long
+
+    @JvmDefault
+    @WorkerThread
+    fun <T : Any> update(obj: T, where: Expression?, vararg projection: String): Int =
+        update(obj, where, SQLiteDatabase.CONFLICT_NONE, *projection)
+
+    /**
+     * This method updates all objects that match the where Expression based on the provided sample object and projection.
+     *
+     * @param obj a sample object that is used to find the type and generate the values being set on other objects.
+     * @param where a where clause that restricts which objects get updated. If this is null all objects are updated.
+     * @param conflictAlgorithm the conflict algorithm to use when updating the database
+     * @param projection the fields to update in this call
+     * @return the number of rows affected
+     */
+    @WorkerThread
+    fun <T : Any> update(obj: T, where: Expression?, conflictAlgorithm: Int, vararg projection: String): Int
     // endregion Read-Write
     // endregion Queries
 }
