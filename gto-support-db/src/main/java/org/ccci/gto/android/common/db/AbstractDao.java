@@ -7,7 +7,6 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.text.TextUtils;
 import android.util.Pair;
 
-import org.ccci.gto.android.common.db.CommonTables.LastSyncTable;
 import org.ccci.gto.android.common.db.Expression.Field;
 import org.ccci.gto.android.common.util.ArrayUtils;
 
@@ -19,7 +18,6 @@ import androidx.annotation.Nullable;
 import androidx.annotation.WorkerThread;
 
 import static android.database.sqlite.SQLiteDatabase.CONFLICT_NONE;
-import static org.ccci.gto.android.common.util.database.CursorUtils.getLong;
 
 public abstract class AbstractDao extends AbstractDao2 {
     protected AbstractDao(@NonNull final SQLiteOpenHelper helper) {
@@ -362,24 +360,6 @@ public abstract class AbstractDao extends AbstractDao2 {
                 where != null ? where.buildSql(this) : Pair.<String, String[]>create(null, null);
         final SQLiteDatabase db = getWritableDatabase();
         inNonExclusiveTransaction(db, () -> db.delete(table, builtWhere.first, builtWhere.second));
-    }
-
-    public long getLastSyncTime(@NonNull final Object... key) {
-        final Cursor c =
-                getCursor(Query.select(LastSyncTable.class).projection(LastSyncTable.COLUMN_LAST_SYNCED)
-                                  .where(LastSyncTable.SQL_WHERE_PRIMARY_KEY.args(TextUtils.join(":", key))));
-        if (c.moveToFirst()) {
-            return getLong(c, LastSyncTable.COLUMN_LAST_SYNCED, 0L);
-        }
-        return 0;
-    }
-
-    public void updateLastSyncTime(@NonNull final Object... key) {
-        // update the last sync time, we can replace since this is just a keyed timestamp
-        final ContentValues values = new ContentValues();
-        values.put(LastSyncTable.COLUMN_KEY, TextUtils.join(":", key));
-        values.put(LastSyncTable.COLUMN_LAST_SYNCED, System.currentTimeMillis());
-        getWritableDatabase().replace(getTable(LastSyncTable.class), null, values);
     }
 
     @NonNull

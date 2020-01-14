@@ -18,3 +18,5 @@ interface Dao {
     @get:RestrictTo(RestrictTo.Scope.LIBRARY_GROUP, RestrictTo.Scope.SUBCLASSES)
     val backgroundExecutor: Executor
 }
+
+inline fun Query<*>.getCursor(dao: Dao) = dao.getCursor(this)

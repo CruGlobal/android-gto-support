@@ -1,5 +1,6 @@
 package org.ccci.gto.android.common.db
 
+import android.content.ContentValues
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import android.os.AsyncTask
@@ -7,6 +8,7 @@ import androidx.annotation.WorkerThread
 import androidx.collection.SimpleArrayMap
 import org.ccci.gto.android.common.compat.util.LocaleCompat
 import org.ccci.gto.android.common.db.CommonTables.LastSyncTable
+import org.ccci.gto.android.common.util.database.getLong
 import java.util.Date
 import java.util.Locale
 import java.util.concurrent.Executor
@@ -129,6 +131,21 @@ abstract class AbstractDao2(private val helper: SQLiteOpenHelper) : Dao {
             null,
             LastSyncTable.SQL_WHERE_PRIMARY_KEY
         )
+    }
+
+    fun getLastSyncTime(vararg key: Any) =
+        Query.select(LastSyncTable::class.java).projection(LastSyncTable.COLUMN_LAST_SYNCED)
+            .where(LastSyncTable.SQL_WHERE_PRIMARY_KEY.args(key.joinToString(":")))
+            .getCursor(this)
+            .use { if (it.moveToFirst()) it.getLong(LastSyncTable.COLUMN_LAST_SYNCED, 0L)!! else 0 }
+
+    fun updateLastSyncTime(vararg key: Any) {
+        val values = ContentValues().apply {
+            put(LastSyncTable.COLUMN_KEY, key.joinToString(":"))
+            put(LastSyncTable.COLUMN_LAST_SYNCED, System.currentTimeMillis())
+        }
+        // update the last sync time, we can use replace since this is just a keyed timestamp
+        writableDatabase.transaction(false) { replace(getTable(LastSyncTable::class.java), null, values) }
     }
     // endregion LastSync tracking
 }
