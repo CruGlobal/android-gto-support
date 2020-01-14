@@ -31,4 +31,11 @@ public final class JavaLiveDataDao extends AbstractDao implements LiveDataDao {
         update(new Object(), Expression.NULL, "a");
         update(new Object(), Expression.NULL, SQLiteDatabase.CONFLICT_IGNORE, "a");
     }
+
+    private void getCursorMethods() {
+        // This makes sure method signatures for java don't change
+        getCursor(Object.class);
+        getCursor(Object.class, "", new String[0], "");
+        getCursor(Query.select(Object.class));
+    }
 }

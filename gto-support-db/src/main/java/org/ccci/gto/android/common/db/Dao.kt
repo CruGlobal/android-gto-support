@@ -18,6 +18,15 @@ interface Dao {
     @WorkerThread
     fun <T> get(query: Query<T>): List<T>
 
+    @JvmDefault
+    @WorkerThread
+    fun getCursor(clazz: Class<*>) = getCursor(Query.select(clazz))
+
+    @JvmDefault
+    @WorkerThread
+    fun getCursor(clazz: Class<*>, whereClause: String?, whereBindValues: Array<String?>?, orderBy: String?) =
+        getCursor(Query.select(clazz).where(whereClause, *whereBindValues.orEmpty()).orderBy(orderBy))
+
     @WorkerThread
     fun getCursor(query: Query<*>): Cursor
     // endregion Read-Only

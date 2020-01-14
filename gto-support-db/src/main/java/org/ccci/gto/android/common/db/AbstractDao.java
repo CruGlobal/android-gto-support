@@ -10,7 +10,6 @@ import org.ccci.gto.android.common.db.Expression.Field;
 import org.ccci.gto.android.common.util.ArrayUtils;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.annotation.WorkerThread;
 
 import static android.database.sqlite.SQLiteDatabase.CONFLICT_NONE;
@@ -18,19 +17,6 @@ import static android.database.sqlite.SQLiteDatabase.CONFLICT_NONE;
 public abstract class AbstractDao extends AbstractDao2 {
     protected AbstractDao(@NonNull final SQLiteOpenHelper helper) {
         super(helper);
-    }
-
-    @NonNull
-    @WorkerThread
-    public final Cursor getCursor(@NonNull final Class<?> clazz) {
-        return getCursor(Query.select(clazz));
-    }
-
-    @NonNull
-    @WorkerThread
-    public final Cursor getCursor(@NonNull final Class<?> clazz, @Nullable final String whereClause,
-                                  @Nullable final String[] whereBindValues, @Nullable final String orderBy) {
-        return getCursor(Query.select(clazz).where(whereClause, whereBindValues).orderBy(orderBy));
     }
 
     @NonNull
