@@ -126,23 +126,6 @@ public abstract class AbstractDao extends AbstractDao2 {
     }
 
     @WorkerThread
-    public final long insert(@NonNull final Object obj) {
-        return insert(obj, CONFLICT_NONE);
-    }
-
-    @WorkerThread
-    public final <T> long insert(@NonNull final T obj, final int conflictAlgorithm) {
-        @SuppressWarnings("unchecked")
-        final Class<T> clazz = (Class<T>) obj.getClass();
-        final String table = getTable(clazz);
-        final ContentValues values = getMapper(clazz).toContentValues(obj, this.getFullProjection(clazz));
-
-        // execute insert
-        final SQLiteDatabase db = getWritableDatabase();
-        return inNonExclusiveTransaction(db, () -> db.insertWithOnConflict(table, null, values, conflictAlgorithm));
-    }
-
-    @WorkerThread
     public final void replace(@NonNull final Object obj) {
         inNonExclusiveTransaction(() -> {
             delete(obj);
