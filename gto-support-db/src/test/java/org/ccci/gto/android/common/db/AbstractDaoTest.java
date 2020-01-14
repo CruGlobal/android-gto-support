@@ -3,6 +3,7 @@ package org.ccci.gto.android.common.db;
 import android.text.TextUtils;
 import android.util.Pair;
 
+import org.ccci.gto.android.common.db.Contract.RootTable;
 import org.ccci.gto.android.common.testing.CommonMocks;
 import org.junit.Before;
 import org.junit.Test;
@@ -12,48 +13,49 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({Pair.class, TextUtils.class})
 public class AbstractDaoTest {
-    private TestDao getDao() {
-        return TestDao.mock();
-    }
+    private AbstractDao mDao;
 
     @Before
     public void setup() throws Exception {
         CommonMocks.mockPair();
         CommonMocks.mockTextUtils();
+
+        mDao = mock(AbstractDao.class);
+        when(mDao.addPrefixToFields(any(), any())).thenCallRealMethod();
     }
 
     @Test
     public void testAddPrefixToSingleField() {
-        final TestDao dao = getDao();
-        String prefix = Contract.RootTable.TABLE_NAME + ".";
+        String prefix = RootTable.TABLE_NAME + ".";
 
-        String editedClause = dao.addPrefixToFields(Contract.RootTable.COLUMN_ID, prefix);
+        String editedClause = mDao.addPrefixToFields(RootTable.COLUMN_ID, prefix);
 
         assertThat(editedClause, is("root._id"));
     }
 
     @Test
     public void testAddPrefixToMultipleFields() {
-        final TestDao dao = getDao();
-        String prefix = Contract.RootTable.TABLE_NAME + ".";
+        String prefix = RootTable.TABLE_NAME + ".";
 
-        String editedClause = dao.addPrefixToFields(Contract.RootTable.COLUMN_ID + "," + Contract.RootTable.COLUMN_TEST,
-                                                    prefix);
+        String editedClause = mDao.addPrefixToFields(RootTable.COLUMN_ID + "," + RootTable.COLUMN_TEST,
+                                                     prefix);
 
         assertThat(editedClause, is("root._id,root.test"));
     }
 
     @Test
     public void testAddPrefixToMultipleFieldsSomePrefixed() {
-        final TestDao dao = getDao();
-        String prefix = Contract.RootTable.TABLE_NAME + ".";
+        String prefix = RootTable.TABLE_NAME + ".";
 
-        String editedClause = dao.addPrefixToFields(
-                prefix + Contract.RootTable.COLUMN_ID + "," + Contract.RootTable.COLUMN_TEST,
+        String editedClause = mDao.addPrefixToFields(
+                prefix + RootTable.COLUMN_ID + "," + RootTable.COLUMN_TEST,
                 prefix);
 
         assertThat(editedClause, is("root._id,root.test"));
@@ -61,11 +63,10 @@ public class AbstractDaoTest {
 
     @Test
     public void testAddPrefixToMultipleFieldsAllPrefixed() {
-        final TestDao dao = getDao();
-        String prefix = Contract.RootTable.TABLE_NAME + ".";
+        String prefix = RootTable.TABLE_NAME + ".";
 
-        String editedClause = dao.addPrefixToFields(
-                prefix + Contract.RootTable.COLUMN_ID + "," + prefix + Contract.RootTable.COLUMN_TEST,
+        String editedClause = mDao.addPrefixToFields(
+                prefix + RootTable.COLUMN_ID + "," + prefix + RootTable.COLUMN_TEST,
                 prefix);
 
         assertThat(editedClause, is("root._id,root.test"));

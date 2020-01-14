@@ -1,6 +1,5 @@
 package org.ccci.gto.android.common.db;
 
-import androidx.annotation.NonNull;
 import android.text.TextUtils;
 
 import org.ccci.gto.android.common.testing.CommonMocks;
@@ -12,18 +11,22 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({TextUtils.class})
 public class TableTest {
-    @NonNull
-    private TestDao getDao() {
-        return new TestDao();
-    }
+    private AbstractDao mDao;
 
     @Before
     public void setup() throws Exception {
         CommonMocks.mockTextUtils();
+
+        mDao = mock(AbstractDao.class);
+        when(mDao.getTable(eq(Obj1.class))).thenReturn(Obj1.TABLE_NAME);
+        when(mDao.getTable(eq(Obj2.class))).thenReturn(Obj2.TABLE_NAME);
     }
 
     @Test
@@ -31,13 +34,13 @@ public class TableTest {
         final Table<Obj1> t1 = Table.forClass(Obj1.class);
         final Table<Obj2> t2 = Table.forClass(Obj2.class);
 
-        assertEquals(Obj1.TABLE_NAME, t1.sqlTable(getDao()));
-        assertEquals(Obj1.TABLE_NAME + " AS a", t1.as("a").sqlTable(getDao()));
-        assertEquals(Obj1.TABLE_NAME + " AS abcde", t1.as("abcde").sqlTable(getDao()));
-        assertNotEquals(Obj2.TABLE_NAME, t1.sqlTable(getDao()));
+        assertEquals(Obj1.TABLE_NAME, t1.sqlTable(mDao));
+        assertEquals(Obj1.TABLE_NAME + " AS a", t1.as("a").sqlTable(mDao));
+        assertEquals(Obj1.TABLE_NAME + " AS abcde", t1.as("abcde").sqlTable(mDao));
+        assertNotEquals(Obj2.TABLE_NAME, t1.sqlTable(mDao));
 
-        assertEquals(Obj2.TABLE_NAME, t2.sqlTable(getDao()));
-        assertEquals(Obj2.TABLE_NAME + " AS b", t2.as("b").sqlTable(getDao()));
+        assertEquals(Obj2.TABLE_NAME, t2.sqlTable(mDao));
+        assertEquals(Obj2.TABLE_NAME + " AS b", t2.as("b").sqlTable(mDao));
     }
 
     static class Obj1 {
@@ -46,14 +49,5 @@ public class TableTest {
 
     static class Obj2 {
         static final String TABLE_NAME = "Table2";
-    }
-
-    private static class TestDao extends AbstractDao {
-        @SuppressWarnings("ConstantConditions")
-        protected TestDao() {
-            super(null);
-            registerType(Obj1.class, Obj1.TABLE_NAME, null, null, null);
-            registerType(Obj2.class, Obj2.TABLE_NAME, null, null, null);
-        }
     }
 }
