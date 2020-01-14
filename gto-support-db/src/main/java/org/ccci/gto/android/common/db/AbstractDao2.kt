@@ -113,9 +113,8 @@ abstract class AbstractDao2(private val helper: SQLiteOpenHelper) : Dao {
     // endregion Read-Only
 
     // region Read-Write
-    @JvmOverloads
     @WorkerThread
-    fun <T : Any> insert(obj: T, conflictAlgorithm: Int = SQLiteDatabase.CONFLICT_NONE): Long {
+    override fun <T : Any> insert(obj: T, conflictAlgorithm: Int): Long {
         val clazz = obj.javaClass
         val table = getTable(clazz)
         val values = getMapper(clazz).toContentValues(obj, getFullProjection(clazz))
