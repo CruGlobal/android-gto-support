@@ -12,8 +12,6 @@ import org.ccci.gto.android.common.util.ArrayUtils;
 import androidx.annotation.NonNull;
 import androidx.annotation.WorkerThread;
 
-import static android.database.sqlite.SQLiteDatabase.CONFLICT_NONE;
-
 public abstract class AbstractDao extends AbstractDao2 {
     protected AbstractDao(@NonNull final SQLiteOpenHelper helper) {
         super(helper);
@@ -108,30 +106,6 @@ public abstract class AbstractDao extends AbstractDao2 {
             }
         }
         return null;
-    }
-
-    @WorkerThread
-    public final void updateOrInsert(@NonNull final Object obj) {
-        updateOrInsert(obj, getFullProjection(obj.getClass()));
-    }
-
-    @WorkerThread
-    public final void updateOrInsert(@NonNull final Object obj, @NonNull final String... projection) {
-        updateOrInsert(obj, CONFLICT_NONE, projection);
-    }
-
-    @WorkerThread
-    public final void updateOrInsert(@NonNull final Object obj, final int conflictAlgorithm,
-                                     @NonNull final String... projection) {
-        inNonExclusiveTransaction(() -> {
-            final Object existing = refresh(obj);
-            if (existing != null) {
-                update(obj, conflictAlgorithm, projection);
-            } else {
-                insert(obj, conflictAlgorithm);
-            }
-            return null;
-        });
     }
 
     @NonNull
