@@ -1,6 +1,7 @@
 package org.ccci.gto.android.common.db
 
 import android.content.ContentValues
+import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import android.os.AsyncTask
@@ -8,6 +9,7 @@ import androidx.annotation.WorkerThread
 import androidx.collection.SimpleArrayMap
 import org.ccci.gto.android.common.compat.util.LocaleCompat
 import org.ccci.gto.android.common.db.CommonTables.LastSyncTable
+import org.ccci.gto.android.common.util.ArrayUtils
 import org.ccci.gto.android.common.util.database.getLong
 import org.ccci.gto.android.common.util.database.map
 import java.util.Date
@@ -110,6 +112,52 @@ abstract class AbstractDao2(private val helper: SQLiteOpenHelper) : Dao {
         val mapper = getMapper(query.mTable.mType)
         c.map { mapper.toObject(it) }
     }
+
+    @WorkerThread
+    final override fun getCursor(query: Query<*>): Cursor {
+        var projection = query.mProjection ?: getFullProjection(query.mTable.mType)
+        var orderBy = query.mOrderBy
+
+        // prefix projection and orderBy when we have joins
+        if (query.mJoins.isNotEmpty()) {
+            val prefix = query.mTable.sqlPrefix(this)
+            projection = projection.map { if (it.contains(".")) it else prefix + it }.toTypedArray()
+            orderBy = orderBy?.prefixOrderByFieldsWith(prefix)
+        }
+
+        // generate "FROM {}" SQL
+        val from = query.buildSqlFrom(this)
+        val tables = from.first
+        var args = from.second
+
+        // generate "WHERE {}" SQL
+        val where = query.buildSqlWhere(this)
+        args = ArrayUtils.merge(String::class.java, args, where.second)
+
+        // handle GROUP BY {} HAVING {}
+        var groupBy: String? = null
+        var having: String? = null
+        if (query.mGroupBy.isNotEmpty()) {
+            // generate "GROUP BY {}" SQL
+            groupBy = query.mGroupBy.joinToString(",") { it.buildSql(this).first }
+
+            // generate "HAVING {}" SQL
+            val havingRaw = query.buildSqlHaving(this)
+            having = havingRaw.first
+            args = ArrayUtils.merge(String::class.java, args, havingRaw.second)
+        }
+
+        // generate "LIMIT {}" SQL
+        val limit = query.buildSqlLimit()
+
+        // execute actual query
+        val c = readableDatabase.transaction(false) {
+            query(query.mDistinct, tables, projection, where.first, args, groupBy, having, orderBy, limit)
+        }
+        c.moveToPosition(-1)
+        return c
+    }
+
     // endregion Read-Only
 
     // region Read-Write
