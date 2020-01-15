@@ -16,7 +16,7 @@ import java.util.Date
 import java.util.Locale
 import java.util.concurrent.Executor
 
-abstract class AbstractDao2(private val helper: SQLiteOpenHelper) : Dao {
+abstract class AbstractDao(private val helper: SQLiteOpenHelper) : Dao {
     companion object {
         private const val ARG_PREFIX = "org.ccci.gto.android.common.db.AbstractDao"
         const val ARG_DISTINCT = "$ARG_PREFIX.ARG_DISTINCT"

@@ -1,8 +1,8 @@
 package org.ccci.gto.android.common.db;
 
-import androidx.annotation.NonNull;
-
 import com.annimon.stream.Stream;
+
+import androidx.annotation.NonNull;
 
 /**
  * Stream DAO interface relying on backwards compatible Lightweight Stream API.
@@ -13,7 +13,7 @@ public interface StreamDao {
 
     class StreamHelper {
         @NonNull
-        public static <T> Stream<T> stream(@NonNull final AbstractDao dao, @NonNull final Query<T> query) {
+        public static <T> Stream<T> stream(@NonNull final Dao dao, @NonNull final Query<T> query) {
             return Stream.of(dao.get(query));
         }
     }

@@ -50,7 +50,7 @@ public final class Table<T> implements Parcelable {
     }
 
     @NonNull
-    String sqlTable(@NonNull final AbstractDao2 dao) {
+    String sqlTable(@NonNull final AbstractDao dao) {
         // build the name if we haven't built it already
         if (mSqlTable == null) {
             final StringBuilder sql = new StringBuilder(dao.getTable(mType));
@@ -64,7 +64,7 @@ public final class Table<T> implements Parcelable {
     }
 
     @NonNull
-    String sqlPrefix(@NonNull final AbstractDao2 dao) {
+    String sqlPrefix(@NonNull final AbstractDao dao) {
         if (mSqlPrefix == null) {
             mSqlPrefix = (mAlias != null ? mAlias : dao.getTable(mType)) + ".";
         }

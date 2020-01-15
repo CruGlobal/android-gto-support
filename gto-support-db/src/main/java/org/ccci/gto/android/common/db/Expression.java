@@ -22,7 +22,7 @@ public abstract class Expression implements Parcelable {
     }
 
     @NonNull
-    protected abstract Pair<String, String[]> buildSql(@NonNull AbstractDao2 dao);
+    protected abstract Pair<String, String[]> buildSql(@NonNull AbstractDao dao);
 
     @NonNull
     public Expression args(@NonNull final Object... args) {
@@ -326,7 +326,7 @@ public abstract class Expression implements Parcelable {
 
         @NonNull
         @Override
-        protected Pair<String, String[]> buildSql(@NonNull final AbstractDao2 dao) {
+        protected Pair<String, String[]> buildSql(@NonNull final AbstractDao dao) {
             if (mSql == null) {
                 // handle constants
                 if (mConstant) {
@@ -437,7 +437,7 @@ public abstract class Expression implements Parcelable {
 
         @NonNull
         @Override
-        protected Pair<String, String[]> buildSql(@NonNull final AbstractDao2 dao) {
+        protected Pair<String, String[]> buildSql(@NonNull final AbstractDao dao) {
             // generate SQL for this field
             if (mSql == null) {
                 final StringBuilder sql = new StringBuilder();
@@ -513,7 +513,7 @@ public abstract class Expression implements Parcelable {
 
         @NonNull
         @Override
-        protected Pair<String, String[]> buildSql(@NonNull final AbstractDao2 dao) {
+        protected Pair<String, String[]> buildSql(@NonNull final AbstractDao dao) {
             return Pair.create(mExpr, mArgs);
         }
 
@@ -665,7 +665,7 @@ public abstract class Expression implements Parcelable {
 
         @NonNull
         @Override
-        protected Pair<String, String[]> buildSql(@NonNull final AbstractDao2 dao) {
+        protected Pair<String, String[]> buildSql(@NonNull final AbstractDao dao) {
             // generate SQL if it hasn't been generated yet
             if (mSql == null) {
                 int i = 0;
@@ -779,7 +779,7 @@ public abstract class Expression implements Parcelable {
 
         @NonNull
         @Override
-        protected Pair<String, String[]> buildSql(@NonNull final AbstractDao2 dao) {
+        protected Pair<String, String[]> buildSql(@NonNull final AbstractDao dao) {
             // generate SQL if it hasn't been generated yet
             if (mSql == null) {
                 final StringBuilder sql = new StringBuilder(mOp).append(" (");
@@ -867,7 +867,7 @@ public abstract class Expression implements Parcelable {
 
         @NonNull
         @Override
-        protected Pair<String, String[]> buildSql(@NonNull final AbstractDao2 dao) {
+        protected Pair<String, String[]> buildSql(@NonNull final AbstractDao dao) {
             // generate SQL if it hasn't been generated yet
             if (mSql == null) {
                 final StringBuilder sql = new StringBuilder(mOp).append(" (");

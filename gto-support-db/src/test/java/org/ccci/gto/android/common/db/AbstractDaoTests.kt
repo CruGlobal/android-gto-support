@@ -5,7 +5,7 @@ import org.hamcrest.CoreMatchers
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Test
 
-class AbstractDao2Tests {
+class AbstractDaoTests {
     @Test
     fun testPrefixOrderBySingleField() {
         val prefix = RootTable.TABLE_NAME + "."

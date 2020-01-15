@@ -125,7 +125,7 @@ public final class Query<T> {
     }
 
     @NonNull
-    Pair<String, String[]> buildSqlFrom(@NonNull final AbstractDao2 dao) {
+    Pair<String, String[]> buildSqlFrom(@NonNull final AbstractDao dao) {
         // joins need to be passed appended to the table name
         final StringBuilder sb = new StringBuilder(mTable.sqlTable(dao));
         String[] args = null;
@@ -138,12 +138,12 @@ public final class Query<T> {
     }
 
     @NonNull
-    Pair<String, String[]> buildSqlWhere(@NonNull final AbstractDao2 dao) {
+    Pair<String, String[]> buildSqlWhere(@NonNull final AbstractDao dao) {
         return mWhere != null ? mWhere.buildSql(dao) : Pair.create(null, null);
     }
 
     @NonNull
-    Pair<String, String[]> buildSqlHaving(@NonNull final AbstractDao2 dao) {
+    Pair<String, String[]> buildSqlHaving(@NonNull final AbstractDao dao) {
         return mHaving != null ? mHaving.buildSql(dao) : Pair.<String, String[]>create(null, null);
     }
 
