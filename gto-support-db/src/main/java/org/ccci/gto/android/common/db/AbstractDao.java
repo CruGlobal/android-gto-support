@@ -3,7 +3,6 @@ package org.ccci.gto.android.common.db;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.text.TextUtils;
 import android.util.Pair;
 
 import org.ccci.gto.android.common.db.Expression.Field;
@@ -35,7 +34,7 @@ public abstract class AbstractDao extends AbstractDao2 {
             }
 
             // prefix un-prefixed clauses
-            orderBy = addPrefixToFields(orderBy, prefix);
+            orderBy = orderBy != null ? AbstractDao2Kt.prefixOrderByFieldsWith(orderBy, prefix) : null;
         }
 
         // generate "FROM {}" SQL
@@ -86,25 +85,5 @@ public abstract class AbstractDao extends AbstractDao2 {
 
         c.moveToPosition(-1);
         return c;
-    }
-
-    String addPrefixToFields(String clause, String prefix) {
-        if (clause != null) {
-            // If there is more than one field in the clause, add the prefix to each field
-            if (clause.contains(",")) {
-                String[] fields = clause.split(",");
-
-                for (int i = 0; i < fields.length; i++) {
-                    if (!fields[i].contains(".")) {
-                        fields[i] = prefix + fields[i].trim();
-                    }
-                }
-                return TextUtils.join(",", fields);
-            }
-            if (!clause.contains(".")) {
-                return prefix + clause;
-            }
-        }
-        return null;
     }
 }
