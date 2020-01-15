@@ -50,7 +50,7 @@ public final class Table<T> implements Parcelable {
     }
 
     @NonNull
-    String sqlTable(@NonNull final AbstractDao dao) {
+    String sqlTable(@NonNull final AbstractDao2 dao) {
         // build the name if we haven't built it already
         if (mSqlTable == null) {
             final StringBuilder sql = new StringBuilder(dao.getTable(mType));

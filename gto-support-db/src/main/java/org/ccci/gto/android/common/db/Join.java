@@ -86,7 +86,7 @@ public final class Join<S, T> implements Parcelable {
     }
 
     @NonNull
-    Pair<String, String[]> buildSql(@NonNull final AbstractDao dao) {
+    Pair<String, String[]> buildSql(@NonNull final AbstractDao2 dao) {
         // build join if we haven't built it already
         if (mSqlJoin == null) {
             final Pair<String, String[]> base = mBase != null ? mBase.buildSql(dao) : Pair.create("", (String[]) null);
