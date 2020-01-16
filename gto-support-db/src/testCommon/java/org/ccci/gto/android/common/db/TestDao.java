@@ -1,13 +1,14 @@
 package org.ccci.gto.android.common.db;
 
 import android.content.Context;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 import org.ccci.gto.android.common.db.Contract.CompoundTable;
 import org.ccci.gto.android.common.db.Contract.RootTable;
 import org.ccci.gto.android.common.db.model.Compound;
 import org.ccci.gto.android.common.db.model.Root;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 public class TestDao extends AbstractDao {
     private TestDao(@Nullable final Context context) {

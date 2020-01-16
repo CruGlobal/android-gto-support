@@ -139,7 +139,7 @@ public final class Query<T> {
 
     @NonNull
     Pair<String, String[]> buildSqlWhere(@NonNull final AbstractDao dao) {
-        return mWhere != null ? mWhere.buildSql(dao) : Pair.<String, String[]>create(null, null);
+        return mWhere != null ? mWhere.buildSql(dao) : Pair.create(null, null);
     }
 
     @NonNull
