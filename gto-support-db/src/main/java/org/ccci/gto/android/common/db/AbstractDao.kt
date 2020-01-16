@@ -166,7 +166,8 @@ abstract class AbstractDao(private val helper: SQLiteOpenHelper) : Dao {
         val clazz = obj.javaClass
         val table = getTable(clazz)
         val values = getMapper(clazz).toContentValues(obj, getFullProjection(clazz))
-        return writableDatabase.transaction(exclusive = false) {
+        return transaction(exclusive = false) {
+            invalidateClass(clazz)
             it.insertWithOnConflict(table, null, values, conflictAlgorithm)
         }
     }
@@ -225,7 +226,8 @@ abstract class AbstractDao(private val helper: SQLiteOpenHelper) : Dao {
     ): Int {
         val table = getTable(type)
         val w = where?.buildSql(this)
-        return writableDatabase.transaction(false) {
+        return transaction(exclusive = false) {
+            invalidateClass(type)
             it.updateWithOnConflict(table, values, w?.first, w?.second, conflictAlgorithm)
         }
     }
@@ -251,6 +253,7 @@ abstract class AbstractDao(private val helper: SQLiteOpenHelper) : Dao {
         val w = where?.buildSql(this)
         transaction(exclusive = false) {
             it.delete(getTable(clazz), w?.first, w?.second)
+            invalidateClass(clazz)
         }
     }
     // endregion Read-Write
@@ -294,13 +297,13 @@ abstract class AbstractDao(private val helper: SQLiteOpenHelper) : Dao {
     fun <T> transaction(
         exclusive: Boolean = true,
         readOnly: Boolean = false,
-        body: AbstractDao.(SQLiteDatabase) -> T
+        body: (SQLiteDatabase) -> T
     ): T = (if (readOnly) readableDatabase else writableDatabase).transaction(exclusive, body)
 
     @WorkerThread
     private inline fun <T> SQLiteDatabase.transaction(
         exclusive: Boolean = true,
-        body: AbstractDao.(SQLiteDatabase) -> T
+        body: (SQLiteDatabase) -> T
     ): T = with(newTransaction(this)) {
         try {
             beginTransaction(exclusive)
@@ -336,7 +339,10 @@ abstract class AbstractDao(private val helper: SQLiteOpenHelper) : Dao {
             put(LastSyncTable.COLUMN_LAST_SYNCED, System.currentTimeMillis())
         }
         // update the last sync time, we can use replace since this is just a keyed timestamp
-        transaction(exclusive = false) { it.replace(getTable(LastSyncTable::class.java), null, values) }
+        transaction(exclusive = false) {
+            it.replace(getTable(LastSyncTable::class.java), null, values)
+            invalidateClass(LastSyncTable::class.java)
+        }
     }
     // endregion LastSync tracking
 
