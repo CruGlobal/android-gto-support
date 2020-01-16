@@ -4,6 +4,7 @@ import android.content.ContentValues
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
+import android.database.sqlite.SQLiteTransactionListener
 import android.os.AsyncTask
 import androidx.annotation.WorkerThread
 import androidx.collection.SimpleArrayMap
@@ -12,6 +13,7 @@ import org.ccci.gto.android.common.db.CommonTables.LastSyncTable
 import org.ccci.gto.android.common.util.ArrayUtils
 import org.ccci.gto.android.common.util.database.getLong
 import org.ccci.gto.android.common.util.database.map
+import org.ccci.gto.android.common.util.kotlin.threadLocal
 import java.util.Date
 import java.util.Locale
 import java.util.concurrent.Executor
@@ -257,7 +259,9 @@ abstract class AbstractDao(private val helper: SQLiteOpenHelper) : Dao {
     fun newTransaction() = newTransaction(writableDatabase)
 
     @WorkerThread
-    protected fun newTransaction(db: SQLiteDatabase) = Transaction.newTransaction(db)
+    protected fun newTransaction(db: SQLiteDatabase) = Transaction.newTransaction(db).apply {
+        transactionListener = InvalidationListener(this)
+    }
 
     @WorkerThread
     fun beginTransaction() = newTransaction().beginTransaction()
@@ -326,6 +330,32 @@ abstract class AbstractDao(private val helper: SQLiteOpenHelper) : Dao {
         writableDatabase.transaction(false) { replace(getTable(LastSyncTable::class.java), null, values) }
     }
     // endregion LastSync tracking
+
+    // region Data Invalidation
+    private var currentTransaction by threadLocal<Transaction>()
+
+    private inner class InvalidationListener(private val transaction: Transaction) : SQLiteTransactionListener {
+        override fun onBegin() {
+            transaction.parent = currentTransaction
+            currentTransaction = transaction
+        }
+
+        override fun onCommit() {
+            currentTransaction = transaction.parent
+            transaction.invalidatedClasses.forEach { invalidateClass(it) }
+        }
+
+        override fun onRollback() {
+            currentTransaction = transaction.parent
+        }
+    }
+
+    protected fun invalidateClass(clazz: Class<*>) {
+        currentTransaction?.invalidatedClasses?.add(clazz) ?: onInvalidateClass(clazz)
+    }
+
+    protected open fun onInvalidateClass(clazz: Class<*>) = Unit
+    // endregion Data Invalidation
 
     protected fun compileExpression(expression: Expression) = expression.buildSql(this)
 }
