@@ -5,6 +5,10 @@ import com.google.gson.FieldAttributes;
 
 import androidx.annotation.NonNull;
 
+/**
+ * @deprecated Since v3.3.0, we are favoring usage of Moshi in android apps over the usage of Gson.
+ */
+@Deprecated
 public class GsonIgnoreExclusionStrategy implements ExclusionStrategy {
     @Override
     public boolean shouldSkipField(@NonNull final FieldAttributes f) {
