@@ -54,7 +54,11 @@ class Transaction private constructor(
     fun end() = endTransaction()
     fun endTransaction(): Transaction {
         if (state in STATE_OPEN until STATE_CLOSED) {
-            db?.endTransaction()
+            try {
+                db!!.endTransaction()
+            } finally {
+                (transactionListener as? Listener)?.onFinished()
+            }
             state = STATE_CLOSED
         }
         return this
@@ -77,6 +81,10 @@ class Transaction private constructor(
     internal var parent: Transaction? = null
     internal val invalidatedClasses = mutableSetOf<Class<*>>()
     // endregion Invalidation Tracking
+
+    internal interface Listener {
+        fun onFinished(): Unit
+    }
 
     companion object {
         @JvmStatic

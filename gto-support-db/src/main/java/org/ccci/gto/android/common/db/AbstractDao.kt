@@ -349,7 +349,10 @@ abstract class AbstractDao(private val helper: SQLiteOpenHelper) : Dao {
     // region Data Invalidation
     private var currentTransaction by threadLocal<Transaction>()
 
-    private inner class InvalidationListener(private val transaction: Transaction) : SQLiteTransactionListener {
+    private inner class InvalidationListener(private val transaction: Transaction) : SQLiteTransactionListener,
+        Transaction.Listener {
+        private var commited = false
+
         override fun onBegin() {
             transaction.parent = currentTransaction
             currentTransaction = transaction
@@ -357,11 +360,15 @@ abstract class AbstractDao(private val helper: SQLiteOpenHelper) : Dao {
 
         override fun onCommit() {
             currentTransaction = transaction.parent
-            transaction.invalidatedClasses.forEach { invalidateClass(it) }
+            commited = true
         }
 
         override fun onRollback() {
             currentTransaction = transaction.parent
+        }
+
+        override fun onFinished() {
+            if (commited) transaction.invalidatedClasses.forEach { invalidateClass(it) }
         }
     }
 
