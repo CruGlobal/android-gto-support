@@ -33,10 +33,8 @@ class Transaction private constructor(
     @JvmOverloads
     fun beginTransaction(exclusive: Boolean = true): Transaction {
         if (state < STATE_OPEN) {
-            db?.run {
-                if (exclusive) beginTransactionWithListener(transactionListener)
-                else beginTransactionWithListenerNonExclusive(transactionListener)
-            }
+            if (exclusive) db!!.beginTransactionWithListener(transactionListener)
+            else db!!.beginTransactionWithListenerNonExclusive(transactionListener)
             state = STATE_OPEN
         }
         return this
@@ -45,7 +43,7 @@ class Transaction private constructor(
     fun setSuccessful() = setTransactionSuccessful()
     fun setTransactionSuccessful(): Transaction {
         if (state in STATE_OPEN until STATE_SUCCESSFUL) {
-            db?.setTransactionSuccessful()
+            db!!.setTransactionSuccessful()
             state = STATE_SUCCESSFUL
         }
         return this
