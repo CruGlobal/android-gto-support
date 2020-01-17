@@ -25,7 +25,7 @@ class TheKeySession private constructor(
         baseAttrName: String = PREF_SESSION_BASE_NAME
     ) : this(prefs = prefs, id = null, guid = guid, baseAttrName = baseAttrName)
 
-    override fun isValid() = super.isValid() && guid != null
+    override val isValid get() = super.isValid && guid != null
 
     override fun equals(other: Any?) = when {
         this === other -> true

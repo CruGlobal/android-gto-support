@@ -41,7 +41,7 @@ open class Session protected constructor(
         prefs.remove(prefAttrName(PREF_ID))
     }
 
-    open fun isValid() = id != null
+    open val isValid get() = id != null
 
     override fun equals(other: Any?) = when {
         this === other -> true
