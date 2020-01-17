@@ -24,11 +24,6 @@ stages:
 - test
 - name: deploy
   if: branch = master AND type = push
-matrix:
-  fast_finish: true
-  allow_failures:
-  - env: ANDROID_TARGET=android-21 ANDROID_ABI=armeabi-v7a
-  - env: ANDROID_TARGET=android-22 ANDROID_ABI=armeabi-v7a
 
 before_cache:
 - rm -f $HOME/.gradle/caches/modules-2/modules-2.lock
@@ -72,6 +67,7 @@ script:
 - ./gradlew connectedCheck -PdisablePreDex --parallel --continue --stacktrace
 
 jobs:
+  fast_finish: true
   include:
   - name: "Build"
     stage: compile
@@ -105,5 +101,8 @@ jobs:
         branch: master
         jdk: oraclejdk8
 
+  allow_failures:
+  - env: ANDROID_TARGET=android-21 ANDROID_ABI=armeabi-v7a
+  - env: ANDROID_TARGET=android-22 ANDROID_ABI=armeabi-v7a
 notifications:
   email: false
