@@ -4,6 +4,7 @@ import android.content.ContentValues
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
+import android.database.sqlite.SQLiteTransactionListener
 import android.os.AsyncTask
 import androidx.annotation.WorkerThread
 import androidx.collection.SimpleArrayMap
@@ -12,6 +13,7 @@ import org.ccci.gto.android.common.db.CommonTables.LastSyncTable
 import org.ccci.gto.android.common.util.ArrayUtils
 import org.ccci.gto.android.common.util.database.getLong
 import org.ccci.gto.android.common.util.database.map
+import org.ccci.gto.android.common.util.kotlin.threadLocal
 import java.util.Date
 import java.util.Locale
 import java.util.concurrent.Executor
@@ -39,11 +41,9 @@ abstract class AbstractDao(private val helper: SQLiteOpenHelper) : Dao {
 
     override val backgroundExecutor: Executor get() = AsyncTask.THREAD_POOL_EXECUTOR
     @get:WorkerThread
-    protected val readableDatabase: SQLiteDatabase
-        get() = helper.readableDatabase
+    protected val readableDatabase: SQLiteDatabase get() = helper.readableDatabase
     @get:WorkerThread
-    protected val writableDatabase: SQLiteDatabase
-        get() = helper.writableDatabase
+    protected val writableDatabase: SQLiteDatabase get() = helper.writableDatabase
 
     // region Registered Types
     private val tableTypes = SimpleArrayMap<Class<*>, TableType>()
@@ -151,8 +151,8 @@ abstract class AbstractDao(private val helper: SQLiteOpenHelper) : Dao {
         val limit = query.buildSqlLimit()
 
         // execute actual query
-        val c = readableDatabase.transaction(false) {
-            query(query.mDistinct, tables, projection, where.first, args, groupBy, having, orderBy, limit)
+        val c = transaction(exclusive = false, readOnly = true) {
+            it.query(query.mDistinct, tables, projection, where.first, args, groupBy, having, orderBy, limit)
         }
         c.moveToPosition(-1)
         return c
@@ -166,7 +166,10 @@ abstract class AbstractDao(private val helper: SQLiteOpenHelper) : Dao {
         val clazz = obj.javaClass
         val table = getTable(clazz)
         val values = getMapper(clazz).toContentValues(obj, getFullProjection(clazz))
-        return writableDatabase.transaction(false) { insertWithOnConflict(table, null, values, conflictAlgorithm) }
+        return transaction(exclusive = false) {
+            invalidateClass(clazz)
+            it.insertWithOnConflict(table, null, values, conflictAlgorithm)
+        }
     }
 
     @WorkerThread
@@ -223,8 +226,9 @@ abstract class AbstractDao(private val helper: SQLiteOpenHelper) : Dao {
     ): Int {
         val table = getTable(type)
         val w = where?.buildSql(this)
-        return writableDatabase.transaction(false) {
-            updateWithOnConflict(table, values, w?.first, w?.second, conflictAlgorithm)
+        return transaction(exclusive = false) {
+            invalidateClass(type)
+            it.updateWithOnConflict(table, values, w?.first, w?.second, conflictAlgorithm)
         }
     }
 
@@ -247,19 +251,27 @@ abstract class AbstractDao(private val helper: SQLiteOpenHelper) : Dao {
     @WorkerThread
     final override fun delete(clazz: Class<*>, where: Expression?) {
         val w = where?.buildSql(this)
-        writableDatabase.transaction(false) { delete(getTable(clazz), w?.first, w?.second) }
+        transaction(exclusive = false) {
+            it.delete(getTable(clazz), w?.first, w?.second)
+            invalidateClass(clazz)
+        }
     }
     // endregion Read-Write
     // endregion Queries
 
     // region Transaction Management
     @WorkerThread
+    @Deprecated("Since v3.3.0, use Dao.inTransaction or Dao.transaction {} instead")
     fun newTransaction() = newTransaction(writableDatabase)
 
     @WorkerThread
-    protected fun newTransaction(db: SQLiteDatabase) = Transaction.newTransaction(db)
+    @Deprecated("Since v3.3.0, use Dao.inTransaction or Dao.transaction {} instead")
+    protected fun newTransaction(db: SQLiteDatabase) = Transaction.newTransaction(db).apply {
+        transactionListener = InvalidationListener(this)
+    }
 
     @WorkerThread
+    @Deprecated("Since v3.3.0, use Dao.inTransaction or Dao.transaction {} instead")
     fun beginTransaction() = newTransaction().beginTransaction()
 
     @WorkerThread
@@ -270,6 +282,7 @@ abstract class AbstractDao(private val helper: SQLiteOpenHelper) : Dao {
         inTransaction(writableDatabase, false, closure)
 
     @WorkerThread
+    @Deprecated("Since v3.3.0, use Dao.inTransaction or Dao.transaction {} instead")
     fun <T, X : Throwable?> inNonExclusiveTransaction(db: SQLiteDatabase, closure: Closure<T, X>): T =
         inTransaction(db, false, closure)
 
@@ -281,13 +294,16 @@ abstract class AbstractDao(private val helper: SQLiteOpenHelper) : Dao {
     ): T = db.transaction(exclusive) { closure.run() }
 
     @WorkerThread
-    fun <T> transaction(exclusive: Boolean = true, body: SQLiteDatabase.() -> T): T =
-        writableDatabase.transaction(exclusive, body)
+    fun <T> transaction(
+        exclusive: Boolean = true,
+        readOnly: Boolean = false,
+        body: (SQLiteDatabase) -> T
+    ): T = (if (readOnly) readableDatabase else writableDatabase).transaction(exclusive, body)
 
     @WorkerThread
-    protected inline fun <T> SQLiteDatabase.transaction(
+    private inline fun <T> SQLiteDatabase.transaction(
         exclusive: Boolean = true,
-        body: SQLiteDatabase.() -> T
+        body: (SQLiteDatabase) -> T
     ): T = with(newTransaction(this)) {
         try {
             beginTransaction(exclusive)
@@ -323,9 +339,45 @@ abstract class AbstractDao(private val helper: SQLiteOpenHelper) : Dao {
             put(LastSyncTable.COLUMN_LAST_SYNCED, System.currentTimeMillis())
         }
         // update the last sync time, we can use replace since this is just a keyed timestamp
-        writableDatabase.transaction(false) { replace(getTable(LastSyncTable::class.java), null, values) }
+        transaction(exclusive = false) {
+            it.replace(getTable(LastSyncTable::class.java), null, values)
+            invalidateClass(LastSyncTable::class.java)
+        }
     }
     // endregion LastSync tracking
+
+    // region Data Invalidation
+    private var currentTransaction by threadLocal<Transaction>()
+
+    private inner class InvalidationListener(private val transaction: Transaction) : SQLiteTransactionListener,
+        Transaction.Listener {
+        private var commited = false
+
+        override fun onBegin() {
+            transaction.parent = currentTransaction
+            currentTransaction = transaction
+        }
+
+        override fun onCommit() {
+            currentTransaction = transaction.parent
+            commited = true
+        }
+
+        override fun onRollback() {
+            currentTransaction = transaction.parent
+        }
+
+        override fun onFinished() {
+            if (commited) transaction.invalidatedClasses.forEach { invalidateClass(it) }
+        }
+    }
+
+    protected fun invalidateClass(clazz: Class<*>) {
+        currentTransaction?.invalidatedClasses?.add(clazz) ?: onInvalidateClass(clazz)
+    }
+
+    protected open fun onInvalidateClass(clazz: Class<*>) = Unit
+    // endregion Data Invalidation
 
     protected fun compileExpression(expression: Expression) = expression.buildSql(this)
 }

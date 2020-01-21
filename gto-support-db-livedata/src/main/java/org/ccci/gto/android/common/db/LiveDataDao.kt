@@ -29,10 +29,6 @@ interface LiveDataDao : Dao {
     fun <T> getCursorLiveData(query: Query<T>): LiveData<Cursor> = DaoGetCursorComputableLiveData(this, query)
         .also { with(liveDataRegistry) { it.registerFor(query) } }
         .liveData
-
-    @MainThread
-    @JvmDefault
-    fun invalidateLiveData(clazz: Class<*>) = liveDataRegistry.invalidate(clazz)
 }
 
 // region DaoComputableLiveData
@@ -75,7 +71,7 @@ class LiveDataRegistry {
         registerFor(join.mTarget)
     }
 
-    internal fun invalidate(clazz: Class<*>) {
+    fun invalidate(clazz: Class<*>) {
         registry[clazz]?.keys?.forEach { it.invalidate() }
     }
 }
