@@ -27,6 +27,9 @@ class Query<T> private constructor(
 
         @JvmStatic
         fun <T> select(table: Table<T>) = Query(table = table)
+
+        @JvmStatic
+        inline fun <reified T> select() = select(T::class.java)
     }
 
     fun distinct(distinct: Boolean) = Query(this, distinct = distinct)
