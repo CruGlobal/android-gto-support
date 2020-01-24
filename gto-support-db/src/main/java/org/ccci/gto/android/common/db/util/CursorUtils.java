@@ -52,7 +52,7 @@ public final class CursorUtils {
      */
     @Deprecated
     public static int getInt(@NonNull final Cursor c, @NonNull final String field) {
-        return org.ccci.gto.android.common.util.database.CursorUtils.getInt(c, field, 0);
+        return org.ccci.gto.android.common.util.database.CursorUtils.getNonNullInt(c, field, 0);
     }
 
     /**
@@ -61,7 +61,7 @@ public final class CursorUtils {
      */
     @Deprecated
     public static int getInt(@NonNull final Cursor c, @NonNull final String field, final int defValue) {
-        return org.ccci.gto.android.common.util.database.CursorUtils.getInt(c, field, defValue);
+        return org.ccci.gto.android.common.util.database.CursorUtils.getNonNullInt(c, field, defValue);
     }
 
     /**
@@ -70,7 +70,7 @@ public final class CursorUtils {
      */
     @Deprecated
     public static long getLong(@NonNull final Cursor c, @NonNull final String field) {
-        return org.ccci.gto.android.common.util.database.CursorUtils.getLong(c, field, 0L);
+        return org.ccci.gto.android.common.util.database.CursorUtils.getNonNullLong(c, field, 0L);
     }
 
     /**

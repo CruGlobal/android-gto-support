@@ -41,8 +41,12 @@ public abstract class AbstractMapper<T> implements Mapper<T> {
         return org.ccci.gto.android.common.util.database.CursorUtils.getInt(c, field, 0);
     }
 
+    /**
+     * @deprecated Since v3.3.0, use CursorUtils.getNonNullInt() directly.
+     */
+    @Deprecated
     protected final int getInt(@NonNull final Cursor c, @NonNull final String field, final int defValue) {
-        return org.ccci.gto.android.common.util.database.CursorUtils.getInt(c, field, defValue);
+        return org.ccci.gto.android.common.util.database.CursorUtils.getNonNullInt(c, field, defValue);
     }
 
     protected final long getLong(@NonNull final Cursor c, @NonNull final String field) {
