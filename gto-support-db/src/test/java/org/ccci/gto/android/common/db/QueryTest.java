@@ -14,8 +14,8 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.AnyOf.anyOf;
-import static org.junit.Assert.assertThat;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -48,6 +48,6 @@ public class QueryTest {
         assertThat(query.limit(null).buildSqlLimit(), nullValue());
         assertThat(query.limit(null).offset(10).buildSqlLimit(), nullValue());
         assertThat(query.limit(5).offset(null).buildSqlLimit(), is("5"));
-        assertThat(query.limit(5).offset(15).buildSqlLimit(), anyOf(is("5 OFFSET 15"), is("15,5")));
+        assertThat(query.limit(5).offset(15).buildSqlLimit(), anyOf(is("5 OFFSET 15"), is("15, 5")));
     }
 }
