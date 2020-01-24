@@ -166,15 +166,15 @@ abstract class AbstractDao(private val helper: SQLiteOpenHelper) : Dao {
         val clazz = obj.javaClass
         val table = getTable(clazz)
         val values = getMapper(clazz).toContentValues(obj, getFullProjection(clazz))
-        return transaction(exclusive = false) {
+        return transaction(exclusive = false) { db ->
             invalidateClass(clazz)
-            it.insertWithOnConflict(table, null, values, conflictAlgorithm)
+            db.insertWithOnConflict(table, null, values, conflictAlgorithm)
         }
     }
 
     @WorkerThread
     fun replace(obj: Any) {
-        transaction {
+        transaction { _ ->
             delete(obj)
             insert(obj)
         }
@@ -226,9 +226,9 @@ abstract class AbstractDao(private val helper: SQLiteOpenHelper) : Dao {
     ): Int {
         val table = getTable(type)
         val w = where?.buildSql(this)
-        return transaction(exclusive = false) {
+        return transaction(exclusive = false) { db ->
             invalidateClass(type)
-            it.updateWithOnConflict(table, values, w?.first, w?.second, conflictAlgorithm)
+            db.updateWithOnConflict(table, values, w?.first, w?.second, conflictAlgorithm)
         }
     }
 
@@ -239,7 +239,7 @@ abstract class AbstractDao(private val helper: SQLiteOpenHelper) : Dao {
     @WorkerThread
     @Suppress("IMPLICIT_CAST_TO_ANY")
     fun updateOrInsert(obj: Any, conflictAlgorithm: Int = SQLiteDatabase.CONFLICT_NONE, vararg projection: String) {
-        transaction {
+        transaction { _ ->
             if (refresh(obj) != null) update(obj, conflictAlgorithm, *projection)
             else insert(obj, conflictAlgorithm)
         }
@@ -251,8 +251,8 @@ abstract class AbstractDao(private val helper: SQLiteOpenHelper) : Dao {
     @WorkerThread
     final override fun delete(clazz: Class<*>, where: Expression?) {
         val w = where?.buildSql(this)
-        transaction(exclusive = false) {
-            it.delete(getTable(clazz), w?.first, w?.second)
+        transaction(exclusive = false) { db ->
+            db.delete(getTable(clazz), w?.first, w?.second)
             invalidateClass(clazz)
         }
     }
@@ -345,8 +345,8 @@ abstract class AbstractDao(private val helper: SQLiteOpenHelper) : Dao {
             put(LastSyncTable.COLUMN_LAST_SYNCED, System.currentTimeMillis())
         }
         // update the last sync time, we can use replace since this is just a keyed timestamp
-        transaction(exclusive = false) {
-            it.replace(getTable(LastSyncTable::class.java), null, values)
+        transaction(exclusive = false) { db ->
+            db.replace(getTable(LastSyncTable::class.java), null, values)
             invalidateClass(LastSyncTable::class.java)
         }
     }
