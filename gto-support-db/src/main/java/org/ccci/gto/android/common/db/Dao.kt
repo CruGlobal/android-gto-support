@@ -24,7 +24,7 @@ interface Dao {
 
     @JvmDefault
     @WorkerThread
-    fun getCursor(clazz: Class<*>, whereClause: String?, whereBindValues: Array<String?>?, orderBy: String?) =
+    fun getCursor(clazz: Class<*>, whereClause: String?, whereBindValues: Array<String>?, orderBy: String?) =
         getCursor(Query.select(clazz).where(whereClause, *whereBindValues.orEmpty()).orderBy(orderBy))
 
     @WorkerThread
