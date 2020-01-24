@@ -283,7 +283,7 @@ abstract class AbstractDao(private val helper: SQLiteOpenHelper) : Dao {
 
     @WorkerThread
     @Deprecated("Since v3.3.0, use Dao.inTransaction or Dao.transaction {} instead")
-    fun <T, X : Throwable?> inNonExclusiveTransaction(db: SQLiteDatabase, closure: Closure<T, X>): T =
+    protected fun <T, X : Throwable?> inNonExclusiveTransaction(db: SQLiteDatabase, closure: Closure<T, X>): T =
         inTransaction(db, false, closure)
 
     @WorkerThread
@@ -295,6 +295,12 @@ abstract class AbstractDao(private val helper: SQLiteOpenHelper) : Dao {
 
     @WorkerThread
     fun <T> transaction(
+        exclusive: Boolean = true,
+        body: () -> T
+    ): T = writableDatabase.transaction(exclusive) { body() }
+
+    @WorkerThread
+    protected fun <T> transaction(
         exclusive: Boolean = true,
         readOnly: Boolean = false,
         body: (SQLiteDatabase) -> T
