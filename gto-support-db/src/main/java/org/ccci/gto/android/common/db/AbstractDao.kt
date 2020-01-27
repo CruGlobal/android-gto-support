@@ -109,26 +109,26 @@ abstract class AbstractDao(private val helper: SQLiteOpenHelper) : Dao {
 
     @WorkerThread
     final override fun <T> get(query: Query<T>) = getCursor(query.projection()).use { c ->
-        val mapper = getMapper(query.mTable.mType)
+        val mapper = getMapper(query.table.mType)
         c.map { mapper.toObject(it) }
     }
 
     @WorkerThread
     final override fun getCursor(query: Query<*>): Cursor {
-        var projection = query.mProjection ?: getFullProjection(query.mTable.mType)
-        var orderBy = query.mOrderBy
+        var projection = query.projection ?: getFullProjection(query.table.mType)
+        var orderBy = query.orderBy
 
         // prefix projection and orderBy when we have joins
-        if (query.mJoins.isNotEmpty()) {
-            val prefix = query.mTable.sqlPrefix(this)
+        if (query.joins.isNotEmpty()) {
+            val prefix = query.table.sqlPrefix(this)
             projection = projection.map { if (it.contains(".")) it else prefix + it }.toTypedArray()
             orderBy = orderBy?.prefixOrderByFieldsWith(prefix)
         }
 
         // generate "FROM {}" SQL
         val from = query.buildSqlFrom(this)
-        val tables = from.first
-        var args = from.second
+        val tables = from.sql
+        var args = from.args
 
         // generate "WHERE {}" SQL
         val where = query.buildSqlWhere(this)
@@ -137,9 +137,9 @@ abstract class AbstractDao(private val helper: SQLiteOpenHelper) : Dao {
         // handle GROUP BY {} HAVING {}
         var groupBy: String? = null
         var having: String? = null
-        if (query.mGroupBy.isNotEmpty()) {
+        if (query.groupBy.isNotEmpty()) {
             // generate "GROUP BY {}" SQL
-            groupBy = query.mGroupBy.joinToString(",") { it.buildSql(this).first }
+            groupBy = query.groupBy.joinToString(",") { it.buildSql(this).first }
 
             // generate "HAVING {}" SQL
             val havingRaw = query.buildSqlHaving(this)
@@ -152,7 +152,7 @@ abstract class AbstractDao(private val helper: SQLiteOpenHelper) : Dao {
 
         // execute actual query
         val c = transaction(exclusive = false, readOnly = true) {
-            it.query(query.mDistinct, tables, projection, where.first, args, groupBy, having, orderBy, limit)
+            it.query(query.distinct, tables, projection, where.first, args, groupBy, having, orderBy, limit)
         }
         c.moveToPosition(-1)
         return c
