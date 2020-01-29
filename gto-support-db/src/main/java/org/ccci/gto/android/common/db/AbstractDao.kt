@@ -147,12 +147,9 @@ abstract class AbstractDao(private val helper: SQLiteOpenHelper) : Dao {
             args = ArrayUtils.merge(String::class.java, args, havingRaw.second)
         }
 
-        // generate "LIMIT {}" SQL
-        val limit = query.buildSqlLimit()
-
         // execute actual query
         val c = transaction(exclusive = false, readOnly = true) {
-            it.query(query.distinct, tables, projection, where.first, args, groupBy, having, orderBy, limit)
+            it.query(query.distinct, tables, projection, where.first, args, groupBy, having, orderBy, query.sqlLimit)
         }
         c.moveToPosition(-1)
         return c
