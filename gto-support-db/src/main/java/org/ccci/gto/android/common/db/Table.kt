@@ -18,6 +18,9 @@ class Table<T> private constructor(
     fun `as`(alias: String?) = Table(type, alias)
     fun field(field: String) = Expression.Field(this, field)
 
+    fun <T2> join(target: Table<T2>) = Join.create<T, T2>(target)
+    inline fun <reified T2> join() = join(forClass(T2::class.java))
+
     @Transient
     @IgnoredOnParcel
     private var sqlPrefix: String? = null

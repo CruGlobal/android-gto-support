@@ -13,6 +13,16 @@ class Join<S, T> private constructor(
     private val type: String? = null,
     private val on: Expression? = null
 ) : Parcelable {
+    companion object {
+        @JvmField
+        val NO_JOINS = emptyArray<Join<*, *>>()
+
+        @Deprecated("Since v3.3.0, use source.join() instead", ReplaceWith("source.join(target)"))
+        fun <S, T> create(source: Table<S>, target: Table<T>) = source.join(target)
+
+        fun <S, T> create(target: Table<T>) = Join<S, T>(target = target)
+    }
+
     private constructor(
         join: Join<S, T>,
         target: Table<T> = join.target,
@@ -36,18 +46,5 @@ class Join<S, T> private constructor(
             if (type != null) append(' ').append(type)
             append(" JOIN ").append(target.sqlTable(dao))
         } + on?.buildSql(dao)?.toQueryComponent()?.prepend(" ON ")).also { sqlJoin = it }
-    }
-
-    companion object {
-        @JvmField
-        val NO_JOINS = emptyArray<Join<*, *>>()
-
-        fun <S, T> create(source: Table<S>, target: Table<T>): Join<S, T> {
-            return create(target)
-        }
-
-        fun <S, T> create(target: Table<T>): Join<S, T> {
-            return Join(target = target)
-        }
     }
 }
