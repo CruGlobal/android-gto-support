@@ -1,18 +1,16 @@
 package org.ccci.gto.android.common.db
 
 import android.os.Parcelable
-import android.util.Pair
 import androidx.annotation.RestrictTo
 import kotlinx.android.parcel.IgnoredOnParcel
 import kotlinx.android.parcel.Parcelize
 import org.ccci.gto.android.common.db.Table.Companion.forClass
-import org.ccci.gto.android.common.util.ArrayUtils
 
 @Parcelize
 class Join<S, T> private constructor(
     @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP) val target: Table<T>,
     @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP) val base: Join<S, *>? = null,
-    private val type: String = "",
+    private val type: String? = null,
     private val on: Expression? = null
 ) : Parcelable {
     private constructor(
@@ -21,8 +19,7 @@ class Join<S, T> private constructor(
         base: Join<S, *>? = join.base,
         type: String? = join.type,
         on: Expression? = join.on
-    ) : this(target, base, type ?: "", on)
-
+    ) : this(target, base, type, on)
     fun type(type: String?) = Join(this, type = type)
     fun on(on: Expression?) = Join(this, on = on)
     fun andOn(on: Expression) = Join(this, on = this.on?.and(on) ?: on)
@@ -32,32 +29,13 @@ class Join<S, T> private constructor(
 
     @Transient
     @IgnoredOnParcel
-    private var sqlJoin: Pair<String, Array<String>>? = null
+    private var sqlJoin: QueryComponent? = null
 
-    fun buildSql(dao: AbstractDao): Pair<String, Array<String>> {
-        // build join if we haven't built it already
-        if (sqlJoin == null) {
-            val base = base?.buildSql(dao) ?: Pair.create("", emptyArray())
-            var args = base.second
-            // build SQL
-            val sql = StringBuilder(base.first.length + 32 + type.length)
-            sql.append(' ').append(base.first)
-            sql.append(' ').append(type)
-            sql.append(" JOIN ").append(target.sqlTable(dao))
-            if (on != null) {
-                val on = on.buildSql(dao)
-                sql.append(" ON ").append(on.first)
-                args = ArrayUtils.merge(
-                    String::class.java,
-                    args,
-                    on.second
-                )
-            }
-            // save built JOIN
-            sqlJoin = Pair.create(sql.toString(), args)
-        }
-        // return the cached join
-        return sqlJoin!!
+    internal fun buildSql(dao: AbstractDao): QueryComponent {
+        return sqlJoin ?: (base?.buildSql(dao) + buildString {
+            if (type != null) append(' ').append(type)
+            append(" JOIN ").append(target.sqlTable(dao))
+        } + on?.buildSql(dao)?.toQueryComponent()?.prepend(" ON ")).also { sqlJoin = it }
     }
 
     companion object {
