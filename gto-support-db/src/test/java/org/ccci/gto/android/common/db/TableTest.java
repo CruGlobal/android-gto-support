@@ -4,6 +4,7 @@ import android.text.TextUtils;
 
 import org.ccci.gto.android.common.testing.CommonMocks;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.core.classloader.annotations.PrepareForTest;
@@ -15,6 +16,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+@Ignore
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({TextUtils.class})
 public class TableTest {
