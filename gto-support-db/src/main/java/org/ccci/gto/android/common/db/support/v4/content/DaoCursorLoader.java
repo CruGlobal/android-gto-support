@@ -32,7 +32,7 @@ public class DaoCursorLoader<T> extends SimpleCursorLoader {
     private final Table<T> mFrom;
     @NonNull
     @SuppressWarnings("unchecked")
-    private Join<T, ?>[] mJoins = Join.NO_JOINS;
+    private Join<T, ?>[] mJoins = (Join<T, ?>[]) Join.NO_JOINS;
     @Nullable
     private Expression mWhere;
     @Nullable
@@ -103,7 +103,7 @@ public class DaoCursorLoader<T> extends SimpleCursorLoader {
 
     @SuppressWarnings("unchecked")
     public void setJoins(@Nullable final Join<T, ?>... joins) {
-        mJoins = joins != null ? joins : Join.NO_JOINS;
+        mJoins = joins != null ? joins : (Join<T, ?>[]) Join.NO_JOINS;
     }
 
     @NonNull
