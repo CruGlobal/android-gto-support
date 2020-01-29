@@ -64,7 +64,7 @@ class Query<T> private constructor(
         return having?.buildSql(dao) ?: Pair.create<String?, Array<String>?>(null, null)
     }
 
-    internal val sqlLimit: String? get() = when {
+    internal val sqlLimit get() = when {
         // // XXX: not supported by Android
         // // "{limit} OFFSET {offset}" syntax
         // limit != null && offset != null -> "$limit OFFSET $offset"
