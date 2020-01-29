@@ -58,22 +58,22 @@ abstract class AbstractDao(private val helper: SQLiteOpenHelper) : Dao {
         tableTypes.put(clazz, TableType(table, projection, mapper, pkWhere))
     }
 
-    protected open fun getTable(clazz: Class<*>) =
+    protected fun getTable(clazz: Class<*>) =
         tableTypes.get(clazz)?.table ?: throw IllegalArgumentException("invalid class specified: ${clazz.name}")
 
     fun getFullProjection(table: Table<*>) = getFullProjection(table.mType)
-    open fun getFullProjection(clazz: Class<*>) =
+    fun getFullProjection(clazz: Class<*>) =
         tableTypes.get(clazz)?.projection ?: throw IllegalArgumentException("invalid class specified: ${clazz.name}")
 
-    protected open fun getPrimaryKeyWhere(clazz: Class<*>, vararg key: Any) = getPrimaryKeyWhere(clazz).args(*key)
-    protected open fun getPrimaryKeyWhere(clazz: Class<*>) =
+    protected fun getPrimaryKeyWhere(clazz: Class<*>, vararg key: Any) = getPrimaryKeyWhere(clazz).args(*key)
+    protected fun getPrimaryKeyWhere(clazz: Class<*>) =
         tableTypes.get(clazz)?.primaryWhere ?: throw IllegalArgumentException("invalid class specified: ${clazz.name}")
 
     protected open fun getPrimaryKeyWhere(obj: Any): Expression =
         throw IllegalArgumentException("unsupported object: ${obj.javaClass.name}")
 
     @Suppress("UNCHECKED_CAST")
-    protected open fun <T> getMapper(clazz: Class<T>) = tableTypes.get(clazz)?.mapper as? Mapper<T>
+    protected fun <T> getMapper(clazz: Class<T>) = tableTypes.get(clazz)?.mapper as? Mapper<T>
         ?: throw IllegalArgumentException("invalid class specified: ${clazz.name}")
     // endregion Registered Types
 
