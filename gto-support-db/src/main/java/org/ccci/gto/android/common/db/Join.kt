@@ -40,7 +40,7 @@ class Join<S, T> private constructor(
 
     companion object {
         @JvmField
-        val NO_JOINS: Array<Join<*, *>> = emptyArray()
+        val NO_JOINS = emptyArray<Join<*, *>>()
 
         fun <S, T> create(source: Table<S>, target: Table<T>): Join<S, T> {
             return create(target)

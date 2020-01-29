@@ -128,7 +128,6 @@ abstract class AbstractDao(private val helper: SQLiteOpenHelper) : Dao {
 
         // generate "FROM {}" SQL
         val from = query.buildSqlFrom(this)
-        val tables = from.sql
         var args = from.args
 
         // generate "WHERE {}" SQL
@@ -150,7 +149,7 @@ abstract class AbstractDao(private val helper: SQLiteOpenHelper) : Dao {
 
         // execute actual query
         val c = transaction(exclusive = false, readOnly = true) {
-            it.query(query.distinct, tables, projection, where.first, args, groupBy, having, orderBy, query.sqlLimit)
+            it.query(query.distinct, from.sql, projection, where.first, args, groupBy, having, orderBy, query.sqlLimit)
         }
         c.moveToPosition(-1)
         return c
