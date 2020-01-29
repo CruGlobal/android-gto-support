@@ -58,10 +58,11 @@ abstract class AbstractDao(private val helper: SQLiteOpenHelper) : Dao {
         tableTypes.put(clazz, TableType(table, projection, mapper, pkWhere))
     }
 
-    protected fun getTable(clazz: Class<*>) =
+    internal open fun tableName(clazz: Class<*>) =
         tableTypes.get(clazz)?.table ?: throw IllegalArgumentException("invalid class specified: ${clazz.name}")
+    protected fun getTable(clazz: Class<*>) = tableName(clazz)
 
-    fun getFullProjection(table: Table<*>) = getFullProjection(table.mType)
+    fun getFullProjection(table: Table<*>) = getFullProjection(table.type)
     fun getFullProjection(clazz: Class<*>) =
         tableTypes.get(clazz)?.projection ?: throw IllegalArgumentException("invalid class specified: ${clazz.name}")
 
@@ -109,13 +110,13 @@ abstract class AbstractDao(private val helper: SQLiteOpenHelper) : Dao {
 
     @WorkerThread
     final override fun <T> get(query: Query<T>) = getCursor(query.projection()).use { c ->
-        val mapper = getMapper(query.table.mType)
+        val mapper = getMapper(query.table.type)
         c.map { mapper.toObject(it) }
     }
 
     @WorkerThread
     final override fun getCursor(query: Query<*>): Cursor {
-        var projection = query.projection ?: getFullProjection(query.table.mType)
+        var projection = query.projection ?: getFullProjection(query.table.type)
         var orderBy = query.orderBy
 
         // prefix projection and orderBy when we have joins
@@ -161,7 +162,7 @@ abstract class AbstractDao(private val helper: SQLiteOpenHelper) : Dao {
     @WorkerThread
     final override fun <T : Any> insert(obj: T, conflictAlgorithm: Int): Long {
         val clazz = obj.javaClass
-        val table = getTable(clazz)
+        val table = tableName(clazz)
         val values = getMapper(clazz).toContentValues(obj, getFullProjection(clazz))
         return transaction(exclusive = false) { db ->
             invalidateClass(clazz)
@@ -221,7 +222,7 @@ abstract class AbstractDao(private val helper: SQLiteOpenHelper) : Dao {
         where: Expression?,
         conflictAlgorithm: Int = SQLiteDatabase.CONFLICT_NONE
     ): Int {
-        val table = getTable(type)
+        val table = tableName(type)
         val w = where?.buildSql(this)
         return transaction(exclusive = false) { db ->
             invalidateClass(type)
@@ -249,7 +250,7 @@ abstract class AbstractDao(private val helper: SQLiteOpenHelper) : Dao {
     final override fun delete(clazz: Class<*>, where: Expression?) {
         val w = where?.buildSql(this)
         transaction(exclusive = false) { db ->
-            db.delete(getTable(clazz), w?.first, w?.second)
+            db.delete(tableName(clazz), w?.first, w?.second)
             invalidateClass(clazz)
         }
     }
@@ -343,7 +344,7 @@ abstract class AbstractDao(private val helper: SQLiteOpenHelper) : Dao {
         }
         // update the last sync time, we can use replace since this is just a keyed timestamp
         transaction(exclusive = false) { db ->
-            db.replace(getTable(LastSyncTable::class.java), null, values)
+            db.replace(tableName(LastSyncTable::class.java), null, values)
             invalidateClass(LastSyncTable::class.java)
         }
     }
