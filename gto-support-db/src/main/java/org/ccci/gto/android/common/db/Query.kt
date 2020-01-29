@@ -45,16 +45,8 @@ class Query<T> private constructor(
     fun limit(limit: Int?) = Query(this, limit = limit)
     fun offset(offset: Int?) = Query(this, offset = offset)
 
-    internal fun buildSqlFrom(dao: AbstractDao): QueryComponent {
-        // joins need to be passed appended to the table name
-        val sb = StringBuilder(table.sqlTable(dao))
-        var args = emptyArray<String>()
-        joins.map { it.buildSql(dao) }.forEach {
-            sb.append(it.first)
-            args += it.second.orEmpty()
-        }
-        return QueryComponent(sb.toString(), *args)
-    }
+    internal fun buildSqlFrom(dao: AbstractDao) = QueryComponent(table.sqlTable(dao)) +
+        joins.fold(null as QueryComponent?) { sql, join -> sql + join.buildSql(dao) }
 
     fun buildSqlWhere(dao: AbstractDao): Pair<String?, Array<String>?> {
         return where?.buildSql(dao) ?: Pair.create<String?, Array<String>?>(null, null)
@@ -64,7 +56,7 @@ class Query<T> private constructor(
         return having?.buildSql(dao) ?: Pair.create<String?, Array<String>?>(null, null)
     }
 
-    fun buildSqlLimit() = when {
+    internal val sqlLimit get() = when {
         // // XXX: not supported by Android
         // // "{limit} OFFSET {offset}" syntax
         // limit != null && offset != null -> "$limit OFFSET $offset"

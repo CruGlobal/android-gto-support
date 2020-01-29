@@ -64,11 +64,11 @@ class LiveDataRegistry {
         query.joins.forEach { registerFor(it) }
     }
 
-    private fun DaoComputableLiveData<*>.registerFor(table: Table<*>) = registerFor(table.mType)
+    private fun DaoComputableLiveData<*>.registerFor(table: Table<*>) = registerFor(table.type)
 
     private fun DaoComputableLiveData<*>.registerFor(join: Join<*, *>) {
-        join.mBase?.let { registerFor(it) }
-        registerFor(join.mTarget)
+        join.base?.let { registerFor(it) }
+        registerFor(join.target)
     }
 
     fun invalidate(clazz: Class<*>) {
