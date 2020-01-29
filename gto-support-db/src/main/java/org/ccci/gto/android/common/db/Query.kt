@@ -46,14 +46,17 @@ class Query<T> private constructor(
     fun offset(offset: Int?) = Query(this, offset = offset)
 
     internal fun buildSqlFrom(dao: AbstractDao): QueryComponent {
-        // joins need to be passed appended to the table name
-        val sb = StringBuilder(table.sqlTable(dao))
-        var args = emptyArray<String>()
-        joins.map { it.buildSql(dao) }.forEach {
-            sb.append(it.first)
-            args += it.second.orEmpty()
+        val args = mutableListOf<String>()
+        val query = buildString {
+            append(table.sqlTable(dao))
+
+            // joins need to be passed appended to the table name
+            joins.map { it.buildSql(dao) }.forEach {
+                append(it.first)
+                args += it.second.orEmpty()
+            }
         }
-        return QueryComponent(sb.toString(), *args)
+        return QueryComponent(query, *args.toTypedArray())
     }
 
     fun buildSqlWhere(dao: AbstractDao): Pair<String?, Array<String>?> {
