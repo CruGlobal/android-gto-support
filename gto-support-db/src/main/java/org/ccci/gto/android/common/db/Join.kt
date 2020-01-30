@@ -17,9 +17,11 @@ class Join<S, T> private constructor(
         @JvmField
         val NO_JOINS = emptyArray<Join<*, *>>()
 
+        @JvmStatic
         @Deprecated("Since v3.3.0, use source.join() instead", ReplaceWith("source.join(target)"))
         fun <S, T> create(source: Table<S>, target: Table<T>) = source.join(target)
 
+        @JvmStatic
         fun <S, T> create(target: Table<T>) = Join<S, T>(target = target)
     }
 
