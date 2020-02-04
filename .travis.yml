@@ -17,13 +17,14 @@ env:
     - ANDROID_TARGET=android-24 ANDROID_ABI=armeabi-v7a
 branches:
   only:
-    - master
+  - master
+  - /^v\d+(\.\d+){1,}$/
 
 stages:
 - compile
 - test
 - name: deploy
-  if: branch = master AND type = push
+  if: type = push AND (branch = master OR tag =~ /^v\d+(\.\d+){1,}$/)
 
 before_cache:
 - rm -f $HOME/.gradle/caches/modules-2/modules-2.lock
@@ -84,7 +85,7 @@ jobs:
     after_failure:
     - cat /home/travis/build/CruGlobal/android-gto-support/*/build/outputs/lint-results-*.xml
 
-  - name: "Release SNAPSHOT"
+  - name: "Release"
     stage: deploy
 
     install:
@@ -98,7 +99,7 @@ jobs:
       script: ./gradlew publish --parallel
       on:
         repo: CruGlobal/android-gto-support
-        branch: master
+        all_branches: true
         jdk: oraclejdk8
 
   allow_failures:
