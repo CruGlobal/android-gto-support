@@ -22,6 +22,7 @@ private val POOL = SynchronizedPool<Transaction>(10)
     You should transition to utilize Dao.inTransaction() or Dao.transaction {} instead.
     This will be restricted to Library usage only in v3.4.0, and removed from the public API completely in v3.5.0.
     """)
+@RestrictTo(RestrictTo.Scope.LIBRARY)
 class Transaction private constructor(
     private var db: SQLiteDatabase?,
     internal var transactionListener: SQLiteTransactionListener? = null
