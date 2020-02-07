@@ -7,7 +7,7 @@ import kotlinx.android.parcel.Parcelize
 import org.ccci.gto.android.common.db.Table.Companion.forClass
 
 @Parcelize
-class Join<S, T> private constructor(
+class Join<S : Any, T : Any> private constructor(
     @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP) val target: Table<T>,
     @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP) val base: Join<S, *>? = null,
     private val type: String? = null,
@@ -19,10 +19,10 @@ class Join<S, T> private constructor(
 
         @JvmStatic
         @Deprecated("Since v3.3.0, use source.join() instead", ReplaceWith("source.join(target)"))
-        fun <S, T> create(source: Table<S>, target: Table<T>) = source.join(target)
+        fun <S : Any, T : Any> create(source: Table<S>, target: Table<T>) = source.join(target)
 
         @JvmStatic
-        fun <S, T> create(target: Table<T>) = Join<S, T>(target = target)
+        fun <S : Any, T : Any> create(target: Table<T>) = Join<S, T>(target = target)
     }
 
     private constructor(
@@ -36,8 +36,8 @@ class Join<S, T> private constructor(
     fun on(on: Expression?) = Join(this, on = on)
     fun andOn(on: Expression) = Join(this, on = this.on?.and(on) ?: on)
 
-    fun <T2> join(target: Class<T2>) = join(forClass(target))
-    fun <T2> join(target: Table<T2>) = Join(target = target, base = this)
+    fun <T2 : Any> join(target: Class<T2>) = join(forClass(target))
+    fun <T2 : Any> join(target: Table<T2>) = Join(target = target, base = this)
 
     @Transient
     @IgnoredOnParcel

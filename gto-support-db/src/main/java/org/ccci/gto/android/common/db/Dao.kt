@@ -13,10 +13,10 @@ interface Dao {
     // region Queries
     // region Read-Only
     @WorkerThread
-    fun <T> find(clazz: Class<T>, vararg key: Any): T?
+    fun <T : Any> find(clazz: Class<T>, vararg key: Any): T?
 
     @WorkerThread
-    fun <T> get(query: Query<T>): List<T>
+    fun <T : Any> get(query: Query<T>): List<T>
 
     @JvmDefault
     @WorkerThread
@@ -71,4 +71,6 @@ interface Dao {
     // endregion Queries
 }
 
+inline fun <reified T : Any> Dao.find(vararg key: Any) = find(T::class.java, *key)
+inline fun <T : Any> Query<T>.get(dao: Dao) = dao.get(this)
 inline fun Query<*>.getCursor(dao: Dao) = dao.getCursor(this)
