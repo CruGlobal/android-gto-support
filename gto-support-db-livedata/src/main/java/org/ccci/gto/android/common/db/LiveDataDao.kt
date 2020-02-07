@@ -76,5 +76,6 @@ class LiveDataRegistry {
     }
 }
 
+inline fun <reified T> LiveDataDao.findLiveData(vararg key: Any) = findLiveData(T::class.java, *key)
 fun <T> Query<T>.getAsLiveData(dao: LiveDataDao) = dao.getLiveData(this)
 fun <T> Query<T>.getCursorAsLiveData(dao: LiveDataDao) = dao.getCursorLiveData(this)
