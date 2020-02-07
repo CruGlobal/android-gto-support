@@ -14,19 +14,19 @@ interface LiveDataDao : Dao {
 
     @MainThread
     @JvmDefault
-    fun <T> findLiveData(clazz: Class<T>, vararg key: Any): LiveData<T?> = DaoFindComputableLiveData(this, clazz, *key)
+    fun <T : Any> findLiveData(clazz: Class<T>, vararg key: Any) = DaoFindComputableLiveData(this, clazz, *key)
         .also { with(liveDataRegistry) { it.registerFor(clazz) } }
         .liveData
 
     @MainThread
     @JvmDefault
-    fun <T> getLiveData(query: Query<T>): LiveData<List<T>> = DaoGetComputableLiveData(this, query)
+    fun <T : Any> getLiveData(query: Query<T>): LiveData<List<T>> = DaoGetComputableLiveData(this, query)
         .also { with(liveDataRegistry) { it.registerFor(query) } }
         .liveData
 
     @MainThread
     @JvmDefault
-    fun <T> getCursorLiveData(query: Query<T>): LiveData<Cursor> = DaoGetCursorComputableLiveData(this, query)
+    fun <T : Any> getCursorLiveData(query: Query<T>): LiveData<Cursor> = DaoGetCursorComputableLiveData(this, query)
         .also { with(liveDataRegistry) { it.registerFor(query) } }
         .liveData
 }
@@ -35,17 +35,20 @@ interface LiveDataDao : Dao {
 internal sealed class DaoComputableLiveData<T>(protected val dao: LiveDataDao) :
     ComputableLiveData<T>(dao.backgroundExecutor)
 
-private class DaoFindComputableLiveData<T>(dao: LiveDataDao, private val clazz: Class<T>, private vararg val key: Any) :
-    DaoComputableLiveData<T?>(dao) {
+private class DaoFindComputableLiveData<T : Any>(
+    dao: LiveDataDao,
+    private val clazz: Class<T>,
+    private vararg val key: Any
+) : DaoComputableLiveData<T?>(dao) {
     override fun compute() = dao.find(clazz, *key)
 }
 
-private class DaoGetComputableLiveData<T>(dao: LiveDataDao, private val query: Query<T>) :
+private class DaoGetComputableLiveData<T : Any>(dao: LiveDataDao, private val query: Query<T>) :
     DaoComputableLiveData<List<T>>(dao) {
     override fun compute() = dao.get(query)
 }
 
-private class DaoGetCursorComputableLiveData<T>(dao: LiveDataDao, private val query: Query<T>) :
+private class DaoGetCursorComputableLiveData<T : Any>(dao: LiveDataDao, private val query: Query<T>) :
     DaoComputableLiveData<Cursor>(dao) {
     override fun compute() = dao.getCursor(query)
 }
@@ -76,6 +79,6 @@ class LiveDataRegistry {
     }
 }
 
-inline fun <reified T> LiveDataDao.findLiveData(vararg key: Any) = findLiveData(T::class.java, *key)
-fun <T> Query<T>.getAsLiveData(dao: LiveDataDao) = dao.getLiveData(this)
-fun <T> Query<T>.getCursorAsLiveData(dao: LiveDataDao) = dao.getCursorLiveData(this)
+inline fun <reified T : Any> LiveDataDao.findLiveData(vararg key: Any) = findLiveData(T::class.java, *key)
+fun <T : Any> Query<T>.getAsLiveData(dao: LiveDataDao) = dao.getLiveData(this)
+fun <T : Any> Query<T>.getCursorAsLiveData(dao: LiveDataDao) = dao.getCursorLiveData(this)

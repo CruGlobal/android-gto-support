@@ -49,7 +49,7 @@ abstract class AbstractDao(private val helper: SQLiteOpenHelper) : Dao {
     // region Registered Types
     private val tableTypes = SimpleArrayMap<Class<*>, TableType>()
 
-    protected fun <T> registerType(
+    protected fun <T : Any> registerType(
         clazz: Class<T>,
         table: String,
         projection: Array<String>? = null,
@@ -85,10 +85,11 @@ abstract class AbstractDao(private val helper: SQLiteOpenHelper) : Dao {
     fun <T : Any> refresh(obj: T): T? = find(obj.javaClass, getPrimaryKeyWhere(obj))
 
     @WorkerThread
-    final override fun <T> find(clazz: Class<T>, vararg key: Any): T? = find(clazz, getPrimaryKeyWhere(clazz, *key))
+    final override fun <T : Any> find(clazz: Class<T>, vararg key: Any): T? =
+        find(clazz, getPrimaryKeyWhere(clazz, *key))
 
     @WorkerThread
-    private fun <T> find(clazz: Class<T>, where: Expression): T? {
+    private fun <T : Any> find(clazz: Class<T>, where: Expression): T? {
         Query.select(clazz).where(where).getCursor(this).use { c ->
             if (c.count > 0) {
                 c.moveToFirst()
@@ -107,10 +108,10 @@ abstract class AbstractDao(private val helper: SQLiteOpenHelper) : Dao {
      * @return
      */
     @WorkerThread
-    fun <T> get(clazz: Class<T>): List<T> = get(Query.select(clazz))
+    fun <T : Any> get(clazz: Class<T>): List<T> = get(Query.select(clazz))
 
     @WorkerThread
-    final override fun <T> get(query: Query<T>) = getCursor(query.projection()).use { c ->
+    final override fun <T : Any> get(query: Query<T>) = getCursor(query.projection()).use { c ->
         val mapper = getMapper(query.table.type)
         c.map { mapper.toObject(it) }
     }

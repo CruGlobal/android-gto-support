@@ -4,7 +4,7 @@ import android.util.Pair
 import androidx.annotation.RestrictTo
 import org.ccci.gto.android.common.db.AbstractDao.Companion.bindValues
 
-class Query<T> private constructor(
+class Query<T : Any> private constructor(
     query: Query<T>? = null,
     @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
     val table: Table<T> = query!!.table,
@@ -23,13 +23,13 @@ class Query<T> private constructor(
 
     companion object {
         @JvmStatic
-        fun <T> select(type: Class<T>) = Query<T>(table = Table.forClass(type))
+        fun <T : Any> select(type: Class<T>) = Query(table = Table.forClass(type))
 
         @JvmStatic
-        fun <T> select(table: Table<T>) = Query(table = table)
+        fun <T : Any> select(table: Table<T>) = Query(table = table)
 
         @JvmStatic
-        inline fun <reified T> select() = select(T::class.java)
+        inline fun <reified T : Any> select() = select(T::class.java)
     }
 
     fun distinct(distinct: Boolean) = Query(this, distinct = distinct)

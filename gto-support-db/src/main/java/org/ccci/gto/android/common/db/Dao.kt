@@ -13,10 +13,10 @@ interface Dao {
     // region Queries
     // region Read-Only
     @WorkerThread
-    fun <T> find(clazz: Class<T>, vararg key: Any): T?
+    fun <T : Any> find(clazz: Class<T>, vararg key: Any): T?
 
     @WorkerThread
-    fun <T> get(query: Query<T>): List<T>
+    fun <T : Any> get(query: Query<T>): List<T>
 
     @JvmDefault
     @WorkerThread
