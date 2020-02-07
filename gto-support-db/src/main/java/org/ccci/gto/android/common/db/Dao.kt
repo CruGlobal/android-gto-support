@@ -71,4 +71,6 @@ interface Dao {
     // endregion Queries
 }
 
+inline fun <reified T : Any> Dao.find(vararg key: Any) = find(T::class.java, *key)
+inline fun <T : Any> Query<T>.get(dao: Dao) = dao.get(this)
 inline fun Query<*>.getCursor(dao: Dao) = dao.getCursor(this)
