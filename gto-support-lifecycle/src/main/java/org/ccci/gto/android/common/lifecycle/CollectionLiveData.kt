@@ -5,22 +5,22 @@ import androidx.lifecycle.LiveData
 sealed class CollectionLiveData<T, C : Collection<T>, MC : MutableCollection<T>>(
     private val collection: MC
 ) : LiveData<C>(collection as C) {
-    operator fun plusAssign(item: T) {
+    fun add(item: T) {
         collection.add(item)
         value = value
     }
 
-    operator fun plusAssign(items: Collection<T>) {
+    fun addAll(items: Collection<T>) {
         collection.addAll(items)
         value = value
     }
 
-    operator fun minusAssign(item: T) {
+    fun remove(item: T) {
         collection.remove(item)
         value = value
     }
 
-    operator fun minusAssign(items: Collection<T>) {
+    fun removeAll(items: Collection<T>) {
         collection.removeAll(items)
         value = value
     }
@@ -29,6 +29,11 @@ sealed class CollectionLiveData<T, C : Collection<T>, MC : MutableCollection<T>>
         collection.clear()
         value = value
     }
+
+    operator fun plusAssign(item: T) = add(item)
+    operator fun plusAssign(items: Collection<T>) = addAll(items)
+    operator fun minusAssign(item: T) = remove(item)
+    operator fun minusAssign(items: Collection<T>) = removeAll(items)
 }
 
 class ListLiveData<T> : CollectionLiveData<T, List<T>, MutableList<T>>(mutableListOf())
