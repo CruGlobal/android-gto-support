@@ -229,10 +229,9 @@ abstract class AbstractDao(private val helper: SQLiteOpenHelper) : Dao {
     @WorkerThread
     fun updateOrInsert(obj: Any) = updateOrInsert(obj, projection = *getFullProjection(obj.javaClass))
 
-    @JvmOverloads
     @WorkerThread
     @Suppress("IMPLICIT_CAST_TO_ANY")
-    fun updateOrInsert(obj: Any, conflictAlgorithm: Int = SQLiteDatabase.CONFLICT_NONE, vararg projection: String) {
+    final override fun updateOrInsert(obj: Any, conflictAlgorithm: Int, vararg projection: String) {
         transaction { _ ->
             if (refresh(obj) != null) update(obj, conflictAlgorithm, *projection)
             else insert(obj, conflictAlgorithm)

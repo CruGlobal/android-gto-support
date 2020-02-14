@@ -66,6 +66,14 @@ interface Dao {
     @WorkerThread
     fun <T : Any> update(obj: T, where: Expression?, conflictAlgorithm: Int, vararg projection: String): Int
 
+    @JvmDefault
+    @WorkerThread
+    fun updateOrInsert(obj: Any, vararg projection: String) =
+        updateOrInsert(obj, SQLiteDatabase.CONFLICT_NONE, *projection)
+
+    @WorkerThread
+    fun updateOrInsert(obj: Any, conflictAlgorithm: Int, vararg projection: String)
+
     @WorkerThread
     fun delete(obj: Any)
 
