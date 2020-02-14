@@ -182,13 +182,8 @@ abstract class AbstractDao(private val helper: SQLiteOpenHelper) : Dao {
     @WorkerThread
     fun update(obj: Any) = update(obj, projection = *getFullProjection(obj.javaClass))
 
-    @JvmOverloads
     @WorkerThread
-    fun <T : Any> update(
-        obj: T,
-        conflictAlgorithm: Int = SQLiteDatabase.CONFLICT_NONE,
-        vararg projection: String
-    ): Int {
+    final override fun <T : Any> update(obj: T, conflictAlgorithm: Int, vararg projection: String): Int {
         val type = obj.javaClass
         val values = getMapper(type).toContentValues(obj, projection)
         return update(type, values, getPrimaryKeyWhere(obj), conflictAlgorithm)

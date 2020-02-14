@@ -48,6 +48,12 @@ interface Dao {
     fun <T : Any> update(obj: T, where: Expression?, vararg projection: String): Int =
         update(obj, where, SQLiteDatabase.CONFLICT_NONE, *projection)
 
+    @WorkerThread
+    fun <T : Any> update(obj: T, vararg projection: String) = update(obj, SQLiteDatabase.CONFLICT_NONE, *projection)
+
+    @WorkerThread
+    fun <T : Any> update(obj: T, conflictAlgorithm: Int, vararg projection: String): Int
+
     /**
      * This method updates all objects that match the where Expression based on the provided sample object and projection.
      *
