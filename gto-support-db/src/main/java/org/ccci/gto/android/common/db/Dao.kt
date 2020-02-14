@@ -10,6 +10,10 @@ interface Dao {
     @get:RestrictTo(RestrictTo.Scope.LIBRARY_GROUP, RestrictTo.Scope.SUBCLASSES)
     val backgroundExecutor: Executor
 
+    // region Table Metadata
+    fun getFullProjection(clazz: Class<*>): Array<String>
+    // endregion Table Metadata
+
     // region Queries
     // region Read-Only
     @WorkerThread

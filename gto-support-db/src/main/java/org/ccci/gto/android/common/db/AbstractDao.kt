@@ -64,7 +64,7 @@ abstract class AbstractDao(private val helper: SQLiteOpenHelper) : Dao {
     protected fun getTable(clazz: Class<*>) = tableName(clazz)
 
     fun getFullProjection(table: Table<*>) = getFullProjection(table.type)
-    fun getFullProjection(clazz: Class<*>) =
+    override fun getFullProjection(clazz: Class<*>) =
         tableTypes.get(clazz)?.projection ?: throw IllegalArgumentException("invalid class specified: ${clazz.name}")
 
     protected fun getPrimaryKeyWhere(clazz: Class<*>, vararg key: Any) = getPrimaryKeyWhere(clazz).args(*key)
