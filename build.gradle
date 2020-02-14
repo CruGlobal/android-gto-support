@@ -11,6 +11,7 @@ buildscript {
             gson                : '2.8.6',
             guava               : '28.2-android',
             hamcrest            : '2.2',
+            jacoco              : '0.8.5',
             jetbrainsAnnotations: '18.0.0',
             jsonUnit            : '1.31.1',
             junit               : '4.13',
@@ -55,6 +56,7 @@ buildscript {
     }
     dependencies {
         classpath "com.android.tools.build:gradle:${deps.gradleAndroidPlugin}"
+        classpath 'com.dicedmelon.gradle:jacoco-android:0.1.4'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:${deps.kotlin}"
     }
 }
@@ -167,6 +169,15 @@ subprojects {
             reporter(ReporterType.PLAIN_GROUP_BY_FILE)
             reporter(ReporterType.CHECKSTYLE)
         }
+    }
+
+    // configure jacoco
+    apply plugin: 'jacoco-android'
+    jacoco {
+        toolVersion = deps.jacoco
+    }
+    android.testOptions.unitTests.all {
+        jacoco.includeNoLocationClasses = true
     }
 
     // configure publishing
