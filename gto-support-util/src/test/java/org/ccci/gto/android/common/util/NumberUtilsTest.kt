@@ -25,4 +25,12 @@ class NumberUtilsTest {
         assertNull(" a ".localizedToDoubleOrNull(Locale.US))
         assertNull("1,000.12".localizedToDoubleOrNull(LOCALE_SPAIN))
     }
+
+    @Test
+    fun testNumberFormat() {
+        assertEquals("1.123", 1.123f.format(Locale.US))
+        assertEquals("1,123", 1.123f.format(LOCALE_SPAIN))
+        assertEquals("1.12", 1.123f.format(locale = Locale.US, maximumFractionDigits = 2))
+        assertEquals("1,12", 1.123f.format(locale = LOCALE_SPAIN, maximumFractionDigits = 2))
+    }
 }
