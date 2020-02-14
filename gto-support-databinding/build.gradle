@@ -1,0 +1,9 @@
+android {
+    dataBinding {
+        enabled = true
+    }
+}
+
+dependencies {
+    implementation project(':gto-support-util')
+}
