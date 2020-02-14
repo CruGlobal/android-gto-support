@@ -15,5 +15,5 @@ dependencies {
     implementation "com.jakewharton.timber:timber:${deps.timber}"
 
     // Data Binding adapter dependencies
-    compileOnly "androidx.databinding:databinding-runtime:${deps.gradleAndroidPlugin}"
+    compileOnly "androidx.databinding:databinding-runtime:${deps.androidX.databinding}"
 }
