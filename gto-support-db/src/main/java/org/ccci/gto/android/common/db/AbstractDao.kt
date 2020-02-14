@@ -64,7 +64,7 @@ abstract class AbstractDao(private val helper: SQLiteOpenHelper) : Dao {
     protected fun getTable(clazz: Class<*>) = tableName(clazz)
 
     fun getFullProjection(table: Table<*>) = getFullProjection(table.type)
-    fun getFullProjection(clazz: Class<*>) =
+    override fun getFullProjection(clazz: Class<*>) =
         tableTypes.get(clazz)?.projection ?: throw IllegalArgumentException("invalid class specified: ${clazz.name}")
 
     protected fun getPrimaryKeyWhere(clazz: Class<*>, vararg key: Any) = getPrimaryKeyWhere(clazz).args(*key)
@@ -182,13 +182,8 @@ abstract class AbstractDao(private val helper: SQLiteOpenHelper) : Dao {
     @WorkerThread
     fun update(obj: Any) = update(obj, projection = *getFullProjection(obj.javaClass))
 
-    @JvmOverloads
     @WorkerThread
-    fun <T : Any> update(
-        obj: T,
-        conflictAlgorithm: Int = SQLiteDatabase.CONFLICT_NONE,
-        vararg projection: String
-    ): Int {
+    final override fun <T : Any> update(obj: T, conflictAlgorithm: Int, vararg projection: String): Int {
         val type = obj.javaClass
         val values = getMapper(type).toContentValues(obj, projection)
         return update(type, values, getPrimaryKeyWhere(obj), conflictAlgorithm)
@@ -234,10 +229,9 @@ abstract class AbstractDao(private val helper: SQLiteOpenHelper) : Dao {
     @WorkerThread
     fun updateOrInsert(obj: Any) = updateOrInsert(obj, projection = *getFullProjection(obj.javaClass))
 
-    @JvmOverloads
     @WorkerThread
     @Suppress("IMPLICIT_CAST_TO_ANY")
-    fun updateOrInsert(obj: Any, conflictAlgorithm: Int = SQLiteDatabase.CONFLICT_NONE, vararg projection: String) {
+    final override fun updateOrInsert(obj: Any, conflictAlgorithm: Int, vararg projection: String) {
         transaction { _ ->
             if (refresh(obj) != null) update(obj, conflictAlgorithm, *projection)
             else insert(obj, conflictAlgorithm)

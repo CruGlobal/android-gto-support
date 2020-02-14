@@ -10,6 +10,10 @@ interface Dao {
     @get:RestrictTo(RestrictTo.Scope.LIBRARY_GROUP, RestrictTo.Scope.SUBCLASSES)
     val backgroundExecutor: Executor
 
+    // region Table Metadata
+    fun getFullProjection(clazz: Class<*>): Array<String>
+    // endregion Table Metadata
+
     // region Queries
     // region Read-Only
     @WorkerThread
@@ -44,6 +48,12 @@ interface Dao {
     fun <T : Any> update(obj: T, where: Expression?, vararg projection: String): Int =
         update(obj, where, SQLiteDatabase.CONFLICT_NONE, *projection)
 
+    @WorkerThread
+    fun <T : Any> update(obj: T, vararg projection: String) = update(obj, SQLiteDatabase.CONFLICT_NONE, *projection)
+
+    @WorkerThread
+    fun <T : Any> update(obj: T, conflictAlgorithm: Int, vararg projection: String): Int
+
     /**
      * This method updates all objects that match the where Expression based on the provided sample object and projection.
      *
@@ -55,6 +65,14 @@ interface Dao {
      */
     @WorkerThread
     fun <T : Any> update(obj: T, where: Expression?, conflictAlgorithm: Int, vararg projection: String): Int
+
+    @JvmDefault
+    @WorkerThread
+    fun updateOrInsert(obj: Any, vararg projection: String) =
+        updateOrInsert(obj, SQLiteDatabase.CONFLICT_NONE, *projection)
+
+    @WorkerThread
+    fun updateOrInsert(obj: Any, conflictAlgorithm: Int, vararg projection: String)
 
     @WorkerThread
     fun delete(obj: Any)
