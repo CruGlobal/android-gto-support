@@ -80,8 +80,10 @@ jobs:
     stage: compile
 
     install: skip
-    script: ./gradlew check --continue --stacktrace --parallel
+    script: ./gradlew check jacocoTestReport --continue --stacktrace --parallel
 
+    after_success:
+    - bash <(curl -s https://codecov.io/bash)
     after_failure:
     - cat /home/travis/build/CruGlobal/android-gto-support/*/build/outputs/lint-results-*.xml
 
