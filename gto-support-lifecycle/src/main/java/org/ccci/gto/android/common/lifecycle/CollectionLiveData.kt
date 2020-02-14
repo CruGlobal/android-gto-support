@@ -17,18 +17,22 @@ sealed class CollectionLiveData<T, C : Collection<T>, MC : MutableCollection<T>>
 
     private fun notifyChanged() = postValue(collection as C)
 
+    @JvmSynthetic
     operator fun plusAssign(item: T) {
         add(item)
     }
 
+    @JvmSynthetic
     operator fun plusAssign(items: Collection<T>) {
         addAll(items)
     }
 
+    @JvmSynthetic
     operator fun minusAssign(item: T) {
         remove(item)
     }
 
+    @JvmSynthetic
     operator fun minusAssign(items: Collection<T>) {
         removeAll(items)
     }
