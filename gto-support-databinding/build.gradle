@@ -1,5 +1,9 @@
+android {
+    dataBinding {
+        enabled = true
+    }
+}
+
 dependencies {
     implementation project(':gto-support-util')
-
-    implementation "androidx.databinding:databinding-adapters:${deps.androidX.databinding}"
 }

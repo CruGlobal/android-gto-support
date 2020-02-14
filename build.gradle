@@ -67,6 +67,7 @@ plugins {
 subprojects {
     apply plugin: 'com.android.library'
     apply plugin: 'kotlin-android'
+    apply plugin: 'kotlin-kapt'
 
     group 'org.ccci.gto.android'
     version '3.4.0-SNAPSHOT'
