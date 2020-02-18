@@ -1,3 +1,4 @@
+include 'gto-support-androidx-fragment'
 include 'gto-support-api'
 include 'gto-support-api-base'
 include 'gto-support-api-okhttp3'
