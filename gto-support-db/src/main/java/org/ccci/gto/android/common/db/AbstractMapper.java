@@ -147,15 +147,23 @@ public abstract class AbstractMapper<T> implements Mapper<T> {
         return CursorUtils.getJSONObject(c, field, defValue);
     }
 
+    /**
+     * @deprecated Since v3.4.0, use CursorUtils.getLocale() or CursorUtils.getNonNullLocale() directly.
+     */
     @Nullable
+    @Deprecated
     protected final Locale getLocale(@NonNull final Cursor c, @NonNull final String field) {
-        return CursorUtils.getLocale(c, field);
+        return org.ccci.gto.android.common.util.database.CursorUtils.getLocale(c, field);
     }
 
+    /**
+     * @deprecated Since v3.4.0, use CursorUtils.getLocale() or CursorUtils.getNonNullLocale() directly.
+     */
     @Nullable
+    @Deprecated
     protected final Locale getLocale(@NonNull final Cursor c, @NonNull final String field,
                                      @Nullable final Locale defValue) {
-        return CursorUtils.getLocale(c, field, defValue);
+        return org.ccci.gto.android.common.util.database.CursorUtils.getLocale(c, field, defValue);
     }
 
     @Nullable
