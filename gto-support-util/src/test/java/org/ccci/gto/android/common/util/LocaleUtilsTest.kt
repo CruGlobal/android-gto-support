@@ -20,4 +20,9 @@ class LocaleUtilsTest {
         assertNull(LocaleUtils.getOptionalDisplayName(Locale("x"), Locale.ENGLISH))
         assertNull(LocaleUtils.getOptionalDisplayName(Locale("x"), null))
     }
+
+    @Test
+    fun testToLocale() {
+        assertEquals(Locale.ENGLISH, "en".toLocale())
+    }
 }
