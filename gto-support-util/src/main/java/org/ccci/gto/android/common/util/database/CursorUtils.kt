@@ -3,7 +3,9 @@
 package org.ccci.gto.android.common.util.database
 
 import android.database.Cursor
+import org.ccci.gto.android.common.util.toLocale
 import org.jetbrains.annotations.Contract
+import java.util.Locale
 
 /**
  * @receiver The Cursor we are fetching the value from
@@ -89,6 +91,27 @@ fun Cursor.getString(columnName: String, defValue: String? = null) =
  */
 @JvmName("getNonNullString")
 fun Cursor.getString(columnName: String, defValue: String) = getString(columnName) ?: defValue
+
+/**
+ * @receiver The Cursor we are fetching the value from
+ * @param[columnName] The column we are requesting the value of
+ * @param[defValue] The default value to return when the column doesn't exist, is invalid, or is null
+ * @return The value for the specified column in the current row of the specified Cursor.
+ * Or the default value if the column is invalid, null or non-existent
+ */
+@JvmOverloads
+@Contract("_, _, !null -> !null")
+fun Cursor.getLocale(columnName: String, defValue: Locale? = null) = getString(columnName)?.toLocale() ?: defValue
+
+/**
+ * @receiver The Cursor we are fetching the value from
+ * @param[columnName] The column we are requesting the value of
+ * @param[defValue] The default value to return when the column doesn't exist, is invalid, or is null
+ * @return The value for the specified column in the current row of the specified Cursor.
+ * Or the default value if the column is invalid, null or non-existent
+ */
+@JvmName("getNonNullLocale")
+fun Cursor.getLocale(columnName: String, defValue: Long) = getLocale(columnName) ?: defValue
 
 inline fun <R> Cursor.map(transform: (Cursor) -> R): List<R> = mapTo(ArrayList(count), transform)
 

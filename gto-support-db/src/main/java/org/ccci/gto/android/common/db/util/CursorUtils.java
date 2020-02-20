@@ -2,7 +2,6 @@ package org.ccci.gto.android.common.db.util;
 
 import android.database.Cursor;
 
-import org.ccci.gto.android.common.compat.util.LocaleCompat;
 import org.jetbrains.annotations.Contract;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -202,22 +201,25 @@ public final class CursorUtils {
         return defValue;
     }
 
+    /**
+     * @deprecated Since v3.4.0,
+     * use {@link org.ccci.gto.android.common.util.database.CursorUtils#getLocale(Cursor, String)} instead.
+     */
     @Nullable
+    @Deprecated
     public static Locale getLocale(@NonNull final Cursor c, @NonNull final String field) {
-        return getLocale(c, field, null);
+        return org.ccci.gto.android.common.util.database.CursorUtils.getLocale(c, field);
     }
 
+    /**
+     * @deprecated Since v3.4.0,
+     * use {@link org.ccci.gto.android.common.util.database.CursorUtils#getLocale(Cursor, String, Locale)} instead.
+     */
     @Nullable
+    @Deprecated
     @Contract("_, _, !null -> !null")
     public static Locale getLocale(@NonNull final Cursor c, @NonNull final String field,
                                    @Nullable final Locale defValue) {
-        final String raw = org.ccci.gto.android.common.util.database.CursorUtils.getString(c, field);
-        if (raw != null) {
-            try {
-                return LocaleCompat.forLanguageTag(raw);
-            } catch (final Exception ignored) {
-            }
-        }
-        return defValue;
+        return org.ccci.gto.android.common.util.database.CursorUtils.getLocale(c, field, defValue);
     }
 }
