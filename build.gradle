@@ -38,7 +38,7 @@ buildscript {
             collection           : '1.1.0',
             core                 : '1.2.0',
             databinding          : deps.gradleAndroidPlugin,
-            fragment             : '1.2.1',
+            fragment             : '1.2.2',
             lifecycle            : '2.2.0',
             loader               : '1.1.0',
             localBroadcastManager: '1.0.0',
