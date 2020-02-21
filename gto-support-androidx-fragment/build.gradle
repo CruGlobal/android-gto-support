@@ -1,0 +1,3 @@
+dependencies {
+    api "androidx.fragment:fragment:${deps.androidX.fragment}"
+}
