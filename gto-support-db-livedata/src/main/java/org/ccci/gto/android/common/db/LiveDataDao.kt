@@ -1,5 +1,6 @@
 package org.ccci.gto.android.common.db
 
+import android.annotation.SuppressLint
 import android.database.Cursor
 import androidx.annotation.MainThread
 import androidx.annotation.RestrictTo
@@ -14,24 +15,28 @@ interface LiveDataDao : Dao {
 
     @MainThread
     @JvmDefault
+    @SuppressLint("RestrictedApi")
     fun <T : Any> findLiveData(clazz: Class<T>, vararg key: Any) = DaoFindComputableLiveData(this, clazz, *key)
         .also { with(liveDataRegistry) { it.registerFor(clazz) } }
         .liveData
 
     @MainThread
     @JvmDefault
+    @SuppressLint("RestrictedApi")
     fun <T : Any> getLiveData(query: Query<T>): LiveData<List<T>> = DaoGetComputableLiveData(this, query)
         .also { with(liveDataRegistry) { it.registerFor(query) } }
         .liveData
 
     @MainThread
     @JvmDefault
+    @SuppressLint("RestrictedApi")
     fun <T : Any> getCursorLiveData(query: Query<T>): LiveData<Cursor> = DaoGetCursorComputableLiveData(this, query)
         .also { with(liveDataRegistry) { it.registerFor(query) } }
         .liveData
 }
 
 // region DaoComputableLiveData
+@SuppressLint("RestrictedApi")
 internal sealed class DaoComputableLiveData<T>(protected val dao: LiveDataDao) :
     ComputableLiveData<T>(dao.backgroundExecutor)
 
@@ -74,6 +79,7 @@ class LiveDataRegistry {
         registerFor(join.target)
     }
 
+    @SuppressLint("RestrictedApi")
     fun invalidate(clazz: Class<*>) {
         registry[clazz]?.keys?.forEach { it.invalidate() }
     }
