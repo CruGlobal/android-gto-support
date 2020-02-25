@@ -3,5 +3,6 @@
 
 .gitignore   text
 *.java       text
+*.kt         text
 *.properties text
 *.xml        text
