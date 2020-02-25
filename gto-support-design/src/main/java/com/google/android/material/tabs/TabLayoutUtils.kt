@@ -26,3 +26,5 @@ var TabLayout.Tab.visibility: Int
     set(value) {
         view.visibility = value
     }
+
+fun TabLayout.notifyPagerAdapterChanged() = populateFromPagerAdapter()
