@@ -8,16 +8,10 @@ import androidx.core.graphics.drawable.DrawableCompat
 import org.ccci.gto.android.common.util.getDeclaredFieldOrNull
 
 private val baseBackgroundDrawableField by lazy { getDeclaredFieldOrNull<TabLayout.TabView>("baseBackgroundDrawable") }
-private inline var TabLayout.TabView.baseBackgroundDrawable: Drawable?
-    get() = baseBackgroundDrawableField?.get(this) as? Drawable
-    set(value) {
-        baseBackgroundDrawableField?.set(this, value)
-    }
-
 var TabLayout.Tab.background: Drawable?
-    get() = view.baseBackgroundDrawable
+    get() = baseBackgroundDrawableField?.get(view) as? Drawable
     set(value) {
-        view.baseBackgroundDrawable = value
+        baseBackgroundDrawableField?.set(view, value)
         view.invalidate()
         parent?.invalidate()
     }
