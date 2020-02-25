@@ -5,6 +5,8 @@ android {
 }
 
 dependencies {
+    implementation project(':gto-support-util')
+
     implementation "com.google.android.material:material:${deps.materialDesign}"
 
     implementation "com.jakewharton.timber:timber:${deps.timber}"
