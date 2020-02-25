@@ -1,6 +1,5 @@
 package org.ccci.gto.android.common.util;
 
-import android.annotation.TargetApi;
 import android.icu.util.ULocale;
 import android.os.Build;
 import android.text.TextUtils;
@@ -19,6 +18,7 @@ import java.util.regex.Pattern;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.annotation.RestrictTo;
 
 public class LocaleUtils {
@@ -162,7 +162,7 @@ public class LocaleUtils {
     }
 
     @RestrictTo({RestrictTo.Scope.LIBRARY})
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     static class LollipopCompat extends FroyoCompat {
         @Nullable
         @Override
@@ -254,7 +254,7 @@ public class LocaleUtils {
     }
 
     @RestrictTo({RestrictTo.Scope.LIBRARY})
-    @TargetApi(Build.VERSION_CODES.N)
+    @RequiresApi(Build.VERSION_CODES.N)
     static final class NougatCompat extends LollipopCompat {
         @Nullable
         @Override
