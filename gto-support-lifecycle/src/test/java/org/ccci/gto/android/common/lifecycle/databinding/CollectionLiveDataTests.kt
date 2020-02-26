@@ -37,42 +37,42 @@ abstract class CollectionLiveDataTests {
     fun testAdd() {
         assertTrue(liveData.add("a"))
         verify(observer).onChanged(any())
-        assertThat(liveData.getValue(), containsInAnyOrder("a"))
+        assertThat(liveData.value, containsInAnyOrder("a"))
     }
 
     @Test
     fun testAddAll() {
         assertTrue(liveData.addAll(setOf("a", "b", "c")))
         verify(observer).onChanged(any())
-        assertThat(liveData.getValue(), containsInAnyOrder("a", "b", "c"))
+        assertThat(liveData.value, containsInAnyOrder("a", "b", "c"))
     }
 
     @Test
     fun testAddAllEmpty() {
         assertFalse(liveData.addAll(emptySet()))
         verify(observer, never()).onChanged(any())
-        assertThat(liveData.getValue(), empty())
+        assertThat(liveData.value, empty())
     }
 
     @Test
     fun testPlusAssign() {
         liveData += "a"
         verify(observer).onChanged(any())
-        assertThat(liveData.getValue(), containsInAnyOrder("a"))
+        assertThat(liveData.value, containsInAnyOrder("a"))
     }
 
     @Test
     fun testPlusAssignCollection() {
         liveData += setOf("a", "b", "c")
         verify(observer).onChanged(any())
-        assertThat(liveData.getValue(), containsInAnyOrder("a", "b", "c"))
+        assertThat(liveData.value, containsInAnyOrder("a", "b", "c"))
     }
 
     @Test
     fun testPlusAssignCollectionEmpty() {
         liveData += emptySet()
         verify(observer, never()).onChanged(any())
-        assertThat(liveData.getValue(), empty())
+        assertThat(liveData.value, empty())
     }
 
     @Test
@@ -82,7 +82,7 @@ abstract class CollectionLiveDataTests {
 
         assertTrue(liveData.remove("a"))
         verify(observer).onChanged(any())
-        assertThat(liveData.getValue(), containsInAnyOrder("b"))
+        assertThat(liveData.value, containsInAnyOrder("b"))
     }
 
     @Test
@@ -92,7 +92,7 @@ abstract class CollectionLiveDataTests {
 
         assertFalse(liveData.remove("b"))
         verify(observer, never()).onChanged(any())
-        assertThat(liveData.getValue(), containsInAnyOrder("a"))
+        assertThat(liveData.value, containsInAnyOrder("a"))
     }
 
     @Test
@@ -102,7 +102,7 @@ abstract class CollectionLiveDataTests {
 
         assertTrue(liveData.removeAll(setOf("b", "c")))
         verify(observer).onChanged(any())
-        assertThat(liveData.getValue(), containsInAnyOrder("a"))
+        assertThat(liveData.value, containsInAnyOrder("a"))
     }
 
     @Test
@@ -112,7 +112,7 @@ abstract class CollectionLiveDataTests {
 
         assertFalse(liveData.removeAll(setOf("b", "c")))
         verify(observer, never()).onChanged(any())
-        assertThat(liveData.getValue(), containsInAnyOrder("a"))
+        assertThat(liveData.value, containsInAnyOrder("a"))
     }
 
     @Test
@@ -122,7 +122,7 @@ abstract class CollectionLiveDataTests {
 
         liveData -= "a"
         verify(observer).onChanged(any())
-        assertThat(liveData.getValue(), containsInAnyOrder("b"))
+        assertThat(liveData.value, containsInAnyOrder("b"))
     }
 
     @Test
@@ -132,7 +132,7 @@ abstract class CollectionLiveDataTests {
 
         liveData -= "b"
         verify(observer, never()).onChanged(any())
-        assertThat(liveData.getValue(), containsInAnyOrder("a"))
+        assertThat(liveData.value, containsInAnyOrder("a"))
     }
 
     @Test
@@ -142,7 +142,7 @@ abstract class CollectionLiveDataTests {
 
         liveData -= setOf("b", "c")
         verify(observer).onChanged(any())
-        assertThat(liveData.getValue(), containsInAnyOrder("a"))
+        assertThat(liveData.value, containsInAnyOrder("a"))
     }
 
     @Test
@@ -152,7 +152,7 @@ abstract class CollectionLiveDataTests {
 
         liveData -= setOf("b", "c")
         verify(observer, never()).onChanged(any())
-        assertThat(liveData.getValue(), containsInAnyOrder("a"))
+        assertThat(liveData.value, containsInAnyOrder("a"))
     }
 
     @Test
@@ -162,14 +162,14 @@ abstract class CollectionLiveDataTests {
 
         liveData.clear()
         verify(observer).onChanged(any())
-        assertThat(liveData.getValue(), empty())
+        assertThat(liveData.value, empty())
     }
 
     @Test
     fun testClearEmpty() {
         liveData.clear()
         verify(observer).onChanged(any())
-        assertThat(liveData.getValue(), empty())
+        assertThat(liveData.value, empty())
     }
 }
 
