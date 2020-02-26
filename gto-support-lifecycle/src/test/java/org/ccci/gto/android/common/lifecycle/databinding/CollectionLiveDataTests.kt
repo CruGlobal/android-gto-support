@@ -23,7 +23,7 @@ abstract class CollectionLiveDataTests {
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
-    abstract val liveData: CollectionLiveData<String, out Collection<String>, *>
+    abstract val liveData: CollectionLiveData<String, out Collection<String>>
     lateinit var observer: Observer<Any?>
 
     @Before
