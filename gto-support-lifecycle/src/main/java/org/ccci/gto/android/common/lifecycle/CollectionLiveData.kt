@@ -13,10 +13,7 @@ sealed class CollectionLiveData<T, C : Collection<T>>(
     fun addAll(items: Collection<T>) = collection.addAll(items)
     fun remove(item: T) = collection.remove(item)
     fun removeAll(items: Collection<T>) = collection.removeAll(items)
-
-    fun clear() {
-        collection.clear()
-    }
+    fun clear() = collection.clear()
 
     private fun notifyChanged() = postValue(collection as C)
 
