@@ -1,0 +1,3 @@
+dependencies {
+    api "androidx.viewpager2:viewpager2:${deps.androidX.viewPager2}"
+}
