@@ -52,11 +52,17 @@ class ViewPager2HeightWrapContentTest {
     }
 
     @Test
-    fun verifyChildrenWithWrapContentDoesntCrash() {
+    fun verifyChildrenWithWrapContentDoesntCrashAndMeasuresCorrectly() {
         viewpager.setHeightWrapContent()
-        viewpager.adapter = WrapContentChildren(50)
+        viewpager.adapter = WrapContentChildren(50, 50, 100)
         triggerMeasure()
         assertEquals(50, viewpager.measuredHeight)
+        viewpager.setCurrentItem(1, false)
+        triggerMeasure()
+        assertEquals(50, viewpager.measuredHeight)
+        viewpager.setCurrentItem(2, false)
+        triggerMeasure()
+        assertEquals(100, viewpager.measuredHeight)
     }
 
     private fun triggerMeasure(
@@ -66,14 +72,20 @@ class ViewPager2HeightWrapContentTest {
 
     class WrapContentChildren(private vararg val heights: Int) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         override fun getItemCount() = heights.size
-        override fun getItemViewType(position: Int) = position
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-            return object : RecyclerView.ViewHolder(createView(parent, heights[viewType], MATCH_PARENT)) {}
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
+            object : RecyclerView.ViewHolder(parent.createView()) {}
+        override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+            (holder.itemView as? FrameLayout)?.getChildAt(0)?.apply {
+                (this as? TextView)?.text = "$position"
+                layoutParams = layoutParams.apply { height = heights[position] }
+            }
         }
-        override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) = Unit
     }
 }
 
-private fun createView(parent: ViewGroup, height: Int, width: Int) = TextView(parent.context).apply {
-    layoutParams = LayoutParams(width, height)
+private fun ViewGroup.createView() = FrameLayout(context).apply {
+    layoutParams = LayoutParams(MATCH_PARENT, WRAP_CONTENT)
+    addView(TextView(context).apply {
+        layoutParams = LayoutParams(MATCH_PARENT, 0)
+    })
 }
