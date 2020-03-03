@@ -6,4 +6,6 @@ android {
 
 dependencies {
     implementation project(':gto-support-util')
+
+    compileOnly "androidx.core:core:${deps.androidX.core}"
 }
