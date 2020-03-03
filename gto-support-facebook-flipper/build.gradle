@@ -1,0 +1,3 @@
+dependencies {
+    implementation "com.facebook.flipper:flipper:${deps.facebookFlipper}"
+}
