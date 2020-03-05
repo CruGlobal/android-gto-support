@@ -27,11 +27,10 @@ fun TextView.setAutoLinkText(text: CharSequence?, autoLinkMask: Int?, autoLinkCa
                 output.removeSpan(old)
             }
         }
-
-        movementMethod = movementMethod ?: LinkMovementMethod.getInstance()
     }
 
     TextViewBindingAdapter.setText(this, output)
+    if (hasLinks && linksClickable) movementMethod = LinkMovementMethod.getInstance()
 }
 
 private class InterceptingUrlSpan(span: URLSpan, private val autoLinkCallback: AutoLinkClickedListener) :
