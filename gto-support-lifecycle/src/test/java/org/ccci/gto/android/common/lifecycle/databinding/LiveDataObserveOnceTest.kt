@@ -49,6 +49,27 @@ class LiveDataObserveOnceTest {
     }
 
     @Test
+    fun verifyObserveOnceWithoutLifecycle() {
+        // observe before LiveData has data
+        val observer: (Int) -> Unit = mock()
+        liveData.observeOnce(observer)
+        verify(observer, never()).invoke(any())
+        liveData.value = 1
+        verify(observer).invoke(eq(1))
+        reset(observer)
+        liveData.value = 2
+        verify(observer, never()).invoke(any())
+
+        // observe after LiveData has data
+        val observer2: (Int) -> Unit = mock()
+        liveData.observeOnce(observer2)
+        verify(observer2).invoke(eq(2))
+        reset(observer2)
+        liveData.value = 3
+        verify(observer2, never()).invoke(any())
+    }
+
+    @Test
     fun verifyObserveOnceRespectsLifecycle() {
         lifecycleOwner.lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_START)
         val observer: (Int) -> Unit = mock()
