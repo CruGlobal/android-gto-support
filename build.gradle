@@ -115,6 +115,11 @@ subprojects {
                 jvmTarget = JavaVersion.VERSION_1_8.toString()
                 freeCompilerArgs += '-Xjvm-default=enable'
             }
+            testOptions {
+                unitTests {
+                    includeAndroidResources = true
+                }
+            }
         }
 
         dependencies {
