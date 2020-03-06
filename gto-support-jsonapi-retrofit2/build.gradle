@@ -4,11 +4,8 @@ dependencies {
     implementation "com.google.guava:guava:${deps.guava}"
     api "com.squareup.retrofit2:retrofit:${deps.retrofit2}"
 
-    testImplementation project(':gto-support-testing')
-    testImplementation "com.google.code.gson:gson:${deps.gson}"
     testImplementation "com.squareup.okhttp3:mockwebserver:${deps.okhttp3}"
     testImplementation "net.javacrumbs.json-unit:json-unit:${deps.jsonUnit}"
     testImplementation "net.javacrumbs.json-unit:json-unit-fluent:${deps.jsonUnit}"
     testImplementation 'org.json:json:20160810'
-    testImplementation "org.powermock:powermock-module-junit4:${deps.powermock}"
 }
