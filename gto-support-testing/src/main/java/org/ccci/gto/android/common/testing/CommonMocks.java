@@ -16,6 +16,10 @@ import static org.powermock.api.mockito.PowerMockito.mock;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
 import static org.powermock.api.mockito.PowerMockito.when;
 
+/**
+ * @deprecated Since v3.4.0, use robolectric to test code relying on android APIs.
+ */
+@Deprecated
 public class CommonMocks {
     public static void mockColor() {
         mockStatic(Color.class);
