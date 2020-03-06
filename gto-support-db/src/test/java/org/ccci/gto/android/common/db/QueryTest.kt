@@ -1,33 +1,21 @@
 package org.ccci.gto.android.common.db
 
-import android.text.TextUtils
-import android.util.Pair
+import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.nhaarman.mockitokotlin2.eq
 import com.nhaarman.mockitokotlin2.whenever
 import org.ccci.gto.android.common.db.Contract.RootTable
 import org.ccci.gto.android.common.db.Query.Companion.select
 import org.ccci.gto.android.common.db.model.Root
-import org.ccci.gto.android.common.testing.CommonMocks
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.CoreMatchers.nullValue
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.core.AnyOf.anyOf
-import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mockito
-import org.powermock.core.classloader.annotations.PrepareForTest
-import org.powermock.modules.junit4.PowerMockRunner
 
-@RunWith(PowerMockRunner::class)
-@PrepareForTest(Pair::class, TextUtils::class)
+@RunWith(AndroidJUnit4::class)
 class QueryTest {
-    @Before
-    fun setup() {
-        CommonMocks.mockPair()
-        CommonMocks.mockTextUtils()
-    }
-
     @Test
     fun testHavingSql() {
         val dao = Mockito.mock(AbstractDao::class.java)
