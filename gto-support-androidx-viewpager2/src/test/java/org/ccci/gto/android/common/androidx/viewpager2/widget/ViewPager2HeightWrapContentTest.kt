@@ -20,10 +20,9 @@ import org.junit.runner.RunWith
 import org.robolectric.Robolectric
 import org.robolectric.android.controller.ActivityController
 import org.robolectric.annotation.Config
-import org.robolectric.annotation.Config.ALL_SDKS
 
 @RunWith(AndroidJUnit4::class)
-@Config(sdk = [ALL_SDKS])
+@Config(maxSdk = 28)
 class ViewPager2HeightWrapContentTest {
     private lateinit var activityController: ActivityController<Activity>
     private lateinit var activity: Activity
