@@ -17,8 +17,6 @@ dependencies {
     implementation project(':gto-support-core')
     implementation project(':gto-support-util')
 
-    testImplementation project(':gto-support-testing')
-    testImplementation "org.mockito:mockito-core:${deps.mockito}"
     testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:${deps.mockitoKotlin}"
-    testImplementation "org.powermock:powermock-module-junit4:${deps.powermock}"
+    testImplementation "org.mockito:mockito-core:${deps.mockito}"
 }
