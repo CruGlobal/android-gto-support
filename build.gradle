@@ -6,7 +6,7 @@ buildscript {
             advrecyclerview     : '1.0.0',
             crashlytics         : '2.10.1',
             eventbus            : '3.1.1',
-            facebookFlipper     : '0.33.1',
+            facebookFlipper     : '0.34.0',
             facebookStetho      : '1.5.1',
             gradleAndroidPlugin : '3.6.1',
             gson                : '2.8.6',
