@@ -1,36 +1,32 @@
 package org.ccci.gto.android.common.util;
 
-import android.os.Build;
-
 import org.ccci.gto.android.common.compat.util.LocaleCompat;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.robolectric.annotation.Config;
 
 import java.util.Locale;
 
-import androidx.test.runner.AndroidJUnit4;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import static java.util.Locale.CANADA_FRENCH;
 import static java.util.Locale.ENGLISH;
 import static java.util.Locale.FRENCH;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 @RunWith(AndroidJUnit4.class)
-public class LocaleUtilsIT {
+@Config(sdk = {16, 17, 18, 19, 21, 24})
+public class LocaleUtilsFallbackTest {
     private static final Locale MALAY = LocaleCompat.forLanguageTag("ms");
     private static final Locale BENGKULU = LocaleCompat.forLanguageTag("pse");
 
     @Test
     public void verifyGetFallback() throws Exception {
         assertThat(LocaleUtils.getFallback(Locale.US), is(ENGLISH));
+        assertThat(LocaleUtils.getFallback(LocaleCompat.forLanguageTag("en-x-private")), is(ENGLISH));
         assertThat(LocaleUtils.getFallback(BENGKULU), is(MALAY));
-
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            // Extensions are currently not supported before lollipop
-            assertThat(LocaleUtils.getFallback(LocaleCompat.forLanguageTag("en-x-private")), is(ENGLISH));
-        }
     }
 
     @Test
