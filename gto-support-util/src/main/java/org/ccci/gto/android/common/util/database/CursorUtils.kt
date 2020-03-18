@@ -111,7 +111,7 @@ fun Cursor.getLocale(columnName: String, defValue: Locale? = null) = getString(c
  * Or the default value if the column is invalid, null or non-existent
  */
 @JvmName("getNonNullLocale")
-fun Cursor.getLocale(columnName: String, defValue: Long) = getLocale(columnName) ?: defValue
+fun Cursor.getLocale(columnName: String, defValue: Locale) = getLocale(columnName) ?: defValue
 
 inline fun <R> Cursor.map(transform: (Cursor) -> R): List<R> = mapTo(ArrayList(count), transform)
 
