@@ -42,7 +42,13 @@ internal open class BaseLocaleCompatMethods : LocaleCompatMethods() {
         // XXX: we are ignoring grandfathered tags unless we really need that support
         val subtags = tag.split("-")
         val language = subtags[0]
-        val region = subtags.drop(1).firstOrNull { REGEX_REGION.matches(it) } ?: ""
+        val region = subtags
+            // skip the language
+            .drop(1)
+            // discard any extensions
+            .takeWhile { it.length != 1 }
+            // first component that is a REGION
+            .firstOrNull { REGEX_REGION.matches(it) } ?: ""
         return Locale(language, region)
     }
 

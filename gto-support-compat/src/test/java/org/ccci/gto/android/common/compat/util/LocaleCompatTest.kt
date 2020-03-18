@@ -4,6 +4,7 @@ import android.os.Build
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
+import org.hamcrest.Matchers.equalToIgnoringCase
 import org.hamcrest.Matchers.greaterThanOrEqualTo
 import org.hamcrest.Matchers.lessThan
 import org.junit.Assert.assertEquals
@@ -39,25 +40,46 @@ internal class LocaleCompatTest {
 
     @Test
     fun testForLanguageTagWithScript() {
-        // script support is only available starting with Lollipop
-        assumeThat(Build.VERSION.SDK_INT, greaterThanOrEqualTo(Build.VERSION_CODES.LOLLIPOP))
+        assumeScriptSupported()
 
-        val locale = LocaleCompat.forLanguageTag("zh-Hans-CN")
-        assertThat(locale, equalTo(Locale.Builder().setLanguage("zh").setScript("Hans").setRegion("CN").build()))
-        assertEquals("zh", locale.language)
-        assertEquals("Hans", locale.script)
-        assertEquals("CN", locale.country)
+        with(LocaleCompat.forLanguageTag("zh-Hans-CN")) {
+            assertThat(this, equalTo(Locale.Builder().setLanguage("zh").setScript("Hans").setRegion("CN").build()))
+            assertEquals("zh", language)
+            assertEquals("Hans", script)
+            assertEquals("CN", country)
+        }
     }
 
     @Test
     fun testForLanguageTagWithScriptBeforeLollipop() {
-        // script support is only available starting with Lollipop
-        assumeThat(Build.VERSION.SDK_INT, lessThan(Build.VERSION_CODES.LOLLIPOP))
+        assumeScriptNotSupported()
 
-        val locale = LocaleCompat.forLanguageTag("zh-Hans-CN")
-        assertThat(locale, equalTo(Locale("zh", "CN")))
-        assertEquals("zh", locale.language)
-        assertEquals("CN", locale.country)
+        with(LocaleCompat.forLanguageTag("zh-Hans-CN")) {
+            assertThat(this, equalTo(Locale("zh", "CN")))
+            assertEquals("zh", language)
+            assertEquals("CN", country)
+        }
+    }
+
+    @Test
+    fun testForLanguageTagWithExtension() {
+        assumeExtensionSupported()
+
+        with(LocaleCompat.forLanguageTag("en-x-US")) {
+            assertEquals("en", language)
+            assertEquals("", country)
+            assertThat(getExtension('x'), equalToIgnoringCase("US"))
+        }
+    }
+
+    @Test
+    fun testForLanguageTagWithExtensionBeforeLollipop() {
+        assumeExtensionNotSupported()
+
+        with(LocaleCompat.forLanguageTag("en-x-US")) {
+            assertEquals("en", language)
+            assertEquals("", country)
+        }
     }
 
     @Test
@@ -67,9 +89,15 @@ internal class LocaleCompatTest {
 
     @Test
     fun testToLanguageTagWithScript() {
-        // script support is only available starting with Lollipop
-        assumeThat(Build.VERSION.SDK_INT, greaterThanOrEqualTo(Build.VERSION_CODES.LOLLIPOP))
-
+        assumeScriptSupported()
         assertEquals("zh-Hans-CN", LocaleCompat.toLanguageTag(Locale.forLanguageTag("zh-Hans-CN")))
     }
 }
+
+// script & extension support is only available starting with Lollipop
+private fun assumeLollipop() = assumeThat(Build.VERSION.SDK_INT, greaterThanOrEqualTo(Build.VERSION_CODES.LOLLIPOP))
+private fun assumePreLollipop() = assumeThat(Build.VERSION.SDK_INT, lessThan(Build.VERSION_CODES.LOLLIPOP))
+private fun assumeScriptSupported() = assumeLollipop()
+private fun assumeScriptNotSupported() = assumePreLollipop()
+private fun assumeExtensionSupported() = assumeLollipop()
+private fun assumeExtensionNotSupported() = assumePreLollipop()
