@@ -6,6 +6,8 @@ import androidx.annotation.RestrictTo
 import androidx.annotation.VisibleForTesting
 import java.util.Locale
 
+private val REGEX_REGION = "([a-z]{2}|[0-9]{3})".toRegex(RegexOption.IGNORE_CASE)
+
 object LocaleCompat {
     private val COMPAT: LocaleCompatMethods = when {
         Build.VERSION.SDK_INT >= Build.VERSION_CODES.N -> NougatLocaleCompatMethods()
@@ -40,7 +42,13 @@ internal open class BaseLocaleCompatMethods : LocaleCompatMethods() {
         // XXX: we are ignoring grandfathered tags unless we really need that support
         val subtags = tag.split("-")
         val language = subtags[0]
-        val region = if (subtags.size > 1) subtags[1] else ""
+        val region = subtags
+            // skip the language
+            .drop(1)
+            // discard any extensions
+            .takeWhile { it.length != 1 }
+            // first component that is a REGION
+            .firstOrNull { REGEX_REGION.matches(it) } ?: ""
         return Locale(language, region)
     }
 
