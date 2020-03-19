@@ -3,4 +3,5 @@ dependencies {
 
     compileOnly "com.crashlytics.sdk.android:crashlytics:${deps.crashlytics}"
     compileOnly "com.google.firebase:firebase-crashlytics:${deps.firebase.crashlytics}"
+    compileOnly "com.jakewharton.timber:timber:${deps.timber}"
 }
