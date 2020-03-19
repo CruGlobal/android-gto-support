@@ -19,6 +19,10 @@ import java.util.Map;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+/**
+ * @deprecated Since v3.4.0, migrate to Facebook Flipper instead of Facebook Stetho.
+ */
+@Deprecated
 public class SQLiteOpenHelperStethoDatabaseProvider implements DatabaseFilesProvider, DatabaseConnectionProvider {
     private final List<File> mFiles;
     private final Map<File, SQLiteOpenHelper> mDatabases;
