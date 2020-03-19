@@ -16,8 +16,19 @@ class CrashlyticsTree @JvmOverloads constructor(
     override fun isLoggable(tag: String?, priority: Int) = logLevel <= priority
     override fun log(priority: Int, tag: String?, message: String, t: Throwable?) {
         with(crashlytics) {
-            log(message)
+            log("${priority.label}/${tag.orEmpty()}: $message")
             if (t != null && exceptionLogLevel <= priority) recordException(t)
         }
     }
+
+    private val Int.label
+        get() = when (this) {
+            Log.VERBOSE -> "V"
+            Log.DEBUG -> "D"
+            Log.INFO -> "I"
+            Log.WARN -> "W"
+            Log.ERROR -> "E"
+            Log.ASSERT -> "A"
+            else -> toString()
+        }
 }
