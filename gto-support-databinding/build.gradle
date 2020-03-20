@@ -1,11 +1,4 @@
-android {
-    dataBinding {
-        enabled = true
-    }
-}
-
+// deprecated since v3.4.0, use gto-support-androidx-databinding directly
 dependencies {
-    implementation project(':gto-support-util')
-
-    compileOnly "androidx.core:core:${deps.androidX.core}"
+    api project(':gto-support-androidx-databinding')
 }

@@ -1,4 +1,4 @@
-package org.ccci.gto.android.common.databinding.adapters
+package org.ccci.gto.android.common.androidx.databinding.adapters
 
 import android.annotation.SuppressLint
 import android.text.SpannableString
