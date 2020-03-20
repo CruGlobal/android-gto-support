@@ -54,7 +54,7 @@ buildscript {
             viewPager2           : '1.0.0',
     ]
     ext.deps.firebase = [
-            crashlytics: '17.0.0-beta01'
+            crashlytics: '17.0.0-beta02'
     ]
 
     repositories {
