@@ -1,5 +1,6 @@
 package org.ccci.gto.android.common.androidx.lifecycle
 
+import androidx.annotation.RestrictTo
 import androidx.lifecycle.LiveData
 
 sealed class CollectionLiveData<T, C : Collection<T>>(
@@ -80,3 +81,9 @@ class SetLiveData<T> : CollectionLiveData<T, Set<T>>(ChangeAwareSet()) {
         override fun iterator() = delegate.iterator()
     }
 }
+
+@RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
+@Deprecated("Since v3.4.0, this is just a shim to prop up the version in gto-support-lifecycle")
+open class CollectionLiveDataShim<T, C : Collection<T>> protected constructor(
+    collection: ChangeAwareCollection<T>
+) : CollectionLiveData<T, C>(collection)
