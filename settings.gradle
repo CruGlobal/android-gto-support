@@ -1,6 +1,7 @@
 include 'gto-support-androidx-databinding'
 include 'gto-support-androidx-fragment'
 include 'gto-support-androidx-lifecycle'
+include 'gto-support-androidx-room'
 include 'gto-support-androidx-viewpager2'
 include 'gto-support-api-base'
 include 'gto-support-api-okhttp3'
