@@ -4,6 +4,7 @@ import androidx.room.TypeConverter
 import org.ccci.gto.android.common.compat.util.LocaleCompat
 import java.util.Locale
 
+@Deprecated("Since v3.4.0, use converter from the gto-support-androidx-room module instead")
 object LocaleConverter {
     @JvmStatic
     @TypeConverter
