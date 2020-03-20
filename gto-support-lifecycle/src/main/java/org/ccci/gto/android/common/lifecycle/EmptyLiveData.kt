@@ -1,11 +1,17 @@
 package org.ccci.gto.android.common.lifecycle
 
 import androidx.lifecycle.LiveData
+import org.ccci.gto.android.common.androidx.lifecycle.emptyLiveData
+import org.ccci.gto.android.common.androidx.lifecycle.orEmpty
 
-private object EmptyLiveData : LiveData<Nothing?>(null)
+@Deprecated(
+    "Since v3.4.0, use version in gto-support-androidx-lifecycle directly",
+    ReplaceWith("emptyLiveData()", "org.ccci.gto.android.common.androidx.lifecycle.emptyLiveData")
+)
+fun <T> emptyLiveData(): LiveData<T?> = emptyLiveData()
 
-@Suppress("UNCHECKED_CAST")
-fun <T> emptyLiveData(): LiveData<T?> = EmptyLiveData as LiveData<T?>
-
-@Suppress("UNCHECKED_CAST")
-fun <T> LiveData<T>?.orEmpty(): LiveData<T?> = this as? LiveData<T?> ?: emptyLiveData()
+@Deprecated(
+    "Since v3.4.0, use version in gto-support-androidx-lifecycle directly",
+    ReplaceWith("orEmpty()", "org.ccci.gto.android.common.androidx.lifecycle.orEmpty")
+)
+fun <T> LiveData<T>?.orEmpty() = orEmpty()
