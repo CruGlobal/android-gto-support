@@ -2,5 +2,8 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-livedata:${deps.androidX.lifecycle}"
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:${deps.androidX.lifecycle}"
 
+    // Data Binding adapter dependencies
+    compileOnly "androidx.databinding:databinding-runtime:${deps.androidX.databinding}"
+
     testImplementation "androidx.arch.core:core-testing:${deps.androidX.arch}"
 }
