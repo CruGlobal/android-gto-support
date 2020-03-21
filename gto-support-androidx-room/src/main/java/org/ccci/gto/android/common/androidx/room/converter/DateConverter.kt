@@ -1,9 +1,8 @@
-package org.ccci.gto.android.common.room.converter
+package org.ccci.gto.android.common.androidx.room.converter
 
 import androidx.room.TypeConverter
 import java.util.Date
 
-@Deprecated("Since v3.4.0, use converter from the gto-support-androidx-room module instead")
 object DateConverter {
     @JvmStatic
     @TypeConverter

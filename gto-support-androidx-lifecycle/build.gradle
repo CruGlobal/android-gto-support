@@ -1,7 +1,4 @@
-// deprecated since v3.4.0, use gto-support-androidx-lifecycle directly
 dependencies {
-    api project(':gto-support-androidx-lifecycle')
-
     implementation "androidx.lifecycle:lifecycle-livedata:${deps.androidX.lifecycle}"
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:${deps.androidX.lifecycle}"
 

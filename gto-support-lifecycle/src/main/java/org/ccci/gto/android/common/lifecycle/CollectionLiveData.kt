@@ -1,59 +1,12 @@
 package org.ccci.gto.android.common.lifecycle
 
-import androidx.lifecycle.LiveData
+import org.ccci.gto.android.common.androidx.lifecycle.CollectionLiveDataShim
 
-sealed class CollectionLiveData<T, C : Collection<T>>(
-    private val collection: ChangeAwareCollection<T>
-) : LiveData<C>(collection as C) {
-    init {
-        collection.liveData = this
-    }
+@Deprecated("Since v3.4.0, use version in gto-support-androidx-lifecycle instead")
+sealed class CollectionLiveData<T, C : Collection<T>>(collection: ChangeAwareCollection<T>) :
+    CollectionLiveDataShim<T, C>(collection)
 
-    fun add(item: T) = collection.add(item)
-    fun addAll(items: Collection<T>) = collection.addAll(items)
-    fun remove(item: T) = collection.remove(item)
-    fun removeAll(items: Collection<T>) = collection.removeAll(items)
-    fun clear() = collection.clear()
-
-    private fun notifyChanged() = postValue(collection as C)
-
-    @JvmSynthetic
-    operator fun plusAssign(item: T) {
-        add(item)
-    }
-
-    @JvmSynthetic
-    operator fun plusAssign(items: Collection<T>) {
-        addAll(items)
-    }
-
-    @JvmSynthetic
-    operator fun minusAssign(item: T) {
-        remove(item)
-    }
-
-    @JvmSynthetic
-    operator fun minusAssign(items: Collection<T>) {
-        removeAll(items)
-    }
-
-    protected abstract class ChangeAwareCollection<T>(
-        private val delegate: MutableCollection<T>
-    ) : MutableCollection<T> {
-        internal lateinit var liveData: CollectionLiveData<*, *>
-        protected fun notifyChanged() {
-            liveData.notifyChanged()
-        }
-
-        override fun add(element: T) = delegate.add(element).also { if (it) notifyChanged() }
-        override fun addAll(elements: Collection<T>) = delegate.addAll(elements).also { if (it) notifyChanged() }
-        override fun remove(element: T) = delegate.remove(element).also { if (it) notifyChanged() }
-        override fun removeAll(elements: Collection<T>) = delegate.removeAll(elements).also { if (it) notifyChanged() }
-        override fun retainAll(elements: Collection<T>) = delegate.retainAll(elements).also { if (it) notifyChanged() }
-        override fun clear() = delegate.clear().also { notifyChanged() }
-    }
-}
-
+@Deprecated("Since v3.4.0, use version in gto-support-androidx-lifecycle instead")
 class ListLiveData<T> : CollectionLiveData<T, List<T>>(ChangeAwareList()) {
     private class ChangeAwareList<T>(
         private val delegate: MutableList<T> = mutableListOf()
@@ -72,6 +25,7 @@ class ListLiveData<T> : CollectionLiveData<T, List<T>>(ChangeAwareList()) {
     }
 }
 
+@Deprecated("Since v3.4.0, use version in gto-support-androidx-lifecycle instead")
 class SetLiveData<T> : CollectionLiveData<T, Set<T>>(ChangeAwareSet()) {
     private class ChangeAwareSet<T>(
         private val delegate: MutableSet<T> = mutableSetOf()

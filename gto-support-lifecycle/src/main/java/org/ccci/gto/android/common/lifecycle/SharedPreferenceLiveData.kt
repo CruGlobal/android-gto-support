@@ -1,71 +1,57 @@
 package org.ccci.gto.android.common.lifecycle
 
 import android.content.SharedPreferences
-import androidx.lifecycle.LiveData
+import org.ccci.gto.android.common.androidx.lifecycle.getBooleanLiveData
+import org.ccci.gto.android.common.androidx.lifecycle.getFloatLiveData
+import org.ccci.gto.android.common.androidx.lifecycle.getIntLiveData
+import org.ccci.gto.android.common.androidx.lifecycle.getLongLiveData
+import org.ccci.gto.android.common.androidx.lifecycle.getStringLiveData
+import org.ccci.gto.android.common.androidx.lifecycle.getStringSetLiveData
 
-private sealed class SharedPreferenceLiveData<T>(
-    protected val prefs: SharedPreferences,
-    protected val key: String,
-    protected val defValue: T
-) : LiveData<T>() {
-    private val listener = SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
-        if (key == this.key) value = readValue()
-    }
+@Deprecated(
+    "Since v3.4.0, use gto-support-androidx-lifecycle instead", ReplaceWith(
+        "getBooleanLiveData(key, defValue)",
+        "org.ccci.gto.android.common.androidx.lifecycle.getBooleanLiveData"
+    )
+)
+fun SharedPreferences.getBooleanLiveData(key: String, defValue: Boolean) = getBooleanLiveData(key, defValue)
 
-    override fun onActive() {
-        prefs.registerOnSharedPreferenceChangeListener(listener)
-        value = readValue()
-    }
+@Deprecated(
+    "Since v3.4.0, use gto-support-androidx-lifecycle instead", ReplaceWith(
+        "getFloatLiveData(key, defValue)",
+        "org.ccci.gto.android.common.androidx.lifecycle.getFloatLiveData"
+    )
+)
+fun SharedPreferences.getFloatLiveData(key: String, defValue: Float) = getFloatLiveData(key, defValue)
 
-    override fun onInactive() = prefs.unregisterOnSharedPreferenceChangeListener(listener)
+@Deprecated(
+    "Since v3.4.0, use gto-support-androidx-lifecycle instead", ReplaceWith(
+        "getIntLiveData(key, defValue)",
+        "org.ccci.gto.android.common.androidx.lifecycle.getIntLiveData"
+    )
+)
+fun SharedPreferences.getIntLiveData(key: String, defValue: Int) = getIntLiveData(key, defValue)
 
-    protected abstract fun readValue(): T
-}
+@Deprecated(
+    "Since v3.4.0, use gto-support-androidx-lifecycle instead", ReplaceWith(
+        "getLongLiveData(key, defValue)",
+        "org.ccci.gto.android.common.androidx.lifecycle.getLongLiveData"
+    )
+)
+fun SharedPreferences.getLongLiveData(key: String, defValue: Long) = getLongLiveData(key, defValue)
 
-private class SharedPreferenceBooleanLiveData(prefs: SharedPreferences, key: String, defValue: Boolean) :
-    SharedPreferenceLiveData<Boolean>(prefs, key, defValue) {
-    override fun readValue() = prefs.getBoolean(key, defValue)
-}
+@Deprecated(
+    "Since v3.4.0, use gto-support-androidx-lifecycle instead", ReplaceWith(
+        "getStringLiveData(key, defValue)",
+        "org.ccci.gto.android.common.androidx.lifecycle.getStringLiveData"
+    )
+)
+fun SharedPreferences.getStringLiveData(key: String, defValue: String?) = getStringLiveData(key, defValue)
 
-private class SharedPreferenceFloatLiveData(sharedPrefs: SharedPreferences, key: String, defValue: Float) :
-    SharedPreferenceLiveData<Float>(sharedPrefs, key, defValue) {
-    override fun readValue() = prefs.getFloat(key, defValue)
-}
-
-private class SharedPreferenceIntLiveData(prefs: SharedPreferences, key: String, defValue: Int) :
-    SharedPreferenceLiveData<Int>(prefs, key, defValue) {
-    override fun readValue() = prefs.getInt(key, defValue)
-}
-
-private class SharedPreferenceLongLiveData(prefs: SharedPreferences, key: String, defValue: Long) :
-    SharedPreferenceLiveData<Long>(prefs, key, defValue) {
-    override fun readValue() = prefs.getLong(key, defValue)
-}
-
-private class SharedPreferenceStringLiveData(sharedPrefs: SharedPreferences, key: String, defValue: String?) :
-    SharedPreferenceLiveData<String?>(sharedPrefs, key, defValue) {
-    override fun readValue(): String? = prefs.getString(key, defValue)
-}
-
-private class SharedPreferenceStringSetLiveData(sharedPrefs: SharedPreferences, key: String, defValue: Set<String>?) :
-    SharedPreferenceLiveData<Set<String>?>(sharedPrefs, key, defValue) {
-    override fun readValue(): Set<String>? = prefs.getStringSet(key, defValue)
-}
-
-fun SharedPreferences.getBooleanLiveData(key: String, defValue: Boolean): LiveData<Boolean> =
-    SharedPreferenceBooleanLiveData(this, key, defValue)
-
-fun SharedPreferences.getFloatLiveData(key: String, defValue: Float): LiveData<Float> =
-    SharedPreferenceFloatLiveData(this, key, defValue)
-
-fun SharedPreferences.getIntLiveData(key: String, defValue: Int): LiveData<Int> =
-    SharedPreferenceIntLiveData(this, key, defValue)
-
-fun SharedPreferences.getLongLiveData(key: String, defValue: Long): LiveData<Long> =
-    SharedPreferenceLongLiveData(this, key, defValue)
-
-fun SharedPreferences.getStringLiveData(key: String, defValue: String?): LiveData<String?> =
-    SharedPreferenceStringLiveData(this, key, defValue)
-
-fun SharedPreferences.getStringSetLiveData(key: String, defValue: Set<String>?): LiveData<Set<String>?> =
-    SharedPreferenceStringSetLiveData(this, key, defValue)
+@Deprecated(
+    "Since v3.4.0, use gto-support-androidx-lifecycle instead", ReplaceWith(
+        "getStringSetLiveData(key, defValue)",
+        "org.ccci.gto.android.common.androidx.lifecycle.getStringSetLiveData"
+    )
+)
+fun SharedPreferences.getStringSetLiveData(key: String, defValue: Set<String>?) = getStringSetLiveData(key, defValue)
