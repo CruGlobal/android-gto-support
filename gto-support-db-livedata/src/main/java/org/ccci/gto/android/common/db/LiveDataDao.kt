@@ -2,6 +2,7 @@ package org.ccci.gto.android.common.db
 
 import android.annotation.SuppressLint
 import android.database.Cursor
+import androidx.annotation.AnyThread
 import androidx.annotation.MainThread
 import androidx.annotation.RestrictTo
 import androidx.collection.SimpleArrayMap
@@ -59,29 +60,38 @@ private class DaoGetCursorComputableLiveData<T : Any>(dao: LiveDataDao, private 
 }
 // endregion DaoComputableLiveData
 
-@MainThread
 class LiveDataRegistry {
     private val registry: SimpleArrayMap<Class<*>, MutableMap<ComputableLiveData<*>, Unit>> = SimpleArrayMap()
 
+    @MainThread
     internal fun DaoComputableLiveData<*>.registerFor(clazz: Class<*>) {
-        (registry[clazz] ?: WeakHashMap<ComputableLiveData<*>, Unit>().also { registry.put(clazz, it) })[this] = Unit
+        synchronized(registry) {
+            (registry[clazz] ?: WeakHashMap<ComputableLiveData<*>, Unit>().also { registry.put(clazz, it) })[this] =
+                Unit
+        }
     }
 
+    @MainThread
     internal fun DaoComputableLiveData<*>.registerFor(query: Query<*>) {
         registerFor(query.table)
         query.joins.forEach { registerFor(it) }
     }
 
+    @MainThread
     private fun DaoComputableLiveData<*>.registerFor(table: Table<*>) = registerFor(table.type)
 
+    @MainThread
     private fun DaoComputableLiveData<*>.registerFor(join: Join<*, *>) {
         join.base?.let { registerFor(it) }
         registerFor(join.target)
     }
 
+    @AnyThread
     @SuppressLint("RestrictedApi")
     fun invalidate(clazz: Class<*>) {
-        registry[clazz]?.keys?.forEach { it.invalidate() }
+        synchronized(registry) {
+            registry[clazz]?.keys?.forEach { it.invalidate() }
+        }
     }
 }
 
