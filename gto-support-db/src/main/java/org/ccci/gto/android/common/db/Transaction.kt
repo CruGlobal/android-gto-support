@@ -22,8 +22,6 @@ internal class Transaction private constructor(
 ) : Closeable {
     private var state = STATE_INIT
 
-    fun begin() = beginTransaction(true)
-    fun beginTransactionNonExclusive() = beginTransaction(false)
     @JvmOverloads
     fun beginTransaction(exclusive: Boolean = true): Transaction {
         if (state < STATE_OPEN) {
@@ -34,7 +32,6 @@ internal class Transaction private constructor(
         return this
     }
 
-    fun setSuccessful() = setTransactionSuccessful()
     fun setTransactionSuccessful(): Transaction {
         if (state in STATE_OPEN until STATE_SUCCESSFUL) {
             db!!.setTransactionSuccessful()
@@ -43,7 +40,6 @@ internal class Transaction private constructor(
         return this
     }
 
-    fun end() = endTransaction()
     fun endTransaction(): Transaction {
         if (state in STATE_OPEN until STATE_CLOSED) {
             try {
