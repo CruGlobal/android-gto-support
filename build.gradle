@@ -25,7 +25,7 @@ buildscript {
             mockitoKotlin       : '2.1.0',
             okhttp3             : '3.12.10',
             picasso             : '2.71828',
-            powermock           : '2.0.5',
+            powermock           : '2.0.6',
             realm               : '6.1.0',
             realmAdapters       : '4.0.0',
             retrofit2           : '2.6.2',
