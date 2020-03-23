@@ -1,14 +1,15 @@
 package org.ccci.gto.android.sync.widget;
 
 import android.os.Bundle;
+
+import org.ccci.gto.android.common.sync.SyncRegistry;
+import org.ccci.gto.android.common.util.LongSparseBooleanArray;
+import org.ccci.gto.android.sync.ThreadedSyncIntentService.SyncTask;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-
-import org.ccci.gto.android.common.util.LongSparseBooleanArray;
-import org.ccci.gto.android.sync.ThreadedSyncIntentService;
-import org.ccci.gto.android.sync.ThreadedSyncIntentService.SyncTask;
 
 public final class SwipeRefreshSyncHelper {
     private static final String EXTRA_ACTIVE_SYNCS = SwipeRefreshSyncHelper.class.getName() + ".ACTIVE_SYNCS";
@@ -61,7 +62,7 @@ public final class SwipeRefreshSyncHelper {
             boolean refreshing = false;
             for (int i = mActiveSyncIds.size() - 1; i >= 0; i--) {
                 if (mActiveSyncIds.valueAt(i) &&
-                        ThreadedSyncIntentService.isSyncRunning((int) mActiveSyncIds.keyAt(i))) {
+                        SyncRegistry.INSTANCE.isSyncRunning((int) mActiveSyncIds.keyAt(i))) {
                     refreshing = true;
                     break;
                 } else {
