@@ -8,6 +8,9 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 class LongSparseBooleanArray : LongSparseArray<Boolean>(), Parcelable {
+    override fun get(key: Long): Boolean = get(key, false)
+    override fun get(key: Long, valueIfKeyNotFound: Boolean): Boolean = super.get(key, valueIfKeyNotFound)
+
     private companion object : Parceler<LongSparseBooleanArray> {
         override fun LongSparseBooleanArray.write(parcel: Parcel, flags: Int) {
             val size = size()
