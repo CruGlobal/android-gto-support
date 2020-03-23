@@ -5,6 +5,10 @@ import android.os.Parcelable;
 import androidx.annotation.NonNull;
 import androidx.collection.LongSparseArray;
 
+/**
+ * @deprecated Since v3.5.0, use the LongSparseBooleanArray in gto-support-androidx-collection instead
+ */
+@Deprecated
 public class LongSparseBooleanArray extends LongSparseArray<Boolean> implements Parcelable {
     public static final Parcelable.Creator<LongSparseBooleanArray> CREATOR =
             new Parcelable.Creator<LongSparseBooleanArray>() {
