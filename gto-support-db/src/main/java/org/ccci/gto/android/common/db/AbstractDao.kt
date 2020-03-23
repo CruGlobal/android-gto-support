@@ -6,7 +6,6 @@ import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import android.database.sqlite.SQLiteTransactionListener
 import android.os.AsyncTask
-import androidx.annotation.RestrictTo
 import androidx.annotation.WorkerThread
 import androidx.collection.SimpleArrayMap
 import org.ccci.gto.android.common.compat.util.LocaleCompat
@@ -254,21 +253,9 @@ abstract class AbstractDao(private val helper: SQLiteOpenHelper) : Dao {
 
     // region Transaction Management
     @WorkerThread
-    @RestrictTo(RestrictTo.Scope.LIBRARY)
-    @Deprecated("Since v3.3.0, use Dao.inTransaction or Dao.transaction {} instead")
-    fun newTransaction() = newTransaction(writableDatabase)
-
-    @WorkerThread
-    @RestrictTo(RestrictTo.Scope.LIBRARY)
-    @Deprecated("Since v3.3.0, use Dao.inTransaction or Dao.transaction {} instead")
-    protected fun newTransaction(db: SQLiteDatabase) = Transaction.newTransaction(db).apply {
+    private fun newTransaction(db: SQLiteDatabase) = Transaction.newTransaction(db).apply {
         transactionListener = InvalidationListener(this)
     }
-
-    @WorkerThread
-    @RestrictTo(RestrictTo.Scope.LIBRARY)
-    @Deprecated("Since v3.3.0, use Dao.inTransaction or Dao.transaction {} instead")
-    fun beginTransaction() = newTransaction().beginTransaction()
 
     @WorkerThread
     fun <T, X : Throwable?> inTransaction(closure: Closure<T, X>): T = inTransaction(writableDatabase, true, closure)
@@ -276,12 +263,6 @@ abstract class AbstractDao(private val helper: SQLiteOpenHelper) : Dao {
     @WorkerThread
     fun <T, X : Throwable?> inNonExclusiveTransaction(closure: Closure<T, X>): T =
         inTransaction(writableDatabase, false, closure)
-
-    @WorkerThread
-    @RestrictTo(RestrictTo.Scope.LIBRARY)
-    @Deprecated("Since v3.3.0, use Dao.inTransaction or Dao.transaction {} instead")
-    protected fun <T, X : Throwable?> inNonExclusiveTransaction(db: SQLiteDatabase, closure: Closure<T, X>): T =
-        inTransaction(db, false, closure)
 
     @WorkerThread
     protected fun <T, X : Throwable?> inTransaction(
