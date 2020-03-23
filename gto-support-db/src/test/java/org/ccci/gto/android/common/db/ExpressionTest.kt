@@ -14,7 +14,7 @@ import org.junit.runner.RunWith
 import org.robolectric.annotation.Config
 
 @RunWith(AndroidJUnit4::class)
-@Config(maxSdk = 28)
+@Config(sdk = [28])
 class ExpressionTest {
     private lateinit var dao: AbstractDao
 
