@@ -6,6 +6,10 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.collection.LongSparseArray;
 
+/**
+ * @deprecated Since v3.5.0, use ParcelableLongSparseArray from gto-support-androidx-collection instead
+ */
+@Deprecated
 public class ParcelableLongSparseArray<T extends Parcelable> extends LongSparseArray<T> implements Parcelable {
     public ParcelableLongSparseArray() {}
 
