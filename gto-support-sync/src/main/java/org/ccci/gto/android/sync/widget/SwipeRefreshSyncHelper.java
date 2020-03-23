@@ -3,8 +3,8 @@ package org.ccci.gto.android.sync.widget;
 import android.os.Bundle;
 
 import org.ccci.gto.android.common.sync.SyncRegistry;
+import org.ccci.gto.android.common.sync.SyncTask;
 import org.ccci.gto.android.common.util.LongSparseBooleanArray;
-import org.ccci.gto.android.sync.ThreadedSyncIntentService.SyncTask;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;

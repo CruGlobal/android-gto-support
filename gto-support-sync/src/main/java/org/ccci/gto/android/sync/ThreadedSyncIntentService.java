@@ -53,7 +53,7 @@ public abstract class ThreadedSyncIntentService extends ThreadedIntentService {
         return SyncRegistry.INSTANCE.isSyncRunning(syncId);
     }
 
-    public static final class SyncTask implements Runnable {
+    public static final class SyncTask implements Runnable, org.ccci.gto.android.common.sync.SyncTask {
         @NonNull
         private final Context mContext;
         @NonNull
@@ -69,6 +69,7 @@ public abstract class ThreadedSyncIntentService extends ThreadedIntentService {
             sync();
         }
 
+        @Override
         public int sync() {
             final int syncId = SyncRegistry.INSTANCE.startSync();
             mTask.putExtra(EXTRA_SYNCID, syncId);
