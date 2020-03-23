@@ -3,4 +3,8 @@ dependencies {
 
     implementation "androidx.collection:collection:${deps.androidX.collection}"
     api "androidx.lifecycle:lifecycle-livedata:${deps.androidX.lifecycle}"
+
+    testImplementation "androidx.arch.core:core-testing:${deps.androidX.arch}"
+    testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:${deps.mockitoKotlin}"
+    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:${deps.kotlinCoroutines}"
 }
