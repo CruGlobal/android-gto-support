@@ -2,6 +2,7 @@ package org.ccci.gto.android.common.androidx.collection
 
 import android.os.Parcel
 import android.os.Parcelable
+import androidx.annotation.VisibleForTesting
 import androidx.collection.LongSparseArray
 import kotlinx.android.parcel.Parceler
 import kotlinx.android.parcel.Parcelize
@@ -11,7 +12,8 @@ class LongSparseBooleanArray : LongSparseArray<Boolean>(), Parcelable {
     override fun get(key: Long): Boolean = get(key, false)
     override fun get(key: Long, valueIfKeyNotFound: Boolean): Boolean = super.get(key, valueIfKeyNotFound)
 
-    private companion object : Parceler<LongSparseBooleanArray> {
+    @VisibleForTesting
+    internal companion object : Parceler<LongSparseBooleanArray> {
         override fun LongSparseBooleanArray.write(parcel: Parcel, flags: Int) {
             val size = size()
             val keys = LongArray(size)

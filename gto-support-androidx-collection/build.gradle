@@ -2,4 +2,6 @@ apply plugin: 'kotlin-android-extensions'
 
 dependencies {
     api "androidx.collection:collection:${deps.androidX.collection}"
+
+    testImplementation "androidx.collection:collection-ktx:${deps.androidX.collection}"
 }
