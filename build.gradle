@@ -16,7 +16,7 @@ buildscript {
             jetbrainsAnnotations: '19.0.0',
             jsonUnit            : '1.31.1',
             junit               : '4.13',
-            kotlin              : '1.3.70',
+            kotlin              : '1.3.71',
             kotlinCoroutines    : '1.3.5',
             leakcanary2         : '2.2',
             lightweightStream   : '1.2.1',
