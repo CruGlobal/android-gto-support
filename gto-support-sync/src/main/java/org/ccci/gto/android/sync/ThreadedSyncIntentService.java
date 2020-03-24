@@ -2,23 +2,17 @@ package org.ccci.gto.android.sync;
 
 import android.content.Context;
 import android.content.Intent;
-import android.util.SparseBooleanArray;
 
 import org.ccci.gto.android.common.app.ThreadedIntentService;
-
-import java.util.concurrent.atomic.AtomicInteger;
+import org.ccci.gto.android.common.sync.SyncRegistry;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RestrictTo;
 import androidx.annotation.WorkerThread;
 
-import static org.ccci.gto.android.sync.ThreadedSyncIntentService.SyncTask.INITIAL_SYNC_ID;
-
 public abstract class ThreadedSyncIntentService extends ThreadedIntentService {
     static final String EXTRA_SYNCID = ThreadedSyncIntentService.class.getName() + ".EXTRA_SYNCID";
-
-    static final SparseBooleanArray SYNCS_RUNNING = new SparseBooleanArray();
 
     protected ThreadedSyncIntentService(@NonNull final String name) {
         super(name);
@@ -37,9 +31,7 @@ public abstract class ThreadedSyncIntentService extends ThreadedIntentService {
                 onHandleSyncIntent(intent);
             } finally {
                 final int syncId = intent.getIntExtra(EXTRA_SYNCID, 0);
-                synchronized (SYNCS_RUNNING) {
-                    SYNCS_RUNNING.delete(syncId);
-                }
+                SyncRegistry.INSTANCE.finishSync(syncId);
                 finishSync(syncId);
             }
         }
@@ -53,20 +45,15 @@ public abstract class ThreadedSyncIntentService extends ThreadedIntentService {
     @RestrictTo(RestrictTo.Scope.SUBCLASSES)
     protected void finishSync(final int syncId) {}
 
+    /**
+     * @deprecated Since v3.5.0, use the SyncRegistry to determine if a sync is running.
+     */
+    @Deprecated
     public static boolean isSyncRunning(final int syncId) {
-        if (syncId < INITIAL_SYNC_ID) {
-            return false;
-        }
-
-        synchronized (SYNCS_RUNNING) {
-            return SYNCS_RUNNING.get(syncId, false);
-        }
+        return SyncRegistry.INSTANCE.isSyncRunning(syncId);
     }
 
-    public static final class SyncTask implements Runnable {
-        static final int INITIAL_SYNC_ID = 1;
-        private static final AtomicInteger NEXT_SYNC_ID = new AtomicInteger(INITIAL_SYNC_ID);
-
+    public static final class SyncTask implements Runnable, org.ccci.gto.android.common.sync.SyncTask {
         @NonNull
         private final Context mContext;
         @NonNull
@@ -82,12 +69,10 @@ public abstract class ThreadedSyncIntentService extends ThreadedIntentService {
             sync();
         }
 
+        @Override
         public int sync() {
-            final int syncId = NEXT_SYNC_ID.getAndIncrement();
+            final int syncId = SyncRegistry.INSTANCE.startSync();
             mTask.putExtra(EXTRA_SYNCID, syncId);
-            synchronized (SYNCS_RUNNING) {
-                SYNCS_RUNNING.put(syncId, true);
-            }
             mContext.startService(mTask);
             return syncId;
         }
