@@ -6,7 +6,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import org.ccci.gto.android.common.sync.SyncTask
 import org.ccci.gto.android.common.sync.swiperefreshlayout.widget.SwipeRefreshSyncHelper
 
-@Deprecated("Since v3.5.0")
+@Deprecated("Since v3.5.0, use org.ccci.gto.android.common.sync.swiperefreshlayout.widget.SwipeRefreshSyncHelper now")
 class SwipeRefreshSyncHelper {
     private val mHelper = SwipeRefreshSyncHelper()
 
