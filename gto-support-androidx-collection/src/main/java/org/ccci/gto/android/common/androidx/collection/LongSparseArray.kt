@@ -13,8 +13,7 @@ fun <T> LongSparseArray<T>.mutableKeyIterator(): MutableIterator<Long> =
                 "next() was not called or remove() was called more than once for the most recent next() call"
             }
 
+            removeAt(--index)
             nextCalled = false
-            removeAt(index)
-            index--
         }
     }
