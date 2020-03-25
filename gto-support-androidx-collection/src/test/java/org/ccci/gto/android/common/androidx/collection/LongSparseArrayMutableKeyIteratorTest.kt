@@ -24,8 +24,8 @@ class LongSparseArrayMutableKeyIteratorTest {
     @Test
     fun testMutableKeyIteratorModify() {
         val i = array.mutableKeyIterator()
-        while (i.hasNext()) {
-            if (array[i.next()]!!) i.remove()
-        }
+        while (i.hasNext()) if (array[i.next()]!!) i.remove()
+
+        assertThat(array.mutableKeyIterator().asSequence().toList(), contains(2L))
     }
 }
