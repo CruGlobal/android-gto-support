@@ -2,4 +2,6 @@ dependencies {
     implementation "com.google.dagger:dagger:${deps.dagger}"
 
     compileOnly "org.jetbrains.kotlinx:kotlinx-coroutines-core:${deps.kotlinCoroutines}"
+
+    compileOnly "androidx.lifecycle:lifecycle-viewmodel:${deps.androidX.lifecycle}"
 }
