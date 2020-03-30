@@ -14,12 +14,9 @@ class DaggerViewModelFactory @Inject constructor(
 ) : ViewModelProvider.Factory {
     private val androidViewModelFactory = ViewModelProvider.AndroidViewModelFactory.getInstance(app)
 
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        val creator = viewModelProviders[modelClass]
-            ?: viewModelProviders.asIterable().firstOrNull { modelClass.isAssignableFrom(it.key) }?.value
-            ?: return androidViewModelFactory.create(modelClass)
+    override fun <T : ViewModel> create(modelClass: Class<T>) =
+        createOrNull(modelClass) ?: androidViewModelFactory.create(modelClass)
 
-        @Suppress("UNCHECKED_CAST")
-        return creator.get() as T
-    }
+    @Suppress("UNCHECKED_CAST")
+    internal fun <T : ViewModel> createOrNull(modelClass: Class<T>) = viewModelProviders[modelClass]?.get() as T?
 }

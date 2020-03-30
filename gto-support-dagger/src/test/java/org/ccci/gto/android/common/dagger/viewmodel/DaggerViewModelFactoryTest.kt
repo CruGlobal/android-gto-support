@@ -12,6 +12,7 @@ import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.instanceOf
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertNull
 import org.junit.Before
 import org.junit.Test
 import javax.inject.Provider
@@ -48,6 +49,21 @@ class DaggerViewModelFactoryTest {
 
         assertThat(factory.create(SimpleViewModel::class.java), instanceOf(SimpleViewModel::class.java))
         verify(provider, never()).get()
+    }
+
+    @Test
+    fun testCreateOrNull() {
+        whenever(provider.get()).thenReturn(DaggerViewModel(1))
+
+        with(factory.createOrNull(DaggerViewModel::class.java)) {
+            assertNotNull(this)
+            assertEquals(1, this!!.a)
+            verify(provider).get()
+            reset(provider)
+        }
+
+        assertNull(factory.createOrNull(SimpleAndroidViewModel::class.java))
+        assertNull(factory.createOrNull(SimpleViewModel::class.java))
     }
 
     class SimpleViewModel : ViewModel()
