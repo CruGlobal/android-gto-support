@@ -11,6 +11,10 @@ abstract class ViewModelModule {
     @Multibinds
     abstract fun viewModels(): Map<Class<out ViewModel>, ViewModel>
 
+    @Multibinds
+    abstract fun assistedSavedStateViewModelFactories():
+        Map<Class<out ViewModel>, AssistedSavedStateViewModelFactory<ViewModel>>
+
     @Binds
     internal abstract fun bindDaggerViewModelFactory(factory: DaggerViewModelFactory): ViewModelProvider.Factory
 }
