@@ -2,11 +2,4 @@ dependencies {
     implementation "com.google.dagger:dagger:${deps.dagger}"
 
     compileOnly "org.jetbrains.kotlinx:kotlinx-coroutines-core:${deps.kotlinCoroutines}"
-
-    compileOnly "androidx.lifecycle:lifecycle-viewmodel:${deps.androidX.lifecycle}"
-    compileOnly "androidx.lifecycle:lifecycle-viewmodel-savedstate:${deps.androidX.lifecycle}"
-
-    testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:${deps.mockitoKotlin}"
-    testImplementation "androidx.lifecycle:lifecycle-viewmodel:${deps.androidX.lifecycle}"
-    testImplementation "androidx.lifecycle:lifecycle-viewmodel-savedstate:${deps.androidX.lifecycle}"
 }
