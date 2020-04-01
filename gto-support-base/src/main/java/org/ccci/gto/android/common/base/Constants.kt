@@ -4,6 +4,7 @@ import androidx.annotation.ColorRes
 import androidx.annotation.DimenRes
 import androidx.annotation.DrawableRes
 import androidx.annotation.IdRes
+import androidx.annotation.LayoutRes
 import androidx.annotation.StringRes
 
 object Constants {
@@ -15,6 +16,8 @@ object Constants {
     const val INVALID_DRAWABLE_RES = 0
     @IdRes
     const val INVALID_ID_RES = 0
+    @LayoutRes
+    const val INVALID_LAYOUT_RES = 0
     @StringRes
     const val INVALID_STRING_RES = 0
 }
