@@ -1,4 +1,4 @@
-package org.ccci.gto.android.common.androidx.lifecycle.dagger.viewmodel
+package org.ccci.gto.android.common.dagger.viewmodel
 
 import android.app.Application
 import android.os.Bundle
