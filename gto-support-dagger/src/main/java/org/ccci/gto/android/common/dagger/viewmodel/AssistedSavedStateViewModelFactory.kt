@@ -1,4 +1,4 @@
-package org.ccci.gto.android.common.androidx.lifecycle.dagger.viewmodel
+package org.ccci.gto.android.common.dagger.viewmodel
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
