@@ -48,6 +48,13 @@ abstract class AbstractDao(private val helper: SQLiteOpenHelper) : Dao {
     // region Registered Types
     private val tableTypes = SimpleArrayMap<Class<*>, TableType>()
 
+    protected inline fun <reified T : Any> registerType(
+        table: String,
+        projection: Array<String>? = null,
+        mapper: Mapper<T>? = null,
+        pkWhere: Expression? = null
+    ) = registerType(T::class.java, table, projection, mapper, pkWhere)
+
     protected fun <T : Any> registerType(
         clazz: Class<T>,
         table: String,
