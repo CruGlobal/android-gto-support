@@ -2,19 +2,35 @@ package org.ccci.gto.android.common.dagger.eager
 
 import dagger.Module
 import dagger.multibindings.Multibinds
-import org.ccci.gto.android.common.dagger.eager.EagerSingleton.ThreadMode
+import org.ccci.gto.android.common.dagger.eager.EagerSingleton.LifecycleEvent.ACTIVITY_CREATED
+import org.ccci.gto.android.common.dagger.eager.EagerSingleton.LifecycleEvent.IMMEDIATE
+import org.ccci.gto.android.common.dagger.eager.EagerSingleton.ThreadMode.ASYNC
+import org.ccci.gto.android.common.dagger.eager.EagerSingleton.ThreadMode.MAIN
+import org.ccci.gto.android.common.dagger.eager.EagerSingleton.ThreadMode.MAIN_ASYNC
 
 @Module
 abstract class EagerModule {
     @Multibinds
-    @EagerSingleton(threadMode = ThreadMode.MAIN)
-    abstract fun mainThreadEagerSingletons(): Set<Any>
+    @EagerSingleton(on = IMMEDIATE, threadMode = MAIN)
+    abstract fun immediateMainEagerSingletons(): Set<Any>
 
     @Multibinds
-    @EagerSingleton(threadMode = ThreadMode.MAIN_ASYNC)
-    abstract fun mainAsyncThreadEagerSingletons(): Set<Any>
+    @EagerSingleton(on = IMMEDIATE, threadMode = MAIN_ASYNC)
+    abstract fun immediateMainAsyncEagerSingletons(): Set<Any>
 
     @Multibinds
-    @EagerSingleton(threadMode = ThreadMode.BACKGROUND)
-    abstract fun backgroundThreadEagerSingletons(): Set<Any>
+    @EagerSingleton(on = IMMEDIATE, threadMode = ASYNC)
+    abstract fun immediateAsyncEagerSingletons(): Set<Any>
+
+    @Multibinds
+    @EagerSingleton(on = ACTIVITY_CREATED, threadMode = MAIN)
+    abstract fun activityMainEagerSingletons(): Set<Any>
+
+    @Multibinds
+    @EagerSingleton(on = ACTIVITY_CREATED, threadMode = MAIN_ASYNC)
+    abstract fun activityMainAsyncEagerSingletons(): Set<Any>
+
+    @Multibinds
+    @EagerSingleton(on = ACTIVITY_CREATED, threadMode = ASYNC)
+    abstract fun activityAsyncEagerSingletons(): Set<Any>
 }
