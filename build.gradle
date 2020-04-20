@@ -9,7 +9,7 @@ buildscript {
             eventbus            : '3.2.0',
             facebookFlipper     : '0.37.0',
             facebookStetho      : '1.5.1',
-            gradleAndroidPlugin : '3.6.2',
+            gradleAndroidPlugin : '3.6.3',
             gson                : '2.8.6',
             guava               : '28.2-android',
             hamcrest            : '2.2',
