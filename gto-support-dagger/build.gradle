@@ -7,6 +7,9 @@ dependencies {
     compileOnly "androidx.lifecycle:lifecycle-viewmodel:${deps.androidX.lifecycle}"
     compileOnly "androidx.lifecycle:lifecycle-viewmodel-savedstate:${deps.androidX.lifecycle}"
 
+    // WorkManager Module dependencies
+    compileOnly "androidx.work:work-runtime:${deps.androidX.work}"
+
     testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:${deps.mockitoKotlin}"
     testImplementation "androidx.lifecycle:lifecycle-viewmodel:${deps.androidX.lifecycle}"
 }
