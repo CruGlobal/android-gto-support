@@ -151,6 +151,7 @@ subprojects {
 
             testImplementation "androidx.test.ext:junit:${deps.androidX.testJUnit}"
             testImplementation "junit:junit:${deps.junit}"
+            testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:${deps.mockitoKotlin}"
             testImplementation "org.robolectric:robolectric:${deps.robolectric}"
         }
 

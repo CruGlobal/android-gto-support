@@ -15,4 +15,6 @@ dependencies {
 
     compileOnly "com.google.android.material:material:${deps.materialDesign}"
     implementation "com.jakewharton.timber:timber:${deps.timber}"
+
+    testImplementation "com.google.android.material:material:${deps.materialDesign}"
 }
