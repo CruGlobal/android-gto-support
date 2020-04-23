@@ -2,6 +2,11 @@ android {
     defaultConfig {
         consumerProguardFiles 'proguard-consumer.pro'
     }
+
+    dataBinding {
+        enabled = true
+        addDefaultAdapters = false
+    }
 }
 
 dependencies {
@@ -15,6 +20,9 @@ dependencies {
 
     compileOnly "com.google.android.material:material:${deps.materialDesign}"
     implementation "com.jakewharton.timber:timber:${deps.timber}"
+
+    // databinding adapter dependencies
+    compileOnly "androidx.databinding:databinding-runtime:${deps.androidX.databinding}"
 
     testImplementation "com.google.android.material:material:${deps.materialDesign}"
 }
