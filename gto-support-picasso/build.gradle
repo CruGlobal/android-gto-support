@@ -9,8 +9,10 @@ dependencies {
     implementation project(':gto-support-compat')
     implementation project(':gto-support-util')
 
+    api "com.squareup.picasso:picasso:${deps.picasso}"
+
     compileOnly "androidx.appcompat:appcompat:${deps.androidX.appCompat}"
 
+    compileOnly "com.google.android.material:material:${deps.materialDesign}"
     implementation "com.jakewharton.timber:timber:${deps.timber}"
-    api "com.squareup.picasso:picasso:${deps.picasso}"
 }
