@@ -2,6 +2,11 @@ android {
     defaultConfig {
         consumerProguardFiles 'proguard-consumer.pro'
     }
+
+    dataBinding {
+        enabled = true
+        addDefaultAdapters = false
+    }
 }
 
 dependencies {
@@ -9,8 +14,15 @@ dependencies {
     implementation project(':gto-support-compat')
     implementation project(':gto-support-util')
 
+    api "com.squareup.picasso:picasso:${deps.picasso}"
+
     compileOnly "androidx.appcompat:appcompat:${deps.androidX.appCompat}"
 
+    compileOnly "com.google.android.material:material:${deps.materialDesign}"
     implementation "com.jakewharton.timber:timber:${deps.timber}"
-    api "com.squareup.picasso:picasso:${deps.picasso}"
+
+    // databinding adapter dependencies
+    compileOnly "androidx.databinding:databinding-runtime:${deps.androidX.databinding}"
+
+    testImplementation "com.google.android.material:material:${deps.materialDesign}"
 }
