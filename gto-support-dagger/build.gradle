@@ -3,6 +3,9 @@ dependencies {
 
     compileOnly "org.jetbrains.kotlinx:kotlinx-coroutines-core:${deps.kotlinCoroutines}"
 
+    // OkHttp3 Module dependencies
+    compileOnly "com.squareup.okhttp3:okhttp:${deps.okhttp3}"
+
     // ViewModel Module dependencies
     compileOnly "androidx.lifecycle:lifecycle-viewmodel:${deps.androidX.lifecycle}"
     compileOnly "androidx.lifecycle:lifecycle-viewmodel-savedstate:${deps.androidX.lifecycle}"
