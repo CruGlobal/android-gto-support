@@ -11,7 +11,7 @@ buildscript {
             facebookStetho      : '1.5.1',
             gradleAndroidPlugin : '3.6.3',
             gson                : '2.8.6',
-            guava               : '28.2-android',
+            guava               : '29.0-android',
             hamcrest            : '2.2',
             jacoco              : '0.8.5',
             jetbrainsAnnotations: '19.0.0',
