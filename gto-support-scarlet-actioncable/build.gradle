@@ -1,0 +1,11 @@
+dependencies {
+    implementation project(':gto-support-moshi')
+
+    implementation "com.squareup.moshi:moshi:${deps.moshi}"
+
+    testImplementation "net.javacrumbs.json-unit:json-unit:${deps.jsonUnit}"
+    testImplementation "net.javacrumbs.json-unit:json-unit-fluent:${deps.jsonUnit}"
+    testImplementation 'org.json:json:20190722'
+
+    kapt "com.squareup.moshi:moshi-kotlin-codegen:${deps.moshi}"
+}
