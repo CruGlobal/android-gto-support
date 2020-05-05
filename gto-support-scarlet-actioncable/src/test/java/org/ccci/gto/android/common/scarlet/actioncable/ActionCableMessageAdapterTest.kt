@@ -7,7 +7,7 @@ import com.nhaarman.mockitokotlin2.never
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
 import com.tinder.scarlet.MessageAdapter
-import net.javacrumbs.jsonunit.fluent.JsonFluentAssert
+import net.javacrumbs.jsonunit.fluent.JsonFluentAssert.assertThatJson
 import org.ccci.gto.android.common.scarlet.actioncable.model.Message
 import org.ccci.gto.android.common.scarlet.actioncable.model.Subscribe
 import org.hamcrest.MatcherAssert.assertThat
@@ -23,7 +23,7 @@ class ActionCableMessageAdapterTest {
     private lateinit var factory: MessageAdapter.Factory
 
     private lateinit var dataMessageAdapterFactory: MessageAdapter.Factory
-    private lateinit var dataMessageAdapter: MessageAdapter<*>
+    private lateinit var dataMessageAdapter: MessageAdapter<Any>
 
     @Before
     fun setup() {
@@ -44,8 +44,8 @@ class ActionCableMessageAdapterTest {
         assertThat(message, instanceOf(ScarletMessage.Text::class.java))
 
         val json = (message as ScarletMessage.Text).value
-        JsonFluentAssert.assertThatJson(json).node("command").isEqualTo("subscribe")
-        JsonFluentAssert.assertThatJson(JSONObject(json).getString("identifier")).isEqualTo("{channel:\"channel\"}")
+        assertThatJson(json).node("command").isEqualTo("subscribe")
+        assertThatJson(JSONObject(json).getString("identifier")).isEqualTo("{channel:\"channel\"}")
     }
 
     @Test
@@ -86,6 +86,21 @@ class ActionCableMessageAdapterTest {
         assertEquals("c", msg.identifier.channel)
         assertEquals("response", msg.data)
         verify(dataMessageAdapter).fromMessage(eq(ScarletMessage.Text("raw")))
+    }
+
+    @Test
+    fun verifyMessageMessageAdapterToMessage() {
+        val data = Message("c", "data")
+        whenever(dataMessageAdapter.toMessage(eq("data"))).thenReturn(ScarletMessage.Text("raw"))
+        val adapter = factory.create(
+            genericReturnTypeOf<MessageParameterizedTypes>("stringParameterized"), emptyArray()
+        ) as MessageAdapter<Message<String>>
+
+        val json = (adapter.toMessage(data) as ScarletMessage.Text).value
+        assertThatJson(json).node("command").isEqualTo("message")
+        assertThatJson(JSONObject(json).getString("identifier")).isEqualTo("""{channel:"c"}""")
+        assertThatJson(json).node("data").isEqualTo("raw")
+        verify(dataMessageAdapter).toMessage(eq("data"))
     }
 
     private interface MessageParameterizedTypes {

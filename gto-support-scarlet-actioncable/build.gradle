@@ -1,5 +1,6 @@
 dependencies {
     implementation project(':gto-support-moshi')
+    implementation project(':gto-support-scarlet')
 
     api "com.tinder.scarlet:scarlet-core:${deps.scarlet}"
     implementation("com.tinder.scarlet:message-adapter-moshi:${deps.scarlet}") {
