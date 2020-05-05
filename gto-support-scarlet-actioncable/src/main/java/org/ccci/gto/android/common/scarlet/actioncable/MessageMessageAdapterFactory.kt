@@ -10,11 +10,9 @@ internal class MessageMessageAdapterFactory<T>(
     private val rawMessageAdapter: MessageAdapter<RawMessage>,
     private val dataAdapter: MessageAdapter<T>
 ) : MessageAdapter<Message<T>> {
-    override fun fromMessage(message: ScarletMessage) = with(rawMessageAdapter.fromMessage(message)) {
-        Message<T>(identifier, data?.let { dataAdapter.fromMessage(it) })
-    }
+    override fun fromMessage(message: ScarletMessage) =
+        with(rawMessageAdapter.fromMessage(message)) { Message(identifier, dataAdapter.fromMessage(data)) }
 
-    override fun toMessage(data: Message<T>) = rawMessageAdapter.toMessage(
-        RawMessage(data.identifier, data.data?.let { dataAdapter.toMessage(it) }?.stringValue)
-    )
+    override fun toMessage(data: Message<T>) =
+        rawMessageAdapter.toMessage(RawMessage(data.identifier, dataAdapter.toMessage(data.data).stringValue))
 }
