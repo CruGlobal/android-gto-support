@@ -1,6 +1,11 @@
 dependencies {
     implementation project(':gto-support-moshi')
 
+    api "com.tinder.scarlet:scarlet-core:${deps.scarlet}"
+    implementation("com.tinder.scarlet:message-adapter-moshi:${deps.scarlet}") {
+        exclude group: 'com.squareup.moshi', module: 'moshi-kotlin'
+    }
+
     implementation "com.squareup.moshi:moshi:${deps.moshi}"
 
     testImplementation "net.javacrumbs.json-unit:json-unit:${deps.jsonUnit}"
