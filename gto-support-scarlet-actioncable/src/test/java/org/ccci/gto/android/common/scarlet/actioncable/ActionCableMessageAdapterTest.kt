@@ -67,17 +67,23 @@ class ActionCableMessageAdapterTest {
     // region Message MessageAdapter
     @Test(expected = IllegalArgumentException::class)
     fun verifyMessageMessageAdapterExceptionIfNotParameterized() {
-        factory.create(genericReturnTypeOf<MessageParameterizedTypes>("notParameterized"), emptyArray())
-        verify(dataMessageAdapterFactory, never()).create(any(), any())
+        try {
+            factory.create(genericReturnTypeOf<MessageParameterizedTypes>("notParameterized"), emptyArray())
+        } finally {
+            verify(dataMessageAdapterFactory, never()).create(any(), any())
+        }
     }
 
     @Test(expected = IllegalStateException::class)
     fun verifyMessageMessageAdapterExceptionIfUnsupportedParameterizedType() {
         whenever(dataMessageAdapterFactory.create(eq(String::class.java), any()))
-            .thenThrow(IllegalArgumentException::class.java)
-        factory.create(genericReturnTypeOf<MessageParameterizedTypes>("stringParameterized"), emptyArray())
+            .thenThrow(RuntimeException::class.java)
 
-        verify(dataMessageAdapterFactory).create(eq(String::class.java), any())
+        try {
+            factory.create(genericReturnTypeOf<MessageParameterizedTypes>("stringParameterized"), emptyArray())
+        } finally {
+            verify(dataMessageAdapterFactory).create(eq(String::class.java), any())
+        }
     }
 
     @Test
@@ -117,11 +123,11 @@ class ActionCableMessageAdapterTest {
     // region Data MessageAdapter
     @Test(expected = IllegalStateException::class)
     fun verifyDataMessageAdapterExceptionIfMissingAnnotation() {
-        whenever(dataMessageAdapterFactory.create(eq(String::class.java), any()))
-            .thenThrow(IllegalArgumentException::class.java)
-        factory.create(String::class.java, emptyArray())
-
-        verify(dataMessageAdapterFactory, never()).create(eq(String::class.java), any())
+        try {
+            factory.create(String::class.java, emptyArray())
+        } finally {
+            verify(dataMessageAdapterFactory, never()).create(any(), any())
+        }
     }
 
     @Test
@@ -136,14 +142,33 @@ class ActionCableMessageAdapterTest {
         assertThatJson(json).node("data").isEqualTo("atad")
         verify(dataMessageAdapter).toMessage(eq("data"))
     }
-    // endregion Data MessageAdapter
 
-    // region Unsupported Type
-    @Test(expected = IllegalStateException::class)
-    fun verifyUnsupportedTypeThrowsException() {
-        factory.create(String::class.java, emptyArray())
+    @Test
+    fun verifyDataMessageAdapterFromMessageValidChannel() {
+        val rawMessage = """{"identifier":"{\"channel\":\"valid\"}","command":"message","data":"data"}"""
+        whenever(dataMessageAdapter.fromMessage(any()))
+            .thenAnswer { (it.arguments.first() as ScarletMessage.Text).value.reversed() }
+        val adapter = factory.create(String::class.java, arrayOf(actionCableAnnotation)) as MessageAdapter<String>
+
+        val data = adapter.fromMessage(ScarletMessage.Text(rawMessage))
+        assertEquals("atad", data)
+        verify(dataMessageAdapter).fromMessage(eq(ScarletMessage.Text("data")))
     }
-    // endregion Unsupported Type
+
+    @Test(expected = IllegalStateException::class)
+    fun verifyDataMessageAdapterFromMessageInvalidChannel() {
+        val rawMessage = """{"identifier":"{\"channel\":\"invalid\"}","command":"message","data":"data"}"""
+        whenever(dataMessageAdapter.fromMessage(any()))
+            .thenAnswer { (it.arguments.first() as ScarletMessage.Text).value.reversed() }
+        val adapter = factory.create(String::class.java, arrayOf(actionCableAnnotation)) as MessageAdapter<String>
+
+        try {
+            adapter.fromMessage(ScarletMessage.Text(rawMessage))
+        } finally {
+            verify(dataMessageAdapter, never()).fromMessage(any())
+        }
+    }
+    // endregion Data MessageAdapter
 
     private inline fun <reified T : Any> genericReturnTypeOf(method: String) =
         T::class.java.getDeclaredMethod(method).genericReturnType
