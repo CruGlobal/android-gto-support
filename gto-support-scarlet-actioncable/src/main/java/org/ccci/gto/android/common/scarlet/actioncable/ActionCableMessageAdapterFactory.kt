@@ -7,6 +7,7 @@ import com.tinder.scarlet.utils.getParameterUpperBound
 import com.tinder.scarlet.utils.getRawType
 import com.tinder.scarlet.utils.hasUnresolvableType
 import org.ccci.gto.android.common.moshi.adapter.StringifyJsonAdapterFactory
+import org.ccci.gto.android.common.scarlet.actioncable.model.Identifier
 import org.ccci.gto.android.common.scarlet.actioncable.model.Message
 import org.ccci.gto.android.common.scarlet.actioncable.model.RawMessage
 import org.ccci.gto.android.common.scarlet.actioncable.model.Subscribe
@@ -29,10 +30,18 @@ class ActionCableMessageAdapterFactory private constructor(
             require(type is ParameterizedType && !type.hasUnresolvableType()) {
                 "ActionCable Message type requires a resolvable ParameterizedType"
             }
-            val dataMessageAdapter = findMessageAdapter(type.getParameterUpperBound(0), annotations)
-            MessageMessageAdapterFactory(rawMessageAdapter, dataMessageAdapter)
+            MessageMessageAdapterFactory(
+                rawMessageAdapter, findMessageAdapter(type.getParameterUpperBound(0), annotations)
+            )
         }
-        else -> throw IllegalArgumentException("Type is not supported by this MessageAdapterFactory: $type")
+        else -> {
+            val actionCableMessage = annotations.firstOrNull { it is ActionCableMessage } as? ActionCableMessage
+                ?: error("Type is not supported by this MessageAdapterFactory: $type")
+            DataMessageAdapterFactory(
+                Identifier(actionCableMessage.channel), rawMessageAdapter,
+                findMessageAdapter(type, annotations.filterNot { it is ActionCableMessage }.toTypedArray())
+            )
+        }
     }
 
     private fun findMessageAdapter(type: Type, annotations: Array<Annotation>): MessageAdapter<Any> {

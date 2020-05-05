@@ -25,6 +25,11 @@ class ActionCableMessageAdapterTest {
     private lateinit var dataMessageAdapterFactory: MessageAdapter.Factory
     private lateinit var dataMessageAdapter: MessageAdapter<Any>
 
+    private val actionCableAnnotation by lazy {
+        Annotations::class.java.getDeclaredMethod("actionCable").annotations
+            .filterIsInstance(ActionCableMessage::class.java).first()
+    }
+
     @Before
     fun setup() {
         dataMessageAdapter = mock()
@@ -109,8 +114,32 @@ class ActionCableMessageAdapterTest {
     }
     // endregion Message MessageAdapter
 
+    // region Data MessageAdapter
+    @Test(expected = IllegalStateException::class)
+    fun verifyDataMessageAdapterExceptionIfMissingAnnotation() {
+        whenever(dataMessageAdapterFactory.create(eq(String::class.java), any()))
+            .thenThrow(IllegalArgumentException::class.java)
+        factory.create(String::class.java, emptyArray())
+
+        verify(dataMessageAdapterFactory, never()).create(eq(String::class.java), any())
+    }
+
+    @Test
+    fun verifyDataMessageAdapterToMessage() {
+        whenever(dataMessageAdapter.toMessage(any()))
+            .thenAnswer { ScarletMessage.Text((it.arguments.first() as String).reversed()) }
+        val adapter = factory.create(String::class.java, arrayOf(actionCableAnnotation)) as MessageAdapter<String>
+
+        val json = (adapter.toMessage("data") as ScarletMessage.Text).value
+        assertThatJson(json).node("command").isEqualTo("message")
+        assertThatJson(JSONObject(json).getString("identifier")).isEqualTo("""{channel:"valid"}""")
+        assertThatJson(json).node("data").isEqualTo("atad")
+        verify(dataMessageAdapter).toMessage(eq("data"))
+    }
+    // endregion Data MessageAdapter
+
     // region Unsupported Type
-    @Test(expected = IllegalArgumentException::class)
+    @Test(expected = IllegalStateException::class)
     fun verifyUnsupportedTypeThrowsException() {
         factory.create(String::class.java, emptyArray())
     }
@@ -118,4 +147,9 @@ class ActionCableMessageAdapterTest {
 
     private inline fun <reified T : Any> genericReturnTypeOf(method: String) =
         T::class.java.getDeclaredMethod(method).genericReturnType
+}
+
+private interface Annotations {
+    @ActionCableMessage("valid")
+    fun actionCable(): String
 }
