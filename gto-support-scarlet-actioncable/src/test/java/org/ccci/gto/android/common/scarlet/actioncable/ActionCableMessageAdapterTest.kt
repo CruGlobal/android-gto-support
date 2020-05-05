@@ -14,6 +14,7 @@ import org.junit.Test
 class ActionCableMessageAdapterTest {
     private val factory = ActionCableMessageAdapterFactory()
 
+    // region Subscribe MessageAdapter
     @Test
     fun verifySubscribeMessageAdapterToMessage() {
         val adapter = factory.create(Subscribe::class.java, emptyArray()) as MessageAdapter<Subscribe>
@@ -33,4 +34,12 @@ class ActionCableMessageAdapterTest {
         assertEquals("subscribe", subscribe.command)
         assertEquals("channel", subscribe.identifier.channel)
     }
+    // endregion Subscribe MessageAdapter
+
+    // region Unsupported Type
+    @Test(expected = IllegalArgumentException::class)
+    fun verifyUnsupportedTypeThrowsException() {
+        factory.create(String::class.java, emptyArray())
+    }
+    // endregion Unsupported Type
 }
