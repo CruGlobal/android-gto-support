@@ -7,7 +7,6 @@ import org.ccci.gto.android.common.db.Contract.CompoundTable;
 import org.ccci.gto.android.common.db.Contract.RootTable;
 import org.ccci.gto.android.common.db.model.Compound;
 import org.ccci.gto.android.common.db.model.Root;
-import org.ccci.gto.android.common.util.database.CursorUtils;
 import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -82,57 +81,6 @@ public class AbstractDaoIT {
             assertThat(refresh.data1, allOf(is(orig.data1), is(not(conflict.data1))));
             assertThat(refresh.data2, allOf(is(orig.data2), is(not(conflict.data2))));
         }
-    }
-
-    @Test
-    public void testGetCursorGroupBy() {
-        final TestDao dao = getDao();
-
-        dao.insert(new Root(1, "1"));
-        dao.insert(new Root(2, "2"));
-        dao.insert(new Root(3, "2"));
-        dao.insert(new Root(4, "2"));
-        dao.insert(new Root(5, "3"));
-
-        Cursor cursor = dao.getCursor(Query.select(Root.class).groupBy(RootTable.FIELD_TEST));
-
-        assertThat(cursor.getCount(), is(3));
-
-        cursor.moveToFirst();
-
-        assertThat(CursorUtils.getString(cursor, RootTable.COLUMN_TEST), is("1"));
-
-        cursor.moveToNext();
-
-        assertThat(CursorUtils.getString(cursor, RootTable.COLUMN_TEST), is("2"));
-
-        cursor.moveToNext();
-
-        assertThat(CursorUtils.getString(cursor, RootTable.COLUMN_TEST), is("3"));
-
-        cursor.close();
-    }
-
-    @Test
-    public void testGetCursorHaving() {
-        final TestDao dao = getDao();
-
-        dao.insert(new Root(1, "1"));
-        dao.insert(new Root(2, "2"));
-        dao.insert(new Root(3, "2"));
-        dao.insert(new Root(4, "2"));
-        dao.insert(new Root(5, "3"));
-
-        Expression max = RootTable.FIELD_ID.max().eq(3);
-        Cursor cursor = dao.getCursor(Query.select(Root.class).groupBy(RootTable.FIELD_ID).having(max));
-
-        assertThat(cursor.getCount(), is(1));
-
-        cursor.moveToFirst();
-
-        assertThat(CursorUtils.getString(cursor, RootTable.COLUMN_TEST), is("2"));
-
-        cursor.close();
     }
 
     @Test

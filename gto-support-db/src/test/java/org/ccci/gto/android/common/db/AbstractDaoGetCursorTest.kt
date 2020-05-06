@@ -18,7 +18,10 @@ import org.robolectric.annotation.Config
 class AbstractDaoGetCursorTest : BaseAbstractDaoTest() {
     @Test
     fun verifyGetCursorWhere() {
-        dao.getCursor(Query.select(Model1::class.java).where(Expression.raw("a = ?", "arg1")))
+        Query.select(Model1::class.java)
+            .where(Expression.raw("a = ?", "arg1"))
+            .getCursor(dao)
+
         argumentCaptor<String> {
             val args = argumentCaptor<Array<String>>()
             verify(db).query(
@@ -26,6 +29,26 @@ class AbstractDaoGetCursorTest : BaseAbstractDaoTest() {
             )
             assertEquals("a = ?", firstValue)
             assertThat(args.firstValue.toList(), contains("arg1"))
+        }
+    }
+
+    @Test
+    fun verifyGetCursorGroupByHaving() {
+        Query.select(Model1::class.java)
+            .where(Expression.raw("a = ?", "whereArg"))
+            .groupBy(Model1.FIELD).having(Expression.raw("b = ?", "havingArg"))
+            .getCursor(dao)
+
+        argumentCaptor<String> {
+            val having = argumentCaptor<String>()
+            val args = argumentCaptor<Array<String>>()
+            verify(db).query(
+                any(), any(), any(), any(), args.capture(), capture(), having.capture(), anyOrNull(), anyOrNull()
+            )
+
+            assertEquals("${Model1.TABLE_NAME}.${Model1.FIELD_NAME}", firstValue)
+            assertEquals("b = ?", having.firstValue)
+            assertThat(args.firstValue.toList(), contains("whereArg", "havingArg"))
         }
     }
 }
