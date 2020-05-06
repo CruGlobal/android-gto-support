@@ -1,13 +1,10 @@
 package org.ccci.gto.android.common.jsonapi;
 
-import androidx.test.runner.AndroidJUnit4;
-
 import org.ccci.gto.android.common.jsonapi.JsonApiConverter.Options;
 import org.ccci.gto.android.common.jsonapi.annotation.JsonApiType;
 import org.ccci.gto.android.common.jsonapi.model.JsonApiObject;
 import org.ccci.gto.android.common.jsonapi.model.ModelBase;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,8 +18,7 @@ import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.not;
 import static org.junit.Assert.assertThat;
 
-@RunWith(AndroidJUnit4.class)
-public class JsonApiConverterSparseFieldsetIT {
+public class JsonApiConverterSparseFieldsetTest {
     @Test
     public void verifyToJsonSparseFieldsetSimple() throws Exception {
         final JsonApiConverter converter = new JsonApiConverter.Builder()

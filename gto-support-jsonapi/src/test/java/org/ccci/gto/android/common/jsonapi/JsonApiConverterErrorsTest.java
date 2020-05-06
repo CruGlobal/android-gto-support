@@ -1,15 +1,13 @@
 package org.ccci.gto.android.common.jsonapi;
 
-import androidx.annotation.NonNull;
-import androidx.test.runner.AndroidJUnit4;
-
 import org.ccci.gto.android.common.jsonapi.model.JsonApiError;
 import org.ccci.gto.android.common.jsonapi.model.JsonApiObject;
 import org.ccci.gto.android.common.jsonapi.model.ModelSimple;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Test;
-import org.junit.runner.RunWith;
+
+import androidx.annotation.NonNull;
 
 import static net.javacrumbs.jsonunit.JsonMatchers.jsonPartEquals;
 import static net.javacrumbs.jsonunit.fluent.JsonFluentAssert.assertThatJson;
@@ -17,8 +15,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.assertThat;
 
-@RunWith(AndroidJUnit4.class)
-public class JsonApiConverterErrorsIT {
+public class JsonApiConverterErrorsTest {
     private static final String META_SIMPLE = "{\"detail\":{\"person_id\":[\"This person is already assigned\"]}}";
 
     // sample error taken from http://jsonapi.org/examples/#error-objects-multiple-errors

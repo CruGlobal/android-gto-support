@@ -14,7 +14,7 @@ import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
-public class JsonApiConverterPostCreateIT {
+public class JsonApiConverterPostCreateTest {
     @Test(expected = IllegalArgumentException.class)
     public void verifyConverterPostCreateParams() throws Exception {
         new JsonApiConverter.Builder().addClasses(ModelPostCreateParameters.class).build();

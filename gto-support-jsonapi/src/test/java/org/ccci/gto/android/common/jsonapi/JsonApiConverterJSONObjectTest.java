@@ -1,15 +1,13 @@
 package org.ccci.gto.android.common.jsonapi;
 
-import androidx.annotation.Nullable;
-import androidx.test.runner.AndroidJUnit4;
-
 import org.ccci.gto.android.common.jsonapi.annotation.JsonApiType;
 import org.ccci.gto.android.common.jsonapi.model.JsonApiObject;
 import org.ccci.gto.android.common.jsonapi.model.ModelBase;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.Test;
-import org.junit.runner.RunWith;
+
+import androidx.annotation.Nullable;
 
 import static net.javacrumbs.jsonunit.JsonMatchers.jsonNodeAbsent;
 import static net.javacrumbs.jsonunit.JsonMatchers.jsonPartEquals;
@@ -19,8 +17,7 @@ import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
 
-@RunWith(AndroidJUnit4.class)
-public class JsonApiConverterJSONObjectIT {
+public class JsonApiConverterJSONObjectTest {
     @Test
     public void verifyToJsonNull() throws Exception {
         final JsonApiConverter converter = new JsonApiConverter.Builder().addClasses(ModelJSONObject.class).build();

@@ -7,11 +7,8 @@ import org.ccci.gto.android.common.jsonapi.model.ModelBase;
 import org.ccci.gto.android.common.jsonapi.model.ModelSimple;
 import org.json.JSONObject;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 
 import java.util.Collections;
-
-import androidx.test.runner.AndroidJUnit4;
 
 import static net.javacrumbs.jsonunit.JsonMatchers.jsonNodeAbsent;
 import static net.javacrumbs.jsonunit.JsonMatchers.jsonNodePresent;
@@ -28,8 +25,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 
-@RunWith(AndroidJUnit4.class)
-public class JsonApiConverterIT {
+public class JsonApiConverterTest {
     private static final float DELTA = 0.000001f;
 
     @Test(expected = IllegalArgumentException.class)
@@ -164,7 +160,7 @@ public class JsonApiConverterIT {
         // valid types
         for (final String type : new String[] {ModelSimple.TYPE, ModelSimple.ALIAS1, ModelSimple.ALIAS2}) {
             final JsonApiObject<ModelSimple> output =
-                    converter.fromJson("{data:{type:'" + type + "',id=79}}", ModelSimple.class);
+                    converter.fromJson("{data:{type:'" + type + "',id:79}}", ModelSimple.class);
             final ModelSimple obj = output.getDataSingle();
             assertNotNull(obj);
             assertThat(obj.mId, is(79));
@@ -173,7 +169,7 @@ public class JsonApiConverterIT {
         // invalid types
         for (final String type : new String[] {ModelSimple.NOTALIAS}) {
             final JsonApiObject<ModelSimple> output =
-                    converter.fromJson("{data:{type:'" + type + "',id=79}}", ModelSimple.class);
+                    converter.fromJson("{data:{type:'" + type + "',id:79}}", ModelSimple.class);
             assertNull(output.getDataSingle());
         }
     }
