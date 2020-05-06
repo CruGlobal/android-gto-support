@@ -3,8 +3,12 @@ package org.ccci.gto.android.common.util.os;
 import android.os.Bundle;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.robolectric.annotation.Config;
 
 import java.util.Locale;
+
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import static org.ccci.gto.android.common.util.os.BundleUtils.getEnum;
 import static org.ccci.gto.android.common.util.os.BundleUtils.getLocale;
@@ -17,6 +21,8 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
 
+@RunWith(AndroidJUnit4.class)
+@Config(sdk = {28})
 public final class BundleUtilsTest {
     private static final String KEY1 = "key1";
     private static final String KEY2 = "key2";
