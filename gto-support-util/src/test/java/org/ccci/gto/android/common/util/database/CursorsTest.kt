@@ -42,6 +42,14 @@ class CursorsTest {
     }
 
     @Test
+    fun testGetLongDefaultWhenInvalidValue() {
+        wheneverGetValid().thenReturn("abcde")
+        assertNull(cursor.getLong(VALID))
+        assertEquals(1, cursor.getLong(VALID, 1))
+        assertNull(cursor.getLong(VALID, null))
+    }
+
+    @Test
     fun testGetLongDefaultWhenNonExistentField() {
         assertNull(cursor.getLong(INVALID))
         assertEquals(1, cursor.getLong(INVALID, 1))
