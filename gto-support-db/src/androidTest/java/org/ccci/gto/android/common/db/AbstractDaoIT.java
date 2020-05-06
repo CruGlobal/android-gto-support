@@ -85,21 +85,6 @@ public class AbstractDaoIT {
     }
 
     @Test
-    public void testGetCursorWhere() {
-        final TestDao dao = getDao();
-
-        dao.insert(new Root(1, "1"));
-        dao.insert(new Root(2, "2"));
-
-        Cursor cursor = dao.getCursor(Query.select(Root.class).where(RootTable.SQL_WHERE_PRIMARY_KEY.args(2)));
-        cursor.moveToFirst();
-
-        assertThat(CursorUtils.getString(cursor, RootTable.COLUMN_TEST), is("2"));
-
-        cursor.close();
-    }
-
-    @Test
     public void testGetCursorGroupBy() {
         final TestDao dao = getDao();
 
