@@ -65,4 +65,14 @@ class AbstractDaoGetCursorTest : BaseAbstractDaoTest() {
             assertThat(args.firstValue.toList(), contains("whereArg", "havingArg"))
         }
     }
+
+    @Test
+    fun verifyGetCursorLimit() {
+        Query.select<Model1>().limit(10).getCursor(dao)
+
+        argumentCaptor<String> {
+            verify(db).query(any(), any(), any(), anyOrNull(), any(), anyOrNull(), anyOrNull(), anyOrNull(), capture())
+            assertEquals("10", firstValue)
+        }
+    }
 }
