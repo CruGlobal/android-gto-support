@@ -17,8 +17,22 @@ import org.robolectric.annotation.Config
 @RunWith(AndroidJUnit4::class)
 class AbstractDaoGetCursorTest : BaseAbstractDaoTest() {
     @Test
+    fun verifyGetCursor() {
+        Query.select<Model1>().getCursor(dao)
+
+        argumentCaptor<String> {
+            val cols = argumentCaptor<Array<String>>()
+            verify(db).query(
+                any(), capture(), cols.capture(), anyOrNull(), any(), anyOrNull(), anyOrNull(), anyOrNull(), anyOrNull()
+            )
+            assertEquals(Model1.TABLE_NAME, firstValue)
+            assertThat(cols.firstValue.toList(), contains(Model1.FIELD_NAME))
+        }
+    }
+
+    @Test
     fun verifyGetCursorWhere() {
-        Query.select(Model1::class.java)
+        Query.select<Model1>()
             .where(Expression.raw("a = ?", "arg1"))
             .getCursor(dao)
 
@@ -34,7 +48,7 @@ class AbstractDaoGetCursorTest : BaseAbstractDaoTest() {
 
     @Test
     fun verifyGetCursorGroupByHaving() {
-        Query.select(Model1::class.java)
+        Query.select<Model1>()
             .where(Expression.raw("a = ?", "whereArg"))
             .groupBy(Model1.FIELD).having(Expression.raw("b = ?", "havingArg"))
             .getCursor(dao)

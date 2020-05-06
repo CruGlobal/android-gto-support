@@ -37,7 +37,7 @@ abstract class BaseAbstractDaoTest {
 
     protected class TestDao(helper: SQLiteOpenHelper) : AbstractDao(helper) {
         init {
-            registerType(Model1::class.java, Model1.TABLE_NAME, emptyArray(), null, null)
+            registerType(Model1::class.java, Model1.TABLE_NAME, arrayOf(Model1.FIELD_NAME), null, null)
         }
 
         val invalidatedClasses = mutableListOf<Class<*>>()

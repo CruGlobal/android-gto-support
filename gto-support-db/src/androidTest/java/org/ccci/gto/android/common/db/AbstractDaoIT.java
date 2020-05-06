@@ -1,6 +1,5 @@
 package org.ccci.gto.android.common.db;
 
-import android.database.Cursor;
 import android.database.sqlite.SQLiteConstraintException;
 
 import org.ccci.gto.android.common.db.Contract.CompoundTable;
@@ -37,15 +36,6 @@ public class AbstractDaoIT {
     public void testGetTable() throws Exception {
         final TestDao dao = getDao();
         assertThat(dao.getTable(Root.class), is(RootTable.TABLE_NAME));
-    }
-
-    @Test
-    public void testGetCursor() {
-        final TestDao dao = getDao();
-        final Cursor cursor = dao.getCursor(Query.select(Root.class));
-
-        assertThat(cursor.getColumnIndex(RootTable.COLUMN_ID), is(not(-1)));
-        assertThat(cursor.getColumnIndex(RootTable.COLUMN_TEST), is(not(-1)));
     }
 
     @Test
