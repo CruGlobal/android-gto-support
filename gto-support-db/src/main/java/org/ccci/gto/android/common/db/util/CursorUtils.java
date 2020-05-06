@@ -54,26 +54,6 @@ public final class CursorUtils {
         return org.ccci.gto.android.common.util.database.CursorUtils.getDouble(c, field, defValue);
     }
 
-    /**
-     * @deprecated Since v3.0.0,
-     * use {@link org.ccci.gto.android.common.util.database.CursorUtils#getLong(Cursor, String, Long)} instead.
-     */
-    @Deprecated
-    public static long getLong(@NonNull final Cursor c, @NonNull final String field) {
-        return org.ccci.gto.android.common.util.database.CursorUtils.getNonNullLong(c, field, 0L);
-    }
-
-    /**
-     * @deprecated Since v3.0.0,
-     * use {@link org.ccci.gto.android.common.util.database.CursorUtils#getLong(Cursor, String, Long)} instead.
-     */
-    @Nullable
-    @Deprecated
-    @Contract("_, _, !null -> !null")
-    public static Long getLong(@NonNull final Cursor c, @NonNull final String field, @Nullable final Long defValue) {
-        return org.ccci.gto.android.common.util.database.CursorUtils.getLong(c, field, defValue);
-    }
-
     @Nullable
     public static BigDecimal getBigDecimal(@NonNull final Cursor c, @NonNull final String field,
                                            @Nullable final BigDecimal defValue) {
