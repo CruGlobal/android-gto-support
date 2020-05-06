@@ -12,14 +12,12 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.robolectric.annotation.Config
 
 private const val TABLE_NAME = "root"
 private const val FIELD_NAME = "test"
 private val FIELD = Table.forClass(Model1::class.java).field(FIELD_NAME)
 
 @RunWith(AndroidJUnit4::class)
-@Config(sdk = [28])
 class QueryTest {
     @Test
     fun testHavingSql() {

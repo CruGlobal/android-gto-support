@@ -11,9 +11,7 @@ import org.hamcrest.Matchers.contains
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.robolectric.annotation.Config
 
-@Config(sdk = [28])
 @RunWith(AndroidJUnit4::class)
 class AbstractDaoGetCursorTest : BaseAbstractDaoTest() {
     @Test
