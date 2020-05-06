@@ -14,7 +14,7 @@ import org.mockito.ArgumentMatchers.anyInt
 private const val VALID = "valid"
 private const val INVALID = "invalid"
 
-class CursorUtilsTest {
+class CursorsTest {
     private lateinit var cursor: Cursor
 
     @Before
