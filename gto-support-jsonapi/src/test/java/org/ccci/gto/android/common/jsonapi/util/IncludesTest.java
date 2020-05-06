@@ -10,7 +10,7 @@ import static org.junit.Assert.assertTrue;
 public class IncludesTest {
     @Test
     public void verifyIncludeAll() throws Exception {
-        final Includes includes = new Includes((String[]) null);
+        final Includes includes = new Includes((Collection<String>) null);
 
         assertTrue(includes.include("ajslkdf"));
         assertTrue(includes.include("whe"));
@@ -36,7 +36,7 @@ public class IncludesTest {
 
     @Test
     public void verifyDescendantIncludeAll() {
-        final Includes includes = new Includes((String[]) null);
+        final Includes includes = new Includes((Collection<String>) null);
 
         assertTrue(includes.include("ajslkdf"));
         assertTrue(includes.include("whe"));
