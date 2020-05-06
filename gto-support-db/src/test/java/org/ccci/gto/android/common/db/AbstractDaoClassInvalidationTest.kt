@@ -8,8 +8,8 @@ import com.nhaarman.mockitokotlin2.doAnswer
 import com.nhaarman.mockitokotlin2.doReturn
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
-import org.ccci.gto.android.common.db.model.Compound
-import org.ccci.gto.android.common.db.model.Root
+import org.ccci.gto.android.common.db.model.Model1
+import org.ccci.gto.android.common.db.model.Model2
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.collection.IsEmptyCollection.empty
 import org.hamcrest.collection.IsIterableContainingInOrder.contains
@@ -35,24 +35,24 @@ class AbstractDaoClassInvalidationTest {
 
     @Test
     fun verifyInvalidateClassWithoutTransaction() {
-        dao.invalidate(Root::class.java)
-        assertThat(dao.invalidatedClasses, contains<Class<*>>(Root::class.java))
+        dao.invalidate(Model1::class.java)
+        assertThat(dao.invalidatedClasses, contains<Class<*>>(Model1::class.java))
     }
 
     @Test
     fun verifyInvalidateClassWithSingleTransaction() {
         dao.transaction {
-            dao.invalidate(Root::class.java)
+            dao.invalidate(Model1::class.java)
             assertThat(dao.invalidatedClasses, empty())
         }
-        assertThat(dao.invalidatedClasses, contains<Class<*>>(Root::class.java))
+        assertThat(dao.invalidatedClasses, contains<Class<*>>(Model1::class.java))
     }
 
     @Test
     fun verifyUnsuccessfulInvalidateClassWithSingleTransaction() {
         try {
             dao.transaction {
-                dao.invalidate(Root::class.java)
+                dao.invalidate(Model1::class.java)
                 assertThat(dao.invalidatedClasses, empty())
                 throw RuntimeException("expected")
             }
@@ -66,11 +66,11 @@ class AbstractDaoClassInvalidationTest {
     @Test
     fun verifyUnsuccessfulInvalidateClassWithNestedTransaction() {
         dao.transaction {
-            dao.invalidate(Root::class.java)
+            dao.invalidate(Model1::class.java)
             assertThat(dao.invalidatedClasses, empty())
             try {
                 dao.transaction {
-                    dao.invalidate(Compound::class.java)
+                    dao.invalidate(Model2::class.java)
                     assertThat(dao.invalidatedClasses, empty())
                     throw RuntimeException("expected")
                 }
