@@ -1,12 +1,9 @@
 package org.ccci.gto.android.common.db
 
 import android.database.sqlite.SQLiteDatabase
-import android.database.sqlite.SQLiteOpenHelper
 import android.database.sqlite.SQLiteTransactionListener
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.doAnswer
-import com.nhaarman.mockitokotlin2.doReturn
-import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
 import org.ccci.gto.android.common.db.model.Model1
 import org.ccci.gto.android.common.db.model.Model2
@@ -18,18 +15,9 @@ import org.junit.Before
 import org.junit.Test
 import java.util.Stack
 
-class AbstractDaoClassInvalidationTest {
-    private lateinit var db: SQLiteDatabase
-    private lateinit var helper: SQLiteOpenHelper
-    private lateinit var dao: TestDao
-
+class AbstractDaoClassInvalidationTest : BaseAbstractDaoTest() {
     @Before
     fun setupDao() {
-        db = mock()
-        helper = mock()
-        dao = TestDao(helper)
-
-        whenever(helper.writableDatabase) doReturn db
         db.mockTransactions()
     }
 
@@ -80,15 +68,6 @@ class AbstractDaoClassInvalidationTest {
             assertThat(dao.invalidatedClasses, empty())
         }
         assertThat(dao.invalidatedClasses, empty())
-    }
-
-    private class TestDao(helper: SQLiteOpenHelper) : AbstractDao(helper) {
-        val invalidatedClasses = mutableListOf<Class<*>>()
-        override fun onInvalidateClass(clazz: Class<*>) {
-            invalidatedClasses += clazz
-        }
-
-        fun invalidate(clazz: Class<*>) = invalidateClass(clazz)
     }
 
     private fun SQLiteDatabase.mockTransactions() {
