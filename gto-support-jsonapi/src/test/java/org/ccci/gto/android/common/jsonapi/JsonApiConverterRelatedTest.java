@@ -1,14 +1,11 @@
 package org.ccci.gto.android.common.jsonapi;
 
-import androidx.test.runner.AndroidJUnit4;
-
 import org.ccci.gto.android.common.jsonapi.JsonApiConverter.Options;
 import org.ccci.gto.android.common.jsonapi.annotation.JsonApiPlaceholder;
 import org.ccci.gto.android.common.jsonapi.annotation.JsonApiType;
 import org.ccci.gto.android.common.jsonapi.model.JsonApiObject;
 import org.ccci.gto.android.common.jsonapi.model.ModelBase;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,8 +26,7 @@ import static org.hamcrest.CoreMatchers.sameInstance;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertThat;
 
-@RunWith(AndroidJUnit4.class)
-public class JsonApiConverterRelatedIT {
+public class JsonApiConverterRelatedTest {
     @Test
     public void verifyToJsonRelationships() throws Exception {
         final JsonApiConverter converter =

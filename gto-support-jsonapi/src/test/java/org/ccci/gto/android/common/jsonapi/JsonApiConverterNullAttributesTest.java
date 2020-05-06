@@ -6,19 +6,15 @@ import org.ccci.gto.android.common.jsonapi.annotation.JsonApiType;
 import org.ccci.gto.android.common.jsonapi.model.JsonApiObject;
 import org.ccci.gto.android.common.jsonapi.model.ModelBase;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import static net.javacrumbs.jsonunit.JsonMatchers.jsonPartEquals;
 import static net.javacrumbs.jsonunit.fluent.JsonFluentAssert.assertThatJson;
 import static org.junit.Assert.assertThat;
 
-@RunWith(AndroidJUnit4.class)
-public class JsonApiConverterNullAttributesIT {
+public class JsonApiConverterNullAttributesTest {
     private final JsonApiConverter mConverter = new JsonApiConverter.Builder()
             .addClasses(ModelParent.class, ModelChild.class)
             .build();

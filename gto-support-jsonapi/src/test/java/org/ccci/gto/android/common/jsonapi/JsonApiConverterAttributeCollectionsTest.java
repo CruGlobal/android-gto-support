@@ -4,7 +4,6 @@ import org.ccci.gto.android.common.jsonapi.annotation.JsonApiType;
 import org.ccci.gto.android.common.jsonapi.model.JsonApiObject;
 import org.ccci.gto.android.common.jsonapi.model.ModelBase;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -13,7 +12,6 @@ import java.util.Set;
 import java.util.Vector;
 
 import androidx.annotation.Nullable;
-import androidx.test.runner.AndroidJUnit4;
 
 import static net.javacrumbs.jsonunit.JsonMatchers.jsonNodeAbsent;
 import static net.javacrumbs.jsonunit.JsonMatchers.jsonPartEquals;
@@ -25,8 +23,7 @@ import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.junit.Assert.assertThat;
 
-@RunWith(AndroidJUnit4.class)
-public class JsonApiConverterAttributeCollectionsIT {
+public class JsonApiConverterAttributeCollectionsTest {
     private final JsonApiConverter mConverter =
             new JsonApiConverter.Builder().addClasses(ModelCollectionAttribute.class).build();
 
