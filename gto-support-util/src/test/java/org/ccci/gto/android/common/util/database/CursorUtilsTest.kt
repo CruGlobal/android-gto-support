@@ -26,16 +26,40 @@ class CursorUtilsTest {
         whenever(cursor.getString(-1)).thenThrow(RuntimeException::class.java)
     }
 
+    // region getLong()
+    @Test
+    fun testGetLong() {
+        wheneverGetValid().thenReturn("1")
+        assertEquals(1L, cursor.getLong(VALID))
+    }
+
+    @Test
+    fun testGetLongDefaultWhenNullValue() {
+        wheneverGetValid().thenReturn(null)
+        assertNull(cursor.getLong(VALID))
+        assertEquals(1, cursor.getLong(VALID, 1))
+        assertNull(cursor.getLong(VALID, null))
+    }
+
+    @Test
+    fun testGetLongDefaultWhenNonExistentField() {
+        assertNull(cursor.getLong(INVALID))
+        assertEquals(1, cursor.getLong(INVALID, 1))
+        assertNull(cursor.getLong(INVALID, null))
+        verify(cursor, never()).getString(anyInt())
+    }
+    // endregion getLong()
+
     // region getString()
     @Test
     fun testGetString() {
-        wheneverGetStringValid().thenReturn("string")
+        wheneverGetValid().thenReturn("string")
         assertEquals("string", cursor.getString(VALID))
     }
 
     @Test
     fun testGetStringDefaultWhenNullValue() {
-        wheneverGetStringValid().thenReturn(null)
+        wheneverGetValid().thenReturn(null)
         assertNull(cursor.getString(VALID))
         assertEquals("default", cursor.getString(VALID, "default"))
         assertNull(cursor.getString(VALID, null))
@@ -43,7 +67,6 @@ class CursorUtilsTest {
 
     @Test
     fun testGetStringDefaultWhenNonExistentField() {
-        wheneverGetStringValid().thenReturn("")
         assertNull(cursor.getString(INVALID))
         assertEquals("default", cursor.getString(INVALID, "default"))
         assertNull(cursor.getString(INVALID, null))
@@ -51,5 +74,5 @@ class CursorUtilsTest {
     }
     // endregion getString()
 
-    private fun wheneverGetStringValid() = whenever(cursor.getString(0))
+    private fun wheneverGetValid() = whenever(cursor.getString(0))
 }
