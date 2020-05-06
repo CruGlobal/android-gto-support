@@ -366,7 +366,7 @@ abstract class AbstractDao(private val helper: SQLiteOpenHelper) : Dao {
     protected fun compileExpression(expression: Expression) = expression.buildSql(this)
 }
 
-fun String.prefixOrderByFieldsWith(prefix: String): String = when {
+internal fun String.prefixOrderByFieldsWith(prefix: String): String = when {
     contains(",") -> split(",").joinToString(",") { it.prefixOrderByFieldsWith(prefix) }
     !contains(".") -> "$prefix${trimStart()}"
     else -> this

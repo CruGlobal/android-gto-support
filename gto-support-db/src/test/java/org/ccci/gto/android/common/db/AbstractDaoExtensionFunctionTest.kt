@@ -1,37 +1,31 @@
 package org.ccci.gto.android.common.db
 
-import org.ccci.gto.android.common.db.Contract.RootTable
-import org.hamcrest.CoreMatchers
-import org.hamcrest.MatcherAssert.assertThat
+import org.junit.Assert.assertEquals
 import org.junit.Test
+
+private const val PREFIX = "table."
+private const val FIELD1 = "f1"
+private const val FIELD2 = "f1"
 
 class AbstractDaoExtensionFunctionTest {
     @Test
     fun testPrefixOrderBySingleField() {
-        val prefix = RootTable.TABLE_NAME + "."
-        val editedClause = RootTable.COLUMN_ID.prefixOrderByFieldsWith(prefix)
-        assertThat(editedClause, CoreMatchers.`is`("root._id"))
+        assertEquals("$PREFIX$FIELD1", FIELD1.prefixOrderByFieldsWith(PREFIX))
     }
 
     @Test
     fun testPrefixOrderByMultipleFields() {
-        val prefix = RootTable.TABLE_NAME + "."
-        val editedClause = "${RootTable.COLUMN_ID},${RootTable.COLUMN_TEST}".prefixOrderByFieldsWith(prefix)
-        assertThat(editedClause, CoreMatchers.`is`("root._id,root.test"))
+        assertEquals("$PREFIX$FIELD1,$PREFIX$FIELD2", "$FIELD1,$FIELD2".prefixOrderByFieldsWith(PREFIX))
     }
 
     @Test
     fun testPrefixOrderByMultipleFieldsSomePrefixed() {
-        val prefix = RootTable.TABLE_NAME + "."
-        val editedClause = "a.${RootTable.COLUMN_ID},${RootTable.COLUMN_TEST}".prefixOrderByFieldsWith(prefix)
-        assertThat(editedClause, CoreMatchers.`is`("a._id,root.test"))
+        assertEquals("a.$FIELD1,$PREFIX$FIELD2", "a.$FIELD1,$FIELD2".prefixOrderByFieldsWith(PREFIX))
     }
 
     @Test
     fun testPrefixOrderByMultipleFieldsAllPrefixed() {
-        val prefix = RootTable.TABLE_NAME + "."
-        val editedClause =
-            "a.${RootTable.COLUMN_ID},b.${RootTable.COLUMN_TEST}".prefixOrderByFieldsWith(prefix)
-        assertThat(editedClause, CoreMatchers.`is`("a._id,b.test"))
+        val raw = "a.$FIELD1,b.$FIELD2"
+        assertEquals(raw, raw.prefixOrderByFieldsWith(PREFIX))
     }
 }
