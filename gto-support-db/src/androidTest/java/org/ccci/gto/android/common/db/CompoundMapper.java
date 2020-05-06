@@ -2,9 +2,10 @@ package org.ccci.gto.android.common.db;
 
 import android.content.ContentValues;
 import android.database.Cursor;
-import androidx.annotation.NonNull;
 
 import org.ccci.gto.android.common.db.model.Compound;
+
+import androidx.annotation.NonNull;
 
 import static org.ccci.gto.android.common.db.Contract.CompoundTable.COLUMN_DATA1;
 import static org.ccci.gto.android.common.db.Contract.CompoundTable.COLUMN_DATA2;
