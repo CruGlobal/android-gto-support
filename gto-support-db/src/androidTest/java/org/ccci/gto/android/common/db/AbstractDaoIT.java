@@ -2,19 +2,20 @@ package org.ccci.gto.android.common.db;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteConstraintException;
-import androidx.test.InstrumentationRegistry;
-import androidx.test.runner.AndroidJUnit4;
 
 import org.ccci.gto.android.common.db.Contract.CompoundTable;
 import org.ccci.gto.android.common.db.Contract.RootTable;
 import org.ccci.gto.android.common.db.model.Compound;
 import org.ccci.gto.android.common.db.model.Root;
-import org.ccci.gto.android.common.db.util.CursorUtils;
+import org.ccci.gto.android.common.util.database.CursorUtils;
 import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.util.List;
+
+import androidx.test.InstrumentationRegistry;
+import androidx.test.runner.AndroidJUnit4;
 
 import static org.hamcrest.CoreMatchers.allOf;
 import static org.hamcrest.CoreMatchers.is;
