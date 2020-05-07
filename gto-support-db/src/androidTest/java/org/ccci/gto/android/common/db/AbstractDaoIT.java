@@ -18,8 +18,6 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 import static org.hamcrest.CoreMatchers.allOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
-import static org.hamcrest.Matchers.greaterThanOrEqualTo;
-import static org.hamcrest.Matchers.lessThanOrEqualTo;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -245,33 +243,6 @@ public class AbstractDaoIT {
         dao.delete(orig);
         refresh = dao.refresh(orig);
         assertNull(refresh);
-    }
-
-    @Test
-    public void verifyLastSyncTime() throws Exception {
-        final TestDao dao = getDao();
-        final Object[] key = {"1", 2, 3L, "suffix"};
-
-        // check for initial 0 last sync time
-        assertThat(dao.getLastSyncTime(key), is(0L));
-
-        // update last sync time
-        long before = System.currentTimeMillis();
-        dao.updateLastSyncTime(key);
-        long after = System.currentTimeMillis();
-        assertThat(dao.getLastSyncTime(key),
-                   is(allOf(not(0L), greaterThanOrEqualTo(before), lessThanOrEqualTo(after))));
-
-        // update last sync time again
-        Thread.sleep(10);
-        before = System.currentTimeMillis();
-        dao.updateLastSyncTime(key);
-        after = System.currentTimeMillis();
-        assertThat(dao.getLastSyncTime(key),
-                   is(allOf(not(0L), greaterThanOrEqualTo(before), lessThanOrEqualTo(after))));
-
-        // check other keys are still 0
-        assertThat(dao.getLastSyncTime("test2"), is(0L));
     }
 
     @After

@@ -7,6 +7,7 @@ import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.anyOrNull
 import com.nhaarman.mockitokotlin2.doReturn
 import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.spy
 import com.nhaarman.mockitokotlin2.whenever
 import org.ccci.gto.android.common.db.model.Model1
 import org.junit.Before
@@ -32,7 +33,7 @@ abstract class BaseAbstractDaoTest {
             whenever(it.writableDatabase) doReturn db
         }
 
-        dao = TestDao(helper)
+        dao = spy(TestDao(helper))
     }
 
     protected class TestDao(helper: SQLiteOpenHelper) : AbstractDao(helper) {
