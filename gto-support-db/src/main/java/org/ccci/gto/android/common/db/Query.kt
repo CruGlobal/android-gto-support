@@ -2,6 +2,7 @@ package org.ccci.gto.android.common.db
 
 import android.util.Pair
 import androidx.annotation.RestrictTo
+import androidx.annotation.VisibleForTesting
 import org.ccci.gto.android.common.db.AbstractDao.Companion.bindValues
 
 class Query<T : Any> private constructor(
@@ -12,7 +13,8 @@ class Query<T : Any> private constructor(
     @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
     val joins: Array<Join<T, *>> = query?.joins ?: emptyArray(),
     projection: Array<String>? = query?.projection,
-    private val where: Expression? = query?.where,
+    @VisibleForTesting
+    internal val where: Expression? = query?.where,
     internal val orderBy: String? = query?.orderBy,
     internal val groupBy: Array<Expression.Field> = query?.groupBy ?: emptyArray(),
     private val having: Expression? = query?.having,

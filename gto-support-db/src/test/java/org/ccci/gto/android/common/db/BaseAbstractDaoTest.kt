@@ -11,6 +11,7 @@ import com.nhaarman.mockitokotlin2.spy
 import com.nhaarman.mockitokotlin2.whenever
 import org.ccci.gto.android.common.db.model.Model1
 import org.junit.Before
+import org.mockito.stubbing.Stubber
 
 abstract class BaseAbstractDaoTest {
     protected lateinit var cursor: Cursor
@@ -36,6 +37,8 @@ abstract class BaseAbstractDaoTest {
         dao = spy(TestDao(helper))
     }
 
+    protected fun Stubber.wheneverGetPrimaryKeyWhere(obj: Any) = whenever(dao).getPrimaryKeyWhere(obj)
+
     protected class TestDao(helper: SQLiteOpenHelper) : AbstractDao(helper) {
         init {
             registerType(Model1::class.java, Model1.TABLE_NAME, arrayOf(Model1.FIELD_NAME), null, null)
@@ -47,5 +50,8 @@ abstract class BaseAbstractDaoTest {
         }
 
         fun invalidate(clazz: Class<*>) = invalidateClass(clazz)
+
+        // expose protected methods to mock in tests
+        public override fun getPrimaryKeyWhere(obj: Any) = super.getPrimaryKeyWhere(obj)
     }
 }

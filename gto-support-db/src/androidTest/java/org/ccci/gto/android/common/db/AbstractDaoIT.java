@@ -85,23 +85,6 @@ public class AbstractDaoIT {
     }
 
     @Test
-    public void testRefreshCompoundKey() throws Exception {
-        final TestDao dao = getDao();
-
-        // create object
-        final Compound orig = new Compound("1", "2", "orig", "orig");
-        dao.insert(orig);
-
-        // test refresh
-        final Compound refresh = dao.refresh(orig);
-        assertNotNull(refresh);
-        assertThat(refresh.id1, is(orig.id1));
-        assertThat(refresh.id2, is(orig.id2));
-        assertThat(refresh.data1, is(orig.data1));
-        assertThat(refresh.data2, is(orig.data2));
-    }
-
-    @Test
     public void testUpdateCompoundKey() throws Exception {
         final TestDao dao = getDao();
 
