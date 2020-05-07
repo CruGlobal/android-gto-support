@@ -13,8 +13,8 @@ env:
     - ANDROID_TARGET=android-16 ANDROID_ABI=armeabi-v7a
 #    - ANDROID_TARGET=android-21 ANDROID_ABI=armeabi-v7a
 #    - ANDROID_TARGET=android-22 ANDROID_ABI=armeabi-v7a
-#    - ANDROID_TARGET=android-23 ANDROID_ABI=armeabi-v7a
-    - ANDROID_TARGET=android-24 ANDROID_ABI=armeabi-v7a
+    - ANDROID_TARGET=android-23 ANDROID_ABI=armeabi-v7a
+#    - ANDROID_TARGET=android-24 ANDROID_ABI=armeabi-v7a
 branches:
   only:
   - master
@@ -111,5 +111,6 @@ jobs:
   allow_failures:
   - env: ANDROID_TARGET=android-21 ANDROID_ABI=armeabi-v7a
   - env: ANDROID_TARGET=android-22 ANDROID_ABI=armeabi-v7a
+  - env: ANDROID_TARGET=android-24 ANDROID_ABI=armeabi-v7a
 notifications:
   email: false
