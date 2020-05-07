@@ -1,17 +1,5 @@
 apply plugin: 'kotlin-android-extensions'
 
-android {
-    sourceSets {
-        test {
-            java.srcDir 'src/testCommon/java'
-        }
-
-        androidTest {
-            java.srcDir 'src/testCommon/java'
-        }
-    }
-}
-
 dependencies {
     implementation project(':gto-support-compat')
     implementation project(':gto-support-core')

@@ -21,18 +21,13 @@ public class TestDao extends AbstractDao {
     }
 
     private static TestDao sInstance;
-    public static TestDao getInstance(@NonNull final Context context) {
+    static TestDao getInstance(@NonNull final Context context) {
         synchronized (TestDao.class) {
             if (sInstance == null) {
                 sInstance = new TestDao(context.getApplicationContext());
             }
             return sInstance;
         }
-    }
-
-    @NonNull
-    static TestDao mock() {
-        return new TestDao(null);
     }
 
     @NonNull
@@ -46,7 +41,7 @@ public class TestDao extends AbstractDao {
         return super.getPrimaryKeyWhere(obj);
     }
 
-    public void reset() {
+    void reset() {
         delete(Root.class, null);
         delete(Compound.class, null);
     }

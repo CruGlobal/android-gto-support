@@ -1,20 +1,21 @@
 package org.ccci.gto.android.common.db
 
 import com.nhaarman.mockitokotlin2.eq
+import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
 import org.ccci.gto.android.common.db.Table.Companion.forClass
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotEquals
 import org.junit.Before
 import org.junit.Test
-import org.mockito.Mockito
 
 class TableTest {
     private lateinit var dao: AbstractDao
 
     @Before
     fun setup() {
-        dao = Mockito.mock(AbstractDao::class.java)
+        dao = mock()
+
         whenever(dao.tableName(eq(Obj1::class.java))).thenReturn(Obj1.TABLE_NAME)
         whenever(dao.tableName(eq(Obj2::class.java))).thenReturn(Obj2.TABLE_NAME)
     }

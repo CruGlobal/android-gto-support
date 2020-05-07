@@ -315,7 +315,7 @@ abstract class AbstractDao(private val helper: SQLiteOpenHelper) : Dao {
         Query.select(LastSyncTable::class.java).projection(LastSyncTable.COLUMN_LAST_SYNCED)
             .where(LastSyncTable.SQL_WHERE_PRIMARY_KEY.args(key.joinToString(":")))
             .getCursor(this)
-            .use { if (it.moveToFirst()) it.getLong(LastSyncTable.COLUMN_LAST_SYNCED, 0L)!! else 0 }
+            .use { if (it.moveToFirst()) it.getLong(LastSyncTable.COLUMN_LAST_SYNCED, 0) else 0 }
 
     fun updateLastSyncTime(vararg key: Any) {
         val values = ContentValues().apply {
@@ -366,7 +366,7 @@ abstract class AbstractDao(private val helper: SQLiteOpenHelper) : Dao {
     protected fun compileExpression(expression: Expression) = expression.buildSql(this)
 }
 
-fun String.prefixOrderByFieldsWith(prefix: String): String = when {
+internal fun String.prefixOrderByFieldsWith(prefix: String): String = when {
     contains(",") -> split(",").joinToString(",") { it.prefixOrderByFieldsWith(prefix) }
     !contains(".") -> "$prefix${trimStart()}"
     else -> this

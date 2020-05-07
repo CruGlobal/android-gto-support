@@ -2,11 +2,12 @@ package org.ccci.gto.android.common.db;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
-import androidx.annotation.NonNull;
 
 import org.ccci.gto.android.common.db.CommonTables.LastSyncTable;
 import org.ccci.gto.android.common.db.Contract.CompoundTable;
 import org.ccci.gto.android.common.db.Contract.RootTable;
+
+import androidx.annotation.NonNull;
 
 class TestDatabase extends WalSQLiteOpenHelper {
     private TestDatabase(@NonNull final Context context) {

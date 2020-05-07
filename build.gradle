@@ -150,8 +150,9 @@ subprojects {
             androidTestImplementation "org.hamcrest:hamcrest-library:${deps.hamcrest}"
 
             testImplementation "androidx.test.ext:junit:${deps.androidX.testJUnit}"
-            testImplementation "junit:junit:${deps.junit}"
             testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:${deps.mockitoKotlin}"
+            testImplementation "junit:junit:${deps.junit}"
+            testImplementation "org.mockito:mockito-inline:${deps.mockito}"
             testImplementation "org.robolectric:robolectric:${deps.robolectric}"
         }
 
@@ -166,8 +167,11 @@ subprojects {
                 force "org.jetbrains:annotations:${deps.jetbrainsAnnotations}"
 
                 dependencySubstitution {
-                    substitute module('org.hamcrest:hamcrest-core') with module("org.hamcrest:hamcrest:${deps.hamcrest}")
                     substitute module('org.jetbrains.kotlin:kotlin-stdlib-jdk8') with module("org.jetbrains.kotlin:kotlin-stdlib-jdk7:${deps.kotlin}")
+
+                    // use the new condensed version of hamcrest
+                    substitute module('org.hamcrest:hamcrest-core') with module("org.hamcrest:hamcrest:${deps.hamcrest}")
+                    substitute module('org.hamcrest:hamcrest-library') with module("org.hamcrest:hamcrest:${deps.hamcrest}")
                 }
             }
         }
