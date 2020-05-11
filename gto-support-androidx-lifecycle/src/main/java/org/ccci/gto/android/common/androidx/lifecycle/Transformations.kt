@@ -103,7 +103,15 @@ private inline fun <OUT> combineWithInt(
     crossinline mapFunction: () -> OUT
 ): LiveData<OUT> {
     val result = MediatorLiveData<OUT>()
-    val observer = Observer<Any?> { result.value = mapFunction() }
+    val observer = object : Observer<Any?> {
+        private var isInitialized: Boolean = false
+            get() = field || input.all { it.isInitialized }.also { field = it }
+
+        override fun onChanged(t: Any?) {
+            if (!isInitialized) return
+            result.value = mapFunction()
+        }
+    }
     input.forEach { result.addSource(it, observer) }
     return result
 }

@@ -6,6 +6,7 @@ import androidx.lifecycle.Observer
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.never
+import com.nhaarman.mockitokotlin2.times
 import com.nhaarman.mockitokotlin2.verify
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
@@ -30,10 +31,7 @@ class TransformationsTests {
 
     @Test
     fun verifySwitchCombineWith() {
-        val combined = str1.switchCombineWith(str2) { a, b ->
-            MutableLiveData(listOfNotNull(a, b).joinToString())
-        }
-        // observeForever activates the internal MediatorLiveData
+        val combined = str1.switchCombineWith(str2) { a, b -> MutableLiveData(listOfNotNull(a, b).joinToString()) }
         combined.observeForever(observer)
 
         verify(observer, never()).onChanged(any())
@@ -49,28 +47,42 @@ class TransformationsTests {
     @Test
     fun verifyCombineWith2() {
         val combined = str1.combineWith(str2) { a, b -> listOfNotNull(a, b).joinToString() }
-        // observeForever activates the internal MediatorLiveData
         combined.observeForever(observer)
 
-        assertEquals("a", combined.value)
+        verify(observer, never()).onChanged(any())
+        assertNull(combined.value)
         str1.value = "b"
+        verify(observer, never()).onChanged(any())
+        assertNull(combined.value)
+        str2.value = null
+        verify(observer).onChanged(any())
         assertEquals("b", combined.value)
         str2.value = "c"
+        verify(observer, times(2)).onChanged(any())
         assertEquals("b, c", combined.value)
     }
 
     @Test
     fun verifyCombineWith3() {
         val combined = str1.combineWith(str2, str3) { a, b, c -> listOfNotNull(a, b, c).joinToString() }
-        // observeForever activates the internal MediatorLiveData
         combined.observeForever(observer)
 
-        assertEquals("a", combined.value)
+        verify(observer, never()).onChanged(any())
+        assertNull(combined.value)
         str1.value = "b"
+        verify(observer, never()).onChanged(any())
+        assertNull(combined.value)
+        str2.value = null
+        verify(observer, never()).onChanged(any())
+        assertNull(combined.value)
+        str3.value = null
+        verify(observer).onChanged(any())
         assertEquals("b", combined.value)
         str3.value = "d"
+        verify(observer, times(2)).onChanged(any())
         assertEquals("b, d", combined.value)
         str2.value = "c"
+        verify(observer, times(3)).onChanged(any())
         assertEquals("b, c, d", combined.value)
     }
 }
