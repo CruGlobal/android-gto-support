@@ -5,4 +5,5 @@ import com.squareup.picasso.Transformation
 import org.ccci.gto.android.common.picasso.view.SimplePicassoImageView
 
 @BindingAdapter("transform")
-fun SimplePicassoImageView.setTransform(transformation: Transformation?) = setTransforms(listOfNotNull(transformation))
+internal fun SimplePicassoImageView.setTransform(transformation: Transformation?) =
+    setTransforms(listOfNotNull(transformation))
