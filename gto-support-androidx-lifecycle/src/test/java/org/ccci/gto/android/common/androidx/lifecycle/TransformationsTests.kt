@@ -36,28 +36,20 @@ class TransformationsTests {
 
     @Test
     fun verifyCombineWith2() {
-        val combined = str1.combineWith(str2) { a, b ->
-            when {
-                a == null || b == null -> null
-                else -> a + b
-            }
-        }
+        val combined = str1.combineWith(str2) { a, b -> listOfNotNull(a, b).joinToString() }
         // observeForever activates the internal MediatorLiveData
         combined.observeForever { }
 
-        assertNull(combined.value)
+        assertEquals("a", combined.value)
         str1.value = "b"
-        assertNull(combined.value)
-        str1.value = "a"
-        str2.value = "b"
-        assertEquals("ab", combined.value)
+        assertEquals("b", combined.value)
+        str2.value = "c"
+        assertEquals("b, c", combined.value)
     }
 
     @Test
     fun verifyCombineWith3() {
-        val combined = str1.combineWith(str2, str3) { a, b, c ->
-            listOfNotNull(a, b, c).joinToString()
-        }
+        val combined = str1.combineWith(str2, str3) { a, b, c -> listOfNotNull(a, b, c).joinToString() }
         // observeForever activates the internal MediatorLiveData
         combined.observeForever { }
 
