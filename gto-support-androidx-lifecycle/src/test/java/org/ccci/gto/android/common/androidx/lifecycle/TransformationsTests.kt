@@ -20,7 +20,7 @@ class TransformationsTests {
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
-    private val str1 = MutableLiveData("a")
+    private val str1 = MutableLiveData<String>()
     private val str2 = MutableLiveData<String?>()
     private val str3 = MutableLiveData<String?>()
 

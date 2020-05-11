@@ -18,8 +18,11 @@ import androidx.lifecycle.map
 @JvmName("switchCombine")
 fun <IN1, IN2, OUT> LiveData<IN1>.switchCombineWith(
     other: LiveData<IN2>,
-    mapFunction: (IN1?, IN2?) -> LiveData<out OUT>
-) = switchCombineWithInt(this, other) { mapFunction(value, other.value) }
+    mapFunction: (IN1, IN2) -> LiveData<out OUT>
+) = switchCombineWithInt(this, other) {
+    @Suppress("UNCHECKED_CAST")
+    mapFunction(value as IN1, other.value as IN2)
+}
 
 /**
  * This method will combine 3 LiveData objects into a new LiveData object by running the {@param mapFunction} on the
@@ -32,8 +35,11 @@ fun <IN1, IN2, OUT> LiveData<IN1>.switchCombineWith(
 fun <IN1, IN2, IN3, OUT> LiveData<IN1>.switchCombineWith(
     other: LiveData<IN2>,
     other2: LiveData<IN3>,
-    mapFunction: (IN1?, IN2?, IN3?) -> LiveData<out OUT>
-) = switchCombineWithInt(this, other, other2) { mapFunction(value, other.value, other2.value) }
+    mapFunction: (IN1, IN2, IN3) -> LiveData<out OUT>
+) = switchCombineWithInt(this, other, other2) {
+    @Suppress("UNCHECKED_CAST")
+    mapFunction(value as IN1, other.value as IN2, other2.value as IN3)
+}
 
 /**
  * This method will combine 4 LiveData objects into a new LiveData object by running the {@param mapFunction} on the
@@ -47,8 +53,11 @@ fun <IN1, IN2, IN3, IN4, OUT> LiveData<IN1>.switchCombineWith(
     other: LiveData<IN2>,
     other2: LiveData<IN3>,
     other3: LiveData<IN4>,
-    mapFunction: (IN1?, IN2?, IN3?, IN4?) -> LiveData<out OUT>
-) = switchCombineWithInt(this, other, other2, other3) { mapFunction(value, other.value, other2.value, other3.value) }
+    mapFunction: (IN1, IN2, IN3, IN4) -> LiveData<out OUT>
+) = switchCombineWithInt(this, other, other2, other3) {
+    @Suppress("UNCHECKED_CAST")
+    mapFunction(value as IN1, other.value as IN2, other2.value as IN3, other3.value as IN4)
+}
 
 private inline fun <OUT> switchCombineWithInt(
     vararg input: LiveData<*>,
@@ -82,8 +91,11 @@ private inline fun <OUT> switchCombineWithInt(
 @JvmName("combine")
 fun <IN1, IN2, OUT> LiveData<IN1>.combineWith(
     other: LiveData<IN2>,
-    mapFunction: (IN1?, IN2?) -> OUT
-) = combineWithInt(this, other) { mapFunction(value, other.value) }
+    mapFunction: (IN1, IN2) -> OUT
+) = combineWithInt(this, other) {
+    @Suppress("UNCHECKED_CAST")
+    mapFunction(value as IN1, other.value as IN2)
+}
 
 /**
  * This method will combine 3 LiveData objects into a new LiveData object by running the {@param mapFunction} on the
@@ -95,8 +107,11 @@ fun <IN1, IN2, OUT> LiveData<IN1>.combineWith(
 fun <IN1, IN2, IN3, OUT> LiveData<IN1>.combineWith(
     other: LiveData<IN2>,
     other2: LiveData<IN3>,
-    mapFunction: (IN1?, IN2?, IN3?) -> OUT
-) = combineWithInt(this, other, other2) { mapFunction(value, other.value, other2.value) }
+    mapFunction: (IN1, IN2, IN3) -> OUT
+) = combineWithInt(this, other, other2) {
+    @Suppress("UNCHECKED_CAST")
+    mapFunction(value as IN1, other.value as IN2, other2.value as IN3)
+}
 
 private inline fun <OUT> combineWithInt(
     vararg input: LiveData<*>,
