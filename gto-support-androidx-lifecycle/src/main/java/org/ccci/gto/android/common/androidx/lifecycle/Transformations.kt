@@ -80,6 +80,19 @@ fun <IN1, IN2, OUT> LiveData<IN1>.combineWith(
     mapFunction: (IN1?, IN2?) -> OUT
 ) = combineWithInt(this, other) { mapFunction(value, other.value) }
 
+/**
+ * This method will combine 3 LiveData objects into a new LiveData object by running the {@param mapFunction} on the
+ * current values of both source LiveData objects.
+ *
+ * @see androidx.lifecycle.Transformations.map
+ */
+@JvmName("combine")
+fun <IN1, IN2, IN3, OUT> LiveData<IN1>.combineWith(
+    other: LiveData<IN2>,
+    other2: LiveData<IN3>,
+    mapFunction: (IN1?, IN2?, IN3?) -> OUT
+) = combineWithInt(this, other, other2) { mapFunction(value, other.value, other2.value) }
+
 private inline fun <OUT> combineWithInt(
     vararg input: LiveData<*>,
     crossinline mapFunction: () -> OUT
