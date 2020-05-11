@@ -1,4 +1,5 @@
 dependencies {
+    implementation "androidx.lifecycle:lifecycle-common-java8:${deps.androidX.lifecycle}"
     implementation "androidx.lifecycle:lifecycle-livedata:${deps.androidX.lifecycle}"
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:${deps.androidX.lifecycle}"
     implementation "androidx.lifecycle:lifecycle-viewmodel:${deps.androidX.lifecycle}"
