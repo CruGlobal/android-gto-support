@@ -5,6 +5,7 @@ package org.ccci.gto.android.common.androidx.lifecycle
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.Observer
+import androidx.lifecycle.isInitialized
 import androidx.lifecycle.map
 
 /**
@@ -55,8 +56,12 @@ private inline fun <OUT> switchCombineWithInt(
 ): LiveData<OUT> {
     val result = MediatorLiveData<OUT>()
     val observer = object : Observer<Any?> {
+        private var isInitialized: Boolean = false
+            get() = field || input.all { it.isInitialized }.also { field = it }
         private var source: LiveData<out OUT>? = null
+
         override fun onChanged(t: Any?) {
+            if (!isInitialized) return
             val newSource = mapFunction()
             if (source == newSource) return
             source?.let { result.removeSource(it) }
