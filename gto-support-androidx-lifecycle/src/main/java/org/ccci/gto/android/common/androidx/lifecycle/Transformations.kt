@@ -56,7 +56,7 @@ private inline fun <OUT> switchCombineWithInt(
 ): LiveData<OUT> {
     val result = MediatorLiveData<OUT>()
     val observer = object : Observer<Any?> {
-        private var isInitialized: Boolean = false
+        private var isInitialized = false
             get() = field || input.all { it.isInitialized }.also { field = it }
         private var source: LiveData<out OUT>? = null
 
@@ -104,7 +104,7 @@ private inline fun <OUT> combineWithInt(
 ): LiveData<OUT> {
     val result = MediatorLiveData<OUT>()
     val observer = object : Observer<Any?> {
-        private var isInitialized: Boolean = false
+        private var isInitialized = false
             get() = field || input.all { it.isInitialized }.also { field = it }
 
         override fun onChanged(t: Any?) {
