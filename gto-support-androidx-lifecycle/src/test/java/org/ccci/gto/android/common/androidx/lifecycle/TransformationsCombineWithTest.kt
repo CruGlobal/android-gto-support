@@ -1,33 +1,18 @@
 package org.ccci.gto.android.common.androidx.lifecycle
 
-import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Observer
 import com.nhaarman.mockitokotlin2.any
-import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.never
 import com.nhaarman.mockitokotlin2.times
 import com.nhaarman.mockitokotlin2.verify
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
-import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
 
-class TransformationsCombineWithTest {
-    private lateinit var observer: Observer<Any>
-
-    @get:Rule
-    val rule = InstantTaskExecutorRule()
-
+class TransformationsCombineWithTest : BaseLiveDataTest() {
     private val str1 = MutableLiveData<String>()
     private val str2 = MutableLiveData<String?>()
     private val str3 = MutableLiveData<String?>()
-
-    @Before
-    fun setup() {
-        observer = mock()
-    }
 
     @Test
     fun verifySwitchCombineWith() {
