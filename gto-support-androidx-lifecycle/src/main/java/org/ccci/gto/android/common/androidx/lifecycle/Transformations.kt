@@ -4,6 +4,7 @@ package org.ccci.gto.android.common.androidx.lifecycle
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.isInitialized
 import androidx.lifecycle.map
@@ -132,3 +133,16 @@ private inline fun <OUT> combineWithInt(
 }
 
 fun <T> LiveData<out Iterable<T>>.sortedWith(comparator: Comparator<in T>) = map { it.sortedWith(comparator) }
+
+/**
+ * Transform a LiveData to return an initial value before it has had a chance to resolve it's actual value.
+ * This shouldn't be used with [MutableLiveData] which already has a mechanism to define an initial value.
+ */
+fun <T> LiveData<T>.withInitialValue(value: T) = when {
+    // short-circuit if the LiveData has already loaded an initial value
+    isInitialized -> this
+    else -> MediatorLiveData<T>().also {
+        it.value = value
+        it.addSource(this) { value -> it.value = value }
+    }
+}
