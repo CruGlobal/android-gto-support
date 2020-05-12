@@ -14,7 +14,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
-class TransformationsTests {
+class TransformationsCombineWithTest {
     private lateinit var observer: Observer<Any>
 
     @get:Rule
