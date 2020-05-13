@@ -5,7 +5,6 @@ package org.ccci.gto.android.common.androidx.lifecycle
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Observer
 import androidx.lifecycle.isInitialized
 import androidx.lifecycle.map
 
@@ -45,16 +44,17 @@ private inline fun <OUT> combineWithInt(
     crossinline mapFunction: () -> OUT
 ): LiveData<OUT> {
     val result = MediatorLiveData<OUT>()
-    val observer = object : Observer<Any?> {
-        private var isInitialized = false
-            get() = field || input.all { it.isInitialized }.also { field = it }
-
-        override fun onChanged(t: Any?) {
-            if (!isInitialized) return
-            result.value = mapFunction()
+    val state = object {
+        val inputInitialized = BooleanArray(input.size) { false }
+        var isInitialized = false
+            get() = field || inputInitialized.all { it }.also { field = it }
+    }
+    input.forEachIndexed { i, it ->
+        result.addSource(it) {
+            state.inputInitialized[i] = true
+            if (state.isInitialized) result.value = mapFunction()
         }
     }
-    input.forEach { result.addSource(it, observer) }
     return result
 }
 
@@ -116,21 +116,25 @@ private inline fun <OUT> switchCombineWithInt(
     crossinline mapFunction: () -> LiveData<out OUT>
 ): LiveData<OUT> {
     val result = MediatorLiveData<OUT>()
-    val observer = object : Observer<Any?> {
-        private var isInitialized = false
-            get() = field || input.all { it.isInitialized }.also { field = it }
-        private var source: LiveData<out OUT>? = null
-
-        override fun onChanged(t: Any?) {
-            if (!isInitialized) return
-            val newSource = mapFunction()
-            if (source == newSource) return
-            source?.let { result.removeSource(it) }
-            source = newSource
-            source?.let { result.addSource(it, result::setValue) }
+    val state = object {
+        val inputInitialized = BooleanArray(input.size) { false }
+        var isInitialized = false
+            get() = field || inputInitialized.all { it }.also { field = it }
+        var source: LiveData<out OUT>? = null
+    }
+    input.forEachIndexed { i, it ->
+        result.addSource(it) {
+            with(state) {
+                inputInitialized[i] = true
+                if (!isInitialized) return@addSource
+                val newSource = mapFunction()
+                if (source === newSource) return@addSource
+                source?.let { result.removeSource(it) }
+                source = newSource
+                source?.let { result.addSource(it, result::setValue) }
+            }
         }
     }
-    input.forEach { result.addSource(it, observer) }
     return result
 }
 
