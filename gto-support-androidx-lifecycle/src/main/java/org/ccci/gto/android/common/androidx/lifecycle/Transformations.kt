@@ -7,6 +7,7 @@ import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.isInitialized
 import androidx.lifecycle.map
+import androidx.lifecycle.switchMap
 
 /**
  * This method will combine 2 LiveData objects into a new LiveData object by running the {@param mapFunction} on the
@@ -137,6 +138,14 @@ private inline fun <OUT> switchCombineWithInt(
     }
     return result
 }
+
+inline fun <T, R> LiveData<out Iterable<T>>.switchFold(crossinline operation: (acc: LiveData<R?>, T) -> LiveData<R?>) =
+    switchFold(emptyLiveData(), operation)
+
+inline fun <T, R> LiveData<out Iterable<T>>.switchFold(
+    acc: LiveData<R>,
+    crossinline operation: (acc: LiveData<R>, T) -> LiveData<R>
+) = switchMap { it.fold(acc, operation) }
 
 /**
  * Transform a LiveData to return an initial value before it has had a chance to resolve it's actual value.
