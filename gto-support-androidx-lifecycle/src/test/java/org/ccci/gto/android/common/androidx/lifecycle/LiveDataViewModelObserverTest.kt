@@ -14,7 +14,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
-class LiveDataViewModelObserver {
+class LiveDataViewModelObserverTest {
     @get:Rule
     val instantTaskRule = InstantTaskExecutorRule()
 

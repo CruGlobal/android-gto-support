@@ -1,9 +1,6 @@
 package org.ccci.gto.android.common.androidx.lifecycle
 
-import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.lifecycle.Observer
 import com.nhaarman.mockitokotlin2.any
-import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.never
 import com.nhaarman.mockitokotlin2.reset
 import com.nhaarman.mockitokotlin2.verify
@@ -13,19 +10,13 @@ import org.hamcrest.Matchers.empty
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
 
-abstract class CollectionLiveDataTests {
-    @get:Rule
-    val rule = InstantTaskExecutorRule()
-
+abstract class CollectionLiveDataTest : BaseLiveDataTest() {
     abstract val liveData: CollectionLiveData<String, out Collection<String>>
-    lateinit var observer: Observer<Any?>
 
     @Before
-    fun setupObserver() {
-        observer = mock()
+    fun setupLiveData() {
         liveData.observeForever(observer)
         reset(observer)
     }
@@ -170,10 +161,10 @@ abstract class CollectionLiveDataTests {
     }
 }
 
-class ListLiveDataTests : CollectionLiveDataTests() {
+class ListLiveDataTest : CollectionLiveDataTest() {
     override val liveData = ListLiveData<String>()
 }
 
-class SetLiveDataTests : CollectionLiveDataTests() {
+class SetLiveDataTest : CollectionLiveDataTest() {
     override val liveData = SetLiveData<String>()
 }

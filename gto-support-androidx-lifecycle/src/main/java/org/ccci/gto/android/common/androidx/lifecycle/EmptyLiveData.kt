@@ -2,7 +2,7 @@ package org.ccci.gto.android.common.androidx.lifecycle
 
 import androidx.lifecycle.LiveData
 
-private object EmptyLiveData : LiveData<Nothing?>(null)
+private val EmptyLiveData = ImmutableLiveData(null)
 
 @Suppress("UNCHECKED_CAST")
 fun <T> emptyLiveData(): LiveData<T?> = EmptyLiveData as LiveData<T?>
