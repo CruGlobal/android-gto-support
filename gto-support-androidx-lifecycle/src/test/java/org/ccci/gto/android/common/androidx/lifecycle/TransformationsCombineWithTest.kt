@@ -16,6 +16,7 @@ class TransformationsCombineWithTest : BaseLiveDataTest() {
     private val str1 = MutableLiveData<String>()
     private val str2 = MutableLiveData<String?>()
     private val str3 = MutableLiveData<String?>()
+    private val str4 = MutableLiveData<String?>(null)
 
     @Test
     fun verifySwitchCombineWith() {
@@ -97,6 +98,37 @@ class TransformationsCombineWithTest : BaseLiveDataTest() {
         argumentCaptor<String> {
             verify(observer, times(3)).onChanged(capture())
             assertThat(allValues, contains("b", "b, d", "b, c, d"))
+        }
+    }
+
+    @Test
+    fun verifyCombineWith4() {
+        val combined = str1.combineWith(str2, str3, str4) { a, b, c, d -> listOfNotNull(a, b, c, d).joinToString() }
+        combined.observeForever(observer)
+
+        verify(observer, never()).onChanged(any())
+        assertNull(combined.value)
+        str1.value = "b"
+        verify(observer, never()).onChanged(any())
+        assertNull(combined.value)
+        str2.value = null
+        verify(observer, never()).onChanged(any())
+        assertNull(combined.value)
+        str3.value = null
+        verify(observer).onChanged(any())
+        assertEquals("b", combined.value)
+        str4.value = "e"
+        verify(observer, times(2)).onChanged(any())
+        assertEquals("b, e", combined.value)
+        str3.value = "d"
+        verify(observer, times(3)).onChanged(any())
+        assertEquals("b, d, e", combined.value)
+        str2.value = "c"
+        verify(observer, times(4)).onChanged(any())
+        assertEquals("b, c, d, e", combined.value)
+        argumentCaptor<String> {
+            verify(observer, times(4)).onChanged(capture())
+            assertThat(allValues, contains("b", "b, e", "b, d, e", "b, c, d, e"))
         }
     }
 
