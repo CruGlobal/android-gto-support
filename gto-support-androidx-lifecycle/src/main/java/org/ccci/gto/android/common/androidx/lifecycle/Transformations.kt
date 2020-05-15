@@ -59,6 +59,12 @@ private inline fun <OUT> combineWithInt(
     return result
 }
 
+fun <T : Any> LiveData<T?>.notNull(): LiveData<T> {
+    val result = MediatorLiveData<T>()
+    result.addSource(this) { it?.let { result.value = it } }
+    return result
+}
+
 fun <T> LiveData<out Iterable<T>>.sortedWith(comparator: Comparator<in T>) = map { it.sortedWith(comparator) }
 
 /**
