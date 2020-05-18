@@ -5,9 +5,18 @@ import net.javacrumbs.jsonunit.fluent.JsonFluentAssert.assertThatJson
 import org.junit.Test
 
 class IdentifierTest {
+    private val moshi = Moshi.Builder()
+        .add(IdentifierJsonAdapter)
+        .build().adapter(Identifier::class.java)
+
     @Test
     fun testSerialization() {
-        val moshi = Moshi.Builder().build().adapter(Identifier::class.java)
         assertThatJson(moshi.toJson(Identifier("channel"))).isEqualTo("{channel:\"channel\"}")
+    }
+
+    @Test
+    fun testSerializationWithAttributes() {
+        assertThatJson(moshi.toJson(Identifier("channel", mapOf("attr" to 1))))
+            .isEqualTo("""{channel:"channel",attr:1}""")
     }
 }
