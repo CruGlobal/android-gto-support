@@ -28,7 +28,7 @@ buildscript {
             okhttp3             : '3.12.12',
             picasso             : '2.71828',
             powermock           : '2.0.7',
-            realm               : '6.1.0',
+            realm               : '7.0.0',
             realmAdapters       : '4.0.0',
             retrofit2           : '2.6.4',
             robolectric         : '4.3.1',
