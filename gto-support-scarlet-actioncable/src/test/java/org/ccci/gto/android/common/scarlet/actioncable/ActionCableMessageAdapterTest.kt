@@ -76,13 +76,13 @@ class ActionCableMessageAdapterTest {
 
     @Test(expected = IllegalStateException::class)
     fun verifyMessageMessageAdapterExceptionIfUnsupportedParameterizedType() {
-        whenever(dataMessageAdapterFactory.create(eq(String::class.java), any()))
+        whenever(dataMessageAdapterFactory.create(eq(CharSequence::class.java), any()))
             .thenThrow(RuntimeException::class.java)
 
         try {
-            factory.create(genericReturnTypeOf<MessageParameterizedTypes>("stringParameterized"), emptyArray())
+            factory.create(genericReturnTypeOf<MessageParameterizedTypes>("charSequenceParameterized"), emptyArray())
         } finally {
-            verify(dataMessageAdapterFactory).create(eq(String::class.java), any())
+            verify(dataMessageAdapterFactory).create(eq(CharSequence::class.java), any())
         }
     }
 
@@ -91,9 +91,9 @@ class ActionCableMessageAdapterTest {
         val rawMessage = """{"identifier":"{\"channel\":\"c\"}","command":"message","data":"raw"}"""
         whenever(dataMessageAdapter.fromMessage(any())).thenReturn("response")
         val adapter =
-            factory.create(genericReturnTypeOf<MessageParameterizedTypes>("stringParameterized"), emptyArray())
+            factory.create(genericReturnTypeOf<MessageParameterizedTypes>("charSequenceParameterized"), emptyArray())
 
-        val msg = adapter.fromMessage(ScarletMessage.Text(rawMessage)) as Message<String>
+        val msg = adapter.fromMessage(ScarletMessage.Text(rawMessage)) as Message<CharSequence>
         assertEquals("c", msg.identifier.channel)
         assertEquals("response", msg.data)
         verify(dataMessageAdapter).fromMessage(eq(ScarletMessage.Text("raw")))
@@ -101,11 +101,11 @@ class ActionCableMessageAdapterTest {
 
     @Test
     fun verifyMessageMessageAdapterToMessage() {
-        val data = Message("c", "data")
+        val data = Message<CharSequence>("c", "data")
         whenever(dataMessageAdapter.toMessage(eq("data"))).thenReturn(ScarletMessage.Text("raw"))
         val adapter = factory.create(
-            genericReturnTypeOf<MessageParameterizedTypes>("stringParameterized"), emptyArray()
-        ) as MessageAdapter<Message<String>>
+            genericReturnTypeOf<MessageParameterizedTypes>("charSequenceParameterized"), emptyArray()
+        ) as MessageAdapter<Message<CharSequence>>
 
         val json = (adapter.toMessage(data) as ScarletMessage.Text).value
         assertThatJson(json).node("command").isEqualTo("message")
@@ -116,7 +116,7 @@ class ActionCableMessageAdapterTest {
 
     private interface MessageParameterizedTypes {
         fun notParameterized(): Message<*>
-        fun stringParameterized(): Message<String>
+        fun charSequenceParameterized(): Message<CharSequence>
     }
     // endregion Message MessageAdapter
 
@@ -134,7 +134,8 @@ class ActionCableMessageAdapterTest {
     fun verifyDataMessageAdapterToMessage() {
         whenever(dataMessageAdapter.toMessage(any()))
             .thenAnswer { ScarletMessage.Text((it.arguments.first() as String).reversed()) }
-        val adapter = factory.create(String::class.java, arrayOf(actionCableAnnotation)) as MessageAdapter<String>
+        val adapter =
+            factory.create(CharSequence::class.java, arrayOf(actionCableAnnotation)) as MessageAdapter<CharSequence>
 
         val json = (adapter.toMessage("data") as ScarletMessage.Text).value
         assertThatJson(json).node("command").isEqualTo("message")
@@ -148,7 +149,8 @@ class ActionCableMessageAdapterTest {
         val rawMessage = """{"identifier":"{\"channel\":\"valid\"}","command":"message","data":"data"}"""
         whenever(dataMessageAdapter.fromMessage(any()))
             .thenAnswer { (it.arguments.first() as ScarletMessage.Text).value.reversed() }
-        val adapter = factory.create(String::class.java, arrayOf(actionCableAnnotation)) as MessageAdapter<String>
+        val adapter =
+            factory.create(CharSequence::class.java, arrayOf(actionCableAnnotation)) as MessageAdapter<CharSequence>
 
         val data = adapter.fromMessage(ScarletMessage.Text(rawMessage))
         assertEquals("atad", data)

@@ -2,6 +2,7 @@ package org.ccci.gto.android.common.scarlet.actioncable
 
 import com.squareup.moshi.Moshi
 import com.tinder.scarlet.MessageAdapter
+import com.tinder.scarlet.messageadapter.builtin.BuiltInMessageAdapterFactory
 import com.tinder.scarlet.messageadapter.moshi.MoshiMessageAdapter
 import com.tinder.scarlet.utils.getParameterUpperBound
 import com.tinder.scarlet.utils.getRawType
@@ -56,7 +57,7 @@ class ActionCableMessageAdapterFactory private constructor(
     }
 
     class Builder {
-        private val messageAdapterFactories = mutableListOf<MessageAdapter.Factory>()
+        private val messageAdapterFactories = mutableListOf<MessageAdapter.Factory>(BuiltInMessageAdapterFactory())
         fun addMessageAdapterFactory(factory: MessageAdapter.Factory) = apply { messageAdapterFactories.add(factory) }
         fun build() = ActionCableMessageAdapterFactory(messageAdapterFactories)
     }
