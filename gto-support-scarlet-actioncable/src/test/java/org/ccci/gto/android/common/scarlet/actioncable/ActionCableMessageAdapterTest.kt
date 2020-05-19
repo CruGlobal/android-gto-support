@@ -157,7 +157,7 @@ class ActionCableMessageAdapterTest {
         verify(dataMessageAdapter).fromMessage(eq(ScarletMessage.Text("data")))
     }
 
-    @Test(expected = IllegalStateException::class)
+    @Test(expected = IllegalArgumentException::class)
     fun verifyDataMessageAdapterFromMessageInvalidChannel() {
         val rawMessage = """{"identifier":"{\"channel\":\"invalid\"}","command":"message","data":"data"}"""
         whenever(dataMessageAdapter.fromMessage(any()))

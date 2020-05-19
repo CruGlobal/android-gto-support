@@ -8,7 +8,6 @@ import com.tinder.scarlet.utils.getParameterUpperBound
 import com.tinder.scarlet.utils.getRawType
 import com.tinder.scarlet.utils.hasUnresolvableType
 import org.ccci.gto.android.common.moshi.adapter.StringifyJsonAdapterFactory
-import org.ccci.gto.android.common.scarlet.actioncable.model.Identifier
 import org.ccci.gto.android.common.scarlet.actioncable.model.IdentifierJsonAdapter
 import org.ccci.gto.android.common.scarlet.actioncable.model.Message
 import org.ccci.gto.android.common.scarlet.actioncable.model.RawMessage
@@ -37,12 +36,8 @@ class ActionCableMessageAdapterFactory private constructor(
             )
         }
         else -> {
-            val actionCableMessage = annotations.firstOrNull { it is ActionCableMessage } as? ActionCableMessage
-                ?: error("Type is not supported by this MessageAdapterFactory: $type")
-            DataMessageAdapterFactory(
-                Identifier(actionCableMessage.channel), rawMessageAdapter,
-                findMessageAdapter(type, annotations.filterNot { it is ActionCableMessage }.toTypedArray())
-            )
+            annotations.actionCableMessage ?: error("Type is not supported by this MessageAdapterFactory: $type")
+            DataMessageAdapter(rawMessageAdapter, findMessageAdapter(type, annotations), annotations)
         }
     }
 
