@@ -9,7 +9,9 @@ internal fun <T> MessageAdapter<T>.fromMessage(msg: String) = fromMessage(Messag
 private const val MSG_WRONG_CHANNEL = "This message is for a different channel"
 
 internal fun Identifier.require(
+    actionCableChannel: ActionCableChannel? = null,
     actionCableMessage: ActionCableMessage? = null
 ) {
+    if (actionCableChannel != null) require(channel == actionCableChannel.channel) { MSG_WRONG_CHANNEL }
     if (actionCableMessage != null) require(channel == actionCableMessage.channel) { MSG_WRONG_CHANNEL }
 }

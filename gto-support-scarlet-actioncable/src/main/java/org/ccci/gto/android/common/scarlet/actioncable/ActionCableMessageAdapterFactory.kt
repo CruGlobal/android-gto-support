@@ -31,8 +31,8 @@ class ActionCableMessageAdapterFactory private constructor(
             require(type is ParameterizedType && !type.hasUnresolvableType()) {
                 "ActionCable Message type requires a resolvable ParameterizedType"
             }
-            MessageMessageAdapterFactory(
-                rawMessageAdapter, findMessageAdapter(type.getParameterUpperBound(0), annotations)
+            MessageMessageAdapter(
+                rawMessageAdapter, findMessageAdapter(type.getParameterUpperBound(0), annotations), annotations
             )
         }
         else -> {
