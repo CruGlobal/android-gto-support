@@ -88,7 +88,7 @@ class ActionCableMessageAdapterTest {
 
     @Test
     fun verifyMessageMessageAdapterFromMessage() {
-        val rawMessage = """{"identifier":"{\"channel\":\"c\"}","command":"message","data":"raw"}"""
+        val rawMessage = """{"identifier":"{\"channel\":\"c\"}","command":"message","message":"raw"}"""
         whenever(dataMessageAdapter.fromMessage(any())).thenReturn("response")
         val adapter =
             factory.create(genericReturnTypeOf<MessageParameterizedTypes>("charSequenceParameterized"), emptyArray())
@@ -146,7 +146,7 @@ class ActionCableMessageAdapterTest {
 
     @Test
     fun verifyDataMessageAdapterFromMessageValidChannel() {
-        val rawMessage = """{"identifier":"{\"channel\":\"valid\"}","command":"message","data":"data"}"""
+        val rawMessage = """{"identifier":"{\"channel\":\"valid\"}","command":"message","message":"data"}"""
         whenever(dataMessageAdapter.fromMessage(any()))
             .thenAnswer { (it.arguments.first() as ScarletMessage.Text).value.reversed() }
         val adapter =
@@ -159,7 +159,7 @@ class ActionCableMessageAdapterTest {
 
     @Test(expected = IllegalArgumentException::class)
     fun verifyDataMessageAdapterFromMessageInvalidChannel() {
-        val rawMessage = """{"identifier":"{\"channel\":\"invalid\"}","command":"message","data":"data"}"""
+        val rawMessage = """{"identifier":"{\"channel\":\"invalid\"}","command":"message","message":"data"}"""
         whenever(dataMessageAdapter.fromMessage(any()))
             .thenAnswer { (it.arguments.first() as ScarletMessage.Text).value.reversed() }
         val adapter = factory.create(String::class.java, arrayOf(actionCableAnnotation)) as MessageAdapter<String>
