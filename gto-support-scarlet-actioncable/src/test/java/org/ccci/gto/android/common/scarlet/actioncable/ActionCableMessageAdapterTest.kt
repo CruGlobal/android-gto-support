@@ -2,7 +2,6 @@ package org.ccci.gto.android.common.scarlet.actioncable
 
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.eq
-import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.never
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
@@ -14,33 +13,11 @@ import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.instanceOf
 import org.json.JSONObject
 import org.junit.Assert.assertEquals
-import org.junit.Before
 import org.junit.Test
 import com.tinder.scarlet.Message as ScarletMessage
 
 @Suppress("UNCHECKED_CAST")
-class ActionCableMessageAdapterTest {
-    private lateinit var factory: MessageAdapter.Factory
-
-    private lateinit var dataMessageAdapterFactory: MessageAdapter.Factory
-    private lateinit var dataMessageAdapter: MessageAdapter<Any>
-
-    private val actionCableAnnotation by lazy {
-        Annotations::class.java.getDeclaredMethod("actionCable").annotations
-            .filterIsInstance(ActionCableMessage::class.java).first()
-    }
-
-    @Before
-    fun setup() {
-        dataMessageAdapter = mock()
-        dataMessageAdapterFactory = mock()
-        whenever(dataMessageAdapterFactory.create(any(), any())).thenReturn(dataMessageAdapter)
-
-        factory = ActionCableMessageAdapterFactory.Builder()
-            .addMessageAdapterFactory(dataMessageAdapterFactory)
-            .build()
-    }
-
+class ActionCableMessageAdapterTest : BaseActionCableMessageAdapterTest() {
     // region Subscribe MessageAdapter
     @Test
     fun verifySubscribeMessageAdapterToMessage() {
@@ -113,14 +90,8 @@ class ActionCableMessageAdapterTest {
         assertThatJson(json).node("data").isEqualTo("raw")
         verify(dataMessageAdapter).toMessage(eq("data"))
     }
-
-    private interface MessageParameterizedTypes {
-        fun notParameterized(): Message<*>
-        fun charSequenceParameterized(): Message<CharSequence>
-    }
     // endregion Message MessageAdapter
 
-    // region Data MessageAdapter
     @Test(expected = IllegalStateException::class)
     fun verifyDataMessageAdapterExceptionIfMissingAnnotation() {
         try {
@@ -129,54 +100,4 @@ class ActionCableMessageAdapterTest {
             verify(dataMessageAdapterFactory, never()).create(any(), any())
         }
     }
-
-    @Test
-    fun verifyDataMessageAdapterToMessage() {
-        whenever(dataMessageAdapter.toMessage(any()))
-            .thenAnswer { ScarletMessage.Text((it.arguments.first() as String).reversed()) }
-        val adapter =
-            factory.create(CharSequence::class.java, arrayOf(actionCableAnnotation)) as MessageAdapter<CharSequence>
-
-        val json = (adapter.toMessage("data") as ScarletMessage.Text).value
-        assertThatJson(json).node("command").isEqualTo("message")
-        assertThatJson(JSONObject(json).getString("identifier")).isEqualTo("""{channel:"valid"}""")
-        assertThatJson(json).node("data").isEqualTo("atad")
-        verify(dataMessageAdapter).toMessage(eq("data"))
-    }
-
-    @Test
-    fun verifyDataMessageAdapterFromMessageValidChannel() {
-        val rawMessage = """{"identifier":"{\"channel\":\"valid\"}","command":"message","message":"data"}"""
-        whenever(dataMessageAdapter.fromMessage(any()))
-            .thenAnswer { (it.arguments.first() as ScarletMessage.Text).value.reversed() }
-        val adapter =
-            factory.create(CharSequence::class.java, arrayOf(actionCableAnnotation)) as MessageAdapter<CharSequence>
-
-        val data = adapter.fromMessage(ScarletMessage.Text(rawMessage))
-        assertEquals("atad", data)
-        verify(dataMessageAdapter).fromMessage(eq(ScarletMessage.Text("data")))
-    }
-
-    @Test(expected = IllegalArgumentException::class)
-    fun verifyDataMessageAdapterFromMessageInvalidChannel() {
-        val rawMessage = """{"identifier":"{\"channel\":\"invalid\"}","command":"message","message":"data"}"""
-        whenever(dataMessageAdapter.fromMessage(any()))
-            .thenAnswer { (it.arguments.first() as ScarletMessage.Text).value.reversed() }
-        val adapter = factory.create(String::class.java, arrayOf(actionCableAnnotation)) as MessageAdapter<String>
-
-        try {
-            adapter.fromMessage(ScarletMessage.Text(rawMessage))
-        } finally {
-            verify(dataMessageAdapter, never()).fromMessage(any())
-        }
-    }
-    // endregion Data MessageAdapter
-
-    private inline fun <reified T : Any> genericReturnTypeOf(method: String) =
-        T::class.java.getDeclaredMethod(method).genericReturnType
-}
-
-private interface Annotations {
-    @ActionCableMessage("valid")
-    fun actionCable(): String
 }

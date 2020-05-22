@@ -9,9 +9,7 @@ import com.tinder.scarlet.utils.getRawType
 import com.tinder.scarlet.utils.hasUnresolvableType
 import org.ccci.gto.android.common.moshi.adapter.StringifyJsonAdapterFactory
 import org.ccci.gto.android.common.scarlet.actioncable.model.IdentifierJsonAdapter
-import org.ccci.gto.android.common.scarlet.actioncable.model.IncomingMessage
 import org.ccci.gto.android.common.scarlet.actioncable.model.Message
-import org.ccci.gto.android.common.scarlet.actioncable.model.OutgoingMessage
 import org.ccci.gto.android.common.scarlet.actioncable.model.Subscribe
 import java.lang.reflect.ParameterizedType
 import java.lang.reflect.Type
@@ -21,14 +19,6 @@ class ActionCableMessageAdapterFactory private constructor(
 ) : MessageAdapter.Factory {
     private val moshi = Moshi.Builder().add(StringifyJsonAdapterFactory).add(IdentifierJsonAdapter).build()
     private val moshiMessageAdapterFactory = MoshiMessageAdapter.Factory(moshi)
-    private val incomingMessageAdapter by lazy {
-        @Suppress("UNCHECKED_CAST")
-        moshiMessageAdapterFactory.create(IncomingMessage::class.java, emptyArray()) as MessageAdapter<IncomingMessage>
-    }
-    private val outgoingMessageAdapter by lazy {
-        @Suppress("UNCHECKED_CAST")
-        moshiMessageAdapterFactory.create(OutgoingMessage::class.java, emptyArray()) as MessageAdapter<OutgoingMessage>
-    }
 
     override fun create(type: Type, annotations: Array<Annotation>): MessageAdapter<*> = when (type.getRawType()) {
         Subscribe::class.java -> moshiMessageAdapterFactory.create(type, annotations)
@@ -36,16 +26,11 @@ class ActionCableMessageAdapterFactory private constructor(
             require(type is ParameterizedType && !type.hasUnresolvableType()) {
                 "ActionCable Message type requires a resolvable ParameterizedType"
             }
-            MessageMessageAdapter(
-                incomingMessageAdapter, outgoingMessageAdapter,
-                findMessageAdapter(type.getParameterUpperBound(0), annotations), annotations
-            )
+            MessageMessageAdapter(findMessageAdapter(type.getParameterUpperBound(0), annotations), moshi, annotations)
         }
         else -> {
             annotations.actionCableMessage ?: error("Type is not supported by this MessageAdapterFactory: $type")
-            DataMessageAdapter(
-                incomingMessageAdapter, outgoingMessageAdapter, findMessageAdapter(type, annotations), annotations
-            )
+            DataMessageAdapter(findMessageAdapter(type, annotations), moshi, annotations)
         }
     }
 
