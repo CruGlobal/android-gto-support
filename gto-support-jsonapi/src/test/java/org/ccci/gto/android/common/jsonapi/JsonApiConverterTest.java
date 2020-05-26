@@ -24,6 +24,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 public class JsonApiConverterTest {
     private static final float DELTA = 0.000001f;
@@ -185,6 +186,7 @@ public class JsonApiConverterTest {
         source.attrFloat = 3.4f;
         source.attrFloatBoxed = null;
         source.attrInt1 = 2;
+        source.attrIntegerBoxed = 3;
         source.attrBool1 = false;
         source.attrAnn1 = "1nnArtta";
         source.ann2 = "2nnArtta";
@@ -197,8 +199,9 @@ public class JsonApiConverterTest {
         source.attrArrayInt = new int[] {11, 12, 13};
         source.attrArrayLong = new long[] {21, 22};
         source.attrArrayString = new String[] {null, "str1", "str2"};
-        final JsonApiObject<ModelAttributes> output =
-                converter.fromJson(converter.toJson(JsonApiObject.single(source)), ModelAttributes.class);
+
+        final String json = converter.toJson(JsonApiObject.single(source));
+        final JsonApiObject<ModelAttributes> output = converter.fromJson(json, ModelAttributes.class);
         assertThat(output.isSingle(), is(true));
         final ModelAttributes target = output.getDataSingle();
         assertThat(target, is(not(nullValue())));
@@ -209,6 +212,7 @@ public class JsonApiConverterTest {
         assertEquals(source.attrFloat, target.attrFloat, DELTA);
         assertNull(target.attrFloatBoxed);
         assertThat(target.attrInt1, is(source.attrInt1));
+        assertEquals(source.attrIntegerBoxed, target.attrIntegerBoxed);
         assertThat(target.attrBool1, is(source.attrBool1));
         assertThat(target.attrAnn1, is(source.attrAnn1));
         assertThat(target.ann2, is(source.ann2));
@@ -224,12 +228,22 @@ public class JsonApiConverterTest {
     }
 
     @Test
+    public void verifyFromJsonDoubleToInteger() throws Exception {
+        final String raw = "{'data':{'id':5,'type':'attrs','attributes':{'attrIntegerBoxed':2.0}}}";
+
+        final JsonApiConverter converter = new JsonApiConverter.Builder().addClasses(ModelAttributes.class).build();
+        final JsonApiObject<ModelAttributes> output = converter.fromJson(raw, ModelAttributes.class);
+        assertTrue(output.isSingle());
+        final ModelAttributes target = output.getDataSingle();
+        assertEquals((Integer) 2, target.attrIntegerBoxed);
+    }
+
+    @Test
     public void verifyFromJsonNullAttribute() throws Exception {
         final String raw = "{'data':{'id':5,'type':'attrs','attributes':{'attrStr1':null}}}";
 
         final JsonApiConverter converter = new JsonApiConverter.Builder().addClasses(ModelAttributes.class).build();
-        final JsonApiObject<ModelAttributes> output =
-                converter.fromJson(raw, ModelAttributes.class);
+        final JsonApiObject<ModelAttributes> output = converter.fromJson(raw, ModelAttributes.class);
         assertThat(output.isSingle(), is(true));
         final ModelAttributes target = output.getDataSingle();
         assertThat(target, is(not(nullValue())));
@@ -307,6 +321,7 @@ public class JsonApiConverterTest {
         float attrFloat = 1.5f;
         Float attrFloatBoxed = 2.5f;
         public int attrInt1 = 1;
+        Integer attrIntegerBoxed = 1;
         boolean attrBool1 = true;
 
         private double[] attrArrayDouble = {1.5, 2.5};

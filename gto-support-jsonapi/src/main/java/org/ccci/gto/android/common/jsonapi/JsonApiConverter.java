@@ -851,34 +851,24 @@ public final class JsonApiConverter {
             return json.getLong(name);
         } else if (type.isAssignableFrom(boolean.class)) {
             return json.getBoolean(name);
+        } else if (json.isNull(name)) {
+            return null;
         } else if (type.isAssignableFrom(JSONObject.class)) {
             return json.getJSONObject(name);
         } else if (type.isAssignableFrom(JSONArray.class)) {
             return json.getJSONArray(name);
-        } else if (type.isAssignableFrom(Boolean.class) || type.isAssignableFrom(Double.class) ||
-                type.isAssignableFrom(Float.class) || type.isAssignableFrom(Integer.class) ||
-                type.isAssignableFrom(Long.class) || type.isAssignableFrom(String.class)) {
-            final String value = !json.isNull(name) ? json.optString(name, null) : null;
-            if (value == null) {
-                return null;
-            }
-            try {
-                if (type.isAssignableFrom(Boolean.class)) {
-                    return Boolean.valueOf(value);
-                } else if (type.isAssignableFrom(Double.class)) {
-                    return Double.valueOf(value);
-                } else if (type.isAssignableFrom(Float.class)) {
-                    return Float.valueOf(value);
-                } else if (type.isAssignableFrom(Integer.class)) {
-                    return Integer.valueOf(value);
-                } else if (type.isAssignableFrom(Long.class)) {
-                    return Long.valueOf(value);
-                } else if (type.isAssignableFrom(String.class)) {
-                    return value;
-                }
-            } catch (final Exception e) {
-                return null;
-            }
+        } else if (type.isAssignableFrom(Boolean.class)) {
+            return json.getBoolean(name);
+        } else if (type.isAssignableFrom(Double.class)) {
+            return json.getDouble(name);
+        } else if (type.isAssignableFrom(Float.class)) {
+            return (float) json.getDouble(name);
+        } else if (type.isAssignableFrom(Integer.class)) {
+            return json.getInt(name);
+        } else if (type.isAssignableFrom(Long.class)) {
+            return json.getLong(name);
+        } else if (type.isAssignableFrom(String.class)) {
+            return json.getString(name);
         }
 
         // default to null
