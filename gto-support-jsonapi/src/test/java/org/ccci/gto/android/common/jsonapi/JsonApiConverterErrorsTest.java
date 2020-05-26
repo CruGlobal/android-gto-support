@@ -13,6 +13,7 @@ import static net.javacrumbs.jsonunit.JsonMatchers.jsonPartEquals;
 import static net.javacrumbs.jsonunit.fluent.JsonFluentAssert.assertThatJson;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.hasSize;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 
 public class JsonApiConverterErrorsTest {
@@ -76,6 +77,7 @@ public class JsonApiConverterErrorsTest {
         assertThat(error1.getSource().getPointer(), is("/data/attributes/secret-powers"));
         final JsonApiError error3 = obj.getErrors().get(2);
         assertThat(error3.getStatus(), is(500));
+        assertEquals("The backend responded with an error", error3.getTitle());
         assertThat(error3.getDetail(), is("Reputation service not responding after three requests."));
         assertThat(error3.getSource().getPointer(), is("/data/attributes/reputation"));
     }

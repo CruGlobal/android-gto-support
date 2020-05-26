@@ -42,6 +42,7 @@ import static org.ccci.gto.android.common.jsonapi.model.JsonApiError.JSON_ERROR_
 import static org.ccci.gto.android.common.jsonapi.model.JsonApiError.JSON_ERROR_META;
 import static org.ccci.gto.android.common.jsonapi.model.JsonApiError.JSON_ERROR_SOURCE;
 import static org.ccci.gto.android.common.jsonapi.model.JsonApiError.JSON_ERROR_STATUS;
+import static org.ccci.gto.android.common.jsonapi.model.JsonApiError.JSON_ERROR_TITLE;
 import static org.ccci.gto.android.common.jsonapi.model.JsonApiError.Source.JSON_ERROR_SOURCE_POINTER;
 import static org.ccci.gto.android.common.jsonapi.model.JsonApiObject.JSON_DATA;
 import static org.ccci.gto.android.common.jsonapi.model.JsonApiObject.JSON_DATA_ATTRIBUTES;
@@ -300,6 +301,7 @@ public final class JsonApiConverter {
         if (status != null) {
             json.put(JSON_ERROR_STATUS, status.toString());
         }
+        json.put(JSON_ERROR_TITLE, error.getTitle());
         json.put(JSON_ERROR_DETAIL, error.getDetail());
         json.put(JSON_ERROR_SOURCE, errorSourceToJson(error.getSource()));
         json.put(JSON_ERROR_META, error.getRawMeta());
@@ -321,6 +323,7 @@ public final class JsonApiConverter {
         if (json != null) {
             final JsonApiError error = new JsonApiError();
             error.setStatus(toInteger(json.optString(JSON_ERROR_STATUS, null), null));
+            error.setTitle(json.optString(JSON_ERROR_TITLE, null));
             error.setDetail(json.optString(JSON_ERROR_DETAIL, null));
             error.setSource(errorSourceFromJson(json.optJSONObject(JSON_ERROR_SOURCE)));
             error.setRawMeta(json.optJSONObject(JSON_ERROR_META));
