@@ -9,8 +9,12 @@ import org.junit.Test
 class SubscribeTest {
     @Test
     fun testSerialization() {
-        val moshi = Moshi.Builder().add(StringifyJsonAdapterFactory).build().adapter(Subscribe::class.java)
-        val json = moshi.toJson(Subscribe("channel"))
+        val moshi = Moshi.Builder()
+            .add(StringifyJsonAdapterFactory)
+            .add(IdentifierJsonAdapter)
+            .build()
+        val adapter = moshi.adapter(Subscribe::class.java)
+        val json = adapter.toJson(Subscribe("channel"))
         assertThatJson(json).node("command").isEqualTo("subscribe")
         assertThatJson(JSONObject(json).getString("identifier")).isEqualTo("{channel:\"channel\"}")
     }
