@@ -65,12 +65,15 @@ buildscript {
     repositories {
         google()
         jcenter()
-        mavenLocal()
+        maven { url 'https://jitpack.io' }
     }
     dependencies {
         classpath "com.android.tools.build:gradle:${deps.gradleAndroidPlugin}"
-        classpath 'com.dicedmelon.gradle:jacoco-android:0.1.4'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:${deps.kotlin}"
+
+        // HACK: use master-SNAPSHOT version to work around a gradle 6 incompatibility with v0.1.4 of the jacoco-android plugin
+//        classpath 'com.dicedmelon.gradle:jacoco-android:0.1.4'
+        classpath 'com.github.arturdm:jacoco-android-gradle-plugin:master-SNAPSHOT'
     }
 }
 plugins {
