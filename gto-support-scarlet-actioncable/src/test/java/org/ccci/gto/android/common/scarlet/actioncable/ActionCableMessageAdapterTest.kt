@@ -41,6 +41,15 @@ class ActionCableMessageAdapterTest : BaseActionCableMessageAdapterTest() {
         assertEquals("subscribe", subscribe.command)
         assertEquals("channel", subscribe.identifier.channel)
     }
+
+    @Test(expected = IllegalArgumentException::class)
+    fun verifySubscribeMessageAdapterFromMessageInvalidCommand() {
+        val rawMessage = """{"identifier":"{\"channel\":\"channel\"}","command":"invalid"}"""
+        val adapter = factory.create(Subscribe::class.java, emptyArray()) as MessageAdapter<Subscribe>
+
+        adapter.fromMessage(ScarletMessage.Text(rawMessage))
+        fail("adapter.fromMessage() should have thrown an error because the command is invalid")
+    }
     // endregion Subscribe MessageAdapter
 
     // region ConfirmSubscription MessageAdapter
