@@ -7,12 +7,14 @@ import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
 import com.tinder.scarlet.MessageAdapter
 import net.javacrumbs.jsonunit.fluent.JsonFluentAssert.assertThatJson
+import org.ccci.gto.android.common.scarlet.actioncable.model.ConfirmSubscription
 import org.ccci.gto.android.common.scarlet.actioncable.model.Message
 import org.ccci.gto.android.common.scarlet.actioncable.model.Subscribe
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.instanceOf
 import org.json.JSONObject
 import org.junit.Assert.assertEquals
+import org.junit.Assert.fail
 import org.junit.Test
 import com.tinder.scarlet.Message as ScarletMessage
 
@@ -40,6 +42,41 @@ class ActionCableMessageAdapterTest : BaseActionCableMessageAdapterTest() {
         assertEquals("channel", subscribe.identifier.channel)
     }
     // endregion Subscribe MessageAdapter
+
+    // region ConfirmSubscription MessageAdapter
+    @Test
+    fun verifyConfirmSubscriptionMessageAdapterToMessage() {
+        val adapter =
+            factory.create(ConfirmSubscription::class.java, emptyArray()) as MessageAdapter<ConfirmSubscription>
+        val message = adapter.toMessage(ConfirmSubscription("channel"))
+        assertThat(message, instanceOf(ScarletMessage.Text::class.java))
+
+        val json = (message as ScarletMessage.Text).value
+        assertThatJson(json).node("type").isEqualTo("confirm_subscription")
+        assertThatJson(JSONObject(json).getString("identifier")).isEqualTo("{channel:\"channel\"}")
+    }
+
+    @Test
+    fun verifyConfirmSubscriptionMessageAdapterFromMessage() {
+        val rawMessage = """{"identifier":"{\"channel\":\"channel\"}","type":"confirm_subscription"}"""
+        val adapter =
+            factory.create(ConfirmSubscription::class.java, emptyArray()) as MessageAdapter<ConfirmSubscription>
+
+        val confirm = adapter.fromMessage(ScarletMessage.Text(rawMessage))
+        assertEquals("confirm_subscription", confirm.type)
+        assertEquals("channel", confirm.identifier.channel)
+    }
+
+    @Test(expected = IllegalArgumentException::class)
+    fun verifyConfirmSubscriptionMessageAdapterFromMessageInvalidType() {
+        val rawMessage = """{"identifier":"{\"channel\":\"channel\"}","type":"other_type"}"""
+        val adapter =
+            factory.create(ConfirmSubscription::class.java, emptyArray()) as MessageAdapter<ConfirmSubscription>
+
+        adapter.fromMessage(ScarletMessage.Text(rawMessage))
+        fail("adapter.fromMessage() should have thrown an error because the type is invalid")
+    }
+    // endregion ConfirmSubscription MessageAdapter
 
     // region Message MessageAdapter
     @Test(expected = IllegalArgumentException::class)
