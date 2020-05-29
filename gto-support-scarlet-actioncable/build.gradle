@@ -7,6 +7,7 @@ dependencies {
     implementation("com.tinder.scarlet:message-adapter-moshi:${deps.scarlet}") {
         exclude group: 'com.squareup.moshi', module: 'moshi-kotlin'
     }
+    compileOnly "com.tinder.scarlet:websocket-okhttp:${deps.scarlet}"
 
     implementation "com.squareup.moshi:moshi:${deps.moshi}"
 
