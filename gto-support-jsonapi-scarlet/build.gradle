@@ -2,4 +2,6 @@ dependencies {
     api project(':gto-support-jsonapi')
 
     api "com.tinder.scarlet:scarlet-core:${deps.scarlet}"
+
+    testImplementation 'org.json:json:20190722'
 }
