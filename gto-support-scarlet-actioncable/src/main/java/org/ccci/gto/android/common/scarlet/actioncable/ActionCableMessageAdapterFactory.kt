@@ -12,6 +12,7 @@ import org.ccci.gto.android.common.scarlet.actioncable.model.ConfirmSubscription
 import org.ccci.gto.android.common.scarlet.actioncable.model.IdentifierJsonAdapter
 import org.ccci.gto.android.common.scarlet.actioncable.model.Message
 import org.ccci.gto.android.common.scarlet.actioncable.model.Subscribe
+import org.ccci.gto.android.common.scarlet.actioncable.model.Unsubscribe
 import java.lang.reflect.ParameterizedType
 import java.lang.reflect.Type
 
@@ -22,7 +23,8 @@ class ActionCableMessageAdapterFactory private constructor(
     private val moshiMessageAdapterFactory = MoshiMessageAdapter.Factory(moshi)
 
     override fun create(type: Type, annotations: Array<Annotation>): MessageAdapter<*> = when (type.getRawType()) {
-        Subscribe::class.java, ConfirmSubscription::class.java -> moshiMessageAdapterFactory.create(type, annotations)
+        Subscribe::class.java, ConfirmSubscription::class.java, Unsubscribe::class.java ->
+            moshiMessageAdapterFactory.create(type, annotations)
         Message::class.java -> {
             require(type is ParameterizedType && !type.hasUnresolvableType()) {
                 "ActionCable Message type requires a resolvable ParameterizedType"
