@@ -7,6 +7,7 @@ import com.tinder.scarlet.utils.getRawType
 import com.tinder.scarlet.utils.hasUnresolvableType
 import org.ccci.gto.android.common.jsonapi.JsonApiConverter
 import org.ccci.gto.android.common.jsonapi.model.JsonApiObject
+import org.ccci.gto.android.common.scarlet.stringValue
 import java.lang.reflect.ParameterizedType
 import java.lang.reflect.Type
 
@@ -44,9 +45,3 @@ class JsonApiMessageAdapterFactory(private val jsonApi: JsonApiConverter) : Mess
         override fun toMessage(data: T) = wrappedAdapter.toMessage(JsonApiObject.single(data))
     }
 }
-
-private val Message.stringValue
-    get() = when (this) {
-        is Message.Text -> value
-        is Message.Bytes -> String(value)
-    }

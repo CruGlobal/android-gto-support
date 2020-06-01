@@ -1,0 +1,5 @@
+dependencies {
+    api "com.tinder.scarlet:scarlet-core:${deps.scarlet}"
+
+    implementation "com.squareup.okio:okio:${deps.okio}"
+}
