@@ -1,0 +1,20 @@
+dependencies {
+    implementation project(':gto-support-moshi')
+    implementation project(':gto-support-scarlet')
+
+    api "com.tinder.scarlet:scarlet-core:${deps.scarlet}"
+    implementation "com.tinder.scarlet:message-adapter-built-in:${deps.scarlet}"
+    implementation("com.tinder.scarlet:message-adapter-moshi:${deps.scarlet}") {
+        exclude group: 'com.squareup.moshi', module: 'moshi-kotlin'
+    }
+    compileOnly "com.tinder.scarlet:websocket-okhttp:${deps.scarlet}"
+
+    implementation "com.squareup.moshi:moshi:${deps.moshi}"
+
+    testImplementation "net.javacrumbs.json-unit:json-unit:${deps.jsonUnit}"
+    testImplementation "net.javacrumbs.json-unit:json-unit-fluent:${deps.jsonUnit}"
+    testImplementation 'org.json:json:20190722'
+    testImplementation "pl.pragmatists:JUnitParams:${deps.junitParams}"
+
+    kapt "com.squareup.moshi:moshi-kotlin-codegen:${deps.moshi}"
+}
