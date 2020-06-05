@@ -2,6 +2,8 @@ package org.ccci.gto.android.common.util.os
 
 import android.os.LocaleList
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import org.hamcrest.MatcherAssert.assertThat
+import org.hamcrest.Matchers.arrayContaining
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
@@ -34,5 +36,11 @@ class LocaleListTest {
         assertEquals(0, iterator.previousIndex())
         assertEquals(1, iterator.nextIndex())
         assertEquals(Locale.ENGLISH, iterator.previous())
+    }
+
+    @Test
+    fun testToTypedArray() {
+        val list = LocaleList(Locale.ENGLISH, Locale.FRENCH)
+        assertThat(list.toTypedArray(), arrayContaining(Locale.ENGLISH, Locale.FRENCH))
     }
 }
