@@ -4,7 +4,7 @@ import android.content.Context
 import android.content.res.Configuration
 import android.os.Build
 import android.os.LocaleList
-import org.ccci.gto.android.common.util.os.toTypedArray
+import org.ccci.gto.android.common.util.os.locales
 import java.util.Locale
 
 fun Context.localize(vararg locales: Locale, includeExisting: Boolean = true): Context = when {
@@ -13,7 +13,10 @@ fun Context.localize(vararg locales: Locale, includeExisting: Boolean = true): C
         when {
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.N -> setLocales(
                 LocaleList(
-                    *locales, *(if (includeExisting) resources.configuration.locales.toTypedArray() else emptyArray())
+                    *LinkedHashSet<Locale>().apply {
+                        addAll(locales)
+                        if (includeExisting) addAll(resources.configuration.locales.locales)
+                    }.toTypedArray()
                 )
             )
             else -> setLocale(locales.first())

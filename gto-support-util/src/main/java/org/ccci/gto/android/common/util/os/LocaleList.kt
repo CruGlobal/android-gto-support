@@ -18,7 +18,7 @@ fun LocaleList.listIterator() = object : ListIterator<Locale> {
     override fun previousIndex() = i - 1
 }
 
-private val LocaleList.locales
+internal val LocaleList.locales
     get() = object : Sequence<Locale> {
         override fun iterator() = listIterator()
     }
