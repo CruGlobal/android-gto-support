@@ -63,4 +63,15 @@ class ContextTest {
             arrayContaining(Locale.ENGLISH, Locale.GERMAN)
         )
     }
+
+    @Test
+    fun verifyLocalizeDuplicateLocale() {
+        assumeTrue(Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
+
+        context.resources.configuration.setLocales(LocaleList(Locale.ENGLISH))
+        assertThat(
+            context.localize(Locale.ENGLISH).resources.configuration.locales.toTypedArray(),
+            arrayContaining(Locale.ENGLISH)
+        )
+    }
 }
