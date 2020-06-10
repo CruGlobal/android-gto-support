@@ -7,7 +7,7 @@ buildscript {
             crashlytics         : '2.10.1',
             dagger              : '2.28',
             eventbus            : '3.2.0',
-            facebookFlipper     : '0.45.0',
+            facebookFlipper     : '0.46.0',
             facebookStetho      : '1.5.1',
             gradleAndroidPlugin : '4.0.0',
             gson                : '2.8.6',
