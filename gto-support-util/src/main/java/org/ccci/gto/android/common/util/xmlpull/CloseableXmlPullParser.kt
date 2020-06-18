@@ -20,7 +20,7 @@ class CloseableXmlPullParser private constructor(private val parser: XmlPullPars
     }
 
     @Throws(XmlPullParserException::class)
-    override fun setInput(inputStream: InputStream?, inputEncoding: String?) {
+    override fun setInput(inputStream: InputStream, inputEncoding: String?) {
         input = inputStream
         parser.setInput(inputStream, inputEncoding)
     }
