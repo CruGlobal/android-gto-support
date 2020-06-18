@@ -2,34 +2,14 @@ package org.ccci.gto.android.common.util;
 
 import android.text.TextUtils;
 
+import androidx.annotation.NonNull;
+
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
 
-import androidx.annotation.NonNull;
-
 public class XmlPullParserUtils {
-    /**
-     * safely call nextText on all versions of Android.
-     *
-     * @deprecated Since v3.0.0, This is no longer necessary since we don't support ICS or earlier.
-     * @param parser the current parser
-     * @return the next text node from the XmlPullParser
-     * @throws IOException
-     * @throws XmlPullParserException
-     * @see <a href="http://android-developers.blogspot.com/2011/12/watch-out-for-xmlpullparsernexttext.html">Watch out for XmlPullParser.nextText()</a>
-     */
-    @Deprecated
-    public static String safeNextText(@NonNull final XmlPullParser parser) throws IOException, XmlPullParserException {
-        final String result = parser.nextText();
-        if (parser.getEventType() != XmlPullParser.END_TAG) {
-            // work around a bug pre-ICS where nextText() didn't consume the text event
-            parser.nextTag();
-        }
-        return result;
-    }
-
     /**
      * Skip the current XML tag (and all of it's children)
      *
