@@ -61,7 +61,7 @@ buildscript {
             work                 : '2.3.4',
     ]
     ext.deps.firebase = [
-            crashlytics: '17.0.1'
+            crashlytics: '17.1.0'
     ]
 
     repositories {
