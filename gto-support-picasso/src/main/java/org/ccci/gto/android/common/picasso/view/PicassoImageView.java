@@ -11,6 +11,12 @@ import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 import android.widget.ImageView.ScaleType;
 
+import androidx.annotation.DrawableRes;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.UiThread;
+import androidx.core.view.ViewCompat;
+
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.RequestCreator;
 import com.squareup.picasso.Transformation;
@@ -23,12 +29,6 @@ import org.ccci.gto.android.common.picasso.transformation.ScaleTransformation;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-
-import androidx.annotation.DrawableRes;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.annotation.UiThread;
-import androidx.core.view.ViewCompat;
 
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 import static org.ccci.gto.android.common.base.Constants.INVALID_DRAWABLE_RES;
@@ -156,7 +156,7 @@ public interface PicassoImageView {
         }
 
         public final void onDetachedFromWindow() {
-            mView.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+            mView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
         }
 
         @UiThread
