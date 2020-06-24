@@ -4,6 +4,7 @@ import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
 
+import org.ccci.gto.android.common.util.xmlpull.XmlPullParserKt;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -12,29 +13,11 @@ import java.io.IOException;
 public class XmlPullParserUtils {
     /**
      * Skip the current XML tag (and all of it's children)
-     *
-     * @param parser the parser for the xml document being processed
-     * @throws XmlPullParserException
-     * @throws IOException
+     * @deprecated Since v3.6.1, Use the Kotlin extension function instead.
      */
+    @Deprecated
     public static void skipTag(@NonNull final XmlPullParser parser) throws XmlPullParserException, IOException {
-        // require that we are currently at the start of a tag
-        parser.require(XmlPullParser.START_TAG, null, null);
-
-        // loop until we process all nested tags
-        int depth = 1;
-        while (depth > 0) {
-            switch (parser.next()) {
-                case XmlPullParser.START_TAG:
-                    depth++;
-                    break;
-                case XmlPullParser.END_TAG:
-                    depth--;
-                    break;
-                default:
-                    // do nothing
-            }
-        }
+        XmlPullParserKt.skipTag(parser);
     }
 
     /**
