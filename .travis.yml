@@ -8,6 +8,8 @@ env:
     - DEPLOY_USERNAME=travis-ci-android-gto-support
     # DEPLOY_PASSWORD={password}
     - secure: "NpKiD/OhxURch8MhFvVohqNDgS6SVPfjiM2Qm/mQbjLmeEmdlfDQ3lPF+X2HNL960eWulhvpcTPr5TS8eUMUA83U5HBUaADQEnqnHN75oC1OYJtB54ELP2b+vXOEVD3hFQFFnBWsPLJKd6DK8XMpVe+eG+MnmGPM5AWC0a4cw6I="
+    # COVERALLS_REPO_TOKEN={token}
+    - secure: "UBcgFCfvz/EjuYTaz7YZy1m390sWQCHfx0ACqjxRx5k+7Ql9WTyg2uu6EWd6apcDaatTfSgm7kYuDXe1vZXnfLzypS0BEbltOx7QTfHwu4ti7e+NOSwqkrq4hbB5ArfN0EAPD85k1frovVJebue2zYQKc5DLJXAYk7ZnREeitbM="
   matrix:
 #    - ANDROID_TARGET=android-15 ANDROID_ABI=armeabi-v7a
     - ANDROID_TARGET=android-16 ANDROID_ABI=armeabi-v7a
@@ -90,6 +92,7 @@ jobs:
 
     after_success:
     - bash <(curl -s https://codecov.io/bash)
+    - ./gradlew coveralls
 
   - name: "Release"
     stage: deploy
