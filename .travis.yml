@@ -20,6 +20,7 @@ env:
 branches:
   only:
   - master
+  - coveralls
   - /^v\d+(\.\d+){1,}$/
 
 stages:
