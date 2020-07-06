@@ -79,6 +79,7 @@ buildscript {
     }
 }
 plugins {
+    id 'com.github.kt3k.coveralls' version '2.10.1'
     id 'digital.wup.android-maven-publish' version '3.6.3' apply false
     id 'org.jlleitschuh.gradle.ktlint' version '9.2.1'
 }
@@ -90,16 +91,6 @@ subprojects {
 
     group 'org.ccci.gto.android'
     version '3.6.1-SNAPSHOT'
-
-    repositories {
-        google()
-        maven { url 'https://maven.fabric.io/public' }
-        jcenter()
-        maven { url "https://jitpack.io" }
-        maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
-        maven { url 'https://cruglobal.jfrog.io/cruglobal/list/maven-locals/' }
-        mavenLocal()
-    }
 
     beforeEvaluate {
         android {
@@ -256,3 +247,48 @@ subprojects {
         }
     }
 }
+
+allprojects {
+    repositories {
+        google()
+        jcenter()
+        maven { url "https://jitpack.io" }
+        maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
+        maven { url 'https://cruglobal.jfrog.io/cruglobal/list/maven-locals/' }
+    }
+}
+
+// region Coveralls config
+apply plugin: 'jacoco'
+
+task jacocoMerge(type: JacocoMerge) {
+    subprojects.each { executionData it.tasks.withType(Test) }
+    doFirst { executionData = files(executionData.findAll { it.exists() }) }
+}
+
+task jacocoRootReport(type: JacocoReport, group: 'Coverage reports') {
+    description = 'Generates an aggregate report from all subprojects'
+    dependsOn subprojects.tasks.collect { it.withType(Test) }, jacocoMerge
+
+    additionalSourceDirs.from = files(subprojects.android.sourceSets.main.java.srcDirs)
+    sourceDirectories.from = files(subprojects.android.sourceSets.main.java.srcDirs)
+    executionData jacocoMerge.destinationFile
+
+    reports {
+        html.enabled = true // human readable
+        xml.enabled = true // required by coveralls
+    }
+}
+
+coveralls {
+    sourceDirs = subprojects.android.sourceSets.main.java.srcDirs.flatten()
+    jacocoReportPath = "${buildDir}/reports/jacoco/jacocoRootReport/jacocoRootReport.xml"
+}
+
+tasks.coveralls {
+    group = 'Coverage reports'
+    description = 'Uploads the aggregated coverage report to Coveralls'
+
+    dependsOn jacocoRootReport
+}
+// endregion Coveralls config
