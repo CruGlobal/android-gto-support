@@ -1,0 +1,12 @@
+android {
+    defaultConfig {
+        consumerProguardFile "proguard-consumer-tablayout.pro"
+        consumerProguardFile "proguard-consumer-textinputlayout.pro"
+    }
+}
+
+dependencies {
+    implementation project(':gto-support-util')
+
+    implementation "com.google.android.material:material:${deps.materialDesign}"
+}
