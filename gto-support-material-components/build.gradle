@@ -3,10 +3,18 @@ android {
         consumerProguardFile "proguard-consumer-tablayout.pro"
         consumerProguardFile "proguard-consumer-textinputlayout.pro"
     }
+    buildFeatures {
+        dataBinding = true
+    }
+    dataBinding {
+        addDefaultAdapters = false
+    }
 }
 
 dependencies {
     implementation project(':gto-support-util')
+
+    compileOnly "androidx.databinding:databinding-runtime:${deps.androidX.databinding}"
 
     implementation "com.google.android.material:material:${deps.materialDesign}"
 }
