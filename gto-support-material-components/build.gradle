@@ -1,7 +1,6 @@
 android {
     defaultConfig {
         consumerProguardFile "proguard-consumer-tablayout.pro"
-        consumerProguardFile "proguard-consumer-textinputlayout.pro"
     }
     buildFeatures {
         dataBinding = true

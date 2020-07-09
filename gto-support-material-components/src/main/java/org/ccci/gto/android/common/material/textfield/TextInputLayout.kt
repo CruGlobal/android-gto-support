@@ -1,23 +1,21 @@
 package org.ccci.gto.android.common.material.textfield
 
-import android.annotation.SuppressLint
 import android.content.res.ColorStateList
 import androidx.annotation.ColorInt
 import com.google.android.material.textfield.TextInputLayout
-import com.google.android.material.textfield.collapsingTextHelperCompat
-import com.google.android.material.textfield.editTextCompat
-import com.google.android.material.textfield.focusedTextColorCompat
-import com.google.android.material.textfield.updateInputLayoutMarginsCompat
-import com.google.android.material.textfield.updateLabelStateCompat
 
-@SuppressLint("RestrictedApi")
+@Deprecated(
+    "Since v3.6.1, set the hintTextColor on the TextInputLayout instead.",
+    ReplaceWith("hintTextColor = colors")
+)
 fun TextInputLayout.setFocusedTextColor(colors: ColorStateList?) {
-    collapsingTextHelperCompat.collapsedTextColor = colors
-    focusedTextColorCompat = colors
-    if (editTextCompat != null) {
-        updateLabelStateCompat(false)
-        updateInputLayoutMarginsCompat()
-    }
+    hintTextColor = colors
 }
 
-fun TextInputLayout.setFocusedTextColor(@ColorInt color: Int) = setFocusedTextColor(ColorStateList.valueOf(color))
+@Deprecated(
+    "Since v3.6.1, set the hintTextColor on the TextInputLayout instead.",
+    ReplaceWith("hintTextColor = ColorStateList.valueOf(color)", "android.content.res.ColorStateList")
+)
+fun TextInputLayout.setFocusedTextColor(@ColorInt color: Int) {
+    hintTextColor = ColorStateList.valueOf(color)
+}
