@@ -203,7 +203,7 @@ public abstract class ViewHolderPagerAdapter<VH extends ViewHolderPagerAdapter.V
     }
 
     @UiThread
-    protected void onUpdatePrimaryItem(@Nullable final VH old, @Nullable final VH current) {}
+    protected void onUpdatePrimaryItem(@Nullable final VH old, @Nullable final VH holder) {}
 
     @UiThread
     @CallSuper
