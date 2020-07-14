@@ -5,6 +5,7 @@ android {
 }
 
 dependencies {
+    implementation project(':gto-support-androidx-collection')
     implementation project(':gto-support-util')
 
     api "androidx.viewpager:viewpager:${deps.androidX.viewPager}"
