@@ -5,4 +5,6 @@ dependencies {
 
     api "org.greenrobot:eventbus:${deps.eventbus}"
     compileOnly "com.jakewharton.timber:timber:${deps.timber}"
+
+    testImplementation "androidx.arch.core:core-testing:${deps.androidX.arch}"
 }
