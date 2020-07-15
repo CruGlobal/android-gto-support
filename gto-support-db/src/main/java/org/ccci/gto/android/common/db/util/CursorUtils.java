@@ -37,24 +37,6 @@ public final class CursorUtils {
         return defValue;
     }
 
-    /**
-     * @deprecated Since v3.3.0,
-     * use {@link org.ccci.gto.android.common.util.database.CursorUtils#getDouble(Cursor, String)} instead.
-     */
-    @Deprecated
-    public static double getDouble(@NonNull final Cursor c, @NonNull final String field) {
-        return org.ccci.gto.android.common.util.database.CursorUtils.getDouble(c, field, 0d);
-    }
-
-    /**
-     * @deprecated Since v3.3.0,
-     * use {@link org.ccci.gto.android.common.util.database.CursorUtils#getDouble(Cursor, String)} instead.
-     */
-    @Deprecated
-    public static double getDouble(@NonNull final Cursor c, @NonNull final String field, final double defValue) {
-        return org.ccci.gto.android.common.util.database.CursorUtils.getDouble(c, field, defValue);
-    }
-
     @Nullable
     public static BigDecimal getBigDecimal(@NonNull final Cursor c, @NonNull final String field,
                                            @Nullable final BigDecimal defValue) {
