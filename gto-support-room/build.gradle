@@ -1,5 +1,0 @@
-dependencies {
-    implementation project(':gto-support-compat')
-
-    implementation "androidx.room:room-common:${deps.androidX.room}"
-}
