@@ -6,17 +6,17 @@ import android.util.SparseArray;
 import android.view.View;
 import android.view.ViewGroup;
 
-import org.ccci.gto.android.common.util.ParcelableLongSparseArray;
-import org.ccci.gto.android.common.util.ParcelableSparseArray;
-
-import java.util.LinkedList;
-
 import androidx.annotation.CallSuper;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
 import androidx.customview.view.AbsSavedState;
 import androidx.viewpager.widget.PagerAdapter;
+
+import org.ccci.gto.android.common.androidx.collection.LongSparseParcelableArray;
+import org.ccci.gto.android.common.util.ParcelableSparseArray;
+
+import java.util.LinkedList;
 
 public abstract class ViewHolderPagerAdapter<VH extends ViewHolderPagerAdapter.ViewHolder> extends PagerAdapter {
     public static final long NO_ID = -1;
@@ -29,7 +29,7 @@ public abstract class ViewHolderPagerAdapter<VH extends ViewHolderPagerAdapter.V
     private boolean mHasStableIds = false;
 
     @NonNull
-    private ParcelableLongSparseArray<Parcelable> mViewHolderSavedState = new ParcelableLongSparseArray<>();
+    private LongSparseParcelableArray<Parcelable> mViewHolderSavedState = new LongSparseParcelableArray<>();
 
     public void setHasStableIds(final boolean hasStableIds) {
         mHasStableIds = hasStableIds;
@@ -176,7 +176,7 @@ public abstract class ViewHolderPagerAdapter<VH extends ViewHolderPagerAdapter.V
         final SavedState ss = (SavedState) state;
         super.restoreState(ss.getSuperState(), loader);
         mViewHolderSavedState =
-                ss.viewHolderSavedState != null ? ss.viewHolderSavedState : new ParcelableLongSparseArray<>();
+                ss.viewHolderSavedState != null ? ss.viewHolderSavedState : new LongSparseParcelableArray<>();
 
         // restore state to all active views
         if (hasStableIds()) {
@@ -203,7 +203,7 @@ public abstract class ViewHolderPagerAdapter<VH extends ViewHolderPagerAdapter.V
     }
 
     @UiThread
-    protected void onUpdatePrimaryItem(@Nullable final VH old, @Nullable final VH current) {}
+    protected void onUpdatePrimaryItem(@Nullable final VH old, @Nullable final VH holder) {}
 
     @UiThread
     @CallSuper
@@ -249,7 +249,7 @@ public abstract class ViewHolderPagerAdapter<VH extends ViewHolderPagerAdapter.V
 
     static class SavedState extends AbsSavedState {
         @Nullable
-        ParcelableLongSparseArray<Parcelable> viewHolderSavedState;
+        LongSparseParcelableArray<Parcelable> viewHolderSavedState;
 
         SavedState(@Nullable final Parcelable superState) {
             super(superState != null ? superState : EMPTY_STATE);
