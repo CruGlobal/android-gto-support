@@ -71,7 +71,7 @@ internal class Transaction private constructor(
     // endregion Invalidation Tracking
 
     internal interface Listener {
-        fun onFinished(): Unit
+        fun onFinished()
     }
 
     companion object {

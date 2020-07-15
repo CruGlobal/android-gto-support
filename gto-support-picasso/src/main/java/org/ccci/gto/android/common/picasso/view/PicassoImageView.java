@@ -15,6 +15,7 @@ import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
+import androidx.core.util.ObjectsCompat;
 import androidx.core.view.ViewCompat;
 
 import com.squareup.picasso.Picasso;
@@ -22,7 +23,6 @@ import com.squareup.picasso.RequestCreator;
 import com.squareup.picasso.Transformation;
 
 import org.ccci.gto.android.common.base.model.Dimension;
-import org.ccci.gto.android.common.compat.util.ObjectsCompat;
 import org.ccci.gto.android.common.picasso.R;
 import org.ccci.gto.android.common.picasso.transformation.ScaleTransformation;
 
