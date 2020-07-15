@@ -2,13 +2,13 @@ package org.ccci.gto.android.common.db;
 
 import android.content.Context;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import org.ccci.gto.android.common.db.Contract.CompoundTable;
 import org.ccci.gto.android.common.db.Contract.RootTable;
 import org.ccci.gto.android.common.db.model.Compound;
 import org.ccci.gto.android.common.db.model.Root;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 public class TestDao extends AbstractDao {
     private TestDao(@Nullable final Context context) {
@@ -16,7 +16,7 @@ public class TestDao extends AbstractDao {
         super(context != null ? TestDatabase.getInstance(context) : null);
         registerType(Root.class, RootTable.TABLE_NAME, RootTable.PROJECTION_ALL, new RootMapper(),
                      RootTable.SQL_WHERE_PRIMARY_KEY);
-        registerType(Compound.class, CompoundTable.TABLE_NAME, CompoundTable.PROJECTION_ALL, new CompoundMapper(),
+        registerType(Compound.class, CompoundTable.TABLE_NAME, CompoundTable.PROJECTION_ALL, CompoundMapper.INSTANCE,
                      CompoundTable.SQL_WHERE_PRIMARY_KEY);
     }
 
