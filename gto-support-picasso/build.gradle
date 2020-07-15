@@ -3,8 +3,10 @@ android {
         consumerProguardFiles 'proguard-consumer.pro'
     }
 
+    buildFeatures {
+        dataBinding = true
+    }
     dataBinding {
-        enabled = true
         addDefaultAdapters = false
     }
 }
