@@ -1,8 +1,8 @@
 package org.ccci.gto.android.common.androidx.room.converter
 
 import androidx.room.TypeConverter
-import org.ccci.gto.android.common.compat.util.LocaleCompat
 import java.util.Locale
+import org.ccci.gto.android.common.compat.util.LocaleCompat
 
 object LocaleConverter {
     @JvmStatic

@@ -2,6 +2,7 @@ package org.ccci.gto.android.common.util
 
 import android.os.Build
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import java.util.Locale
 import org.ccci.gto.android.common.compat.util.LocaleCompat
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.MatcherAssert.assertThat
@@ -10,7 +11,6 @@ import org.junit.Assume.assumeThat
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.annotation.Config
-import java.util.Locale
 
 private val MALAY = LocaleCompat.forLanguageTag("ms")
 private val BENGKULU = LocaleCompat.forLanguageTag("pse")

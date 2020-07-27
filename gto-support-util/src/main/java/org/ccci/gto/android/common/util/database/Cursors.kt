@@ -3,9 +3,9 @@
 package org.ccci.gto.android.common.util.database
 
 import android.database.Cursor
+import java.util.Locale
 import org.ccci.gto.android.common.util.toLocale
 import org.jetbrains.annotations.Contract
-import java.util.Locale
 
 /**
  * @receiver The Cursor we are fetching the value from

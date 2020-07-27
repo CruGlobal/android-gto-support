@@ -1,12 +1,12 @@
 package org.ccci.gto.android.common.util
 
-import org.ccci.gto.android.common.compat.util.LocaleCompat
-import org.ccci.gto.android.common.compat.util.LocaleCompat.Category
-import timber.log.Timber
 import java.text.DecimalFormat
 import java.text.NumberFormat
 import java.util.Currency
 import java.util.Locale
+import org.ccci.gto.android.common.compat.util.LocaleCompat
+import org.ccci.gto.android.common.compat.util.LocaleCompat.Category
+import timber.log.Timber
 
 @JvmOverloads
 fun Double.formatCurrency(currency: String?, locale: Locale = LocaleCompat.getDefault(Category.FORMAT)) =

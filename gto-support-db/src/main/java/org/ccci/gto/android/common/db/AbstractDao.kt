@@ -8,15 +8,15 @@ import android.database.sqlite.SQLiteTransactionListener
 import android.os.AsyncTask
 import androidx.annotation.WorkerThread
 import androidx.collection.SimpleArrayMap
+import java.util.Date
+import java.util.Locale
+import java.util.concurrent.Executor
 import org.ccci.gto.android.common.compat.util.LocaleCompat
 import org.ccci.gto.android.common.db.CommonTables.LastSyncTable
 import org.ccci.gto.android.common.util.ArrayUtils
 import org.ccci.gto.android.common.util.database.getLong
 import org.ccci.gto.android.common.util.database.map
 import org.ccci.gto.android.common.util.kotlin.threadLocal
-import java.util.Date
-import java.util.Locale
-import java.util.concurrent.Executor
 
 abstract class AbstractDao(private val helper: SQLiteOpenHelper) : Dao {
     companion object {

@@ -1,10 +1,10 @@
 package org.ccci.gto.android.common.eventbus
 
 import android.util.Log
+import java.util.logging.Level
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.junit.Test
-import java.util.logging.Level
 
 class TimberLoggerTest {
     @Test

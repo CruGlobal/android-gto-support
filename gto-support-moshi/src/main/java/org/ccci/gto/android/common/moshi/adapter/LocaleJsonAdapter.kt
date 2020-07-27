@@ -2,8 +2,8 @@ package org.ccci.gto.android.common.moshi.adapter
 
 import com.squareup.moshi.FromJson
 import com.squareup.moshi.ToJson
-import org.ccci.gto.android.common.compat.util.LocaleCompat
 import java.util.Locale
+import org.ccci.gto.android.common.compat.util.LocaleCompat
 
 object LocaleJsonAdapter {
     @ToJson

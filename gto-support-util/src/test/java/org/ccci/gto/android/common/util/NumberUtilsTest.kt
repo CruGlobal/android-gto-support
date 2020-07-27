@@ -1,9 +1,9 @@
 package org.ccci.gto.android.common.util
 
+import java.util.Locale
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
 import org.junit.Test
-import java.util.Locale
 
 private val LOCALE_SPAIN = Locale("es", "ES")
 

@@ -3,8 +3,8 @@ package org.ccci.gto.android.common.material.shape
 import com.google.android.material.shape.ShapePath
 import com.nhaarman.mockitokotlin2.inOrder
 import com.nhaarman.mockitokotlin2.mock
-import org.junit.Test
 import kotlin.random.Random
+import org.junit.Test
 
 class AngledCutCornerTreatmentTest {
     @Test

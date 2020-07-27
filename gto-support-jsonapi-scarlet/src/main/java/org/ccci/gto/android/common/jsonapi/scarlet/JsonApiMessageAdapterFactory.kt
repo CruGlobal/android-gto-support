@@ -5,11 +5,11 @@ import com.tinder.scarlet.MessageAdapter
 import com.tinder.scarlet.utils.getParameterUpperBound
 import com.tinder.scarlet.utils.getRawType
 import com.tinder.scarlet.utils.hasUnresolvableType
+import java.lang.reflect.ParameterizedType
+import java.lang.reflect.Type
 import org.ccci.gto.android.common.jsonapi.JsonApiConverter
 import org.ccci.gto.android.common.jsonapi.model.JsonApiObject
 import org.ccci.gto.android.common.scarlet.stringValue
-import java.lang.reflect.ParameterizedType
-import java.lang.reflect.Type
 
 class JsonApiMessageAdapterFactory(private val jsonApi: JsonApiConverter) : MessageAdapter.Factory {
     override fun create(type: Type, annotations: Array<Annotation>): MessageAdapter<*> =
