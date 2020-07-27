@@ -1,9 +1,7 @@
 package org.ccci.gto.android.common.crashlytics.timber
 
 import android.util.Log
-
 import com.crashlytics.android.Crashlytics
-
 import timber.log.Timber
 
 class CrashlyticsTree @JvmOverloads constructor(

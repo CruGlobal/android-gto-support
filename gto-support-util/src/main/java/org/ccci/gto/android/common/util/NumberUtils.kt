@@ -1,11 +1,11 @@
 package org.ccci.gto.android.common.util
 
-import org.ccci.gto.android.common.compat.util.LocaleCompat
-import org.ccci.gto.android.common.compat.util.LocaleCompat.Category
 import java.text.NumberFormat
 import java.text.ParseException
 import java.text.ParsePosition
 import java.util.Locale
+import org.ccci.gto.android.common.compat.util.LocaleCompat
+import org.ccci.gto.android.common.compat.util.LocaleCompat.Category
 
 fun String.localizedToDoubleOrNull(locale: Locale = LocaleCompat.getDefault(Category.FORMAT)): Double? {
     val str = trim()

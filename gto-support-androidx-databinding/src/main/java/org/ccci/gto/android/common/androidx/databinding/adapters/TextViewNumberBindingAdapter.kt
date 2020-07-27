@@ -4,8 +4,8 @@ import android.annotation.SuppressLint
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
 import androidx.databinding.adapters.TextViewBindingAdapter
-import org.ccci.gto.android.common.util.format
 import java.util.Locale
+import org.ccci.gto.android.common.util.format
 
 @BindingAdapter("number")
 fun TextView.bindNumber(amount: Number?) = bindNumber(amount, null)

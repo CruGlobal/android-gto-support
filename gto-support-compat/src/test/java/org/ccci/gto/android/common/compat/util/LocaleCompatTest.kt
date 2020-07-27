@@ -2,6 +2,7 @@ package org.ccci.gto.android.common.compat.util
 
 import android.os.Build
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import java.util.Locale
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.equalToIgnoringCase
@@ -12,7 +13,6 @@ import org.junit.Assume.assumeThat
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.annotation.Config
-import java.util.Locale
 
 private val LANGUAGETAGS = mapOf<Locale, String>(
     Locale.US to "en-US",

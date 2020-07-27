@@ -2,9 +2,9 @@ package org.ccci.gto.android.common.eventbus
 
 import android.util.Log
 import androidx.annotation.VisibleForTesting
+import java.util.logging.Level
 import org.greenrobot.eventbus.Logger
 import timber.log.Timber
-import java.util.logging.Level
 
 private const val TAG = "EventBus"
 

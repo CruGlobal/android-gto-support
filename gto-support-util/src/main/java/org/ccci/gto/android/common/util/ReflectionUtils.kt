@@ -1,7 +1,7 @@
 package org.ccci.gto.android.common.util
 
-import timber.log.Timber
 import java.lang.reflect.Field
+import timber.log.Timber
 
 inline fun <reified T> getDeclaredFieldOrNull(name: String) = try {
     T::class.java.getDeclaredField(name).apply { isAccessible = true }

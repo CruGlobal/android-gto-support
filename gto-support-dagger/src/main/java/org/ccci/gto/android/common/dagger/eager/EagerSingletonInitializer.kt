@@ -4,6 +4,8 @@ import android.app.Activity
 import android.app.Application
 import android.os.Bundle
 import dagger.Lazy
+import javax.inject.Inject
+import javax.inject.Singleton
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -13,8 +15,6 @@ import org.ccci.gto.android.common.dagger.eager.EagerSingleton.LifecycleEvent.IM
 import org.ccci.gto.android.common.dagger.eager.EagerSingleton.ThreadMode.ASYNC
 import org.ccci.gto.android.common.dagger.eager.EagerSingleton.ThreadMode.MAIN
 import org.ccci.gto.android.common.dagger.eager.EagerSingleton.ThreadMode.MAIN_ASYNC
-import javax.inject.Inject
-import javax.inject.Singleton
 
 @Singleton
 class EagerSingletonInitializer @Inject constructor(

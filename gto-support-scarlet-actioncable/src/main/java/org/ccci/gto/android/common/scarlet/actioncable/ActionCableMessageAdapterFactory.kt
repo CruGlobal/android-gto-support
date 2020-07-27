@@ -7,14 +7,14 @@ import com.tinder.scarlet.messageadapter.moshi.MoshiMessageAdapter
 import com.tinder.scarlet.utils.getParameterUpperBound
 import com.tinder.scarlet.utils.getRawType
 import com.tinder.scarlet.utils.hasUnresolvableType
+import java.lang.reflect.ParameterizedType
+import java.lang.reflect.Type
 import org.ccci.gto.android.common.moshi.adapter.StringifyJsonAdapterFactory
 import org.ccci.gto.android.common.scarlet.actioncable.model.ConfirmSubscription
 import org.ccci.gto.android.common.scarlet.actioncable.model.IdentifierJsonAdapter
 import org.ccci.gto.android.common.scarlet.actioncable.model.Message
 import org.ccci.gto.android.common.scarlet.actioncable.model.Subscribe
 import org.ccci.gto.android.common.scarlet.actioncable.model.Unsubscribe
-import java.lang.reflect.ParameterizedType
-import java.lang.reflect.Type
 
 class ActionCableMessageAdapterFactory private constructor(
     private val messageAdapterFactories: List<MessageAdapter.Factory>

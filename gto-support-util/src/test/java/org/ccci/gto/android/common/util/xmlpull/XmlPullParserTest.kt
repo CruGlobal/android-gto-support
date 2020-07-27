@@ -2,11 +2,11 @@ package org.ccci.gto.android.common.util.xmlpull
 
 import android.util.Xml
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import java.io.InputStream
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.xmlpull.v1.XmlPullParser
-import java.io.InputStream
 
 @RunWith(AndroidJUnit4::class)
 class XmlPullParserTest {

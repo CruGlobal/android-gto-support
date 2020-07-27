@@ -5,8 +5,8 @@ import android.content.res.Configuration
 import android.os.Build
 import android.os.LocaleList
 import androidx.annotation.StringRes
-import org.ccci.gto.android.common.util.os.locales
 import java.util.Locale
+import org.ccci.gto.android.common.util.os.locales
 
 fun Context.localize(vararg locales: Locale, includeExisting: Boolean = true): Context = when {
     locales.isEmpty() -> this

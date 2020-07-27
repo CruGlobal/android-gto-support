@@ -1,10 +1,10 @@
 package org.ccci.gto.android.common.jsonapi.converter
 
+import java.sql.Time
+import java.util.Date
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.junit.Test
-import java.sql.Time
-import java.util.Date
 
 private const val DEFAULT = "yyyy-MM-dd'T'HH:mm:ssX"
 

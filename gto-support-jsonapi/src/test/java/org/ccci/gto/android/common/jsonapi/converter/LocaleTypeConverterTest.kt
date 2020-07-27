@@ -1,11 +1,11 @@
 package org.ccci.gto.android.common.jsonapi.converter
 
+import java.io.Serializable
+import java.util.Locale
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.CoreMatchers.nullValue
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Test
-import java.io.Serializable
-import java.util.Locale
 
 class LocaleTypeConverterTest {
     private val converter = LocaleTypeConverter

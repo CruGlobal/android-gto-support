@@ -5,6 +5,7 @@ import android.content.Context
 import android.os.Build
 import android.os.LocaleList
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import java.util.Locale
 import org.ccci.gto.android.common.util.os.toTypedArray
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.arrayContaining
@@ -16,7 +17,6 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.Robolectric
 import org.robolectric.annotation.Config
-import java.util.Locale
 
 @RunWith(AndroidJUnit4::class)
 @Config(sdk = [16, 17, 23, 24, 28])
