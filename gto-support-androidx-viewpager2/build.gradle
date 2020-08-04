@@ -1,3 +1,14 @@
+android {
+    buildFeatures {
+        dataBinding = true
+    }
+    dataBinding {
+        addDefaultAdapters = false
+    }
+}
+
 dependencies {
     api "androidx.viewpager2:viewpager2:${deps.androidX.viewPager2}"
+
+    compileOnly "androidx.databinding:databinding-adapters:${deps.androidX.databinding}"
 }
