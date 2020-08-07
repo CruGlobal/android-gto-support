@@ -41,15 +41,3 @@ class SwipeRefreshLayoutViewPagerHelper(layout: SwipeRefreshLayout? = null) : Vi
         isIdle = state == ViewPager.SCROLL_STATE_IDLE
     }
 }
-
-@Deprecated("Since v3.0.0, use SwipeRefreshLayoutViewPagerHelper instead")
-class SwipeRefreshLayoutPageChangeListener(
-    layout: SwipeRefreshLayout? = null,
-    private val delegate: SwipeRefreshLayoutViewPagerHelper = SwipeRefreshLayoutViewPagerHelper(layout)
-) : ViewPager.OnPageChangeListener by delegate {
-    var swipeRefreshLayout: SwipeRefreshLayout?
-        get() = delegate.swipeRefreshLayout
-        set(value) {
-            delegate.swipeRefreshLayout = value
-        }
-}
