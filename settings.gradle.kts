@@ -48,6 +48,5 @@ include("testing:gto-support-picasso")
 include("testing:gto-support-timber")
 
 // deprecated modules
-include("gto-support-databinding")
 include("gto-support-design")
 include("gto-support-lifecycle")
