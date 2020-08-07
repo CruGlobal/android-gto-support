@@ -4,6 +4,8 @@ import androidx.annotation.ColorInt
 import kotlin.math.min
 
 data class HslColor(val hue: Float, val saturation: Float, val lightness: Float) {
+    fun darken(percentage: Float) = copy(lightness = (lightness - percentage).coerceAtLeast(0f))
+
     fun toHsvColor(): HsvColor {
         // sourced from: https://en.wikipedia.org/wiki/HSL_and_HSV#HSL_to_HSV
         val value = lightness + saturation * min(lightness, 1 - lightness)

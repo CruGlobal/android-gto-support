@@ -45,4 +45,10 @@ class HslColorTest {
         val hsv = HsvColor(rand.nextFloat() * 360, rand.nextFloat(), rand.nextFloat())
         assertHsvEquals(hsv, hsv.toHslColor().toHsvColor())
     }
+
+    @Test
+    fun verifyDarken() {
+        assertEquals("white darkened 100% is black", Color.BLACK, Color.WHITE.toHslColor().darken(1f).toColorInt())
+        assertEquals(Color.rgb(194, 0, 0), Color.RED.toHslColor().darken(.12f).toColorInt())
+    }
 }
