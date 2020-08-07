@@ -3,8 +3,6 @@
 package org.ccci.gto.android.common.lifecycle
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.map
-import androidx.lifecycle.switchMap
 import org.ccci.gto.android.common.androidx.lifecycle.combineWith
 import org.ccci.gto.android.common.androidx.lifecycle.sortedWith
 import org.ccci.gto.android.common.androidx.lifecycle.switchCombineWith
@@ -64,17 +62,3 @@ fun <IN1, IN2, OUT> LiveData<IN1>.combineWith(other: LiveData<IN2>, mapFunction:
     ReplaceWith("sortedWith(comparator)", "org.ccci.gto.android.common.androidx.lifecycle.sortedWith")
 )
 fun <T> LiveData<out Iterable<T>>.sortedWith(comparator: Comparator<in T>) = sortedWith(comparator)
-
-// Provide Kotlin extensions for existing transformations
-
-@Deprecated(
-    "Since v3.1.0, use Lifecycle 2.1.0+ ktx function instead",
-    ReplaceWith("map(transform)", "androidx.lifecycle.map")
-)
-inline fun <IN, OUT> LiveData<IN>.map(crossinline transform: (IN) -> OUT): LiveData<OUT> = map(transform)
-
-@Deprecated(
-    "Since v3.1.0, use Lifecycle 2.1.0+ ktx function instead",
-    ReplaceWith("switchMap(transform)", "androidx.lifecycle.switchMap")
-)
-inline fun <X, Y> LiveData<X>.flatMap(crossinline transform: (X) -> LiveData<Y>): LiveData<Y> = switchMap(transform)
