@@ -9,6 +9,7 @@ import androidx.lifecycle.isInitialized
 import androidx.lifecycle.map
 import androidx.lifecycle.switchMap
 
+// region combineWith
 /**
  * This method will combine 2 LiveData objects into a new LiveData object by running the {@param mapFunction} on the
  * current values of both source LiveData objects.
@@ -93,6 +94,7 @@ private inline fun <OUT> combineWithInt(
     }
     return result
 }
+// endregion combineWith
 
 fun <T : Any> LiveData<T?>.notNull(): LiveData<T> {
     val result = MediatorLiveData<T>()
@@ -102,6 +104,7 @@ fun <T : Any> LiveData<T?>.notNull(): LiveData<T> {
 
 fun <T> LiveData<out Iterable<T>>.sortedWith(comparator: Comparator<in T>) = map { it.sortedWith(comparator) }
 
+// region switchCombineWith
 /**
  * This method will combine 2 LiveData objects into a new LiveData object by running the {@param mapFunction} on the
  * current values of both source LiveData objects.
@@ -179,6 +182,12 @@ private inline fun <OUT> switchCombineWithInt(
     }
     return result
 }
+// endregion switchCombineWith
+
+// region Boolean operators
+infix fun LiveData<Boolean>.and(other: LiveData<Boolean>) = combineWith(other) { t, o -> t && o }
+infix fun LiveData<Boolean>.or(other: LiveData<Boolean>) = combineWith(other) { t, o -> t || o }
+// endregion Boolean operators
 
 inline fun <T, R> LiveData<out Iterable<T>>.switchFold(crossinline operation: (acc: LiveData<R?>, T) -> LiveData<R?>) =
     switchFold(emptyLiveData(), operation)
