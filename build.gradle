@@ -88,7 +88,7 @@ subprojects {
     apply plugin: 'kotlin-kapt'
 
     group 'org.ccci.gto.android'
-    version '3.6.1'
+    version '3.6.2-SNAPSHOT'
 
     repositories {
         google()
