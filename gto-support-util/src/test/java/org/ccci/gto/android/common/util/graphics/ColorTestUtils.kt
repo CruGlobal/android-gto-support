@@ -11,7 +11,7 @@ val HSV_LTGRAY = HsvColor(0f, 0f, 0.8f)
 val HSV_WHITE = HsvColor(0f, 0f, 1f)
 
 fun assertHsvEquals(expected: HsvColor, actual: HsvColor) {
-    assertEquals(expected.hue, actual.hue, 0.0000001f)
-    assertEquals(expected.saturation, actual.saturation, 0.0000001f)
-    assertEquals(expected.value, actual.value, 0.0000001f)
+    assertEquals(expected.hue, actual.hue, 0.000001f)
+    assertEquals(expected.saturation, actual.saturation, 0.000001f)
+    assertEquals(expected.value, actual.value, 0.000001f)
 }
