@@ -1,3 +1,4 @@
 dependencies {
     api "androidx.fragment:fragment:${deps.androidX.fragment}"
+    compileOnly "androidx.fragment:fragment-ktx:${deps.androidX.fragment}"
 }
