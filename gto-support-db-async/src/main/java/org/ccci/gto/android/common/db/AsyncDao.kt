@@ -1,8 +1,8 @@
 package org.ccci.gto.android.common.db
 
 import android.database.sqlite.SQLiteDatabase
+import androidx.concurrent.futures.CallbackToFutureAdapter
 import com.google.common.util.concurrent.ListenableFuture
-import com.google.common.util.concurrent.SettableFuture
 
 interface AsyncDao : Dao {
     @JvmDefault
@@ -38,17 +38,16 @@ interface AsyncDao : Dao {
 
     companion object {
         @JvmSynthetic
-        inline fun <T> AsyncDao.runAsync(crossinline block: () -> T): ListenableFuture<T> {
-            val future = SettableFuture.create<T>()
-            backgroundExecutor.execute {
-                try {
-                    future.set(block())
-                } catch (t: Throwable) {
-                    future.setException(t)
+        inline fun <T> AsyncDao.runAsync(crossinline block: () -> T): ListenableFuture<T> =
+            CallbackToFutureAdapter.getFuture<T> {
+                backgroundExecutor.execute {
+                    try {
+                        it.set(block())
+                    } catch (t: Throwable) {
+                        it.setException(t)
+                    }
                 }
             }
-            return future
-        }
     }
 }
 
