@@ -4,5 +4,5 @@ dependencies {
 
     api "com.tinder.scarlet:scarlet-core:${deps.scarlet}"
 
-    testImplementation 'org.json:json:20190722'
+    testImplementation "org.json:json:${deps.json}"
 }

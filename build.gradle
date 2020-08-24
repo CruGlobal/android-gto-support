@@ -15,6 +15,7 @@ buildscript {
             hamcrest            : '2.2',
             jacoco              : '0.8.5',
             jetbrainsAnnotations: '20.0.0',
+            json                : '20190722',
             jsonUnit            : '2.18.1',
             junit               : '4.13',
             junitParams         : '1.1.1',

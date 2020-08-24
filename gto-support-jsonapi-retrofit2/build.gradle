@@ -7,5 +7,5 @@ dependencies {
     testImplementation "com.squareup.okhttp3:mockwebserver:${deps.okhttp3}"
     testImplementation "net.javacrumbs.json-unit:json-unit:${deps.jsonUnit}"
     testImplementation "net.javacrumbs.json-unit:json-unit-fluent:${deps.jsonUnit}"
-    testImplementation 'org.json:json:20160810'
+    testImplementation "org.json:json:${deps.json}"
 }
