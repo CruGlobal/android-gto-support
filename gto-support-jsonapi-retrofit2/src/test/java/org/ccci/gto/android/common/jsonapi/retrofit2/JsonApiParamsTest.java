@@ -2,6 +2,7 @@ package org.ccci.gto.android.common.jsonapi.retrofit2;
 
 import org.junit.Test;
 
+import static org.ccci.gto.android.common.jsonapi.retrofit2.BaseJsonApiParamsKt.PARAM_INCLUDE;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
@@ -15,21 +16,21 @@ public class JsonApiParamsTest {
 
         assertThat(params.size(), is(2));
         assertThat(params.get("param1"), is("value"));
-        assertThat(params.get(JsonApiParams.PARAM_INCLUDE), is("a,a.b,c"));
+        assertThat(params.get(PARAM_INCLUDE), is("a,a.b,c"));
         assertThat(params.get("param2"), is(nullValue()));
 
         // make sure other params don't interfere with the include param
         params.put("param2", "value");
         assertThat(params.size(), is(3));
         assertThat(params.get("param1"), is("value"));
-        assertThat(params.get(JsonApiParams.PARAM_INCLUDE), is("a,a.b,c"));
+        assertThat(params.get(PARAM_INCLUDE), is("a,a.b,c"));
         assertThat(params.get("param2"), is("value"));
 
         // add more includes
         params.include(null, "d");
         assertThat(params.size(), is(3));
         assertThat(params.get("param1"), is("value"));
-        assertThat(params.get(JsonApiParams.PARAM_INCLUDE), is("a,a.b,c,d"));
+        assertThat(params.get(PARAM_INCLUDE), is("a,a.b,c,d"));
         assertThat(params.get("param2"), is("value"));
     }
 
@@ -38,11 +39,11 @@ public class JsonApiParamsTest {
         final JsonApiParams params = new JsonApiParams();
         params.include("a");
         assertThat(params.size(), is(1));
-        assertThat(params.get(JsonApiParams.PARAM_INCLUDE), is("a"));
+        assertThat(params.get(PARAM_INCLUDE), is("a"));
 
         params.clearIncludes();
         assertThat(params.size(), is(0));
-        assertThat(params.get(JsonApiParams.PARAM_INCLUDE), is(nullValue()));
+        assertThat(params.get(PARAM_INCLUDE), is(nullValue()));
     }
 
     @Test
