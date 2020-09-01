@@ -179,7 +179,7 @@ abstract class AbstractDao(private val helper: SQLiteOpenHelper) : Dao {
     }
 
     @WorkerThread
-    fun update(obj: Any) = update(obj, projection = *getFullProjection(obj.javaClass))
+    fun update(obj: Any) = update(obj, projection = getFullProjection(obj.javaClass))
 
     @WorkerThread
     final override fun <T : Any> update(obj: T, conflictAlgorithm: Int, vararg projection: String): Int {
@@ -226,7 +226,7 @@ abstract class AbstractDao(private val helper: SQLiteOpenHelper) : Dao {
     }
 
     @WorkerThread
-    fun updateOrInsert(obj: Any) = updateOrInsert(obj, projection = *getFullProjection(obj.javaClass))
+    fun updateOrInsert(obj: Any) = updateOrInsert(obj, projection = getFullProjection(obj.javaClass))
 
     @WorkerThread
     @Suppress("IMPLICIT_CAST_TO_ANY")
