@@ -81,10 +81,10 @@ class BundleUtilsTest {
             putParcelableArray(KEY2, null)
         }
 
-        val resp = bundle.getParcelableArray(KEY1, Point::class.java)!!
+        val resp = deprecatedGetParcelableArray(bundle, KEY1, Point::class.java)!!
         assertEquals(points.javaClass, resp.javaClass)
         assertArrayEquals(points, resp)
-        assertNull(bundle.getParcelableArray(KEY2, Point::class.java))
+        assertNull(deprecatedGetParcelableArray(bundle, KEY2, Point::class.java))
     }
 
     @Test
