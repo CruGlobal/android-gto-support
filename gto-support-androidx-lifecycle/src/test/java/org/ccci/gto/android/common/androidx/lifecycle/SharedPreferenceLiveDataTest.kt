@@ -3,6 +3,7 @@ package org.ccci.gto.android.common.androidx.lifecycle
 import android.content.Context
 import android.content.Context.MODE_PRIVATE
 import android.content.SharedPreferences
+import android.os.Build
 import androidx.core.content.edit
 import androidx.test.core.app.ApplicationProvider.getApplicationContext
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -52,5 +53,14 @@ class SharedPreferenceLiveDataTest : BaseLiveDataTest() {
         prefs.edit { remove(KEY1) }
         verify(observer).onChanged(true)
         assertTrue(liveData.value!!)
+
+        // clear prefs (only supported on API 30+)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            prefs.edit { putBoolean(KEY1, false) }
+            reset(observer)
+            prefs.edit { clear() }
+            verify(observer).onChanged(true)
+            assertTrue(liveData.value!!)
+        }
     }
 }
