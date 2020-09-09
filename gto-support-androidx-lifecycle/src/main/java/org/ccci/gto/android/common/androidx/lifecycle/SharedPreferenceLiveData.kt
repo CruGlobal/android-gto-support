@@ -9,7 +9,7 @@ private sealed class SharedPreferenceLiveData<T>(
     protected val defValue: T
 ) : LiveData<T>() {
     private val listener = SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
-        if (key == this.key) value = readValue()
+        if (key == null || key == this.key) value = readValue()
     }
 
     override fun onActive() {
