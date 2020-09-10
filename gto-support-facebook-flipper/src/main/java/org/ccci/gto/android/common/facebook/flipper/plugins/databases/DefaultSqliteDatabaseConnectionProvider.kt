@@ -1,10 +1,6 @@
 package org.ccci.gto.android.common.facebook.flipper.plugins.databases
 
-import android.database.sqlite.SQLiteDatabase
-import com.facebook.flipper.plugins.databases.impl.SqliteDatabaseConnectionProvider
-import java.io.File
+import com.facebook.flipper.plugins.databases.impl.DefaultSqliteDatabaseConnectionProvider
 
-object DefaultSqliteDatabaseConnectionProvider : SqliteDatabaseConnectionProvider {
-    override fun openDatabase(databaseFile: File) =
-        SQLiteDatabase.openDatabase(databaseFile.absolutePath, null, SQLiteDatabase.OPEN_READWRITE)
-}
+@Deprecated("Since v3.6.2, use the DefaultSqliteDatabaseConnectionProvider from flipper instead.")
+object DefaultSqliteDatabaseConnectionProvider : DefaultSqliteDatabaseConnectionProvider()
