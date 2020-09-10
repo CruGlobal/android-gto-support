@@ -10,5 +10,6 @@ dependencies {
     compileOnly "androidx.databinding:databinding-runtime:${deps.androidX.databinding}"
 
     testImplementation "androidx.arch.core:core-testing:${deps.androidX.arch}"
+    testImplementation "androidx.core:core-ktx:${deps.androidX.core}"
     testImplementation "androidx.lifecycle:lifecycle-runtime:${deps.androidX.lifecycle}"
 }

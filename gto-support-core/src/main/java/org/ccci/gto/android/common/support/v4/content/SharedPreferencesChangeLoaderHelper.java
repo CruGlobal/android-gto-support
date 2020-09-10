@@ -59,7 +59,7 @@ public final class SharedPreferencesChangeLoaderHelper {
         @Override
         public void onSharedPreferenceChanged(@Nullable final SharedPreferences preferences,
                                               @Nullable final String key) {
-            if (mKeys.contains(key)) {
+            if (key == null || mKeys.contains(key)) {
                 mLoader.onContentChanged();
             }
         }
