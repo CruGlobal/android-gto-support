@@ -3,17 +3,18 @@ package org.ccci.gto.android.common.db;
 import android.content.ContentValues;
 import android.database.Cursor;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import org.ccci.gto.android.common.compat.util.LocaleCompat;
 import org.ccci.gto.android.common.db.util.CursorUtils;
+import org.ccci.gto.android.common.util.database.CursorKt;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.Locale;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 public abstract class AbstractMapper<T> implements Mapper<T> {
     /**
@@ -136,9 +137,13 @@ public abstract class AbstractMapper<T> implements Mapper<T> {
         return CursorUtils.getJSONArray(c, field, defValue);
     }
 
+    /**
+     * @deprecated Since v3.6.2, use {@link CursorKt#getJSONObjectOrNull(Cursor, String)} instead.
+     */
     @Nullable
+    @Deprecated
     protected final JSONObject getJSONObject(@NonNull final Cursor c, @NonNull final String field) {
-        return CursorUtils.getJSONObject(c, field);
+        return CursorKt.getJSONObjectOrNull(c, field);
     }
 
     @Nullable

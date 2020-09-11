@@ -2,6 +2,10 @@ package org.ccci.gto.android.common.db.util;
 
 import android.database.Cursor;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
+import org.ccci.gto.android.common.util.database.CursorKt;
 import org.jetbrains.annotations.Contract;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -9,9 +13,6 @@ import org.json.JSONObject;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.Locale;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 public final class CursorUtils {
     /**
@@ -123,22 +124,20 @@ public final class CursorUtils {
         return defValue;
     }
 
+    /**
+     * @deprecated Since v3.6.2, use {@link CursorKt#getJSONObjectOrNull(Cursor, String)} instead.
+     */
     @Nullable
+    @Deprecated
     public static JSONObject getJSONObject(@NonNull final Cursor c, @NonNull final String field) {
-        return getJSONObject(c, field, null);
+        return CursorKt.getJSONObjectOrNull(c, field);
     }
 
     @Nullable
     public static JSONObject getJSONObject(@NonNull final Cursor c, @NonNull final String field,
                                            @Nullable final JSONObject defValue) {
-        final String raw = org.ccci.gto.android.common.util.database.CursorUtils.getString(c, field);
-        if (raw != null) {
-            try {
-                return new JSONObject(raw);
-            } catch (final Exception ignored) {
-            }
-        }
-        return defValue;
+        final JSONObject json = CursorKt.getJSONObjectOrNull(c, field);
+        return json != null ? json : defValue;
     }
 
     /**
