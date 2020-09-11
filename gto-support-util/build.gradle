@@ -7,8 +7,6 @@ android {
 dependencies {
     implementation project(':gto-support-compat')
 
-    compileOnly "androidx.collection:collection:${deps.androidX.collection}"
-
     implementation "com.jakewharton.timber:timber:${deps.timber}"
 
     testImplementation "net.javacrumbs.json-unit:json-unit:${deps.jsonUnit}"
