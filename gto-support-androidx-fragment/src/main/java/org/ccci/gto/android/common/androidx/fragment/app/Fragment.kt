@@ -6,7 +6,7 @@ inline fun <reified T> Fragment.findAncestorFragment(): T? {
     var candidate = parentFragment
     while (candidate != null) {
         if (candidate is T) return candidate
-        candidate = parentFragment
+        candidate = candidate.parentFragment
     }
     return null
 }
