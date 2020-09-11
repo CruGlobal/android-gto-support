@@ -126,9 +126,13 @@ public abstract class AbstractMapper<T> implements Mapper<T> {
         return CursorUtils.getEnum(c, field, clazz, defValue);
     }
 
+    /**
+     * @deprecated Since v3.6.2, use {@link CursorKt#getJSONArrayOrNull(Cursor, String)} instead.
+     */
     @Nullable
+    @Deprecated
     protected final JSONArray getJSONArray(@NonNull final Cursor c, @NonNull final String field) {
-        return CursorUtils.getJSONArray(c, field);
+        return CursorKt.getJSONArrayOrNull(c, field);
     }
 
     @Nullable

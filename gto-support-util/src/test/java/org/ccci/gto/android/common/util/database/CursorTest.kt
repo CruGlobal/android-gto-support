@@ -7,6 +7,7 @@ import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
 import net.javacrumbs.jsonunit.JsonMatchers.jsonEquals
 import org.hamcrest.MatcherAssert.assertThat
+import org.json.JSONArray
 import org.json.JSONObject
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
@@ -29,7 +30,33 @@ class CursorTest {
         whenever(cursor.getString(-1)).thenThrow(RuntimeException::class.java)
     }
 
-    // region getJSONObject()
+    // region getJSONArrayOrNull()
+    @Test
+    fun verifyGetJSONArrayOrNull() {
+        wheneverGetValid().thenReturn("[\"a\", 1]")
+        assertThat(cursor.getJSONArrayOrNull(VALID), jsonEquals(JSONArray(listOf("a", 1))))
+    }
+
+    @Test
+    fun testGetJSONArrayWhenNullValue() {
+        wheneverGetValid().thenReturn(null)
+        assertNull(cursor.getJSONArrayOrNull(VALID))
+    }
+
+    @Test
+    fun verifyGetJSONArrayOrNullWhenInvalidValue() {
+        wheneverGetValid().thenReturn("{\"a\":1")
+        assertNull(cursor.getJSONArrayOrNull(VALID))
+    }
+
+    @Test
+    fun verifyGetJSONArrayOrNullWhenNonExistentField() {
+        assertNull(cursor.getJSONArrayOrNull(INVALID))
+        verify(cursor, never()).getString(anyInt())
+    }
+    // endregion getJSONArrayOrNull()
+
+    // region getJSONObjectOrNull()
     @Test
     fun verifyGetJSONObjectOrNull() {
         wheneverGetValid().thenReturn("{\"a\":1}")
@@ -53,7 +80,7 @@ class CursorTest {
         assertNull(cursor.getJSONObjectOrNull(INVALID))
         verify(cursor, never()).getString(anyInt())
     }
-    // endregion getJSONObject()
+    // endregion getJSONObjectOrNull()
 
     // region getLong()
     @Test

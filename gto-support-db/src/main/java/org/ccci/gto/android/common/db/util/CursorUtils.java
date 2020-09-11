@@ -106,22 +106,20 @@ public final class CursorUtils {
         return defValue;
     }
 
+    /**
+     * @deprecated Since v3.6.2, use {@link CursorKt#getJSONArrayOrNull(Cursor, String)} instead.
+     */
     @Nullable
+    @Deprecated
     public static JSONArray getJSONArray(@NonNull final Cursor c, @NonNull final String field) {
-        return getJSONArray(c, field, null);
+        return CursorKt.getJSONArrayOrNull(c, field);
     }
 
     @Nullable
     public static JSONArray getJSONArray(@NonNull final Cursor c, @NonNull final String field,
                                          @Nullable final JSONArray defValue) {
-        final String raw = org.ccci.gto.android.common.util.database.CursorUtils.getString(c, field);
-        if (raw != null) {
-            try {
-                return new JSONArray(raw);
-            } catch (final Exception ignored) {
-            }
-        }
-        return defValue;
+        final JSONArray json = CursorKt.getJSONArrayOrNull(c, field);
+        return json != null ? json : defValue;
     }
 
     /**
