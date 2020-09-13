@@ -10,4 +10,7 @@ dependencies {
     compileOnly "androidx.collection:collection:${deps.androidX.collection}"
 
     implementation "com.jakewharton.timber:timber:${deps.timber}"
+
+    testImplementation "net.javacrumbs.json-unit:json-unit:${deps.jsonUnit}"
+    testImplementation "org.json:json:${deps.json}"
 }
