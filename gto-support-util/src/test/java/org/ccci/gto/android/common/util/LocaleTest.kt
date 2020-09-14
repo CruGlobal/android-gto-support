@@ -6,7 +6,7 @@ import org.junit.Assert.assertNull
 import org.junit.Test
 import java.util.Locale
 
-class LocaleUtilsTest {
+class LocaleTest {
     @Test
     fun verifyGetOptionalDisplayNameExists() {
         assertNotNull(LocaleUtils.getOptionalDisplayName(Locale.ENGLISH, null))
