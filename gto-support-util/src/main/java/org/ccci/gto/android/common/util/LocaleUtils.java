@@ -4,6 +4,11 @@ import android.icu.util.ULocale;
 import android.os.Build;
 import android.text.TextUtils;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
+import androidx.annotation.RestrictTo;
+
 import org.ccci.gto.android.common.compat.util.LocaleCompat;
 
 import java.util.ArrayList;
@@ -15,11 +20,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
-import androidx.annotation.RestrictTo;
 
 public class LocaleUtils {
     // define a few fixed fallbacks
@@ -59,14 +59,13 @@ public class LocaleUtils {
         }
     }
 
+    /**
+     * @deprecated Since v3.6.2, use {@link LocaleKt#getOptionalDisplayName(Locale, Locale)} instead.
+     */
     @Nullable
+    @Deprecated
     public static String getOptionalDisplayName(@NonNull final Locale locale, @Nullable final Locale inLocale) {
-        final String languageName =
-                inLocale != null ? locale.getDisplayLanguage(inLocale) : locale.getDisplayLanguage();
-        if (languageName.equals(locale.getLanguage())) {
-            return null;
-        }
-        return inLocale != null ? locale.getDisplayName(inLocale) : locale.getDisplayName();
+        return LocaleKt.getOptionalDisplayName(locale, inLocale);
     }
 
     // region Language fallback methods

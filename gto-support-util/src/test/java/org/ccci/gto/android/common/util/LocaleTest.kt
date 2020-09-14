@@ -1,24 +1,27 @@
 package org.ccci.gto.android.common.util
 
+import java.util.Locale
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
 import org.junit.Test
-import java.util.Locale
 
 class LocaleTest {
     @Test
     fun verifyGetOptionalDisplayNameExists() {
-        assertNotNull(LocaleUtils.getOptionalDisplayName(Locale.ENGLISH, null))
-        assertEquals("English", LocaleUtils.getOptionalDisplayName(Locale.ENGLISH, Locale.ENGLISH))
-        assertNotNull(LocaleUtils.getOptionalDisplayName(Locale.FRENCH, null))
-        assertEquals("français", LocaleUtils.getOptionalDisplayName(Locale.FRENCH, Locale.FRENCH))
+        assertNotNull(Locale.ENGLISH.getOptionalDisplayName())
+        assertNotNull(Locale.ENGLISH.getOptionalDisplayName(null))
+        assertEquals("English", Locale.ENGLISH.getOptionalDisplayName(Locale.ENGLISH))
+        assertNotNull(Locale.FRENCH.getOptionalDisplayName())
+        assertNotNull(Locale.FRENCH.getOptionalDisplayName(null))
+        assertEquals("français", Locale.FRENCH.getOptionalDisplayName(Locale.FRENCH))
     }
 
     @Test
     fun verifyGetOptionalDisplayNameDoesntExist() {
-        assertNull(LocaleUtils.getOptionalDisplayName(Locale("x"), Locale.ENGLISH))
-        assertNull(LocaleUtils.getOptionalDisplayName(Locale("x"), null))
+        assertNull(Locale("x").getOptionalDisplayName(Locale.ENGLISH))
+        assertNull(Locale("x").getOptionalDisplayName(null))
+        assertNull(Locale("x").getOptionalDisplayName())
     }
 
     @Test
