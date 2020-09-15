@@ -10,7 +10,8 @@ import org.ccci.gto.android.common.androidx.lifecycle.sortedWith
 import org.ccci.gto.android.common.androidx.lifecycle.switchCombineWith
 
 @Deprecated(
-    "Since v3.4.0, use the version in gto-support-androidx-lifecycle instead.", ReplaceWith(
+    "Since v3.4.0, use the version in gto-support-androidx-lifecycle instead.",
+    ReplaceWith(
         "switchCombineWith(other, mapFunction)",
         "org.ccci.gto.android.common.androidx.lifecycle.switchCombineWith"
     )
@@ -22,7 +23,8 @@ fun <IN1, IN2, OUT> LiveData<IN1>.switchCombineWith(
 ) = switchCombineWith(other, mapFunction)
 
 @Deprecated(
-    "Since v3.4.0, use the version in gto-support-androidx-lifecycle instead.", ReplaceWith(
+    "Since v3.4.0, use the version in gto-support-androidx-lifecycle instead.",
+    ReplaceWith(
         "switchCombineWith(other, other2, mapFunction)",
         "org.ccci.gto.android.common.androidx.lifecycle.switchCombineWith"
     )
@@ -35,7 +37,8 @@ fun <IN1, IN2, IN3, OUT> LiveData<IN1>.switchCombineWith(
 ) = switchCombineWith(other, other2, mapFunction)
 
 @Deprecated(
-    "Since v3.4.0, use the version in gto-support-androidx-lifecycle instead.", ReplaceWith(
+    "Since v3.4.0, use the version in gto-support-androidx-lifecycle instead.",
+    ReplaceWith(
         "switchCombineWith(other, other2, other3, mapFunction)",
         "org.ccci.gto.android.common.androidx.lifecycle.switchCombineWith"
     )
@@ -49,10 +52,8 @@ fun <IN1, IN2, IN3, IN4, OUT> LiveData<IN1>.switchCombineWith(
 ) = switchCombineWith(other, other2, other3, mapFunction)
 
 @Deprecated(
-    "Since v3.4.0, use the version in gto-support-androidx-lifecycle instead.", ReplaceWith(
-        "combineWith(other, mapFunction)",
-        "org.ccci.gto.android.common.androidx.lifecycle.combineWith"
-    )
+    "Since v3.4.0, use the version in gto-support-androidx-lifecycle instead.",
+    ReplaceWith("combineWith(other, mapFunction)", "org.ccci.gto.android.common.androidx.lifecycle.combineWith")
 )
 @JvmName("combine")
 fun <IN1, IN2, OUT> LiveData<IN1>.combineWith(other: LiveData<IN2>, mapFunction: (IN1?, IN2?) -> OUT) =
