@@ -48,7 +48,7 @@ class Query<T : Any> private constructor(
     fun offset(offset: Int?) = Query(this, offset = offset)
 
     internal fun buildSqlFrom(dao: AbstractDao) = QueryComponent(table.sqlTable(dao)) +
-        joins.fold(null as QueryComponent?) { sql, join -> sql + join.buildSql(dao) }
+        joins.fold(null as QueryComponent?) { sql, join -> sql + join.getSql(dao) }
 
     fun buildSqlWhere(dao: AbstractDao): Pair<String?, Array<String>?> {
         return where?.buildSql(dao) ?: Pair.create<String?, Array<String>?>(null, null)
