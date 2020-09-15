@@ -7,7 +7,7 @@ fun LeakTrace.asFakeException(): Exception {
 
     return RuntimeException(
         "${leakingObject.classSimpleName} leak from ${firstElement.originObject.classSimpleName} " +
-                "(name=${firstElement.referenceName}, type=${firstElement.referenceType})"
+            "(name=${firstElement.referenceName}, type=${firstElement.referenceType})"
     ).also { exception ->
         exception.stackTrace = referencePath
             .map {
