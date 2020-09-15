@@ -43,7 +43,7 @@ open class SimplePicassoImageView : ImageView, PicassoImageView {
 
     @Deprecated("Since v3.6.1, override the helper property instead")
     protected open fun createHelper(attrs: AttributeSet?, defStyleAttr: Int, defStyleRes: Int = 0) =
-            PicassoImageView.Helper(this, attrs, defStyleAttr, defStyleRes)
+        PicassoImageView.Helper(this, attrs, defStyleAttr, defStyleRes)
 
     override fun asImageView() = helper.asImageView()
     override fun setPicassoFile(file: File?) = helper.setPicassoFile(file)

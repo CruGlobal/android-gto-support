@@ -84,7 +84,5 @@ class ViewPager2HeightWrapContentTest {
 
 private fun ViewGroup.createView() = FrameLayout(context).apply {
     layoutParams = LayoutParams(MATCH_PARENT, WRAP_CONTENT)
-    addView(TextView(context).apply {
-        layoutParams = LayoutParams(MATCH_PARENT, 0)
-    })
+    addView(TextView(context).apply { layoutParams = LayoutParams(MATCH_PARENT, 0) })
 }
