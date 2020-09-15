@@ -29,9 +29,7 @@ var TabLayout.Tab.visibility: Int
     }
 
 @Deprecated(
-    "Since v3.6.1, use extension method from gto-support-material-components instead", ReplaceWith(
-        "notifyPagerAdapterChanged()",
-        "org.ccci.gto.android.common.material.tabs.notifyPagerAdapterChanged"
-    )
+    "Since v3.6.1, use extension method from gto-support-material-components instead",
+    ReplaceWith("notifyPagerAdapterChanged()", "org.ccci.gto.android.common.material.tabs.notifyPagerAdapterChanged")
 )
 fun TabLayout.notifyPagerAdapterChanged() = notifyPagerAdapterChanged()
