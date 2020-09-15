@@ -15,15 +15,22 @@ import java.io.File
 @SuppressLint("AppCompatCustomView")
 open class SimplePicassoImageView : ImageView, PicassoImageView {
     @JvmOverloads
-    constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
-            super(context, attrs, defStyleAttr) {
+    constructor(
+        context: Context,
+        attrs: AttributeSet? = null,
+        defStyleAttr: Int = 0
+    ) : super(context, attrs, defStyleAttr) {
         _helper = createHelper(attrs, defStyleAttr)
         mHelper = helper
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int, defStyleRes: Int) :
-            super(context, attrs, defStyleAttr, defStyleRes) {
+    constructor(
+        context: Context,
+        attrs: AttributeSet?,
+        defStyleAttr: Int,
+        defStyleRes: Int
+    ) : super(context, attrs, defStyleAttr, defStyleRes) {
         _helper = createHelper(attrs, defStyleAttr, defStyleRes)
         mHelper = helper
     }

@@ -333,8 +333,9 @@ abstract class AbstractDao(private val helper: SQLiteOpenHelper) : Dao {
     // region Data Invalidation
     private var currentTransaction by threadLocal<Transaction>()
 
-    private inner class InvalidationListener(private val transaction: Transaction) : SQLiteTransactionListener,
-        Transaction.Listener {
+    private inner class InvalidationListener(
+        private val transaction: Transaction
+    ) : SQLiteTransactionListener, Transaction.Listener {
         private var commited = false
 
         override fun onBegin() {

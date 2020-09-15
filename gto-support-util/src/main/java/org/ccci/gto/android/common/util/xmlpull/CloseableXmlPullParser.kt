@@ -7,8 +7,9 @@ import java.io.Reader
 import org.xmlpull.v1.XmlPullParser
 import org.xmlpull.v1.XmlPullParserException
 
-class CloseableXmlPullParser private constructor(private val parser: XmlPullParser) :
-        XmlPullParser by parser, Closeable {
+class CloseableXmlPullParser private constructor(
+    private val parser: XmlPullParser
+) : XmlPullParser by parser, Closeable {
     constructor() : this(Xml.newPullParser())
 
     private var input: Closeable? = null

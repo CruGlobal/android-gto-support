@@ -63,5 +63,5 @@ abstract class DataBindingExpandableItemAdapter<GB : ViewDataBinding, CB : ViewD
     // endregion Lifecycle
 }
 
-class DataBindingExpandableViewHolder<B : ViewDataBinding>(binding: B) : DataBindingViewHolder<B>(binding),
-    ExpandableItemViewHolder by DelegateExpandableItemViewHolder()
+class DataBindingExpandableViewHolder<B : ViewDataBinding>(binding: B) :
+    DataBindingViewHolder<B>(binding), ExpandableItemViewHolder by DelegateExpandableItemViewHolder()
