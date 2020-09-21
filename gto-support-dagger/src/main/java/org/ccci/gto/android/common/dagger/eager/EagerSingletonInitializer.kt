@@ -30,6 +30,7 @@ class EagerSingletonInitializer @Inject constructor(
     private var activityMain: Lazy<Set<Any>>? = activityMain
     private var activityMainAsync: Lazy<Set<Any>>? = activityMainAsync
     private var activityAsync: Lazy<Set<Any>>? = activityAsync
+    internal var activityCreated = false
 
     init {
         initialize(immediateMain, immediateMainAsync, immediateAsync)
@@ -37,15 +38,7 @@ class EagerSingletonInitializer @Inject constructor(
     }
 
     // region Application.ActivityLifecycleCallbacks
-    override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
-        app?.unregisterActivityLifecycleCallbacks(this)
-        initialize(activityMain, activityMainAsync, activityAsync)
-        activityMain = null
-        activityMainAsync = null
-        activityAsync = null
-        app = null
-    }
-
+    override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) = initializeActivityCreatedSingletons()
     override fun onActivityStarted(activity: Activity) = Unit
     override fun onActivityResumed(activity: Activity) = Unit
     override fun onActivityPaused(activity: Activity) = Unit
@@ -60,5 +53,15 @@ class EagerSingletonInitializer @Inject constructor(
             mainAsync?.get()
             withContext(Dispatchers.Default) { async?.get() }
         }
+    }
+
+    internal fun initializeActivityCreatedSingletons() {
+        activityCreated = true
+        app?.unregisterActivityLifecycleCallbacks(this)
+        initialize(activityMain, activityMainAsync, activityAsync)
+        activityMain = null
+        activityMainAsync = null
+        activityAsync = null
+        app = null
     }
 }

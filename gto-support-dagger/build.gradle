@@ -3,6 +3,9 @@ dependencies {
 
     compileOnly "org.jetbrains.kotlinx:kotlinx-coroutines-core:${deps.kotlinCoroutines}"
 
+    // Eager Split Install Initialization dependencies
+    compileOnly "com.google.android.play:core:${deps.playCore}"
+
     // OkHttp3 Module dependencies
     compileOnly "com.squareup.okhttp3:okhttp:${deps.okhttp3}"
 
