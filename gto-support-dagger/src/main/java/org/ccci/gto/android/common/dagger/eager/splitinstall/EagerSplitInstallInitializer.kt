@@ -21,7 +21,9 @@ class EagerSplitInstallInitializer @Inject constructor(
     init {
         if (components != null) {
             splitInstallManager.registerListener(this)
-            splitInstallManager.installedModules.forEach { initializeSplit(it) }
+            splitInstallManager.installedModules
+                .filter { components?.containsKey(it) == true }
+                .forEach { initializeSplit(it) }
         }
     }
 
@@ -30,11 +32,9 @@ class EagerSplitInstallInitializer @Inject constructor(
     }
 
     private fun initializeSplit(name: String) {
-        if (splitInstallManager.installedModules.contains(name)) {
-            components?.get(name)?.get()?.eagerSingletonInitializer()?.let {
-                if (baseInitializer.activityCreated) it.initializeActivityCreatedSingletons()
-                components?.remove(name)
-            }
+        components?.get(name)?.get()?.eagerSingletonInitializer()?.let {
+            if (baseInitializer.activityCreated) it.initializeActivityCreatedSingletons()
+            components?.remove(name)
         }
 
         if (components.isNullOrEmpty()) {

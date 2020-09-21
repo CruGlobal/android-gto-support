@@ -18,4 +18,5 @@ dependencies {
 
     testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:${deps.mockitoKotlin}"
     testImplementation "androidx.lifecycle:lifecycle-viewmodel:${deps.androidX.lifecycle}"
+    testImplementation "com.google.android.play:core:${deps.playCore}"
 }
