@@ -38,7 +38,8 @@ class EagerSingletonInitializer @Inject constructor(
     }
 
     // region Application.ActivityLifecycleCallbacks
-    override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) = initializeActivityCreatedSingletons()
+    override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) =
+        initializeActivityCreatedSingletons()
     override fun onActivityStarted(activity: Activity) = Unit
     override fun onActivityResumed(activity: Activity) = Unit
     override fun onActivityPaused(activity: Activity) = Unit
