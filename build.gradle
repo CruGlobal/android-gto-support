@@ -15,7 +15,7 @@ buildscript {
             jacoco              : '0.8.5',
             jetbrainsAnnotations: '20.1.0',
             json                : '20190722',
-            jsonUnit            : '2.18.1',
+            jsonUnit            : '2.19.0',
             junit               : '4.13',
             junitParams         : '1.1.1',
             kotlin              : '1.4.10',
