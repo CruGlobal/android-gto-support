@@ -3,11 +3,13 @@ package org.ccci.gto.android.common.dagger.eager
 import android.app.Activity
 import android.app.Application
 import android.os.Bundle
+import androidx.annotation.VisibleForTesting
 import dagger.Lazy
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.ccci.gto.android.common.dagger.eager.EagerSingleton.LifecycleEvent.ACTIVITY_CREATED
@@ -25,7 +27,11 @@ class EagerSingletonInitializer @Inject constructor(
     @EagerSingleton(on = ACTIVITY_CREATED, threadMode = MAIN) activityMain: Lazy<Set<Any>>,
     @EagerSingleton(on = ACTIVITY_CREATED, threadMode = MAIN_ASYNC) activityMainAsync: Lazy<Set<Any>>,
     @EagerSingleton(on = ACTIVITY_CREATED, threadMode = ASYNC) activityAsync: Lazy<Set<Any>>
-) : Application.ActivityLifecycleCallbacks {
+) : Application.ActivityLifecycleCallbacks, CoroutineScope {
+    @VisibleForTesting
+    internal val job = SupervisorJob()
+    override val coroutineContext get() = Dispatchers.Default + job
+
     private var app: Application? = app
     private var activityMain: Lazy<Set<Any>>? = activityMain
     private var activityMainAsync: Lazy<Set<Any>>? = activityMainAsync
@@ -50,7 +56,7 @@ class EagerSingletonInitializer @Inject constructor(
 
     private fun initialize(main: Lazy<Set<Any>>?, mainAsync: Lazy<Set<Any>>?, async: Lazy<Set<Any>>?) {
         main?.get()
-        GlobalScope.launch(Dispatchers.Main) {
+        launch(Dispatchers.Main) {
             mainAsync?.get()
             withContext(Dispatchers.Default) { async?.get() }
         }

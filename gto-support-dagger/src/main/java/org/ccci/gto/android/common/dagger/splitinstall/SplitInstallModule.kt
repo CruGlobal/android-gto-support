@@ -18,7 +18,7 @@ import org.ccci.gto.android.common.dagger.splitinstall.eager.SplitInstallEagerSi
 abstract class SplitInstallModule {
     @Binds
     @IntoSet
-    @EagerSingleton(threadMode = ThreadMode.MAIN)
+    @EagerSingleton(threadMode = ThreadMode.MAIN_ASYNC)
     abstract fun splitInstallEagerSingletonInitializer(service: SplitInstallEagerSingletonInitializer): Any
 
     @Multibinds
