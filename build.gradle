@@ -6,6 +6,7 @@ buildscript {
             advrecyclerview     : '1.0.0',
             crashlytics         : '2.10.1',
             dagger              : '2.29.1',
+            daggerHilt          : '2.29.1-alpha',
             eventbus            : '3.2.0',
             facebookFlipper     : '0.56.0',
             gradleAndroidPlugin : '4.0.1',
@@ -29,6 +30,7 @@ buildscript {
             okhttp3             : '3.12.12',
             okio                : '2.8.0',
             picasso             : '2.8',
+            playCore            : '1.8.0',
             powermock           : '2.0.7',
             realm               : '7.0.6',
             realmAdapters       : '4.0.0',
@@ -170,6 +172,7 @@ subprojects {
                 force "androidx.collection:collection:${deps.androidX.collection}"
                 force "androidx.core:core:${deps.androidX.core}"
                 force "androidx.lifecycle:lifecycle-runtime:${deps.androidX.lifecycle}"
+                force "androidx.lifecycle:lifecycle-viewmodel-savedstate:${deps.androidX.lifecycle}"
                 force "junit:junit:${deps.junit}"
                 force "org.jetbrains:annotations:${deps.jetbrainsAnnotations}"
 
