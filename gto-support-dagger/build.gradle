@@ -1,5 +1,6 @@
 dependencies {
     implementation "com.google.dagger:dagger:${deps.dagger}"
+    implementation "com.google.dagger:hilt-android:${deps.daggerHilt}"
 
     compileOnly "org.jetbrains.kotlinx:kotlinx-coroutines-core:${deps.kotlinCoroutines}"
 

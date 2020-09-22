@@ -1,4 +1,4 @@
-package org.ccci.gto.android.common.dagger.eager.splitinstall
+package org.ccci.gto.android.common.dagger.splitinstall.eager
 
 import com.google.android.play.core.splitinstall.SplitInstallManager
 import com.google.android.play.core.splitinstall.SplitInstallSessionState
@@ -8,13 +8,13 @@ import javax.inject.Inject
 import javax.inject.Singleton
 import org.ccci.gto.android.common.dagger.FirstNonNullCachingProvider
 import org.ccci.gto.android.common.dagger.eager.EagerSingletonInitializer
+import org.ccci.gto.android.common.dagger.splitinstall.SplitInstallComponent
 
 @Singleton
-class EagerSplitInstallInitializer @Inject constructor(
+class SplitInstallEagerSingletonInitializer @Inject constructor(
     private val baseInitializer: EagerSingletonInitializer,
     private val splitInstallManager: SplitInstallManager,
-    splitInstallComponents: Map<String,
-        @JvmSuppressWildcards FirstNonNullCachingProvider<EagerSingletonInitializerProvider>>
+    splitInstallComponents: Map<String, @JvmSuppressWildcards FirstNonNullCachingProvider<SplitInstallComponent>>
 ) : SplitInstallStateUpdatedListener {
     private var components = splitInstallComponents.takeUnless { it.isEmpty() }?.toMutableMap()
 
@@ -32,8 +32,11 @@ class EagerSplitInstallInitializer @Inject constructor(
     }
 
     private fun initializeSplit(name: String) {
-        components?.get(name)?.get()?.eagerSingletonInitializer()?.let {
-            if (baseInitializer.activityCreated) it.initializeActivityCreatedSingletons()
+        components?.get(name)?.get()?.let {
+            if (it is SplitInstallEagerSingletonInitializerProvider) {
+                val initializer = it.eagerSingletonInitializer()
+                if (baseInitializer.activityCreated) initializer.initializeActivityCreatedSingletons()
+            }
             components?.remove(name)
         }
 

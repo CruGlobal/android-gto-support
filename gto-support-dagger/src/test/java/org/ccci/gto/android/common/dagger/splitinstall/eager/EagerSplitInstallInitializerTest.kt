@@ -1,4 +1,4 @@
-package org.ccci.gto.android.common.dagger.eager.splitinstall
+package org.ccci.gto.android.common.dagger.splitinstall.eager
 
 import com.google.android.play.core.splitinstall.SplitInstallManager
 import com.google.android.play.core.splitinstall.SplitInstallSessionState
@@ -11,6 +11,7 @@ import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
 import org.ccci.gto.android.common.dagger.FirstNonNullCachingProvider
 import org.ccci.gto.android.common.dagger.eager.EagerSingletonInitializer
+import org.ccci.gto.android.common.dagger.splitinstall.SplitInstallComponent
 import org.junit.Before
 import org.junit.Test
 
@@ -21,10 +22,10 @@ class EagerSplitInstallInitializerTest {
     private lateinit var baseInitializer: EagerSingletonInitializer
     private lateinit var splitInstallManager: SplitInstallManager
 
-    private lateinit var feature1: EagerSingletonInitializerProvider
+    private lateinit var feature1: SplitInstallEagerSingletonInitializerProvider
     private lateinit var feature1Initializer: EagerSingletonInitializer
-    private lateinit var feature1Provider: FirstNonNullCachingProvider<EagerSingletonInitializerProvider>
-    private lateinit var feature2Provider: FirstNonNullCachingProvider<EagerSingletonInitializerProvider>
+    private lateinit var feature1Provider: FirstNonNullCachingProvider<SplitInstallComponent>
+    private lateinit var feature2Provider: FirstNonNullCachingProvider<SplitInstallComponent>
 
     @Before
     fun setup() {
@@ -42,7 +43,7 @@ class EagerSplitInstallInitializerTest {
 
     @Test
     fun verifyDontRegisterIfNoComponents() {
-        val initializer = EagerSplitInstallInitializer(baseInitializer, splitInstallManager, emptyMap())
+        val initializer = SplitInstallEagerSingletonInitializer(baseInitializer, splitInstallManager, emptyMap())
 
         verify(splitInstallManager, never()).registerListener(initializer)
         verify(splitInstallManager, never()).installedModules
@@ -52,8 +53,11 @@ class EagerSplitInstallInitializerTest {
     fun verifyInitializeAlreadyInstalledModules() {
         whenever(splitInstallManager.installedModules).thenReturn(setOf(FEATURE1, FEATURE2))
         whenever(feature1Provider.get()).thenReturn(feature1)
-        val initializer =
-            EagerSplitInstallInitializer(baseInitializer, splitInstallManager, mapOf(FEATURE1 to feature1Provider))
+        val initializer = SplitInstallEagerSingletonInitializer(
+            baseInitializer,
+            splitInstallManager,
+            mapOf(FEATURE1 to feature1Provider)
+        )
 
         verify(splitInstallManager).registerListener(initializer)
         verify(feature1Provider).get()
@@ -64,8 +68,11 @@ class EagerSplitInstallInitializerTest {
     @Test
     fun verifyInitializeModulesThatAreInstalledLater() {
         whenever(feature1Provider.get()).thenReturn(feature1)
-        val initializer =
-            EagerSplitInstallInitializer(baseInitializer, splitInstallManager, mapOf(FEATURE1 to feature1Provider))
+        val initializer = SplitInstallEagerSingletonInitializer(
+            baseInitializer,
+            splitInstallManager,
+            mapOf(FEATURE1 to feature1Provider)
+        )
 
         verify(splitInstallManager).registerListener(initializer)
         verify(feature1Provider, never()).get()
@@ -83,7 +90,7 @@ class EagerSplitInstallInitializerTest {
         baseInitializer.activityCreated = true
         whenever(splitInstallManager.installedModules).thenReturn(setOf(FEATURE1))
         whenever(feature1Provider.get()).thenReturn(feature1)
-        EagerSplitInstallInitializer(baseInitializer, splitInstallManager, mapOf(FEATURE1 to feature1Provider))
+        SplitInstallEagerSingletonInitializer(baseInitializer, splitInstallManager, mapOf(FEATURE1 to feature1Provider))
 
         verify(feature1Initializer).initializeActivityCreatedSingletons()
     }
@@ -93,7 +100,7 @@ class EagerSplitInstallInitializerTest {
         baseInitializer.activityCreated = false
         whenever(splitInstallManager.installedModules).thenReturn(setOf(FEATURE1))
         whenever(feature1Provider.get()).thenReturn(feature1)
-        EagerSplitInstallInitializer(baseInitializer, splitInstallManager, mapOf(FEATURE1 to feature1Provider))
+        SplitInstallEagerSingletonInitializer(baseInitializer, splitInstallManager, mapOf(FEATURE1 to feature1Provider))
 
         verify(feature1Initializer, never()).initializeActivityCreatedSingletons()
     }
