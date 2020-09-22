@@ -1,11 +1,11 @@
 dependencies {
     implementation "com.google.dagger:dagger:${deps.dagger}"
-    implementation "com.google.dagger:hilt-android:${deps.daggerHilt}"
 
     compileOnly "org.jetbrains.kotlinx:kotlinx-coroutines-core:${deps.kotlinCoroutines}"
 
-    // Eager Split Install Initialization dependencies
+    // Split Install dependencies
     compileOnly "com.google.android.play:core:${deps.playCore}"
+    compileOnly "com.google.dagger:hilt-android:${deps.daggerHilt}"
 
     // OkHttp3 Module dependencies
     compileOnly "com.squareup.okhttp3:okhttp:${deps.okhttp3}"
