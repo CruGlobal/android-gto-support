@@ -20,11 +20,16 @@ class LongSparseBooleanArrayRobolectricTest {
             put(Long.MAX_VALUE, true)
         }
 
-        val parcel = Parcel.obtain()
-        orig.writeToParcel(parcel, orig.describeContents())
+        val parceledBytes = Parcel.obtain().run {
+            writeParcelable(orig, 0)
+            marshall()
+        }
 
-        parcel.setDataPosition(0)
-        val created = LongSparseBooleanArray.create(parcel)
+        val created = Parcel.obtain().run {
+            unmarshall(parceledBytes, 0, parceledBytes.size)
+            setDataPosition(0)
+            readParcelable<LongSparseBooleanArray>(this::class.java.classLoader)!!
+        }
 
         assertThat(created.keyIterator().asSequence().toList(), contains(1L, 2003L, Long.MAX_VALUE))
         assertTrue(created.get(1L))
