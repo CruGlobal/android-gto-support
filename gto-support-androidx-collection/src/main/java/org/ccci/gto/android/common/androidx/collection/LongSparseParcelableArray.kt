@@ -8,7 +8,7 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 class LongSparseParcelableArray<T : Parcelable?> : LongSparseArray<T>(), Parcelable {
-    private companion object : Parceler<LongSparseParcelableArray<Parcelable?>> {
+    internal companion object : Parceler<LongSparseParcelableArray<Parcelable?>> {
         override fun LongSparseParcelableArray<Parcelable?>.write(parcel: Parcel, flags: Int) {
             val size = size()
             val keys = LongArray(size)
