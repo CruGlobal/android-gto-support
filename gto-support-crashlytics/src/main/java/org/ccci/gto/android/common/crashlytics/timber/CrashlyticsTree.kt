@@ -4,6 +4,10 @@ import android.util.Log
 import com.crashlytics.android.Crashlytics
 import timber.log.Timber
 
+@Deprecated(
+    "Since v3.6.2, this class uses the deprecated Fabric Crashlytics library that will no longer be supported" +
+        " starting November 15th, 2020"
+)
 class CrashlyticsTree @JvmOverloads constructor(
     private val logLevel: Int,
     private val exceptionLogLevel: Int = logLevel

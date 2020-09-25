@@ -9,6 +9,10 @@ import shark.HeapAnalysisSuccess
 
 private const val LOG_LIMIT = 64 * 1024
 
+@Deprecated(
+    "Since v3.6.2, this Listener uses the deprecated Fabric Crashlytics library that will no longer be supported" +
+        " starting November 15th, 2020"
+)
 class CrashlyticsOnHeapAnalyzedListener : OnHeapAnalyzedListener {
     private val defaultListener = DefaultOnHeapAnalyzedListener.create()
 
