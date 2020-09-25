@@ -3,7 +3,7 @@ package org.ccci.gto.android.common.lifecycle.databinding
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import org.ccci.gto.android.common.lifecycle.emptyLiveData
+import org.ccci.gto.android.common.androidx.lifecycle.emptyLiveData
 import org.ccci.gto.android.common.lifecycle.switchCombineWith
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
