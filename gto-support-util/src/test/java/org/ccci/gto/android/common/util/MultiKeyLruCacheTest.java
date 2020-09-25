@@ -1,4 +1,4 @@
-package org.ccci.gto.android.common.support.v4.util;
+package org.ccci.gto.android.common.util;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 

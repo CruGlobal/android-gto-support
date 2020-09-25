@@ -2,6 +2,8 @@ package org.ccci.gto.android.common.support.v4.util;
 
 import androidx.collection.ArrayMap;
 
+import org.ccci.gto.android.common.util.MultiKeyLruCache;
+
 import java.lang.ref.WeakReference;
 import java.util.Map;
 

@@ -1,6 +1,9 @@
 package org.ccci.gto.android.common.support.v4.util;
 
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import static org.ccci.gto.android.common.support.v4.util.WeakLruCacheTest.KEY1;
 import static org.ccci.gto.android.common.support.v4.util.WeakLruCacheTest.KEY2;
@@ -11,12 +14,13 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNull;
 
+@RunWith(AndroidJUnit4.class)
 public class WeakMultiKeyLruCacheTest {
     private static final String VALUE3 = "VALUE3";
 
     @Test
     public void testWeakDeletion() {
-        final MultiKeyLruCache<String, String> cache = new WeakMultiKeyLruCache<>(1);
+        final WeakMultiKeyLruCache<String, String> cache = new WeakMultiKeyLruCache<>(1);
 
         // create Strings this way to prevent usage of intern table
         String val1 = new String(VALUE1);
@@ -48,7 +52,7 @@ public class WeakMultiKeyLruCacheTest {
 
     @Test
     public void verifyCacheConsistency() throws Exception {
-        final MultiKeyLruCache<String, String> cache = new WeakMultiKeyLruCache<>(1);
+        final WeakMultiKeyLruCache<String, String> cache = new WeakMultiKeyLruCache<>(1);
 
         // populate the cache
         cache.put(KEY1, VALUE1);
