@@ -10,7 +10,11 @@ import androidx.fragment.app.FragmentActivity;
 public final class FragmentUtils {
     private FragmentUtils() {}
 
+    /**
+     * @deprecated Since v3.7.0, use `findViewById` directly now that it supports a generic type.
+     */
     @Nullable
+    @Deprecated
     public static <T> T findView(@NonNull final Fragment fragment, @NonNull final Class<T> clazz, final int id) {
         final View root = fragment.getView();
         if (root != null) {
