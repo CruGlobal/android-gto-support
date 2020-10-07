@@ -35,7 +35,7 @@ class ReadWriteMutexTest {
     fun testReadShared() {
         runBlocking {
             launch {
-                mutex.withReadLock {
+                mutex.read.withLock {
                     yield()
                     expect(2)
                     yield()
@@ -44,7 +44,7 @@ class ReadWriteMutexTest {
             }
 
             launch {
-                mutex.withReadLock {
+                mutex.read.withLock {
                     expect(1)
                     yield()
                     expect(3)
@@ -58,7 +58,7 @@ class ReadWriteMutexTest {
     fun testWriteLocksRead() {
         runBlocking {
             launch {
-                mutex.withReadLock {
+                mutex.read.withLock {
                     expect(2)
                 }
             }
@@ -83,7 +83,7 @@ class ReadWriteMutexTest {
 
             launch {
                 expect(4)
-                mutex.withReadLock {
+                mutex.read.withLock {
                     expect(5)
                     yield()
                     expect(7)
@@ -91,7 +91,7 @@ class ReadWriteMutexTest {
             }
 
             expect(1)
-            mutex.withReadLock {
+            mutex.read.withLock {
                 expect(2)
                 yield()
                 expect(6)

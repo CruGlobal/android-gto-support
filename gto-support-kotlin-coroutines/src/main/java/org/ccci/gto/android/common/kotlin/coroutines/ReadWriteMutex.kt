@@ -7,8 +7,6 @@ import kotlinx.coroutines.sync.withLock
 interface ReadWriteMutex {
     val write: Mutex
     val read: Mutex
-
-    suspend fun <T> withReadLock(action: suspend () -> T): T
 }
 
 fun ReadWriteMutex(): ReadWriteMutex = ReadWriteMutexImpl()
@@ -42,6 +40,4 @@ private class ReadWriteMutexImpl : ReadWriteMutex {
         override fun holdsLock(owner: Any) = TODO("Not supported")
         override fun tryLock(owner: Any?) = TODO("Not supported")
     }
-
-    override suspend fun <T> withReadLock(action: suspend () -> T): T = read.withLock { action() }
 }
