@@ -4,6 +4,7 @@ import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicInteger
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.yield
 import org.junit.Test
 
@@ -15,13 +16,13 @@ class ReadWriteMutexTest {
         runBlocking {
             launch {
                 expect(3)
-                mutex.withWriteLock {
+                mutex.write.withLock {
                     expect(5)
                 }
             }
 
             expect(1)
-            mutex.withWriteLock {
+            mutex.write.withLock {
                 expect(2)
                 yield()
                 expect(4)
@@ -62,7 +63,7 @@ class ReadWriteMutexTest {
                 }
             }
 
-            mutex.withWriteLock {
+            mutex.write.withLock {
                 yield()
                 expect(1)
             }
@@ -75,7 +76,7 @@ class ReadWriteMutexTest {
         runBlocking {
             launch {
                 expect(3)
-                mutex.withWriteLock {
+                mutex.write.withLock {
                     expect(8)
                 }
             }
