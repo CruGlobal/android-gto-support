@@ -3,18 +3,26 @@ package org.ccci.gto.android.common.kotlin.coroutines
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 
-class ReadWriteMutex {
+interface ReadWriteMutex {
+    val write: Mutex
+
+    suspend fun <T> withWriteLock(owner: Any? = null, action: suspend () -> T): T
+    suspend fun <T> withReadLock(action: suspend () -> T): T
+}
+
+fun ReadWriteMutex(): ReadWriteMutex = ReadWriteMutexImpl()
+
+private class ReadWriteMutexImpl : ReadWriteMutex {
     private val stateMutex = Mutex()
-    private val writeMutex = Mutex()
+    override val write = Mutex()
     private var readers = 0
 
-    suspend fun <T> withWriteLock(owner: Any? = null, action: suspend () -> T): T =
-        writeMutex.withLock(owner) { action() }
+    override suspend fun <T> withWriteLock(owner: Any?, action: suspend () -> T): T = write.withLock(owner) { action() }
 
-    suspend fun <T> withReadLock(action: suspend () -> T): T {
+    override suspend fun <T> withReadLock(action: suspend () -> T): T {
         stateMutex.withLock {
             // first reader should lock the write mutex
-            if (readers == 0) writeMutex.lock()
+            if (readers == 0) write.lock()
             readers++
         }
 
@@ -24,7 +32,7 @@ class ReadWriteMutex {
             stateMutex.withLock {
                 readers--
                 // release the write mutex lock when this is the last reader
-                if (readers == 0) writeMutex.unlock()
+                if (readers == 0) write.unlock()
             }
         }
     }
