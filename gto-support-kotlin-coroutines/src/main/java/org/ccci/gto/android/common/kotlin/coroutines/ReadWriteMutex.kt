@@ -27,10 +27,10 @@ private class ReadWriteMutexImpl : ReadWriteMutex {
 
         override fun unlock(owner: Any?) {
             runBlocking {
-                stateMutex.withLock {
+                stateMutex.withLock(owner) {
                     readers--
                     // release the write mutex lock when this is the last reader
-                    if (readers == 0) write.unlock()
+                    if (readers == 0) write.unlock(owner)
                 }
             }
         }
