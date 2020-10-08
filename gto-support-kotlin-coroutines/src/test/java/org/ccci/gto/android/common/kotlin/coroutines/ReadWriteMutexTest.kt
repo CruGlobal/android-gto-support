@@ -1,11 +1,10 @@
 package org.ccci.gto.android.common.kotlin.coroutines
 
-import java.util.concurrent.atomic.AtomicBoolean
-import java.util.concurrent.atomic.AtomicInteger
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.yield
+import org.junit.Assert.assertFalse
 import org.junit.Test
 
 class ReadWriteMutexTest {
@@ -99,15 +98,16 @@ class ReadWriteMutexTest {
         finish(9)
     }
 
-    private var actionIndex = AtomicInteger(0)
-    private var finished = AtomicBoolean(false)
+    private var actionIndex = 0
+    private var finished = false
     private fun expect(index: Int) {
-        val wasIndex = actionIndex.incrementAndGet()
+        val wasIndex = ++actionIndex
         check(index == wasIndex) { "Expecting action index $index but it is actually $wasIndex" }
     }
 
     private fun finish(index: Int) {
         expect(index)
-        check(!finished.getAndSet(true)) { "Should call 'finish(...)' at most once" }
+        assertFalse("Should call 'finish(...)' at most once", finished)
+        finished = true
     }
 }
