@@ -1,9 +1,13 @@
 package org.ccci.gto.android.common.kotlin.coroutines
 
+import java.util.concurrent.atomic.AtomicBoolean
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.yield
+import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Test
 
@@ -134,6 +138,29 @@ class ReadWriteMutexTest {
     fun testInvalidReadUnlock() {
         runBlocking {
             mutex.read.unlock()
+        }
+    }
+
+    @Test
+    fun testInvalidReadUnlockCounterRaceCondition() {
+        repeat(10) {
+            runBlocking {
+                val running = AtomicBoolean(true)
+                val tasks = List(16) {
+                    launch(Dispatchers.IO) {
+                        do {
+                            try {
+                                mutex.read.unlock()
+                            } catch (_: IllegalStateException) {
+                            }
+                        } while (running.get())
+                    }
+                }
+                mutex.read.lock()
+                running.set(false)
+                tasks.joinAll()
+                assertEquals(0, (mutex as ReadWriteMutexImpl).readers.get())
+            }
         }
     }
 
