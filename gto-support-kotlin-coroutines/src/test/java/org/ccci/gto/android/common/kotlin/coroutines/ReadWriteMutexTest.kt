@@ -98,6 +98,21 @@ class ReadWriteMutexTest {
         finish(9)
     }
 
+    @Test(expected = IllegalStateException::class)
+    fun testReadLockTooManyTimes() {
+        runBlocking {
+            (mutex as ReadWriteMutexImpl).readers.set(Long.MAX_VALUE - 1)
+            while (true) mutex.read.lock()
+        }
+    }
+
+    @Test(expected = IllegalStateException::class)
+    fun testInvalidReadUnlock() {
+        runBlocking {
+            mutex.read.unlock()
+        }
+    }
+
     private var actionIndex = 0
     private var finished = false
     private fun expect(index: Int) {
