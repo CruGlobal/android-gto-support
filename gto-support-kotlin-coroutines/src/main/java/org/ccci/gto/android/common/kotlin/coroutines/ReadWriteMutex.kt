@@ -22,7 +22,7 @@ internal class ReadWriteMutexImpl : ReadWriteMutex {
     override val write = Mutex()
     override val read = object : Mutex {
         override suspend fun lock(owner: Any?) {
-            stateMutex.withLock(owner) {
+            stateMutex.withLock {
                 check(readers.get() < Long.MAX_VALUE) {
                     "Attempt to lock the read mutex more than ${Long.MAX_VALUE} times concurrently"
                 }
@@ -35,7 +35,7 @@ internal class ReadWriteMutexImpl : ReadWriteMutex {
         override fun unlock(owner: Any?) {
             runBlocking {
                 check(readers.get() > 0L) { "Attempt to unlock the read mutex when it wasn't locked" }
-                stateMutex.withLock(owner) {
+                stateMutex.withLock {
                     // release the write mutex lock when this is the last reader
                     if (readers.decrementAndGet() == 0L) write.unlock(readers)
                 }
