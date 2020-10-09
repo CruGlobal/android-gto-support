@@ -129,7 +129,7 @@ class ReadWriteMutexTest {
     @Test(expected = IllegalStateException::class)
     fun testReadLockTooManyTimes() {
         runBlocking {
-            (mutex as ReadWriteMutexImpl).readers.set(Long.MAX_VALUE - 1)
+            (mutex as ReadWriteMutexImpl).readers = Long.MAX_VALUE - 1
             while (true) mutex.read.lock()
         }
     }
@@ -159,7 +159,7 @@ class ReadWriteMutexTest {
                 mutex.read.lock()
                 running.set(false)
                 tasks.joinAll()
-                assertEquals(0, (mutex as ReadWriteMutexImpl).readers.get())
+                assertEquals(0, (mutex as ReadWriteMutexImpl).readers)
             }
         }
     }
