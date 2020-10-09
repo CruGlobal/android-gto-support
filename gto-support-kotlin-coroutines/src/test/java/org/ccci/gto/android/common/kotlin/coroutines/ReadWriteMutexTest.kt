@@ -71,17 +71,20 @@ class ReadWriteMutexTest {
 
     @Test
     fun testReadsLockWrite() {
+        val owner1 = Any()
+        val owner2 = Any()
+        val owner3 = Any()
         runBlocking {
             launch {
                 expect(3)
-                mutex.write.withLock {
+                mutex.write.withLock(owner1) {
                     expect(8)
                 }
             }
 
             launch {
                 expect(4)
-                mutex.read.withLock {
+                mutex.read.withLock(owner2) {
                     expect(5)
                     yield()
                     expect(7)
@@ -89,7 +92,7 @@ class ReadWriteMutexTest {
             }
 
             expect(1)
-            mutex.read.withLock {
+            mutex.read.withLock(owner3) {
                 expect(2)
                 yield()
                 expect(6)

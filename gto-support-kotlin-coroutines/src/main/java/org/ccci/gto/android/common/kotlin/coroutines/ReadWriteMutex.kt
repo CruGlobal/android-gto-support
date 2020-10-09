@@ -27,7 +27,7 @@ internal class ReadWriteMutexImpl : ReadWriteMutex {
                     "Attempt to lock the read mutex more than ${Long.MAX_VALUE} times concurrently"
                 }
                 // first reader should lock the write mutex
-                if (readers.get() == 0L) write.lock(owner)
+                if (readers.get() == 0L) write.lock(readers)
                 readers.incrementAndGet()
             }
         }
@@ -37,7 +37,7 @@ internal class ReadWriteMutexImpl : ReadWriteMutex {
                 check(readers.get() > 0L) { "Attempt to unlock the read mutex when it wasn't locked" }
                 stateMutex.withLock(owner) {
                     // release the write mutex lock when this is the last reader
-                    if (readers.decrementAndGet() == 0L) write.unlock(owner)
+                    if (readers.decrementAndGet() == 0L) write.unlock(readers)
                 }
             }
         }
