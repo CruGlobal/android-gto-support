@@ -7,6 +7,11 @@ import kotlinx.coroutines.sync.withLock
 
 interface ReadWriteMutex {
     val write: Mutex
+
+    /**
+     * Provides a shared read mutex. This Mutex doesn't support the `owner` parameter to debug/prevent deadlocks.
+     * It is also not possible to upgrade a read lock to a write lock without release the read lock first.
+     */
     val read: Mutex
 }
 
