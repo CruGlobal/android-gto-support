@@ -98,6 +98,27 @@ class ReadWriteMutexTest {
         finish(9)
     }
 
+    @Test
+    fun testReaderReentrancy() {
+        val owner = Any()
+        runBlocking {
+            expect(1)
+            mutex.read.withLock(owner) {
+                expect(2)
+                mutex.read.withLock(owner) {
+                    expect(3)
+                }
+                expect(4)
+            }
+            expect(5)
+
+            mutex.write.withLock(owner) {
+                expect(6)
+            }
+        }
+        finish(7)
+    }
+
     @Test(expected = IllegalStateException::class)
     fun testReadLockTooManyTimes() {
         runBlocking {
