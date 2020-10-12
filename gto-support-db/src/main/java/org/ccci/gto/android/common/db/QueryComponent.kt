@@ -23,3 +23,5 @@ internal operator fun QueryComponent?.plus(sql: String) = when {
 
 @Deprecated("This is only present to aid conversion from Java to Kotlin")
 internal fun Pair<String, Array<String>>.toQueryComponent() = QueryComponent(first, *second)
+@Deprecated("This is only present to aid conversion from Java to Kotlin")
+internal fun QueryComponent.toPair() = Pair(sql, args.toList().toTypedArray())

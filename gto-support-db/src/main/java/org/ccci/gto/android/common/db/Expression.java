@@ -6,7 +6,6 @@ import android.util.Pair;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.os.ParcelCompat;
 
 import org.ccci.gto.android.common.util.ArrayUtils;
 
@@ -14,36 +13,19 @@ import java.util.Arrays;
 
 import static org.ccci.gto.android.common.db.AbstractDao.bindValues;
 
-public abstract class Expression implements Parcelable {
-    public static final Literal NULL = new Literal((String) null, true);
+public abstract class Expression extends ShimExpression {
     static final String[] NO_ARGS = new String[0];
 
     Expression() {
     }
 
-    @NonNull
-    protected abstract Pair<String, String[]> buildSql(@NonNull AbstractDao dao);
-
-    @NonNull
-    public Expression args(@NonNull final Object... args) {
-        return args(bindValues(args));
-    }
-
-    /**
-     * returns the number of "dynamic" arguments in this expression. This may not be the same as the actual number of
-     * arguments returned from buildSql
-     *
-     * @return
-     */
     protected int numOfArgs() {
-        return 0;
+        return getNumOfArgs();
     }
 
     @NonNull
-    public Expression args(@NonNull final String... args) {
-        if (args.length > 0) {
-            throw new IllegalArgumentException("invalid number of arguments specified");
-        }
+    public  Expression args(@NonNull final String... args) {
+        super.args(args);
         return this;
     }
 
@@ -204,64 +186,6 @@ public abstract class Expression implements Parcelable {
     }
 
     @NonNull
-    public static Literal bind() {
-        return new Literal((String) null, false);
-    }
-
-    @NonNull
-    public static Literal bind(@NonNull final Object value) {
-        return new Literal(bindValues(value)[0], false);
-    }
-
-    @NonNull
-    public static Literal bind(@NonNull final Number value) {
-        return new Literal(value, false);
-    }
-
-    @NonNull
-    public static Literal bind(@NonNull final String value) {
-        return new Literal(value, false);
-    }
-
-    @NonNull
-    public static Literal constant(@NonNull final Object value) {
-        return new Literal(bindValues(value)[0], true);
-    }
-
-    @NonNull
-    public static Literal constant(@NonNull final Number value) {
-        return new Literal(value, true);
-    }
-
-    @NonNull
-    public static Literal constant(@NonNull final String value) {
-        return new Literal(value, true);
-    }
-
-    @NonNull
-    public static Literal[] constants(@NonNull final Object... values) {
-        return constants(bindValues(values));
-    }
-
-    @NonNull
-    public static Literal[] constants(@NonNull final Number... values) {
-        final Literal[] constants = new Literal[values.length];
-        for (int i = 0; i < values.length; i++) {
-            constants[i] = constant(values[i]);
-        }
-        return constants;
-    }
-
-    @NonNull
-    public static Literal[] constants(@NonNull final String... values) {
-        final Literal[] constants = new Literal[values.length];
-        for (int i = 0; i < values.length; i++) {
-            constants[i] = constant(values[i]);
-        }
-        return constants;
-    }
-
-    @NonNull
     public static Raw raw(@NonNull final String expr, @NonNull final Object... args) {
         return new Raw(expr, bindValues(args));
     }
@@ -278,102 +202,6 @@ public abstract class Expression implements Parcelable {
 
     @Override
     public void writeToParcel(final Parcel out, final int flags) {
-    }
-
-    public static class Literal extends Expression {
-        @Nullable
-        private final String mStrValue;
-        @Nullable
-        private final Number mNumValue;
-        private final boolean mConstant;
-
-        @Nullable
-        private transient Pair<String, String[]> mSql;
-
-        Literal(@Nullable final Number value, final boolean constant) {
-            this(null, value, constant);
-        }
-
-        Literal(@Nullable final String value, final boolean constant) {
-            this(value, null, constant);
-        }
-
-        private Literal(@Nullable final String strValue, @Nullable final Number numValue, final boolean constant) {
-            mStrValue = strValue;
-            mNumValue = numValue;
-            mConstant = constant;
-        }
-
-        Literal(@NonNull final Parcel in, @Nullable final ClassLoader loader) {
-            mStrValue = in.readString();
-            mNumValue = (Number) in.readValue(loader);
-            mConstant = ParcelCompat.readBoolean(in);
-        }
-
-        @Override
-        protected int numOfArgs() {
-            return mConstant ? 0 : 1;
-        }
-
-        @NonNull
-        @Override
-        public Literal args(@NonNull final String... args) {
-            if (args.length != (mConstant ? 0 : 1)) {
-                throw new IllegalArgumentException("incorrect number of args specified");
-            }
-            return mConstant ? this : new Literal(args[0], false);
-        }
-
-        @NonNull
-        @Override
-        protected Pair<String, String[]> buildSql(@NonNull final AbstractDao dao) {
-            if (mSql == null) {
-                // handle constants
-                if (mConstant) {
-                    if (mNumValue != null) {
-                        mSql = Pair.create(mNumValue.toString(), NO_ARGS);
-                    } else if (mStrValue != null) {
-                        //TODO: how should we handle non-null constant string values?
-                    } else {
-                        mSql = Pair.create("NULL", NO_ARGS);
-                    }
-                }
-
-                // default if mSql is still null
-                if (mSql == null) {
-                    mSql = Pair.create("?", new String[] {mNumValue != null ? mNumValue.toString() : mStrValue});
-                }
-            }
-
-            return mSql;
-        }
-
-        @Override
-        public void writeToParcel(final Parcel out, final int flags) {
-            super.writeToParcel(out, flags);
-            out.writeString(mStrValue);
-            out.writeValue(mNumValue);
-            ParcelCompat.writeBoolean(out, mConstant);
-        }
-
-        public static final Creator<Literal> CREATOR = new LiteralCreator();
-
-        private static class LiteralCreator implements ClassLoaderCreator<Literal> {
-            @Override
-            public Literal createFromParcel(@NonNull final Parcel in) {
-                return new Literal(in, null);
-            }
-
-            @Override
-            public Literal[] newArray(final int size) {
-                return new Literal[size];
-            }
-
-            @Override
-            public Literal createFromParcel(@NonNull final Parcel in, @Nullable final ClassLoader loader) {
-                return new Literal(in, loader);
-            }
-        }
     }
 
     public static final class Field extends Expression {
@@ -437,7 +265,7 @@ public abstract class Expression implements Parcelable {
 
         @NonNull
         @Override
-        protected Pair<String, String[]> buildSql(@NonNull final AbstractDao dao) {
+        public Pair<String, String[]> buildSql(@NonNull final AbstractDao dao) {
             // generate SQL for this field
             if (mSql == null) {
                 final StringBuilder sql = new StringBuilder();
@@ -513,7 +341,7 @@ public abstract class Expression implements Parcelable {
 
         @NonNull
         @Override
-        protected Pair<String, String[]> buildSql(@NonNull final AbstractDao dao) {
+        public Pair<String, String[]> buildSql(@NonNull final AbstractDao dao) {
             return Pair.create(mExpr, mArgs);
         }
 
@@ -657,7 +485,7 @@ public abstract class Expression implements Parcelable {
             final Expression[] exprs = new Expression[mExprs.length];
             for (int i = 0; i < mExprs.length; i++) {
                 final int num = mExprs[i].numOfArgs();
-                exprs[i] = num > 0 ? mExprs[i].args(Arrays.copyOfRange(args, pos, pos + num)) : mExprs[i];
+                exprs[i] = num > 0 ? (Expression) mExprs[i].args(Arrays.copyOfRange(args, pos, pos + num)) : mExprs[i];
                 pos += num;
             }
             return new Binary(mOp, exprs);
@@ -665,7 +493,7 @@ public abstract class Expression implements Parcelable {
 
         @NonNull
         @Override
-        protected Pair<String, String[]> buildSql(@NonNull final AbstractDao dao) {
+        public Pair<String, String[]> buildSql(@NonNull final AbstractDao dao) {
             // generate SQL if it hasn't been generated yet
             if (mSql == null) {
                 int i = 0;
@@ -763,7 +591,7 @@ public abstract class Expression implements Parcelable {
         @NonNull
         @Override
         public Expression args(@NonNull final String... args) {
-            return mExpr.args(args);
+            return (Expression) mExpr.args(args);
         }
 
         @NonNull
@@ -779,7 +607,7 @@ public abstract class Expression implements Parcelable {
 
         @NonNull
         @Override
-        protected Pair<String, String[]> buildSql(@NonNull final AbstractDao dao) {
+        public Pair<String, String[]> buildSql(@NonNull final AbstractDao dao) {
             // generate SQL if it hasn't been generated yet
             if (mSql == null) {
                 final StringBuilder sql = new StringBuilder(mOp).append(" (");
@@ -862,12 +690,12 @@ public abstract class Expression implements Parcelable {
         @NonNull
         @Override
         public Expression args(@NonNull final String... args) {
-            return mField.args(args);
+            return (Expression) mField.args(args);
         }
 
         @NonNull
         @Override
-        protected Pair<String, String[]> buildSql(@NonNull final AbstractDao dao) {
+        public Pair<String, String[]> buildSql(@NonNull final AbstractDao dao) {
             // generate SQL if it hasn't been generated yet
             if (mSql == null) {
                 final StringBuilder sql = new StringBuilder(mOp).append(" (");
