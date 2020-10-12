@@ -7,8 +7,6 @@ import kotlinx.android.parcel.Parcelize
 import org.ccci.gto.android.common.db.AbstractDao.Companion.bindValues
 import org.ccci.gto.android.common.db.Expression.Aggregate
 
-private val NO_ARGS = emptyArray<String>()
-
 abstract class KotlinExpression : Parcelable {
     companion object {
         @JvmField
@@ -41,25 +39,31 @@ abstract class KotlinExpression : Parcelable {
         fun field(name: String) = Field(name = name)
     }
 
-    open fun args(vararg args: Any) = args(*bindValues(*args))
-
     /**
      * The number of "dynamic" arguments in this expression. This may not be the same as the actual number of arguments
      * returned from buildSql
      */
     protected open val numOfArgs = 0
 
+    open fun args(vararg args: Any) = args(*bindValues(*args))
     open fun args(vararg args: String): KotlinExpression {
         require(args.isEmpty()) { "invalid number of arguments specified" }
         return this
     }
 
+    fun raw(expr: String, vararg args: Any) = Raw(expr, bindValues(*args).toList())
+    fun raw(expr: String, vararg args: String) = Raw(expr, args.toList())
+
+    open fun toRaw(dao: AbstractDao) = buildSql(dao).let { raw(it.first, *it.second) }
+
     // TODO: make internal
     abstract fun buildSql(dao: AbstractDao): Pair<String, Array<String>>
 
     @Parcelize
-    data class Field internal constructor(private val table: Table<*>? = null, private val name: String) :
-        KotlinExpression() {
+    data class Field internal constructor(
+        private val table: Table<*>? = null,
+        private val name: String
+    ) : KotlinExpression() {
         @JvmOverloads
         fun count(distinct: Boolean = false) = Aggregate(Aggregate.COUNT, distinct, this)
         @JvmOverloads
@@ -110,6 +114,18 @@ abstract class KotlinExpression : Parcelable {
         }
 
         override fun buildSql(dao: AbstractDao) = _sql.toPair()
+    }
+
+    @Parcelize
+    data class Raw internal constructor(private val expr: String, private val args: List<String>) : KotlinExpression() {
+        override val numOfArgs get() = args.size
+
+        override fun args(vararg args: Any) = copy(args = bindValues(*args).toList())
+        override fun args(vararg args: String) = copy(args = args.toList())
+
+        override fun toRaw(dao: AbstractDao) = this
+
+        override fun buildSql(dao: AbstractDao) = QueryComponent(expr, *args.toTypedArray()).toPair()
     }
 }
 

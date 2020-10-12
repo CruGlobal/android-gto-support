@@ -174,22 +174,6 @@ public abstract class Expression extends ShimExpression {
         return new Binary(op, this, expression);
     }
 
-    @NonNull
-    public Raw toRaw(@NonNull final AbstractDao dao) {
-        final Pair<String, String[]> sql = buildSql(dao);
-        return raw(sql.first, sql.second);
-    }
-
-    @NonNull
-    public static Raw raw(@NonNull final String expr, @NonNull final Object... args) {
-        return new Raw(expr, bindValues(args));
-    }
-
-    @NonNull
-    public static Raw raw(@NonNull final String expr, @Nullable final String... args) {
-        return new Raw(expr, args);
-    }
-
     @Override
     public int describeContents() {
         return 0;
@@ -197,78 +181,6 @@ public abstract class Expression extends ShimExpression {
 
     @Override
     public void writeToParcel(final Parcel out, final int flags) {
-    }
-
-    public static class Raw extends Expression {
-        @NonNull
-        private final String mExpr;
-        @NonNull
-        private final String[] mArgs;
-
-        Raw(@NonNull final String expr, @Nullable final String... args) {
-            mExpr = expr;
-            mArgs = args != null ? args : NO_ARGS;
-        }
-
-        Raw(@NonNull final Parcel in, @Nullable final ClassLoader loader) {
-            mExpr = in.readString();
-            mArgs = in.createStringArray();
-        }
-
-        @Override
-        protected int numOfArgs() {
-            return mArgs.length;
-        }
-
-        @NonNull
-        @Override
-        public Raw args(@NonNull final Object... args) {
-            return args(bindValues(args));
-        }
-
-        @NonNull
-        @Override
-        public Raw args(@NonNull final String... args) {
-            return new Raw(mExpr, args);
-        }
-
-        @NonNull
-        @Override
-        public Pair<String, String[]> buildSql(@NonNull final AbstractDao dao) {
-            return Pair.create(mExpr, mArgs);
-        }
-
-        @NonNull
-        @Override
-        public Raw toRaw(@NonNull AbstractDao dao) {
-            return this;
-        }
-
-        @Override
-        public void writeToParcel(final Parcel out, final int flags) {
-            super.writeToParcel(out, flags);
-            out.writeString(mExpr);
-            out.writeStringArray(mArgs);
-        }
-
-        public static final Creator<Raw> CREATOR = new RawCreator();
-
-        private static class RawCreator implements ClassLoaderCreator<Raw> {
-            @Override
-            public Raw createFromParcel(@NonNull final Parcel in) {
-                return new Raw(in, null);
-            }
-
-            @Override
-            public Raw[] newArray(final int size) {
-                return new Raw[size];
-            }
-
-            @Override
-            public Raw createFromParcel(@NonNull final Parcel in, @Nullable final ClassLoader loader) {
-                return new Raw(in, loader);
-            }
-        }
     }
 
     public static class Binary extends Expression {
