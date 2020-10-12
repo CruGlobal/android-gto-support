@@ -27,7 +27,7 @@ class LiveDataRegistryTest {
     }
 
     @Test
-    fun verifyinvalidateNoConcurrentModification() {
+    fun verifyInvalidateNoConcurrentModification() {
         // create 2 racing threads, 1 invalidating LiveData handles, and 1 registering new LiveData handles
         runBlocking {
             val shutdown = AtomicBoolean(false)
