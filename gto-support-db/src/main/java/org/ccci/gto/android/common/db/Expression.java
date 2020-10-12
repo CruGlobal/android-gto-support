@@ -181,11 +181,6 @@ public abstract class Expression extends ShimExpression {
     }
 
     @NonNull
-    public static Field field(@NonNull final String name) {
-        return new Field(null, name);
-    }
-
-    @NonNull
     public static Raw raw(@NonNull final String expr, @NonNull final Object... args) {
         return new Raw(expr, bindValues(args));
     }
@@ -202,108 +197,6 @@ public abstract class Expression extends ShimExpression {
 
     @Override
     public void writeToParcel(final Parcel out, final int flags) {
-    }
-
-    public static final class Field extends Expression {
-        @Nullable
-        private final Table<?> mTable;
-        @NonNull
-        private final String mName;
-
-        @Nullable
-        private transient Pair<String, String[]> mSql;
-
-        Field(@Nullable final Table<?> table, @NonNull final String name) {
-            mTable = table;
-            mName = name;
-        }
-
-        Field(@NonNull final Parcel in, @Nullable final ClassLoader loader) {
-            mTable = in.readParcelable(loader);
-            mName = in.readString();
-        }
-
-        @NonNull
-        public Aggregate count() {
-            return new Aggregate(Aggregate.COUNT, false, this);
-        }
-
-        @NonNull
-        public Aggregate count(final boolean distinct) {
-            return new Aggregate(Aggregate.COUNT, distinct, this);
-        }
-
-        @NonNull
-        public Aggregate max() {
-            return new Aggregate(Aggregate.MAX, false, this);
-        }
-
-        @NonNull
-        public Aggregate max(final boolean distinct) {
-            return new Aggregate(Aggregate.MAX, distinct, this);
-        }
-
-        @NonNull
-        public Aggregate min() {
-            return new Aggregate(Aggregate.MIN, false, this);
-        }
-
-        @NonNull
-        public Aggregate min(final boolean distinct) {
-            return new Aggregate(Aggregate.MIN, distinct, this);
-        }
-
-        @NonNull
-        public Aggregate sum() {
-            return new Aggregate(Aggregate.SUM, false, this);
-        }
-
-        @NonNull
-        public Aggregate sum(final boolean distinct) {
-            return new Aggregate(Aggregate.SUM, distinct, this);
-        }
-
-        @NonNull
-        @Override
-        public Pair<String, String[]> buildSql(@NonNull final AbstractDao dao) {
-            // generate SQL for this field
-            if (mSql == null) {
-                final StringBuilder sql = new StringBuilder();
-                if (mTable != null) {
-                    sql.append(mTable.sqlPrefix(dao));
-                }
-                sql.append(mName);
-                mSql = Pair.create(sql.toString(), NO_ARGS);
-            }
-
-            return mSql;
-        }
-
-        @Override
-        public void writeToParcel(final Parcel out, final int flags) {
-            super.writeToParcel(out, flags);
-            out.writeParcelable(mTable, 0);
-            out.writeString(mName);
-        }
-
-        public static final Creator<Field> CREATOR = new FieldCreator();
-
-        private static class FieldCreator implements ClassLoaderCreator<Field> {
-            @Override
-            public Field createFromParcel(@NonNull final Parcel in) {
-                return new Field(in, null);
-            }
-
-            @Override
-            public Field[] newArray(final int size) {
-                return new Field[size];
-            }
-
-            @Override
-            public Field createFromParcel(@NonNull final Parcel in, @Nullable final ClassLoader loader) {
-                return new Field(in, loader);
-            }
-        }
     }
 
     public static class Raw extends Expression {

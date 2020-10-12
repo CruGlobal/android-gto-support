@@ -5,6 +5,7 @@ import android.util.Pair
 import kotlinx.android.parcel.IgnoredOnParcel
 import kotlinx.android.parcel.Parcelize
 import org.ccci.gto.android.common.db.AbstractDao.Companion.bindValues
+import org.ccci.gto.android.common.db.Expression.Aggregate
 
 private val NO_ARGS = emptyArray<String>()
 
@@ -35,6 +36,9 @@ abstract class KotlinExpression : Parcelable {
         fun constants(vararg values: Number) = Array(values.size) { constant(values[it]) }
         @JvmStatic
         fun constants(vararg values: String) = Array(values.size) { constant(values[it]) }
+
+        @JvmStatic
+        fun field(name: String) = Field(name = name)
     }
 
     open fun args(vararg args: Any) = args(*bindValues(*args))
@@ -52,6 +56,29 @@ abstract class KotlinExpression : Parcelable {
 
     // TODO: make internal
     abstract fun buildSql(dao: AbstractDao): Pair<String, Array<String>>
+
+    @Parcelize
+    data class Field internal constructor(private val table: Table<*>? = null, private val name: String) :
+        KotlinExpression() {
+        @JvmOverloads
+        fun count(distinct: Boolean = false) = Aggregate(Aggregate.COUNT, distinct, this)
+        @JvmOverloads
+        fun max(distinct: Boolean = false) = Aggregate(Aggregate.MAX, distinct, this)
+        @JvmOverloads
+        fun min(distinct: Boolean = false) = Aggregate(Aggregate.MIN, distinct, this)
+        @JvmOverloads
+        fun sum(distinct: Boolean = false) = Aggregate(Aggregate.SUM, distinct, this)
+
+        @Transient
+        @IgnoredOnParcel
+        private var _sql: QueryComponent? = null
+
+        override fun buildSql(dao: AbstractDao): Pair<String, Array<String>> {
+            val query =
+                _sql ?: QueryComponent(if (table != null) "${table.sqlPrefix(dao)}$name" else name).also { _sql = it }
+            return query.toPair()
+        }
+    }
 
     @Parcelize
     data class Literal internal constructor(
