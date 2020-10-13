@@ -59,10 +59,10 @@ abstract class KotlinExpression : Parcelable {
     fun raw(expr: String, vararg args: Any) = Raw(expr, bindValues(*args).toList())
     fun raw(expr: String, vararg args: String) = Raw(expr, args.toList())
 
-    open fun toRaw(dao: AbstractDao) = buildSql(dao).let { raw(it.first, *it.second) }
+    open fun toRaw(dao: AbstractDao) = buildSql(dao).let { raw(it.sql, *it.args) }
 
     // TODO: make internal
-    abstract fun buildSql(dao: AbstractDao): Pair<String, Array<String>>
+    internal abstract fun buildSql(dao: AbstractDao): QueryComponent
 
     @Parcelize
     data class Field internal constructor(
@@ -82,11 +82,8 @@ abstract class KotlinExpression : Parcelable {
         @IgnoredOnParcel
         private var _sql: QueryComponent? = null
 
-        override fun buildSql(dao: AbstractDao): Pair<String, Array<String>> {
-            val query =
-                _sql ?: QueryComponent(if (table != null) "${table.sqlPrefix(dao)}$name" else name).also { _sql = it }
-            return query.toPair()
-        }
+        override fun buildSql(dao: AbstractDao) =
+            _sql ?: QueryComponent(if (table != null) "${table.sqlPrefix(dao)}$name" else name).also { _sql = it }
     }
 
     @Parcelize
@@ -118,7 +115,7 @@ abstract class KotlinExpression : Parcelable {
             }
         }
 
-        override fun buildSql(dao: AbstractDao) = _sql.toPair()
+        override fun buildSql(dao: AbstractDao) = _sql
     }
 
     @Parcelize
@@ -129,7 +126,7 @@ abstract class KotlinExpression : Parcelable {
 
         override fun toRaw(dao: AbstractDao) = this
 
-        override fun buildSql(dao: AbstractDao) = QueryComponent(expr, *args.toTypedArray()).toPair()
+        override fun buildSql(dao: AbstractDao) = QueryComponent(expr, *args.toTypedArray())
     }
 
     @Parcelize
@@ -153,9 +150,9 @@ abstract class KotlinExpression : Parcelable {
         @IgnoredOnParcel
         private var _sql: QueryComponent? = null
         private fun generateSql(dao: AbstractDao) =
-            expr.buildSql(dao).let { QueryComponent("$op (${it.first})", *it.second) }.also { _sql = it }
+            (QueryComponent("$op (") + expr.buildSql(dao) + ")").also { _sql = it }
 
-        override fun buildSql(dao: AbstractDao) = (_sql ?: generateSql(dao)).toPair()
+        override fun buildSql(dao: AbstractDao) = _sql ?: generateSql(dao)
     }
 
     @Parcelize
@@ -180,12 +177,12 @@ abstract class KotlinExpression : Parcelable {
         @Transient
         @IgnoredOnParcel
         private var _sql: QueryComponent? = null
-        private fun generateSql(dao: AbstractDao) = expr.buildSql(dao).let {
+        private fun generateSql(dao: AbstractDao) =
             // {mOp} (DISTINCT {expr})
-            QueryComponent("$op (${if (isDistinct) "DISTINCT " else ""}${it.first})", *it.second)
-        }.also { _sql = it }
+            (QueryComponent("$op (${if (isDistinct) "DISTINCT " else ""}") + expr.buildSql(dao) + ")")
+                .also { _sql = it }
 
-        override fun buildSql(dao: AbstractDao) = (_sql ?: generateSql(dao)).toPair()
+        override fun buildSql(dao: AbstractDao) = _sql ?: generateSql(dao)
     }
 }
 
