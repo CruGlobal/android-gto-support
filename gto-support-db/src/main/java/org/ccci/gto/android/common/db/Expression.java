@@ -11,8 +11,6 @@ import org.ccci.gto.android.common.util.ArrayUtils;
 
 import java.util.Arrays;
 
-import static org.ccci.gto.android.common.db.AbstractDao.bindValues;
-
 public abstract class Expression extends ShimExpression {
     static final String[] NO_ARGS = new String[0];
 
@@ -160,16 +158,6 @@ public abstract class Expression extends ShimExpression {
     }
 
     @NonNull
-    public Expression not() {
-        return new Unary(Unary.NOT, this);
-    }
-
-    @NonNull
-    public static Expression not(@NonNull final Expression expression) {
-        return expression.not();
-    }
-
-    @NonNull
     protected Binary binaryExpr(@NonNull final String op, @NonNull final Expression expression) {
         return new Binary(op, this, expression);
     }
@@ -249,7 +237,7 @@ public abstract class Expression extends ShimExpression {
 
         @NonNull
         @Override
-        public Expression not() {
+        public KotlinExpression not() {
             // sometimes we can just change our own op for not()
             switch (mOp) {
                 case EQ:
@@ -367,93 +355,6 @@ public abstract class Expression extends ShimExpression {
         }
     }
 
-    public static class Unary extends Expression {
-        static final String NOT = "NOT";
-
-        @NonNull
-        private final String mOp;
-        @NonNull
-        private final Expression mExpr;
-
-        @Nullable
-        private transient Pair<String, String[]> mSql;
-
-        Unary(@NonNull final String op, @NonNull final Expression expr) {
-            mOp = op;
-            mExpr = expr;
-        }
-
-        Unary(@NonNull final Parcel in, @Nullable final ClassLoader loader) {
-            mOp = in.readString();
-            mExpr = in.readParcelable(loader);
-        }
-
-        @Override
-        protected int numOfArgs() {
-            return mExpr.numOfArgs();
-        }
-
-        @NonNull
-        @Override
-        public Expression args(@NonNull final String... args) {
-            return (Expression) mExpr.args(args);
-        }
-
-        @NonNull
-        @Override
-        public Expression not() {
-            switch (mOp) {
-                case NOT:
-                    return mExpr;
-                default:
-                    return super.not();
-            }
-        }
-
-        @NonNull
-        @Override
-        public Pair<String, String[]> buildSql(@NonNull final AbstractDao dao) {
-            // generate SQL if it hasn't been generated yet
-            if (mSql == null) {
-                final StringBuilder sql = new StringBuilder(mOp).append(" (");
-                String[] args = NO_ARGS;
-                final Pair<String, String[]> resp = mExpr.buildSql(dao);
-                sql.append(resp.first);
-                args = ArrayUtils.merge(String.class, args, resp.second);
-                sql.append(')');
-                mSql = Pair.create(sql.toString(), args);
-            }
-
-            return mSql;
-        }
-
-        @Override
-        public void writeToParcel(final Parcel out, final int flags) {
-            super.writeToParcel(out, flags);
-            out.writeString(mOp);
-            out.writeParcelable(mExpr, 0);
-        }
-
-        public static final Creator<Unary> CREATOR = new UnaryExpressionCreator();
-
-        private static class UnaryExpressionCreator implements ClassLoaderCreator<Unary> {
-            @Override
-            public Unary createFromParcel(@NonNull final Parcel in) {
-                return new Unary(in, null);
-            }
-
-            @Override
-            public Unary[] newArray(final int size) {
-                return new Unary[size];
-            }
-
-            @Override
-            public Unary createFromParcel(@NonNull final Parcel in, @Nullable final ClassLoader loader) {
-                return new Unary(in, loader);
-            }
-        }
-    }
-
     public static class Aggregate extends Expression {
         static final String COUNT = "COUNT";
         static final String MAX = "MAX";
@@ -489,7 +390,7 @@ public abstract class Expression extends ShimExpression {
 
         @Override
         protected int numOfArgs() {
-            return mField.numOfArgs();
+            return mField.getNumOfArgs();
         }
 
         @NonNull

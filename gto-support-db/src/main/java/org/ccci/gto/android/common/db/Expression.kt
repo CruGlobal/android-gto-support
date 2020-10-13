@@ -37,6 +37,9 @@ abstract class KotlinExpression : Parcelable {
 
         @JvmStatic
         fun field(name: String) = Field(name = name)
+
+        @JvmStatic
+        fun not(expression: KotlinExpression) = expression.not()
     }
 
     /**
@@ -50,6 +53,8 @@ abstract class KotlinExpression : Parcelable {
         require(args.isEmpty()) { "invalid number of arguments specified" }
         return this
     }
+
+    open operator fun not(): KotlinExpression = Unary(Unary.NOT, this)
 
     fun raw(expr: String, vararg args: Any) = Raw(expr, bindValues(*args).toList())
     fun raw(expr: String, vararg args: String) = Raw(expr, args.toList())
@@ -120,12 +125,37 @@ abstract class KotlinExpression : Parcelable {
     data class Raw internal constructor(private val expr: String, private val args: List<String>) : KotlinExpression() {
         override val numOfArgs get() = args.size
 
-        override fun args(vararg args: Any) = copy(args = bindValues(*args).toList())
         override fun args(vararg args: String) = copy(args = args.toList())
 
         override fun toRaw(dao: AbstractDao) = this
 
         override fun buildSql(dao: AbstractDao) = QueryComponent(expr, *args.toTypedArray()).toPair()
+    }
+
+    @Parcelize
+    internal data class Unary internal constructor(
+        private val op: String,
+        private val expr: KotlinExpression
+    ) : KotlinExpression() {
+        companion object {
+            internal const val NOT = "NOT"
+        }
+
+        override val numOfArgs get() = expr.numOfArgs
+
+        override fun args(vararg args: String) = copy(expr = expr.args(*args))
+        override fun not() = when (op) {
+            NOT -> expr
+            else -> super.not()
+        }
+
+        @Transient
+        @IgnoredOnParcel
+        private var _sql: QueryComponent? = null
+        private fun generateSql(dao: AbstractDao) =
+            expr.buildSql(dao).let { QueryComponent("$op (${it.first})", *it.second) }
+
+        override fun buildSql(dao: AbstractDao) = (_sql ?: generateSql(dao).also { _sql = it }).toPair()
     }
 }
 
