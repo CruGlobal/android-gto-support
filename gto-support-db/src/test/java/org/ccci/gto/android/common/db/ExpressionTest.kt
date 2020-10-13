@@ -1,46 +1,83 @@
 package org.ccci.gto.android.common.db
 
-import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.nhaarman.mockitokotlin2.eq
+import com.nhaarman.mockitokotlin2.doReturn
 import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.whenever
-import org.ccci.gto.android.common.db.model.Model1
+import java.util.Locale
+import kotlin.random.Random
+import org.ccci.gto.android.common.db.model.Model2
+import org.hamcrest.CoreMatchers
+import org.hamcrest.MatcherAssert.assertThat
+import org.hamcrest.Matchers
+import org.hamcrest.beans.HasPropertyWithValue
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
-import org.junit.runner.RunWith
 
-private const val TABLE_NAME = "root"
-private const val FIELD_NAME = "test"
-private val FIELD = Table.forClass(Model1::class.java).field("test")
-
-@RunWith(AndroidJUnit4::class)
 class ExpressionTest {
+    private val tname = "t${Random.nextInt(0, Int.MAX_VALUE)}"
+    private val fname = "f${Random.nextInt(0, Int.MAX_VALUE)}"
+
     private lateinit var dao: AbstractDao
 
+    private val table = Table.forClass<Model2>()
+    private lateinit var field: Expression.Field
+    private val expr = Expression.raw("expr")
+
     @Before
-    fun setup() {
-        dao = mock()
-        whenever(dao.tableName(eq(Model1::class.java))).thenReturn(TABLE_NAME)
+    fun setupField() {
+        dao = mock { on { tableName(Model2::class.java) } doReturn tname }
+        field = table.field(fname)
     }
 
     @Test
-    fun testEqualsSql() {
-        assertEquals("($TABLE_NAME.$FIELD_NAME == ?)", FIELD.eq("1").buildSql(dao).sql)
+    fun verifyBindSql() {
+        assertThat(Expression.bind().buildSql(dao), matchesQueryComponent("?", ""))
+        assertThat(Expression.bind(5).buildSql(dao), matchesQueryComponent("?", "5"))
+        assertThat(Expression.bind("test").buildSql(dao), matchesQueryComponent("?", "test"))
+        assertThat(Expression.bind(Locale.ENGLISH).buildSql(dao), matchesQueryComponent("?", "en"))
+    }
+
+    @Test
+    fun verifyConstantSql() {
+        assertThat(Expression.NULL.buildSql(dao), matchesQueryComponent("NULL"))
+        assertThat(Expression.constant(5).buildSql(dao), matchesQueryComponent("5"))
+        assertThat(Expression.constant("test").buildSql(dao), matchesQueryComponent("?", "test"))
+        assertThat(Expression.constant(Locale.ENGLISH).buildSql(dao), matchesQueryComponent("?", "en"))
+    }
+
+    @Test
+    fun verifyFieldSql() {
+        assertThat(Expression.field(fname).buildSql(dao), matchesQueryComponent(fname))
+    }
+
+    @Test
+    fun verifyEqSql() {
+        assertThat(expr.eq(1).buildSql(dao), matchesQueryComponent("(expr == 1)"))
+        assertThat(expr.eq("a").buildSql(dao), matchesQueryComponent("(expr == ?)", "a"))
+        assertThat(expr.eq(Locale.ENGLISH).buildSql(dao), matchesQueryComponent("(expr == ?)", "en"))
+        assertThat(expr.eq(expr).buildSql(dao), matchesQueryComponent("(expr == expr)"))
     }
 
     @Test
     fun testNotEqualsSql() {
-        assertEquals("($TABLE_NAME.$FIELD_NAME != ?)", FIELD.ne("1").buildSql(dao).sql)
+        assertEquals("($tname.$fname != ?)", field.ne("1").buildSql(dao).sql)
     }
 
     @Test
     fun testCount() {
-        assertEquals("COUNT ($TABLE_NAME.$FIELD_NAME)", FIELD.count().buildSql(dao).sql)
+        assertEquals("COUNT ($tname.$fname)", field.count().buildSql(dao).sql)
     }
 
     @Test
     fun testCountInHaving() {
-        assertEquals("(COUNT ($TABLE_NAME.$FIELD_NAME) == 1)", FIELD.count().eq(1).buildSql(dao).sql)
+        assertEquals("(COUNT ($tname.$fname) == 1)", field.count().eq(1).buildSql(dao).sql)
     }
+
+    private fun matchesQueryComponent(sql: String = "", vararg args: String) = CoreMatchers.allOf<QueryComponent>(
+        HasPropertyWithValue.hasProperty("sql", CoreMatchers.equalTo(sql)),
+        HasPropertyWithValue.hasProperty(
+            "args",
+            if (args.isEmpty()) Matchers.emptyArray() else Matchers.arrayContaining(*args)
+        )
+    )
 }

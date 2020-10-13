@@ -39,6 +39,7 @@ abstract class Expression : Parcelable {
         @JvmStatic
         fun not(expression: Expression) = expression.not()
 
+        fun raw(expr: String) = Raw(expr, emptyList())
         fun raw(expr: String, vararg args: Any) = Raw(expr, bindValues(*args).toList())
         fun raw(expr: String, vararg args: String) = Raw(expr, args.toList())
     }

@@ -13,6 +13,7 @@ class Table<T : Any> private constructor(
     companion object {
         @JvmStatic
         fun <T : Any> forClass(type: Class<T>) = Table(type, null)
+        inline fun <reified T : Any> forClass() = forClass(T::class.java)
     }
 
     fun `as`(alias: String?) = Table(type, alias)
