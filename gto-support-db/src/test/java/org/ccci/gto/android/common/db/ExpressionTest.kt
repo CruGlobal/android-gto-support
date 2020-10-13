@@ -26,21 +26,21 @@ class ExpressionTest {
 
     @Test
     fun testEqualsSql() {
-        assertEquals("($TABLE_NAME.$FIELD_NAME == ?)", FIELD.eq("1").buildSql(dao).first)
+        assertEquals("($TABLE_NAME.$FIELD_NAME == ?)", FIELD.eq("1").buildSql(dao).sql)
     }
 
     @Test
     fun testNotEqualsSql() {
-        assertEquals("($TABLE_NAME.$FIELD_NAME != ?)", FIELD.ne("1").buildSql(dao).first)
+        assertEquals("($TABLE_NAME.$FIELD_NAME != ?)", FIELD.ne("1").buildSql(dao).sql)
     }
 
     @Test
     fun testCount() {
-        assertEquals("COUNT ($TABLE_NAME.$FIELD_NAME)", FIELD.count().buildSql(dao).first)
+        assertEquals("COUNT ($TABLE_NAME.$FIELD_NAME)", FIELD.count().buildSql(dao).sql)
     }
 
     @Test
     fun testCountInHaving() {
-        assertEquals("(COUNT ($TABLE_NAME.$FIELD_NAME) == 1)", FIELD.count().eq(1).buildSql(dao).first)
+        assertEquals("(COUNT ($TABLE_NAME.$FIELD_NAME) == 1)", FIELD.count().eq(1).buildSql(dao).sql)
     }
 }

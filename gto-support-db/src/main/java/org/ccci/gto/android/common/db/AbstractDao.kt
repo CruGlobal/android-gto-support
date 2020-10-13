@@ -133,24 +133,24 @@ abstract class AbstractDao(private val helper: SQLiteOpenHelper) : Dao {
 
         // generate "WHERE {}" SQL
         val where = query.buildSqlWhere(this)
-        args = ArrayUtils.merge(String::class.java, args, where.second)
+        args = ArrayUtils.merge(String::class.java, args, where?.args)
 
         // handle GROUP BY {} HAVING {}
         var groupBy: String? = null
         var having: String? = null
         if (query.groupBy.isNotEmpty()) {
             // generate "GROUP BY {}" SQL
-            groupBy = query.groupBy.joinToString(",") { it.buildSql(this).first }
+            groupBy = query.groupBy.joinToString(",") { it.buildSql(this).sql }
 
             // generate "HAVING {}" SQL
             val havingRaw = query.buildSqlHaving(this)
-            having = havingRaw.first
-            args = ArrayUtils.merge(String::class.java, args, havingRaw.second)
+            having = havingRaw?.sql
+            args = ArrayUtils.merge(String::class.java, args, havingRaw?.args)
         }
 
         // execute actual query
         val c = transaction(exclusive = false, readOnly = true) {
-            it.query(query.distinct, from.sql, projection, where.first, args, groupBy, having, orderBy, query.sqlLimit)
+            it.query(query.distinct, from.sql, projection, where?.sql, args, groupBy, having, orderBy, query.sqlLimit)
         }
         c.moveToPosition(-1)
         return c
@@ -221,7 +221,7 @@ abstract class AbstractDao(private val helper: SQLiteOpenHelper) : Dao {
         val w = where?.buildSql(this)
         return transaction(exclusive = false) { db ->
             invalidateClass(type)
-            db.updateWithOnConflict(table, values, w?.first, w?.second, conflictAlgorithm)
+            db.updateWithOnConflict(table, values, w?.sql, w?.args, conflictAlgorithm)
         }
     }
 
@@ -244,7 +244,7 @@ abstract class AbstractDao(private val helper: SQLiteOpenHelper) : Dao {
     final override fun delete(clazz: Class<*>, where: Expression?) {
         val w = where?.buildSql(this)
         transaction(exclusive = false) { db ->
-            db.delete(tableName(clazz), w?.first, w?.second)
+            db.delete(tableName(clazz), w?.sql, w?.args)
             invalidateClass(clazz)
         }
     }
@@ -364,7 +364,7 @@ abstract class AbstractDao(private val helper: SQLiteOpenHelper) : Dao {
     protected open fun onInvalidateClass(clazz: Class<*>) = Unit
     // endregion Data Invalidation
 
-    protected fun compileExpression(expression: Expression) = expression.buildSql(this)
+    protected fun compileExpression(expression: Expression) = expression.buildSql(this).toPair()
 }
 
 internal fun String.prefixOrderByFieldsWith(prefix: String): String = when {

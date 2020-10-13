@@ -38,6 +38,9 @@ abstract class Expression : Parcelable {
 
         @JvmStatic
         fun not(expression: Expression) = expression.not()
+
+        fun raw(expr: String, vararg args: Any) = Raw(expr, bindValues(*args).toList())
+        fun raw(expr: String, vararg args: String) = Raw(expr, args.toList())
     }
 
     /**
@@ -88,9 +91,6 @@ abstract class Expression : Parcelable {
     fun ne(constant: String) = ne(constant(constant))
     fun ne(constant: Any) = ne(constant(constant))
     fun ne(expression: Expression) = Binary(Binary.NE, this, expression)
-
-    fun raw(expr: String, vararg args: Any) = Raw(expr, bindValues(*args).toList())
-    fun raw(expr: String, vararg args: String) = Raw(expr, args.toList())
 
     protected open fun binaryExpr(op: String, expression: Expression) = Binary(op, this, expression)
 

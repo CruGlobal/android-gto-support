@@ -48,5 +48,5 @@ class Join<S : Any, T : Any> private constructor(
     private fun buildSql(dao: AbstractDao) = base?.getSql(dao) + buildString {
         if (type != null) append(' ').append(type)
         append(" JOIN ").append(target.sqlTable(dao))
-    } + on?.buildSql(dao)?.toQueryComponent()?.prepend(" ON ")
+    } + on?.buildSql(dao)?.prepend(" ON ")
 }

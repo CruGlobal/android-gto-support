@@ -1,6 +1,5 @@
 package org.ccci.gto.android.common.db
 
-import android.util.Pair
 import androidx.annotation.RestrictTo
 import androidx.annotation.VisibleForTesting
 import org.ccci.gto.android.common.db.AbstractDao.Companion.bindValues
@@ -47,16 +46,10 @@ class Query<T : Any> private constructor(
     fun limit(limit: Int?) = Query(this, limit = limit)
     fun offset(offset: Int?) = Query(this, offset = offset)
 
-    internal fun buildSqlFrom(dao: AbstractDao) = QueryComponent(table.sqlTable(dao)) +
-        joins.fold(null as QueryComponent?) { sql, join -> sql + join.getSql(dao) }
-
-    fun buildSqlWhere(dao: AbstractDao): Pair<String?, Array<String>?> {
-        return where?.buildSql(dao) ?: Pair.create<String?, Array<String>?>(null, null)
-    }
-
-    fun buildSqlHaving(dao: AbstractDao): Pair<String?, Array<String>?> {
-        return having?.buildSql(dao) ?: Pair.create<String?, Array<String>?>(null, null)
-    }
+    internal fun buildSqlFrom(dao: AbstractDao) =
+        QueryComponent(table.sqlTable(dao)) + joins.joinToQueryComponent { it.getSql(dao) }
+    internal fun buildSqlWhere(dao: AbstractDao) = where?.buildSql(dao)
+    internal fun buildSqlHaving(dao: AbstractDao) = having?.buildSql(dao)
 
     internal val sqlLimit get() = when {
         // // XXX: not supported by Android

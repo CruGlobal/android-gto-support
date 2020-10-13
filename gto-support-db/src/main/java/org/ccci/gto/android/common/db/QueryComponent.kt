@@ -22,12 +22,12 @@ internal operator fun QueryComponent?.plus(sql: String) = when {
 }
 
 internal fun <T> Array<T>.joinToQueryComponent(
-    separator: String = ",",
+    separator: String? = null,
     transform: ((T) -> QueryComponent)
 ): QueryComponent {
     var output = QueryComponent()
     forEachIndexed { i, it ->
-        if (i > 0) output += separator
+        if (i > 0 && separator != null) output += separator
         output += transform(it)
     }
     return output
