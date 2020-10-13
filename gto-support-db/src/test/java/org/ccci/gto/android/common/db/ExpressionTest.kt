@@ -8,6 +8,7 @@ import org.ccci.gto.android.common.db.model.Model2
 import org.hamcrest.CoreMatchers
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers
+import org.hamcrest.Matchers.arrayContaining
 import org.hamcrest.beans.HasPropertyWithValue
 import org.junit.Assert.assertEquals
 import org.junit.Before
@@ -56,6 +57,12 @@ class ExpressionTest {
         assertThat(expr.eq("a").buildSql(dao), matchesQueryComponent("(expr == ?)", "a"))
         assertThat(expr.eq(Locale.ENGLISH).buildSql(dao), matchesQueryComponent("(expr == ?)", "en"))
         assertThat(expr.eq(expr).buildSql(dao), matchesQueryComponent("(expr == expr)"))
+    }
+
+    @Test
+    fun verifyBinaryArgs() {
+        val expression = field.`in`(Expression.bind(), Expression.bind()).args(1, 2)
+        assertThat(expression.buildSql(dao).args, arrayContaining("1", "2"))
     }
 
     @Test

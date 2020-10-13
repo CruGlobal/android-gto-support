@@ -195,7 +195,7 @@ abstract class Expression : Parcelable {
             val exprs = exprs.map {
                 when (it.numOfArgs) {
                     0 -> it
-                    else -> it.args(*args.sliceArray(0 until it.numOfArgs)).also { pos += it.numOfArgs }
+                    else -> it.args(*args.sliceArray(pos until pos + it.numOfArgs)).also { pos += it.numOfArgs }
                 }
             }
 
@@ -225,7 +225,7 @@ abstract class Expression : Parcelable {
         private fun generateSql(dao: AbstractDao): QueryComponent {
             val query = QueryComponent("(") + when (op) {
                 IN, NOTIN -> {
-                    exprs[0].buildSql(dao) + " $op (" + exprs.sliceArray(1..exprs.size)
+                    exprs[0].buildSql(dao) + " $op (" + exprs.sliceArray(1 until exprs.size)
                         .joinToQueryComponent(",") { it.buildSql(dao) } + ")"
                 }
                 else -> exprs.joinToQueryComponent(" $op ") { it.buildSql(dao) }
