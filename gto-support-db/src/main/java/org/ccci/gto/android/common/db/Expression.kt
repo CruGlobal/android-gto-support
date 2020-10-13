@@ -70,13 +70,13 @@ abstract class KotlinExpression : Parcelable {
         private val name: String
     ) : KotlinExpression() {
         @JvmOverloads
-        fun count(distinct: Boolean = false) = Aggregate(Aggregate.COUNT, distinct, this)
+        fun count(isDistinct: Boolean = false) = Aggregate(Aggregate.COUNT, isDistinct, this)
         @JvmOverloads
-        fun max(distinct: Boolean = false) = Aggregate(Aggregate.MAX, distinct, this)
+        fun max(isDistinct: Boolean = false) = Aggregate(Aggregate.MAX, isDistinct, this)
         @JvmOverloads
-        fun min(distinct: Boolean = false) = Aggregate(Aggregate.MIN, distinct, this)
+        fun min(isDistinct: Boolean = false) = Aggregate(Aggregate.MIN, isDistinct, this)
         @JvmOverloads
-        fun sum(distinct: Boolean = false) = Aggregate(Aggregate.SUM, distinct, this)
+        fun sum(isDistinct: Boolean = false) = Aggregate(Aggregate.SUM, isDistinct, this)
 
         @Transient
         @IgnoredOnParcel
@@ -153,9 +153,39 @@ abstract class KotlinExpression : Parcelable {
         @IgnoredOnParcel
         private var _sql: QueryComponent? = null
         private fun generateSql(dao: AbstractDao) =
-            expr.buildSql(dao).let { QueryComponent("$op (${it.first})", *it.second) }
+            expr.buildSql(dao).let { QueryComponent("$op (${it.first})", *it.second) }.also { _sql = it }
 
-        override fun buildSql(dao: AbstractDao) = (_sql ?: generateSql(dao).also { _sql = it }).toPair()
+        override fun buildSql(dao: AbstractDao) = (_sql ?: generateSql(dao)).toPair()
+    }
+
+    @Parcelize
+    data class Aggregate internal constructor(
+        private val op: String,
+        private val isDistinct: Boolean,
+        private val expr: Field
+    ) : KotlinExpression() {
+        companion object {
+            internal const val COUNT = "COUNT"
+            internal const val MAX = "MAX"
+            internal const val MIN = "MIN"
+            internal const val SUM = "SUM"
+        }
+
+        override val numOfArgs get() = expr.numOfArgs
+
+        override fun args(vararg args: String) = copy(expr = expr.args(*args) as Field)
+
+        fun distinct(isDistinct: Boolean) = copy(isDistinct = isDistinct)
+
+        @Transient
+        @IgnoredOnParcel
+        private var _sql: QueryComponent? = null
+        private fun generateSql(dao: AbstractDao) = expr.buildSql(dao).let {
+            // {mOp} (DISTINCT {expr})
+            QueryComponent("$op (${if (isDistinct) "DISTINCT " else ""}${it.first})", *it.second)
+        }.also { _sql = it }
+
+        override fun buildSql(dao: AbstractDao) = (_sql ?: generateSql(dao)).toPair()
     }
 }
 
