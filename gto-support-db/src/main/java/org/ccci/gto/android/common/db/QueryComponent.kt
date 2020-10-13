@@ -2,7 +2,7 @@ package org.ccci.gto.android.common.db
 
 import android.util.Pair
 
-internal class QueryComponent(val sql: String, vararg val args: String) {
+internal class QueryComponent(val sql: String = "", vararg val args: String) {
     operator fun plus(other: QueryComponent?) = when (other) {
         null -> this
         else -> QueryComponent(sql + other.sql, *args, *other.args)
@@ -19,6 +19,18 @@ internal operator fun QueryComponent?.plus(other: QueryComponent) = when {
 internal operator fun QueryComponent?.plus(sql: String) = when {
     this == null -> QueryComponent(sql)
     else -> QueryComponent(this.sql + sql, *args)
+}
+
+internal fun <T> Array<T>.joinToQueryComponent(
+    separator: String = ",",
+    transform: ((T) -> QueryComponent)
+): QueryComponent {
+    var output = QueryComponent()
+    forEachIndexed { i, it ->
+        if (i > 0) output += separator
+        output += transform(it)
+    }
+    return output
 }
 
 @Deprecated("This is only present to aid conversion from Java to Kotlin")

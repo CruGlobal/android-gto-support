@@ -5,7 +5,7 @@ import kotlinx.android.parcel.IgnoredOnParcel
 import kotlinx.android.parcel.Parcelize
 import org.ccci.gto.android.common.db.AbstractDao.Companion.bindValues
 
-abstract class KotlinExpression : Parcelable {
+abstract class Expression : Parcelable {
     companion object {
         @JvmField
         val NULL = Literal(isConstant = true)
@@ -37,7 +37,7 @@ abstract class KotlinExpression : Parcelable {
         fun field(name: String) = Field(name = name)
 
         @JvmStatic
-        fun not(expression: KotlinExpression) = expression.not()
+        fun not(expression: Expression) = expression.not()
     }
 
     /**
@@ -47,52 +47,52 @@ abstract class KotlinExpression : Parcelable {
     protected open val numOfArgs = 0
 
     open fun args(vararg args: Any) = args(*bindValues(*args))
-    open fun args(vararg args: String): KotlinExpression {
+    open fun args(vararg args: String): Expression {
         require(args.isEmpty()) { "invalid number of arguments specified" }
         return this
     }
 
-    fun and(expression: KotlinExpression) = binaryExpr(Binary.AND, expression)
-    fun or(expression: KotlinExpression) = binaryExpr(Binary.OR, expression)
-    open operator fun not(): KotlinExpression = Unary(Unary.NOT, this)
+    fun and(expression: Expression) = binaryExpr(Binary.AND, expression)
+    fun or(expression: Expression) = binaryExpr(Binary.OR, expression)
+    open operator fun not(): Expression = Unary(Unary.NOT, this)
 
     fun eq(constant: Number) = eq(constant(constant))
     fun eq(constant: String) = eq(constant(constant))
     fun eq(constant: Any) = eq(constant(constant))
-    fun eq(expression: KotlinExpression) = Binary(Binary.EQ, this, expression)
+    fun eq(expression: Expression) = Binary(Binary.EQ, this, expression)
 
     fun lt(constant: Number) = lt(constant(constant))
     fun lt(constant: Any) = lt(constant(constant))
-    fun lt(expression: KotlinExpression) = Binary(Binary.LT, this, expression)
+    fun lt(expression: Expression) = Binary(Binary.LT, this, expression)
 
     fun lte(constant: Number) = lte(constant(constant))
     fun lte(constant: Any) = lte(constant(constant))
-    fun lte(expression: KotlinExpression) = Binary(Binary.LTE, this, expression)
+    fun lte(expression: Expression) = Binary(Binary.LTE, this, expression)
 
     fun gt(constant: Number) = gt(constant(constant))
     fun gt(constant: Any) = gt(constant(constant))
-    fun gt(expression: KotlinExpression) = Binary(Binary.GT, this, expression)
+    fun gt(expression: Expression) = Binary(Binary.GT, this, expression)
 
     fun gte(constant: Number) = gte(constant(constant))
     fun gte(constant: Any) = gte(constant(constant))
-    fun gte(expression: KotlinExpression) = Binary(Binary.GTE, this, expression)
+    fun gte(expression: Expression) = Binary(Binary.GTE, this, expression)
 
-    fun `in`(vararg expressions: KotlinExpression) = Binary(Binary.IN, this, *expressions)
-    fun notIn(vararg expressions: KotlinExpression) = Binary(Binary.NOTIN, this, *expressions)
+    fun `in`(vararg expressions: Expression) = Binary(Binary.IN, this, *expressions)
+    fun notIn(vararg expressions: Expression) = Binary(Binary.NOTIN, this, *expressions)
 
-    fun `is`(expression: KotlinExpression) = Binary(Binary.IS, this, expression)
+    fun `is`(expression: Expression) = Binary(Binary.IS, this, expression)
     fun isNull() = Binary(Binary.IS, this, NULL)
-    fun isNot(expression: KotlinExpression) = Binary(Binary.ISNOT, this, expression)
+    fun isNot(expression: Expression) = Binary(Binary.ISNOT, this, expression)
 
     fun ne(constant: Number) = ne(constant(constant))
     fun ne(constant: String) = ne(constant(constant))
     fun ne(constant: Any) = ne(constant(constant))
-    fun ne(expression: KotlinExpression) = Binary(Binary.NE, this, expression)
+    fun ne(expression: Expression) = Binary(Binary.NE, this, expression)
 
     fun raw(expr: String, vararg args: Any) = Raw(expr, bindValues(*args).toList())
     fun raw(expr: String, vararg args: String) = Raw(expr, args.toList())
 
-    protected open fun binaryExpr(op: String, expression: KotlinExpression) = Binary(op, this, expression)
+    protected open fun binaryExpr(op: String, expression: Expression) = Binary(op, this, expression)
 
     @Deprecated("Since v3.7.0, This doesn't seem necessary")
     open fun toRaw(dao: AbstractDao) = buildSql(dao).let { raw(it.sql, *it.args) }
@@ -104,7 +104,7 @@ abstract class KotlinExpression : Parcelable {
     data class Field internal constructor(
         private val table: Table<*>? = null,
         private val name: String
-    ) : KotlinExpression() {
+    ) : Expression() {
         @JvmOverloads
         fun count(isDistinct: Boolean = false) = Aggregate(Aggregate.COUNT, isDistinct, this)
         @JvmOverloads
@@ -127,7 +127,7 @@ abstract class KotlinExpression : Parcelable {
         private val strValue: String? = null,
         private val numValue: Number? = null,
         private val isConstant: Boolean
-    ) : KotlinExpression() {
+    ) : Expression() {
         internal constructor(value: Number, constant: Boolean) : this(null, value, constant)
         internal constructor(value: String, constant: Boolean) : this(value, null, constant)
 
@@ -155,7 +155,7 @@ abstract class KotlinExpression : Parcelable {
     }
 
     @Parcelize
-    data class Raw internal constructor(private val expr: String, private val args: List<String>) : KotlinExpression() {
+    data class Raw internal constructor(private val expr: String, private val args: List<String>) : Expression() {
         override val numOfArgs get() = args.size
 
         override fun args(vararg args: String) = copy(args = args.toList())
@@ -166,10 +166,7 @@ abstract class KotlinExpression : Parcelable {
     }
 
     @Parcelize
-    class Binary internal constructor(
-        private val op: String,
-        private vararg val exprs: KotlinExpression
-    ) : KotlinExpression() {
+    class Binary internal constructor(private val op: String, private vararg val exprs: Expression) : Expression() {
         companion object {
             internal const val LT = "<"
             internal const val LTE = "<="
@@ -189,7 +186,7 @@ abstract class KotlinExpression : Parcelable {
         @IgnoredOnParcel
         override val numOfArgs = exprs.sumOf { it.numOfArgs }
 
-        override fun args(vararg args: String): KotlinExpression {
+        override fun args(vararg args: String): Expression {
             require(args.size == numOfArgs) { "incorrect number of args specified" }
             if (args.isEmpty()) return this
 
@@ -214,7 +211,7 @@ abstract class KotlinExpression : Parcelable {
             else -> super.not()
         }
 
-        override fun binaryExpr(op: String, expression: KotlinExpression) = when {
+        override fun binaryExpr(op: String, expression: Expression) = when {
             this.op != op -> super.binaryExpr(op, expression)
             // chain binary expressions together when possible
             op == AND || op == OR -> Binary(op, *exprs, expression)
@@ -242,8 +239,8 @@ abstract class KotlinExpression : Parcelable {
     @Parcelize
     internal data class Unary internal constructor(
         private val op: String,
-        private val expr: KotlinExpression
-    ) : KotlinExpression() {
+        private val expr: Expression
+    ) : Expression() {
         companion object {
             internal const val NOT = "NOT"
         }
@@ -270,7 +267,7 @@ abstract class KotlinExpression : Parcelable {
         private val op: String,
         private val isDistinct: Boolean,
         private val expr: Field
-    ) : KotlinExpression() {
+    ) : Expression() {
         companion object {
             internal const val COUNT = "COUNT"
             internal const val MAX = "MAX"
@@ -295,5 +292,3 @@ abstract class KotlinExpression : Parcelable {
         override fun buildSql(dao: AbstractDao) = _sql ?: generateSql(dao)
     }
 }
-
-abstract class ShimExpression : KotlinExpression()
