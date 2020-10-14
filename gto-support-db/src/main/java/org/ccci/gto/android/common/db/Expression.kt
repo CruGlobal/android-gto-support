@@ -5,7 +5,7 @@ import kotlinx.android.parcel.IgnoredOnParcel
 import kotlinx.android.parcel.Parcelize
 import org.ccci.gto.android.common.db.AbstractDao.Companion.bindValues
 
-abstract class Expression : Parcelable {
+sealed class Expression : Parcelable {
     companion object {
         @JvmField
         val NULL = Literal(isConstant = true)
@@ -48,52 +48,52 @@ abstract class Expression : Parcelable {
      * The number of "dynamic" arguments in this expression. This may not be the same as the actual number of arguments
      * returned from buildSql
      */
-    protected open val numOfArgs = 0
+    internal open val numOfArgs = 0
 
-    open fun args(vararg args: Any) = args(*bindValues(*args))
+    fun args(vararg args: Any) = args(*bindValues(*args))
     open fun args(vararg args: String): Expression {
         require(args.isEmpty()) { "invalid number of arguments specified" }
         return this
     }
 
-    fun and(expression: Expression) = binaryExpr(Binary.AND, expression)
-    fun or(expression: Expression) = binaryExpr(Binary.OR, expression)
+    fun and(expression: Expression): Expression = binaryExpr(Binary.AND, expression)
+    fun or(expression: Expression): Expression = binaryExpr(Binary.OR, expression)
     open operator fun not(): Expression = Unary(Unary.NOT, this)
 
-    fun eq(constant: Number) = eq(constant(constant))
-    fun eq(constant: String) = eq(constant(constant))
-    fun eq(constant: Any) = eq(constant(constant))
-    fun eq(expression: Expression) = Binary(Binary.EQ, this, expression)
+    fun eq(constant: Number): Expression = eq(constant(constant))
+    fun eq(constant: String): Expression = eq(constant(constant))
+    fun eq(constant: Any): Expression = eq(constant(constant))
+    fun eq(expression: Expression): Expression = Binary(Binary.EQ, this, expression)
 
-    fun lt(constant: Number) = lt(constant(constant))
-    fun lt(constant: Any) = lt(constant(constant))
-    fun lt(expression: Expression) = Binary(Binary.LT, this, expression)
+    fun lt(constant: Number): Expression = lt(constant(constant))
+    fun lt(constant: Any): Expression = lt(constant(constant))
+    fun lt(expression: Expression): Expression = Binary(Binary.LT, this, expression)
 
-    fun lte(constant: Number) = lte(constant(constant))
-    fun lte(constant: Any) = lte(constant(constant))
-    fun lte(expression: Expression) = Binary(Binary.LTE, this, expression)
+    fun lte(constant: Number): Expression = lte(constant(constant))
+    fun lte(constant: Any): Expression = lte(constant(constant))
+    fun lte(expression: Expression): Expression = Binary(Binary.LTE, this, expression)
 
-    fun gt(constant: Number) = gt(constant(constant))
-    fun gt(constant: Any) = gt(constant(constant))
-    fun gt(expression: Expression) = Binary(Binary.GT, this, expression)
+    fun gt(constant: Number): Expression = gt(constant(constant))
+    fun gt(constant: Any): Expression = gt(constant(constant))
+    fun gt(expression: Expression): Expression = Binary(Binary.GT, this, expression)
 
-    fun gte(constant: Number) = gte(constant(constant))
-    fun gte(constant: Any) = gte(constant(constant))
-    fun gte(expression: Expression) = Binary(Binary.GTE, this, expression)
+    fun gte(constant: Number): Expression = gte(constant(constant))
+    fun gte(constant: Any): Expression = gte(constant(constant))
+    fun gte(expression: Expression): Expression = Binary(Binary.GTE, this, expression)
 
-    fun `in`(vararg expressions: Expression) = Binary(Binary.IN, this, *expressions)
-    fun notIn(vararg expressions: Expression) = Binary(Binary.NOTIN, this, *expressions)
+    fun `in`(vararg expressions: Expression): Expression = Binary(Binary.IN, this, *expressions)
+    fun notIn(vararg expressions: Expression): Expression = Binary(Binary.NOTIN, this, *expressions)
 
-    fun `is`(expression: Expression) = Binary(Binary.IS, this, expression)
-    fun isNull() = Binary(Binary.IS, this, NULL)
-    fun isNot(expression: Expression) = Binary(Binary.ISNOT, this, expression)
+    fun `is`(expression: Expression): Expression = Binary(Binary.IS, this, expression)
+    fun isNull(): Expression = Binary(Binary.IS, this, NULL)
+    fun isNot(expression: Expression): Expression = Binary(Binary.ISNOT, this, expression)
 
-    fun ne(constant: Number) = ne(constant(constant))
-    fun ne(constant: String) = ne(constant(constant))
-    fun ne(constant: Any) = ne(constant(constant))
-    fun ne(expression: Expression) = Binary(Binary.NE, this, expression)
+    fun ne(constant: Number): Expression = ne(constant(constant))
+    fun ne(constant: String): Expression = ne(constant(constant))
+    fun ne(constant: Any): Expression = ne(constant(constant))
+    fun ne(expression: Expression): Expression = Binary(Binary.NE, this, expression)
 
-    protected open fun binaryExpr(op: String, expression: Expression) = Binary(op, this, expression)
+    internal open fun binaryExpr(op: String, expression: Expression) = Binary(op, this, expression)
 
     @Deprecated("Since v3.7.0, This doesn't seem necessary")
     open fun toRaw(dao: AbstractDao) = buildSql(dao).let { raw(it.sql, *it.args) }
@@ -167,7 +167,10 @@ abstract class Expression : Parcelable {
     }
 
     @Parcelize
-    class Binary internal constructor(private val op: String, private vararg val exprs: Expression) : Expression() {
+    internal class Binary internal constructor(
+        private val op: String,
+        private vararg val exprs: Expression
+    ) : Expression() {
         companion object {
             internal const val LT = "<"
             internal const val LTE = "<="
