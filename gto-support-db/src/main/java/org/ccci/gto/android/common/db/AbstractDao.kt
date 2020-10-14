@@ -371,7 +371,7 @@ abstract class AbstractDao(private val helper: SQLiteOpenHelper) : Dao {
     protected open fun onInvalidateClass(clazz: Class<*>) = Unit
     // endregion Data Invalidation
 
-    protected fun compileExpression(expression: Expression) = expression.buildSql(this).toPair()
+    protected fun compileExpression(expression: Expression) = expression.buildSql(this)
 }
 
 internal fun String.prefixOrderByFieldsWith(prefix: String): String = when {
