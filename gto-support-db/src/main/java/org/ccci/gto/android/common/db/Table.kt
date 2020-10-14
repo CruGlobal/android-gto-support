@@ -29,9 +29,8 @@ data class Table<T : Any> internal constructor(
     @IgnoredOnParcel
     private var sqlTable: String? = null
 
-    // TODO: make sqlPrefix and sqlTable internal once we convert usages to Kotlin
-    fun sqlPrefix(dao: AbstractDao) = sqlPrefix ?: "${alias ?: dao.tableName(type)}.".also { sqlPrefix = it }
-    fun sqlTable(dao: AbstractDao) = sqlTable ?: buildString {
+    internal fun sqlPrefix(dao: AbstractDao) = sqlPrefix ?: "${alias ?: dao.tableName(type)}.".also { sqlPrefix = it }
+    internal fun sqlTable(dao: AbstractDao) = sqlTable ?: buildString {
         append(dao.tableName(type))
         if (alias != null) append(" AS ").append(alias)
     }.also { sqlTable = it }
