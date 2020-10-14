@@ -124,7 +124,7 @@ abstract class AbstractDao(private val helper: SQLiteOpenHelper) : Dao {
 
     @WorkerThread
     final override fun getCursor(query: Query<*>): Cursor {
-        var projection = query.projection ?: getFullProjection(query.table.type)
+        var projection = query.projection?.toTypedArray() ?: getFullProjection(query.table.type)
         var orderBy = query.orderBy
 
         // prefix projection and orderBy when we have joins
@@ -157,7 +157,7 @@ abstract class AbstractDao(private val helper: SQLiteOpenHelper) : Dao {
 
         // execute actual query
         val c = transaction(exclusive = false, readOnly = true) {
-            it.query(query.distinct, from.sql, projection, where?.sql, args, groupBy, having, orderBy, query.sqlLimit)
+            it.query(query.isDistinct, from.sql, projection, where?.sql, args, groupBy, having, orderBy, query.sqlLimit)
         }
         c.moveToPosition(-1)
         return c

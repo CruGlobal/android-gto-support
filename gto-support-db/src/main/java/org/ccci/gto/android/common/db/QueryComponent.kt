@@ -19,18 +19,6 @@ operator fun QueryComponent?.plus(sql: String) = when {
     else -> QueryComponent(this.sql + sql, *args)
 }
 
-internal fun <T> Array<T>.joinToQueryComponent(
-    separator: String? = null,
-    transform: ((T) -> QueryComponent)
-): QueryComponent {
-    var output = QueryComponent()
-    forEachIndexed { i, it ->
-        if (i > 0 && separator != null) output += separator
-        output += transform(it)
-    }
-    return output
-}
-
 internal fun <T> Iterable<T>.joinToQueryComponent(
     separator: String? = null,
     transform: ((T) -> QueryComponent)
