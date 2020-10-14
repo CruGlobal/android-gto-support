@@ -33,6 +33,18 @@ internal fun <T> Array<T>.joinToQueryComponent(
     return output
 }
 
+internal fun <T> Iterable<T>.joinToQueryComponent(
+    separator: String? = null,
+    transform: ((T) -> QueryComponent)
+): QueryComponent {
+    var output = QueryComponent()
+    forEachIndexed { i, it ->
+        if (i > 0 && separator != null) output += separator
+        output += transform(it)
+    }
+    return output
+}
+
 @Deprecated("This is only present to aid conversion from Java to Kotlin")
 internal fun Pair<String, Array<String>>.toQueryComponent() = QueryComponent(first, *second)
 @Deprecated("This is only present to aid conversion from Java to Kotlin")

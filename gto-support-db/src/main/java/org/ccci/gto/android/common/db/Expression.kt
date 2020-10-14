@@ -39,9 +39,9 @@ sealed class Expression : Parcelable {
         @JvmStatic
         fun not(expression: Expression) = expression.not()
 
-        fun raw(expr: String) = Raw(expr, emptyList())
-        fun raw(expr: String, vararg args: Any) = Raw(expr, bindValues(*args).toList())
-        fun raw(expr: String, vararg args: String) = Raw(expr, args.toList())
+        fun raw(expr: String): Expression = Raw(expr, emptyList())
+        fun raw(expr: String, vararg args: Any): Expression = Raw(expr, bindValues(*args).toList())
+        fun raw(expr: String, vararg args: String): Expression = Raw(expr, args.toList())
     }
 
     /**
@@ -93,7 +93,7 @@ sealed class Expression : Parcelable {
     fun ne(constant: Any): Expression = ne(constant(constant))
     fun ne(expression: Expression): Expression = Binary(Binary.NE, this, expression)
 
-    internal open fun binaryExpr(op: String, expression: Expression) = Binary(op, this, expression)
+    internal open fun binaryExpr(op: String, expression: Expression): Expression = Binary(op, this, expression)
 
     @Deprecated("Since v3.7.0, This doesn't seem necessary")
     open fun toRaw(dao: AbstractDao) = buildSql(dao).let { raw(it.sql, *it.args) }
@@ -156,7 +156,7 @@ sealed class Expression : Parcelable {
     }
 
     @Parcelize
-    data class Raw internal constructor(private val expr: String, private val args: List<String>) : Expression() {
+    private data class Raw(private val expr: String, private val args: List<String>) : Expression() {
         override val numOfArgs get() = args.size
 
         override fun args(vararg args: String) = copy(args = args.toList())
@@ -167,10 +167,7 @@ sealed class Expression : Parcelable {
     }
 
     @Parcelize
-    internal class Binary internal constructor(
-        private val op: String,
-        private vararg val exprs: Expression
-    ) : Expression() {
+    private data class Binary(private val op: String, private val exprs: List<Expression>) : Expression() {
         companion object {
             internal const val LT = "<"
             internal const val LTE = "<="
@@ -185,6 +182,8 @@ sealed class Expression : Parcelable {
             internal const val AND = "AND"
             internal const val OR = "OR"
         }
+
+        constructor(op: String, vararg exprs: Expression) : this(op, exprs.toList())
 
         @Transient
         @IgnoredOnParcel
@@ -206,19 +205,19 @@ sealed class Expression : Parcelable {
         }
 
         override fun not() = when (op) {
-            EQ -> Binary(NE, *exprs)
-            NE -> Binary(EQ, *exprs)
-            IS -> Binary(ISNOT, *exprs)
-            ISNOT -> Binary(IS, *exprs)
-            IN -> Binary(NOTIN, *exprs)
-            NOTIN -> Binary(IN, *exprs)
+            EQ -> Binary(NE, *exprs.toTypedArray())
+            NE -> Binary(EQ, *exprs.toTypedArray())
+            IS -> Binary(ISNOT, *exprs.toTypedArray())
+            ISNOT -> Binary(IS, *exprs.toTypedArray())
+            IN -> Binary(NOTIN, *exprs.toTypedArray())
+            NOTIN -> Binary(IN, *exprs.toTypedArray())
             else -> super.not()
         }
 
         override fun binaryExpr(op: String, expression: Expression) = when {
             this.op != op -> super.binaryExpr(op, expression)
             // chain binary expressions together when possible
-            op == AND || op == OR -> Binary(op, *exprs, expression)
+            op == AND || op == OR -> Binary(op, *exprs.toTypedArray(), expression)
             else -> super.binaryExpr(op, expression)
         }
 
@@ -228,7 +227,7 @@ sealed class Expression : Parcelable {
         private fun generateSql(dao: AbstractDao): QueryComponent {
             val query = QueryComponent("(") + when (op) {
                 IN, NOTIN -> {
-                    exprs[0].buildSql(dao) + " $op (" + exprs.sliceArray(1 until exprs.size)
+                    exprs[0].buildSql(dao) + " $op (" + exprs.subList(1, exprs.size)
                         .joinToQueryComponent(",") { it.buildSql(dao) } + ")"
                 }
                 else -> exprs.joinToQueryComponent(" $op ") { it.buildSql(dao) }
@@ -241,10 +240,7 @@ sealed class Expression : Parcelable {
     }
 
     @Parcelize
-    internal data class Unary internal constructor(
-        private val op: String,
-        private val expr: Expression
-    ) : Expression() {
+    private data class Unary(private val op: String, private val expr: Expression) : Expression() {
         companion object {
             internal const val NOT = "NOT"
         }
