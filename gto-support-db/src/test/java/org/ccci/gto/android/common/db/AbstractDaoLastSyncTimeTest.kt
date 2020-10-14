@@ -51,9 +51,9 @@ class AbstractDaoLastSyncTimeTest : BaseAbstractDaoTest() {
         argumentCaptor<Query<LastSyncTable>> {
             verify(dao).getCursor(capture())
 
-            val where = firstValue.buildSqlWhere(dao)
-            assertThat(where.first, equalTo(LastSyncTable.SQL_WHERE_PRIMARY_KEY.buildSql(dao).first))
-            assertThat(where.second!!.toList(), contains("a:1:true"))
+            val where = firstValue.buildSqlWhere(dao)!!
+            assertThat(where.sql, equalTo(LastSyncTable.SQL_WHERE_PRIMARY_KEY.buildSql(dao).sql))
+            assertThat(where.args.toList(), contains("a:1:true"))
         }
     }
 

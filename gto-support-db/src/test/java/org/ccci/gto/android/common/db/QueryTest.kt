@@ -24,7 +24,7 @@ class QueryTest {
         val dao: AbstractDao = mock()
         whenever(dao.tableName(eq(Model1::class.java))).thenReturn(TABLE_NAME)
         val query = Query.select(Model1::class.java).groupBy(FIELD).having(FIELD.count().eq(1))
-        assertEquals("(COUNT ($TABLE_NAME.$FIELD_NAME) == 1)", query.buildSqlHaving(dao).first)
+        assertEquals("(COUNT ($TABLE_NAME.$FIELD_NAME) == 1)", query.buildSqlHaving(dao)!!.sql)
     }
 
     @Test
