@@ -6,6 +6,10 @@ import android.widget.ListAdapter;
 
 import androidx.fragment.app.ListFragment;
 
+/**
+ * @deprecated Since v3.7.0, we no longer use a ListFragment and Cursors anywhere, so remove this dead code.
+ */
+@Deprecated
 public class AbstractListFragment extends ListFragment {
     protected void changeCursor(final Cursor cursor) {
         final Cursor old = this.swapCursor(cursor);

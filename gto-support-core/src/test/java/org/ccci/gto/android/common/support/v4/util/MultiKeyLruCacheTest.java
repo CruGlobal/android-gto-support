@@ -1,11 +1,15 @@
 package org.ccci.gto.android.common.support.v4.util;
 
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
-import org.junit.Test;
-
+@RunWith(AndroidJUnit4.class)
 public class MultiKeyLruCacheTest {
     @Test
     public void testNormalUsage() throws Exception {
