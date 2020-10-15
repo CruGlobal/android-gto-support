@@ -52,11 +52,27 @@ class ExpressionTest {
     }
 
     @Test
+    fun verifyAndSql() {
+        assertThat(
+            Expression.constant(1).and(Expression.constant(2)).and(Expression.constant(3)).buildSql(dao),
+            matchesQueryComponent("(1 AND 2 AND 3)")
+        )
+    }
+
+    @Test
     fun verifyEqSql() {
         assertThat(expr.eq(1).buildSql(dao), matchesQueryComponent("(expr == 1)"))
         assertThat(expr.eq("a").buildSql(dao), matchesQueryComponent("(expr == ?)", "a"))
         assertThat(expr.eq(Locale.ENGLISH).buildSql(dao), matchesQueryComponent("(expr == ?)", "en"))
         assertThat(expr.eq(expr).buildSql(dao), matchesQueryComponent("(expr == expr)"))
+    }
+
+    @Test
+    fun verifyInSql() {
+        assertThat(
+            expr.`in`(Expression.constant(1), Expression.constant(2)).buildSql(dao),
+            matchesQueryComponent("(expr IN (1,2))")
+        )
     }
 
     @Test

@@ -48,6 +48,13 @@ abstract class AbstractDao(private val helper: SQLiteOpenHelper) : Dao {
     // region Registered Types
     private val tableTypes = SimpleArrayMap<Class<*>, TableType>()
 
+    protected inline fun <reified T : Any> registerType(
+        table: String,
+        projection: Array<String>? = null,
+        mapper: Mapper<T>? = null,
+        pkWhere: Expression? = null
+    ) = registerType(T::class.java, table, projection, mapper, pkWhere)
+
     protected fun <T : Any> registerType(
         clazz: Class<T>,
         table: String,
@@ -117,7 +124,7 @@ abstract class AbstractDao(private val helper: SQLiteOpenHelper) : Dao {
 
     @WorkerThread
     final override fun getCursor(query: Query<*>): Cursor {
-        var projection = query.projection ?: getFullProjection(query.table.type)
+        var projection = query.projection?.toTypedArray() ?: getFullProjection(query.table.type)
         var orderBy = query.orderBy
 
         // prefix projection and orderBy when we have joins
@@ -150,7 +157,7 @@ abstract class AbstractDao(private val helper: SQLiteOpenHelper) : Dao {
 
         // execute actual query
         val c = transaction(exclusive = false, readOnly = true) {
-            it.query(query.distinct, from.sql, projection, where?.sql, args, groupBy, having, orderBy, query.sqlLimit)
+            it.query(query.isDistinct, from.sql, projection, where?.sql, args, groupBy, having, orderBy, query.sqlLimit)
         }
         c.moveToPosition(-1)
         return c
@@ -364,7 +371,7 @@ abstract class AbstractDao(private val helper: SQLiteOpenHelper) : Dao {
     protected open fun onInvalidateClass(clazz: Class<*>) = Unit
     // endregion Data Invalidation
 
-    protected fun compileExpression(expression: Expression) = expression.buildSql(this).toPair()
+    protected fun compileExpression(expression: Expression) = expression.buildSql(this)
 }
 
 internal fun String.prefixOrderByFieldsWith(prefix: String): String = when {
