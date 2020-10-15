@@ -16,7 +16,7 @@ import org.mockito.stubbing.Stubber
 abstract class BaseAbstractDaoTest {
     protected lateinit var cursor: Cursor
     protected lateinit var db: SQLiteDatabase
-    protected lateinit var helper: SQLiteOpenHelper
+    private lateinit var helper: SQLiteOpenHelper
     protected lateinit var dao: TestDao
 
     @Before
@@ -24,14 +24,14 @@ abstract class BaseAbstractDaoTest {
         cursor = mock()
 
         db = mock {
-            whenever(
-                it.query(any(), any(), any(), anyOrNull(), any(), anyOrNull(), anyOrNull(), anyOrNull(), anyOrNull())
-            ) doReturn cursor
+            on {
+                query(any(), any(), any(), anyOrNull(), any(), anyOrNull(), anyOrNull(), anyOrNull(), anyOrNull())
+            } doReturn cursor
         }
 
         helper = mock {
-            whenever(it.readableDatabase) doReturn db
-            whenever(it.writableDatabase) doReturn db
+            on { readableDatabase } doReturn db
+            on { writableDatabase } doReturn db
         }
 
         dao = spy(TestDao(helper))

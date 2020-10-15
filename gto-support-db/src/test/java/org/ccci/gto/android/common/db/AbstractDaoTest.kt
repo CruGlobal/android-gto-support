@@ -13,6 +13,11 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4::class)
 class AbstractDaoTest : BaseAbstractDaoTest() {
     @Test
+    fun verifyTableName() {
+        assertEquals(Model1.TABLE_NAME, dao.tableName(Model1::class.java))
+    }
+
+    @Test
     fun verifyRefresh() {
         val model = Model1()
         doReturn(Expression.NULL).wheneverGetPrimaryKeyWhere(eq(model))

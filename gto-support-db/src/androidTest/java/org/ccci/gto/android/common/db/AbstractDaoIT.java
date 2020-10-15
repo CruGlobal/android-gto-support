@@ -2,6 +2,9 @@ package org.ccci.gto.android.common.db;
 
 import android.database.sqlite.SQLiteConstraintException;
 
+import androidx.test.InstrumentationRegistry;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+
 import org.ccci.gto.android.common.db.Contract.CompoundTable;
 import org.ccci.gto.android.common.db.Contract.RootTable;
 import org.ccci.gto.android.common.db.model.Compound;
@@ -11,9 +14,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.util.List;
-
-import androidx.test.InstrumentationRegistry;
-import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import static org.hamcrest.CoreMatchers.allOf;
 import static org.hamcrest.CoreMatchers.is;
@@ -28,12 +28,6 @@ import static org.junit.Assert.fail;
 public class AbstractDaoIT {
     private TestDao getDao() {
         return TestDao.getInstance(InstrumentationRegistry.getContext());
-    }
-
-    @Test
-    public void testGetTable() throws Exception {
-        final TestDao dao = getDao();
-        assertThat(dao.getTable(Root.class), is(RootTable.TABLE_NAME));
     }
 
     @Test
