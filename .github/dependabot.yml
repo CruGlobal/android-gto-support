@@ -15,6 +15,9 @@ updates:
   - dependency-name: com.squareup.okhttp3:okhttp
     versions:
     - ">= 3.13.a"
+  - dependency-name: com.squareup.picasso:picasso
+    versions:
+    - "= 2.71828"
   - dependency-name: com.squareup.retrofit2:retrofit
     versions:
     - ">= 2.7.a"
