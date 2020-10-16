@@ -6,7 +6,7 @@ import kotlinx.android.parcel.IgnoredOnParcel
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
-class Join<S : Any, T : Any> private constructor(
+data class Join<S : Any, T : Any> private constructor(
     @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP) val target: Table<T>,
     @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP) val base: Join<S, *>? = null,
     private val type: String? = null,
@@ -24,20 +24,13 @@ class Join<S : Any, T : Any> private constructor(
         fun <S : Any, T : Any> create(target: Table<T>) = Join<S, T>(target = target)
     }
 
-    private constructor(
-        join: Join<S, T>,
-        target: Table<T> = join.target,
-        base: Join<S, *>? = join.base,
-        type: String? = join.type,
-        on: Expression? = join.on
-    ) : this(target, base, type, on)
-
-    fun type(type: String?) = Join(this, type = type)
-    fun on(on: Expression?) = Join(this, on = on)
-    fun andOn(on: Expression) = Join(this, on = this.on?.and(on) ?: on)
+    fun type(type: String?) = copy(type = type)
+    fun on(on: Expression?) = copy(on = on)
+    fun andOn(on: Expression) = copy(on = this.on?.and(on) ?: on)
 
     fun <T2 : Any> join(target: Class<T2>) = join(Table.forClass(target))
     fun <T2 : Any> join(target: Table<T2>) = Join(target = target, base = this)
+    inline fun <reified T2 : Any> join() = join(Table.forClass<T2>())
 
     @Transient
     @IgnoredOnParcel
