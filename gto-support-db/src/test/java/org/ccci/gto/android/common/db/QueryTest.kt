@@ -35,4 +35,17 @@ class QueryTest {
         assertEquals("5", query.limit(5).offset(null).sqlLimit)
         assertThat(query.limit(5).offset(15).sqlLimit, anyOf(equalTo("5 OFFSET 15"), equalTo("15, 5")))
     }
+
+    @Test
+    fun verifyEquals() {
+        val q1 = Query.select<Model1>()
+            .distinct(true)
+            .join(Table.forClass<Model1>().join<Model1>())
+            .where(FIELD.eq(5))
+        val q2 = Query.select<Model1>()
+            .distinct(true)
+            .join(Table.forClass<Model1>().join<Model1>())
+            .where(FIELD.eq(5))
+        assertEquals(q1, q2)
+    }
 }
