@@ -11,7 +11,7 @@ buildscript {
             facebookFlipper     : '0.62.0',
             gradleAndroidPlugin : '4.1.0',
             gson                : '2.8.6',
-            guava               : '29.0-android',
+            guava               : '30.0-android',
             hamcrest            : '2.2',
             jacoco              : '0.8.5',
             jetbrainsAnnotations: '20.1.0',
