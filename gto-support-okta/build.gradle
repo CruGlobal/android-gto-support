@@ -1,0 +1,13 @@
+android {
+    defaultConfig {
+        minSdkVersion 19
+
+        manifestPlaceholders += [appAuthRedirectScheme: "org.ccci.gto.android.okta.test"]
+    }
+}
+
+dependencies {
+    api "com.okta.android:oidc-androidx:${deps.okta}"
+
+    compileOnly "com.squareup.okhttp3:okhttp:${deps.okhttp3}"
+}
