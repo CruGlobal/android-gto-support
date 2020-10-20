@@ -2,11 +2,15 @@ android {
     defaultConfig {
         minSdkVersion 19
 
+        consumerProguardFiles 'proguard-consumer.pro'
+
         manifestPlaceholders += [appAuthRedirectScheme: "org.ccci.gto.android.okta.test"]
     }
 }
 
 dependencies {
+    implementation project(':gto-support-util')
+
     api "com.okta.android:oidc-androidx:${deps.okta}"
 
     compileOnly "com.squareup.okhttp3:okhttp:${deps.okhttp3}"
