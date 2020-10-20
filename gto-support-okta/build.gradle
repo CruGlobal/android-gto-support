@@ -11,6 +11,8 @@ android {
 dependencies {
     implementation project(':gto-support-util')
 
+    compileOnly "androidx.lifecycle:lifecycle-livedata-ktx:${deps.androidX.lifecycle}"
+
     api "com.okta.android:oidc-androidx:${deps.okta}"
 
     compileOnly "com.squareup.okhttp3:okhttp:${deps.okhttp3}"
