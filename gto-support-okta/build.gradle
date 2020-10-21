@@ -11,11 +11,15 @@ android {
 dependencies {
     implementation project(':gto-support-util')
 
-    compileOnly "androidx.lifecycle:lifecycle-livedata-ktx:${deps.androidX.lifecycle}"
-
     api "com.okta.android:oidc-androidx:${deps.okta}"
 
+    // region LiveData
+    compileOnly "androidx.lifecycle:lifecycle-livedata-ktx:${deps.androidX.lifecycle}"
+    // endregion LiveData
+
+    // region OkHttpOktaHttpClient
     compileOnly "com.squareup.okhttp3:okhttp:${deps.okhttp3}"
+    // endregion OkHttpOktaHttpClient
 
     testImplementation "androidx.arch.core:core-testing:${deps.androidX.arch}"
     testImplementation "com.squareup.okhttp3:mockwebserver:${deps.okhttp3}"
