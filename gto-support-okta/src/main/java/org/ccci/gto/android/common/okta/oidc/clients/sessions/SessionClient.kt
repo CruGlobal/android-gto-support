@@ -6,4 +6,5 @@ import com.okta.oidc.clients.sessions.syncSessionClient
 import com.okta.oidc.oktaRepo
 import com.okta.oidc.storage.storage
 
-internal val SessionClient.oktaStorage get() = syncSessionClient!!.oktaState!!.oktaRepo!!.storage!!
+internal val SessionClient.oktaRepo get() = syncSessionClient!!.oktaState!!.oktaRepo!!
+internal val SessionClient.oktaStorage get() = oktaRepo.storage!!
