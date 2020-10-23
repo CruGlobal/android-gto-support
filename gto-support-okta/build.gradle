@@ -13,6 +13,10 @@ dependencies {
 
     api "com.okta.android:oidc-androidx:${deps.okta}"
 
+    // region Coroutines
+    compileOnly "org.jetbrains.kotlinx:kotlinx-coroutines-core:${deps.kotlinCoroutines}"
+    // endregion Coroutines
+
     // region LiveData
     compileOnly "androidx.lifecycle:lifecycle-livedata-ktx:${deps.androidX.lifecycle}"
     // endregion LiveData
