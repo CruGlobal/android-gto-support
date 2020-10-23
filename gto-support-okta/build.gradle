@@ -10,4 +10,6 @@ dependencies {
     api "com.okta.android:oidc-androidx:${deps.okta}"
 
     compileOnly "com.squareup.okhttp3:okhttp:${deps.okhttp3}"
+
+    testImplementation "com.squareup.okhttp3:mockwebserver:${deps.okhttp3}"
 }
