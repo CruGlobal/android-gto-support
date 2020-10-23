@@ -26,7 +26,7 @@ class OkHttpOktaHttpClient(okhttp: OkHttpClient = OkHttpClient()) : OktaHttpClie
                     ConnectionParameters.RequestMethod.GET -> get()
                     ConnectionParameters.RequestMethod.POST -> {
                         val body = FormBody.Builder()
-                            .apply { param.postParameters().forEach { add(it.key, it.value) } }
+                            .apply { param.postParameters().orEmpty().forEach { add(it.key, it.value) } }
                             .build()
                         post(body)
                     }

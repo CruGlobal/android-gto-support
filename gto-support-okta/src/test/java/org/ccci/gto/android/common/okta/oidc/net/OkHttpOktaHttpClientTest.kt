@@ -76,4 +76,24 @@ class OkHttpOktaHttpClientTest {
             .run { queryParameterNames().associateWith { queryParameter(it) } }.toMap()
         assertThat(postParams, allOf(aMapWithSize(2), hasEntry(PARAM1, VALUE3), hasEntry(PARAM2, VALUE4)))
     }
+
+    @Test
+    fun verifyPostRequestWithoutPostParams() {
+        server.enqueue(MockResponse())
+        val url = server.url("/")
+
+        val params = ConnectionParameters.ParameterBuilder()
+            .setRequestMethod(ConnectionParameters.RequestMethod.POST)
+            .setRequestProperties(HEADERS)
+            .create()
+        client.connect(Uri.parse(url.toString()), params)
+        assertEquals(1, server.requestCount)
+        val request = server.takeRequest()
+        assertEquals(url, request.requestUrl)
+        assertEquals("POST", request.method)
+        assertEquals(VALUE1, request.headers.get(HEADER1))
+        assertEquals(VALUE2, request.headers.get(HEADER2))
+        assertEquals(0, request.bodySize)
+        assertEquals("", request.body.readUtf8())
+    }
 }
