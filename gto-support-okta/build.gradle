@@ -27,4 +27,5 @@ dependencies {
 
     testImplementation "androidx.arch.core:core-testing:${deps.androidX.arch}"
     testImplementation "com.squareup.okhttp3:mockwebserver:${deps.okhttp3}"
+    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:${deps.kotlinCoroutines}"
 }
