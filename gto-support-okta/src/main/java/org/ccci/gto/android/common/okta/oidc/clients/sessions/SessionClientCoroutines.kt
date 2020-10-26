@@ -8,6 +8,7 @@ import com.okta.oidc.net.response.UserInfo
 import com.okta.oidc.util.AuthorizationException
 import kotlin.coroutines.suspendCoroutine
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.conflate
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import org.ccci.gto.android.common.okta.oidc.storage.ChangeAwareOktaStorage
@@ -23,6 +24,7 @@ suspend fun SessionClient.getUserProfile(): UserInfo = suspendCoroutine { cont -
 
 internal fun SessionClient.changeFlow() = (oktaStorage as ChangeAwareOktaStorage).changeFlow()
 
-private fun SessionClient.tokensFlow(): Flow<Tokens?> = changeFlow().map { tokens }
+private fun SessionClient.tokensFlow(): Flow<Tokens?> = changeFlow().map { tokens }.conflate()
 fun SessionClient.idTokenFlow() =
-    tokensFlow().map { it?.idToken }.distinctUntilChanged().map { it?.let { OktaIdToken.parseIdToken(it) } }
+    tokensFlow().map { it?.idToken }.distinctUntilChanged().map { it?.let { OktaIdToken.parseIdToken(it) } }.conflate()
+fun SessionClient.oktaUserIdFlow() = idTokenFlow().map { it?.claims?.sub }.distinctUntilChanged().conflate()
