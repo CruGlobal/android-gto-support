@@ -22,6 +22,14 @@ suspend fun SessionClient.getUserProfile(): UserInfo = suspendCoroutine { cont -
     })
 }
 
+suspend fun SessionClient.refreshToken(): Tokens = suspendCoroutine { cont ->
+    refreshToken(object : RequestCallback<Tokens, AuthorizationException> {
+        override fun onSuccess(result: Tokens) = cont.resumeWith(Result.success(result))
+        override fun onError(error: String?, exception: AuthorizationException) =
+            cont.resumeWith(Result.failure(exception))
+    })
+}
+
 internal fun SessionClient.changeFlow() = (oktaStorage as ChangeAwareOktaStorage).changeFlow()
 
 private fun SessionClient.tokensFlow(): Flow<Tokens?> = changeFlow().map { tokens }.conflate()
