@@ -1,9 +1,8 @@
 package org.ccci.gto.android.common.okta.oidc
 
 import android.annotation.SuppressLint
+import androidx.annotation.VisibleForTesting
 import com.okta.oidc.clients.sessions.SessionClient
-import com.okta.oidc.net.response.UserInfo
-import com.okta.oidc.storage.Persistable
 import com.okta.oidc.util.AuthorizationException
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.conflate
@@ -14,7 +13,11 @@ import org.ccci.gto.android.common.okta.oidc.clients.sessions.changeFlow
 import org.ccci.gto.android.common.okta.oidc.clients.sessions.getUserProfile
 import org.ccci.gto.android.common.okta.oidc.clients.sessions.oktaRepo
 import org.ccci.gto.android.common.okta.oidc.clients.sessions.oktaUserIdFlow
-import org.json.JSONObject
+import org.ccci.gto.android.common.okta.oidc.net.response.PersistableUserInfo
+import org.ccci.gto.android.common.okta.oidc.storage.getPersistableUserInfo
+
+@VisibleForTesting
+internal const val RETRIEVED_AT = "retrieved_at"
 
 @SuppressLint("RestrictedApi")
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -26,35 +29,15 @@ class OktaUserProfileProvider(private val sessionClient: SessionClient) {
         .conflate()
 
     fun userInfoFlow(oktaUserId: String) = sessionClient.changeFlow()
-        .map { getPersistableUserInfo(oktaUserId)?.userInfo?.takeIf { it["sub"] == oktaUserId } }
+        .map { oktaRepo.getPersistableUserInfo(oktaUserId)?.userInfo?.takeIf { it["sub"] == oktaUserId } }
         .conflate()
 
     private suspend fun load() {
         try {
             val profile = sessionClient.getUserProfile()
+            profile.raw?.put(RETRIEVED_AT, System.currentTimeMillis())
             profile["sub"]?.toString()?.let { oktaRepo.save(PersistableUserInfo(it, profile)) }
         } catch (e: AuthorizationException) {
-        }
-    }
-
-    private fun getPersistableUserInfo(oktaId: String): PersistableUserInfo? =
-        oktaRepo.get(PersistableUserInfo.restore(oktaId))
-
-    private class PersistableUserInfo(val oktaId: String, val userInfo: UserInfo?, private val raw: String?) :
-        Persistable {
-        constructor(oktaId: String, userInfo: UserInfo?) : this(oktaId, userInfo, userInfo?.raw?.toString())
-        constructor(oktaId: String, raw: String?) : this(oktaId, UserInfo(raw?.let { JSONObject(it) }), raw)
-
-        override fun getKey() = buildKey(oktaId)
-        override fun persist() = raw
-
-        companion object {
-            private fun buildKey(oktaId: String) = "PersistableUserInfo:$oktaId"
-
-            fun restore(oktaId: String) = object : Persistable.Restore<PersistableUserInfo> {
-                override fun getKey() = buildKey(oktaId)
-                override fun restore(data: String?) = PersistableUserInfo(oktaId, data)
-            }
         }
     }
 }

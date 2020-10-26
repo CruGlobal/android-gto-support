@@ -9,6 +9,7 @@ android {
 }
 
 dependencies {
+    implementation project(':gto-support-base')
     implementation project(':gto-support-util')
 
     api "com.okta.android:oidc-androidx:${deps.okta}"
