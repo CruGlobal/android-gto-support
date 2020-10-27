@@ -30,7 +30,7 @@ buildscript {
             okhttp3             : '3.12.12',
             okio                : '2.9.0',
             picasso             : '2.8',
-            playCore            : '1.8.2',
+            playCore            : '1.8.3',
             powermock           : '2.0.7',
             realm               : '7.0.8',
             realmAdapters       : '4.0.0',
