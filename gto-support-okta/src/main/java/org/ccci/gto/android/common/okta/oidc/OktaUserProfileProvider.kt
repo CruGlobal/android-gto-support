@@ -26,6 +26,7 @@ import org.ccci.gto.android.common.okta.oidc.clients.sessions.oktaUserId
 import org.ccci.gto.android.common.okta.oidc.clients.sessions.oktaUserIdFlow
 import org.ccci.gto.android.common.okta.oidc.clients.sessions.refreshToken
 import org.ccci.gto.android.common.okta.oidc.net.response.PersistableUserInfo
+import org.ccci.gto.android.common.okta.oidc.net.response.oktaUserId
 import org.ccci.gto.android.common.okta.oidc.storage.getPersistableUserInfo
 
 @VisibleForTesting
@@ -48,7 +49,7 @@ class OktaUserProfileProvider @VisibleForTesting internal constructor(
         .conflate()
 
     fun userInfoFlow(oktaUserId: String) = sessionClient.changeFlow()
-        .map { oktaRepo.getPersistableUserInfo(oktaUserId)?.userInfo?.takeIf { it["sub"] == oktaUserId } }
+        .map { oktaRepo.getPersistableUserInfo(oktaUserId)?.userInfo?.takeIf { it.oktaUserId == oktaUserId } }
         .onStart {
             activeFlows.incrementAndGet()
             refreshActor.offer(Unit)
@@ -83,7 +84,7 @@ class OktaUserProfileProvider @VisibleForTesting internal constructor(
             if (sessionClient.tokens?.isAccessTokenExpired != false) sessionClient.refreshToken()
             val profile = sessionClient.getUserProfile()
             profile.raw?.put(RETRIEVED_AT, System.currentTimeMillis())
-            profile["sub"]?.toString()?.let { oktaRepo.save(PersistableUserInfo(it, profile)) }
+            profile.oktaUserId?.let { oktaRepo.save(PersistableUserInfo(it, profile)) }
         } catch (e: AuthorizationException) {
         }
     }
