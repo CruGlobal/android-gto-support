@@ -125,4 +125,38 @@ internal class OktaUserProfileProviderTest : BaseOktaOidcTest() {
         // close the flow
         flow.cancel()
     }
+
+    @Test
+    fun verifyUserInfoFlowNullOnLogout() = runBlockingTest {
+        val userInfoField = "PersistableUserInfo:$OKTA_USER_ID"
+        innerStorage.stub {
+            on { get(userInfoField) } doReturn """
+                {
+                    sub: "1234567890",
+                    field: "test",
+                    $RETRIEVED_AT: ${System.currentTimeMillis()}
+                }
+            """
+        }
+        val results = mutableListOf<UserInfo?>()
+
+        // initial user info
+        val flow = launch { provider.userInfoFlow().collect { results += it } }
+        verify(innerStorage).get(userInfoField)
+        assertEquals(1, results.size)
+        assertEquals(OKTA_USER_ID, results[0]!!["sub"])
+        assertEquals("test", results[0]!!["field"])
+
+        // user is logged out
+        results.clear()
+        reset(innerStorage)
+        tokens.stub { on { idToken } doReturn null }
+        verify(innerStorage, never()).get(userInfoField)
+        storage.notifyChanged()
+        assertEquals(1, results.size)
+        assertNull(results[0])
+
+        // close the flow
+        flow.cancel()
+    }
 }
