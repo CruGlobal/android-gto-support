@@ -12,13 +12,14 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.ObsoleteCoroutinesApi
 import kotlinx.coroutines.channels.Channel.Factory.CONFLATED
 import kotlinx.coroutines.channels.actor
+import kotlinx.coroutines.channels.receiveOrNull
 import kotlinx.coroutines.flow.conflate
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onStart
-import kotlinx.coroutines.withTimeout
+import kotlinx.coroutines.withTimeoutOrNull
 import org.ccci.gto.android.common.okta.oidc.clients.sessions.changeFlow
 import org.ccci.gto.android.common.okta.oidc.clients.sessions.getUserProfile
 import org.ccci.gto.android.common.okta.oidc.clients.sessions.oktaRepo
@@ -42,7 +43,8 @@ class OktaUserProfileProvider @VisibleForTesting internal constructor(
 
     private val oktaRepo = sessionClient.oktaRepo
 
-    private val activeFlows = AtomicInteger(0)
+    @VisibleForTesting
+    internal val activeFlows = AtomicInteger(0)
 
     fun userInfoFlow() = sessionClient.oktaUserIdFlow()
         .flatMapLatest { it?.let { userInfoFlow(it) } ?: flowOf(null) }
@@ -60,14 +62,14 @@ class OktaUserProfileProvider @VisibleForTesting internal constructor(
     private val refreshActor = coroutineScope.actor<Unit>(capacity = CONFLATED) {
         while (true) {
             // suspend until there is an active flow
-            if (activeFlows.get() <= 0) receive()
+            if (activeFlows.get() <= 0) receiveOrNull() ?: break
 
             // wait until a refresh is required (or the oktaUserId potentially changes)
             val userId = sessionClient.oktaUserId
             val userInfo = userId?.let { oktaRepo.getPersistableUserInfo(it) }?.takeUnless { it.isStale }
             userInfo?.nextRefreshTime
                 ?.let { it - System.currentTimeMillis() }?.takeUnless { it <= 0 }
-                ?.let { withTimeout(it) { receive() } }
+                ?.let { withTimeoutOrNull(it) { receiveOrNull() } }
 
             // short-circuit if there are no active flows, the oktaUserId changed, or the userInfo isn't stale
             if (activeFlows.get() <= 0) continue

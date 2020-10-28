@@ -52,8 +52,10 @@ internal class OktaUserProfileProviderTest : BaseOktaOidcTest() {
     @After
     fun cleanup() {
         provider.shutdown()
+        testScope.cleanupTestCoroutines()
     }
 
+    // region userInfoFlow()
     @Test
     fun verifyUserInfoFlow() = runBlockingTest {
         val userInfoField = "PersistableUserInfo:$OKTA_USER_ID"
@@ -159,4 +161,15 @@ internal class OktaUserProfileProviderTest : BaseOktaOidcTest() {
         // close the flow
         flow.cancel()
     }
+    // endregion userInfoFlow()
+
+    // region refreshActor
+    @Test
+    fun verifyRefreshActorSuspendsOnNoActiveFlows() {
+        provider.activeFlows.set(0)
+        testScope.resumeDispatcher()
+        testScope.advanceUntilIdle()
+        verify(sessionClient, never()).tokens
+    }
+    // endregion refreshActor
 }
