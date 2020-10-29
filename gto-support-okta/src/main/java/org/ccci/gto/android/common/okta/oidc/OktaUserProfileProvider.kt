@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import androidx.annotation.RestrictTo
 import androidx.annotation.VisibleForTesting
 import com.okta.oidc.clients.sessions.SessionClient
+import com.okta.oidc.storage.OktaRepository
 import com.okta.oidc.util.AuthorizationException
 import java.util.concurrent.atomic.AtomicInteger
 import kotlinx.coroutines.CoroutineScope
@@ -37,11 +38,10 @@ internal const val RETRIEVED_AT = "retrieved_at"
 @OptIn(ExperimentalCoroutinesApi::class, ObsoleteCoroutinesApi::class)
 class OktaUserProfileProvider @VisibleForTesting internal constructor(
     private val sessionClient: SessionClient,
+    private val oktaRepo: OktaRepository = sessionClient.oktaRepo,
     coroutineScope: CoroutineScope
 ) {
-    constructor(sessionClient: SessionClient) : this(sessionClient, CoroutineScope(Dispatchers.IO))
-
-    private val oktaRepo = sessionClient.oktaRepo
+    constructor(sessionClient: SessionClient) : this(sessionClient, coroutineScope = CoroutineScope(Dispatchers.IO))
 
     @VisibleForTesting
     internal val activeFlows = AtomicInteger(0)
