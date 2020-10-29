@@ -78,6 +78,7 @@ internal class OktaUserProfileProviderTest : BaseOktaOidcTest() {
 
         // initial user info
         val flow = launch { provider.userInfoFlow().collect { results += it } }
+        assertEquals(1, provider.activeFlows.get())
         verify(oktaRepo).get(PersistableUserInfo.Restore(OKTA_USER_ID))
         assertEquals(1, results.size)
         assertNull(results[0])
@@ -92,6 +93,7 @@ internal class OktaUserProfileProviderTest : BaseOktaOidcTest() {
 
         // close the flow
         flow.cancel()
+        assertEquals(0, provider.activeFlows.get())
     }
 
     @Test
@@ -101,6 +103,7 @@ internal class OktaUserProfileProviderTest : BaseOktaOidcTest() {
 
         // initial user info
         val flow = launch { provider.userInfoFlow().collect { results += it } }
+        assertEquals(0, provider.activeFlows.get())
         verify(oktaRepo, never()).get<PersistableUserInfo>(any())
         assertEquals(1, results.size)
         assertNull(results[0])
@@ -109,18 +112,21 @@ internal class OktaUserProfileProviderTest : BaseOktaOidcTest() {
         results.clear()
         userInfo.stub { on { userInfo } doReturn UserInfo(JSONObject(mapOf(CLAIM_OKTA_USER_ID to OKTA_USER_ID))) }
         storage.notifyChanged()
+        assertEquals(0, provider.activeFlows.get())
         verify(oktaRepo, never()).get<PersistableUserInfo>(any())
         assertEquals(0, results.size)
 
         // update user id
         tokens.stub { on { idToken } doReturn ID_TOKEN }
         storage.notifyChanged()
+        assertEquals(1, provider.activeFlows.get())
         verify(oktaRepo).get(PersistableUserInfo.Restore(OKTA_USER_ID))
         assertEquals(1, results.size)
         assertEquals(OKTA_USER_ID, results[0]!!.oktaUserId)
 
         // close the flow
         flow.cancel()
+        assertEquals(0, provider.activeFlows.get())
     }
 
     @Test
@@ -130,6 +136,7 @@ internal class OktaUserProfileProviderTest : BaseOktaOidcTest() {
 
         // initial user info
         val flow = launch { provider.userInfoFlow().collect { results += it } }
+        assertEquals(1, provider.activeFlows.get())
         verify(oktaRepo).get(PersistableUserInfo.Restore(OKTA_USER_ID))
         assertEquals(1, results.size)
         assertEquals(OKTA_USER_ID, results[0]!!.oktaUserId)
@@ -139,12 +146,14 @@ internal class OktaUserProfileProviderTest : BaseOktaOidcTest() {
         results.clear()
         tokens.stub { on { idToken } doReturn null }
         storage.notifyChanged()
+        assertEquals(0, provider.activeFlows.get())
         verify(oktaRepo, never()).get<PersistableUserInfo>(any())
         assertEquals(1, results.size)
         assertNull(results[0])
 
         // close the flow
         flow.cancel()
+        assertEquals(0, provider.activeFlows.get())
     }
     // endregion userInfoFlow()
 
