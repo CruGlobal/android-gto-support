@@ -13,14 +13,15 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.ObsoleteCoroutinesApi
 import kotlinx.coroutines.channels.Channel.Factory.CONFLATED
 import kotlinx.coroutines.channels.actor
-import kotlinx.coroutines.channels.receiveOrNull
 import kotlinx.coroutines.flow.conflate
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onStart
-import kotlinx.coroutines.withTimeoutOrNull
+import kotlinx.coroutines.flow.produceIn
+import kotlinx.coroutines.selects.select
+import org.ccci.gto.android.common.base.TimeConstants.MIN_IN_MS
 import org.ccci.gto.android.common.okta.oidc.clients.sessions.changeFlow
 import org.ccci.gto.android.common.okta.oidc.clients.sessions.getUserProfile
 import org.ccci.gto.android.common.okta.oidc.clients.sessions.oktaRepo
@@ -56,24 +57,30 @@ class OktaUserProfileProvider @VisibleForTesting internal constructor(
         .onCompletion { activeFlows.decrementAndGet() }
         .conflate()
 
-    private val refreshActor = coroutineScope.actor<Unit>(capacity = CONFLATED) {
-        while (true) {
-            // suspend until there is an active flow
-            if (activeFlows.get() <= 0) receiveOrNull() ?: break
+    @VisibleForTesting
+    internal val refreshActor = coroutineScope.actor<Unit>(capacity = CONFLATED) {
+        val oktaUserIdChannel = sessionClient.oktaUserIdFlow().produceIn(this)
 
-            // wait until a refresh is required (or the oktaUserId potentially changes)
-            val userId = sessionClient.oktaUserId
-            val userInfo = userId?.let { oktaRepo.getPersistableUserInfo(it) }?.takeUnless { it.isStale }
-            userInfo?.nextRefreshDelay?.takeUnless { it <= 0 }
-                ?.let { withTimeoutOrNull(it) { receiveOrNull() } }
+        while (!channel.isClosedForSend && !channel.isClosedForReceive && !oktaUserIdChannel.isClosedForReceive) {
+            // load user info if there are active flows and user info hasn't been loaded yet or is stale
+            val hasActiveFlows = activeFlows.get() > 0
+            val userId = if (hasActiveFlows) sessionClient.oktaUserId else null
+            val userInfo = userId?.let { oktaRepo.getPersistableUserInfo(it) }
+            if (hasActiveFlows && userId != null && (userInfo == null || userInfo.isStale)) load()
 
-            // short-circuit if there are no active flows, the oktaUserId changed, or the userInfo isn't stale
-            if (activeFlows.get() <= 0) continue
-            if (sessionClient.oktaUserId != userId) continue
-            if (userInfo?.isStale == false) continue
+            // suspend until we need to reload the profile
+            select<Unit> {
+                channel.onReceiveOrNull {}
 
-            // trigger load
-            load()
+                // enable other monitors when there are active flows
+                if (hasActiveFlows) {
+                    oktaUserIdChannel.onReceiveOrNull {}
+
+                    if (userId != null) {
+                        onTimeout((userInfo?.nextRefreshDelay ?: 0).coerceAtLeast(MIN_IN_MS)) {}
+                    }
+                }
+            }
         }
     }
 
