@@ -31,9 +31,6 @@ import org.ccci.gto.android.common.okta.oidc.net.response.PersistableUserInfo
 import org.ccci.gto.android.common.okta.oidc.net.response.oktaUserId
 import org.ccci.gto.android.common.okta.oidc.storage.getPersistableUserInfo
 
-@VisibleForTesting
-internal const val RETRIEVED_AT = "retrieved_at"
-
 @SuppressLint("RestrictedApi")
 @OptIn(ExperimentalCoroutinesApi::class, ObsoleteCoroutinesApi::class)
 class OktaUserProfileProvider @VisibleForTesting internal constructor(
@@ -67,8 +64,7 @@ class OktaUserProfileProvider @VisibleForTesting internal constructor(
             // wait until a refresh is required (or the oktaUserId potentially changes)
             val userId = sessionClient.oktaUserId
             val userInfo = userId?.let { oktaRepo.getPersistableUserInfo(it) }?.takeUnless { it.isStale }
-            userInfo?.nextRefreshTime
-                ?.let { it - System.currentTimeMillis() }?.takeUnless { it <= 0 }
+            userInfo?.nextRefreshDelay?.takeUnless { it <= 0 }
                 ?.let { withTimeoutOrNull(it) { receiveOrNull() } }
 
             // short-circuit if there are no active flows, the oktaUserId changed, or the userInfo isn't stale
@@ -85,7 +81,6 @@ class OktaUserProfileProvider @VisibleForTesting internal constructor(
         try {
             if (sessionClient.tokens?.isAccessTokenExpired != false) sessionClient.refreshToken()
             val profile = sessionClient.getUserProfile()
-            profile.raw?.put(RETRIEVED_AT, System.currentTimeMillis())
             profile.oktaUserId?.let { oktaRepo.save(PersistableUserInfo(it, profile)) }
         } catch (e: AuthorizationException) {
         }
