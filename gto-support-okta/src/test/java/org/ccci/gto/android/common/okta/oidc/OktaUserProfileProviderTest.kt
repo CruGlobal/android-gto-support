@@ -190,6 +190,7 @@ internal class OktaUserProfileProviderTest : BaseOktaOidcTest() {
     @Test
     fun verifyRefreshActorWakesUpWhenRefreshDelayHasExpired() {
         provider.activeFlows.set(1)
+        provider.refreshIfStaleFlows.set(1)
         userInfo.stub {
             on { isStale } doReturn false
             on { nextRefreshDelay } doReturn HOUR_IN_MS
@@ -206,6 +207,25 @@ internal class OktaUserProfileProviderTest : BaseOktaOidcTest() {
 
         testScope.advanceTimeBy(1)
         verify(oktaRepo).get(PersistableUserInfo.Restore(OKTA_USER_ID))
+        verify(httpClient, never()).connect(any(), any())
+    }
+
+    @Test
+    fun verifyRefreshActorDoesntWakesUpForRefreshDelayWhenRefreshIfStaleIsFalse() {
+        provider.activeFlows.set(1)
+        provider.refreshIfStaleFlows.set(0)
+        userInfo.stub {
+            on { isStale } doReturn true
+            on { nextRefreshDelay } doReturn -1
+        }
+
+        testScope.runCurrent()
+        verify(oktaRepo, atLeastOnce()).get(PersistableUserInfo.Restore(OKTA_USER_ID))
+        verify(httpClient, never()).connect(any(), any())
+
+        clearInvocations(oktaRepo)
+        testScope.advanceUntilIdle()
+        verify(oktaRepo, never()).get<PersistableUserInfo>(any())
         verify(httpClient, never()).connect(any(), any())
     }
     // endregion refreshActor

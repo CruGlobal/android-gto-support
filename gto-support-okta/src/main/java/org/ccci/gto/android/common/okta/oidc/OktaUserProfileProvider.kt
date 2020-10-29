@@ -43,18 +43,24 @@ class OktaUserProfileProvider @VisibleForTesting internal constructor(
 
     @VisibleForTesting
     internal val activeFlows = AtomicInteger(0)
+    @VisibleForTesting
+    internal val refreshIfStaleFlows = AtomicInteger(0)
 
-    fun userInfoFlow() = sessionClient.oktaUserIdFlow()
-        .flatMapLatest { it?.let { userInfoFlow(it) } ?: flowOf(null) }
+    fun userInfoFlow(refreshIfStale: Boolean = true) = sessionClient.oktaUserIdFlow()
+        .flatMapLatest { it?.let { userInfoFlow(it, refreshIfStale) } ?: flowOf(null) }
         .conflate()
 
-    fun userInfoFlow(oktaUserId: String) = sessionClient.changeFlow()
+    fun userInfoFlow(oktaUserId: String, refreshIfStale: Boolean = true) = sessionClient.changeFlow()
         .map { oktaRepo.getPersistableUserInfo(oktaUserId)?.userInfo?.takeIf { it.oktaUserId == oktaUserId } }
         .onStart {
             activeFlows.incrementAndGet()
+            if (refreshIfStale) refreshIfStaleFlows.incrementAndGet()
             refreshActor.offer(Unit)
         }
-        .onCompletion { activeFlows.decrementAndGet() }
+        .onCompletion {
+            if (refreshIfStale) refreshIfStaleFlows.decrementAndGet()
+            activeFlows.decrementAndGet()
+        }
         .conflate()
 
     @VisibleForTesting
@@ -64,9 +70,10 @@ class OktaUserProfileProvider @VisibleForTesting internal constructor(
         while (!channel.isClosedForSend && !channel.isClosedForReceive && !oktaUserIdChannel.isClosedForReceive) {
             // load user info if there are active flows and user info hasn't been loaded yet or is stale
             val hasActiveFlows = activeFlows.get() > 0
+            val refreshIfStale = refreshIfStaleFlows.get() > 0
             val userId = if (hasActiveFlows) sessionClient.oktaUserId else null
             val userInfo = userId?.let { oktaRepo.getPersistableUserInfo(it) }
-            if (hasActiveFlows && userId != null && (userInfo == null || userInfo.isStale)) load()
+            if (hasActiveFlows && userId != null && (userInfo == null || (refreshIfStale && userInfo.isStale))) load()
 
             // suspend until we need to reload the profile
             select<Unit> {
@@ -76,7 +83,7 @@ class OktaUserProfileProvider @VisibleForTesting internal constructor(
                 if (hasActiveFlows) {
                     oktaUserIdChannel.onReceiveOrNull {}
 
-                    if (userId != null) {
+                    if (userId != null && refreshIfStale) {
                         onTimeout((userInfo?.nextRefreshDelay ?: 0).coerceAtLeast(MIN_IN_MS)) {}
                     }
                 }
