@@ -8,7 +8,7 @@ class CustomScreenView(builder: Builder) : ScreenView(builder) {
 
     override fun beginProcessing(tracker: Tracker) {
         EventSynchronizer.lockFor(this)
-        requireNotNull(tracker.subject) { "CustomScreenView requires the Tracker to have a subject to work" }
+        checkNotNull(tracker.subject) { "CustomScreenView requires the Tracker to have a subject to work" }
             .subject.putAll(attributes)
     }
 
@@ -24,9 +24,9 @@ class CustomScreenView(builder: Builder) : ScreenView(builder) {
     }
 
     class Builder : ScreenView.Builder<Builder>(), CustomEventBuilder<Builder> {
-        internal val attributes = mutableMapOf<String, String>()
+        internal val attributes = mutableMapOf<String, String?>()
 
-        override fun attribute(key: String, value: String): Builder {
+        override fun attribute(key: String, value: String?): Builder {
             attributes[key] = value
             return this
         }

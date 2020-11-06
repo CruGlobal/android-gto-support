@@ -8,7 +8,7 @@ class CustomStructured(builder: Builder) : Structured(builder) {
 
     override fun beginProcessing(tracker: Tracker) {
         EventSynchronizer.lockFor(this)
-        requireNotNull(tracker.subject) { "CustomStructured requires the Tracker to have a subject to work" }
+        checkNotNull(tracker.subject) { "CustomStructured requires the Tracker to have a subject to work" }
             .subject.putAll(attributes)
     }
 
@@ -24,9 +24,9 @@ class CustomStructured(builder: Builder) : Structured(builder) {
     }
 
     class Builder : Structured.Builder<Builder>(), CustomEventBuilder<Builder> {
-        internal val attributes = mutableMapOf<String, String>()
+        internal val attributes = mutableMapOf<String, String?>()
 
-        override fun attribute(key: String, value: String): Builder {
+        override fun attribute(key: String, value: String?): Builder {
             attributes[key] = value
             return this
         }
