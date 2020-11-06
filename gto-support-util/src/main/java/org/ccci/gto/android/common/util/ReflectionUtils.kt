@@ -20,3 +20,6 @@ fun Field.getOrNull(obj: Any) = try {
     Timber.tag("ReflectionUtils").e(e, "error retrieving field value for field: $this")
     null
 }
+
+@JvmName("getOrNullReified")
+inline fun <reified T> Field.getOrNull(obj: Any) = getOrNull(obj) as? T
