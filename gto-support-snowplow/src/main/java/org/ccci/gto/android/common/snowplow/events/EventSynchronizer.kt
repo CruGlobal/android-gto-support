@@ -18,11 +18,8 @@ internal object EventSynchronizer {
         while (true) {
             val curr = currentEvent.get()
             if (semaphore.tryAcquire(lockTimeout, TimeUnit.MILLISECONDS)) {
-                if (!currentEvent.compareAndSet(null, event)) {
-                    semaphore.release()
-                    continue
-                }
-                break
+                if (currentEvent.compareAndSet(null, event)) break
+                semaphore.release()
             } else if (curr != null && currentEvent.compareAndSet(curr, event)) {
                 break
             }
