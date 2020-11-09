@@ -7,17 +7,18 @@ import androidx.lifecycle.LifecycleRegistry
 
 class ConstrainedStateLifecycleOwner(private val parent: Lifecycle) : LifecycleOwner {
     private val registry = LifecycleRegistry(this)
-    private val parentEventObserver = LifecycleEventObserver { _, _ -> reconcileState() }
-    init {
-        parent.addObserver(parentEventObserver)
-        lifecycle.onDestroy { parent.removeObserver(parentEventObserver) }
-    }
 
     var maxState = Lifecycle.State.RESUMED
         set(value) {
             field = value
             reconcileState()
         }
+
+    init {
+        val observer = LifecycleEventObserver { _, _ -> reconcileState() }
+        parent.addObserver(observer)
+        lifecycle.onDestroy { parent.removeObserver(observer) }
+    }
 
     override fun getLifecycle(): Lifecycle = registry
 
