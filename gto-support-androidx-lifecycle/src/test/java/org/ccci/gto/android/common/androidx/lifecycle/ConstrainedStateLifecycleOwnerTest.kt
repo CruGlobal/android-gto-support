@@ -1,28 +1,27 @@
 package org.ccci.gto.android.common.androidx.lifecycle
 
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.LifecycleRegistry
+import androidx.lifecycle.testing.TestLifecycleOwner
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.clearInvocations
 import com.nhaarman.mockitokotlin2.inOrder
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.never
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.TestCoroutineDispatcher
 import org.junit.Assert.assertEquals
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 
 class ConstrainedStateLifecycleOwnerTest {
-    private val parentLifecycleOwner = object : LifecycleOwner {
-        val registry = LifecycleRegistry(this)
-        override fun getLifecycle() = registry
-        var currentState
-            get() = registry.currentState
-            set(value) {
-                registry.currentState = value
-            }
-    }
+    @get:Rule
+    val rule = InstantTaskExecutorRule()
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    private val parentLifecycleOwner = TestLifecycleOwner(Lifecycle.State.STARTED, TestCoroutineDispatcher())
     private lateinit var observer: DefaultLifecycleObserver
 
     private lateinit var lifecycleOwner: ConstrainedStateLifecycleOwner
