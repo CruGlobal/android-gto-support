@@ -6,6 +6,8 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LifecycleRegistry
 
 class ConstrainedStateLifecycleOwner(private val parent: Lifecycle) : LifecycleOwner {
+    constructor(parent: LifecycleOwner) : this(parent.lifecycle)
+
     private val registry = LifecycleRegistry(this)
 
     var maxState = Lifecycle.State.RESUMED

@@ -30,7 +30,7 @@ class ConstrainedStateLifecycleOwnerTest {
     @Before
     fun setup() {
         parentLifecycleOwner.currentState = Lifecycle.State.CREATED
-        lifecycleOwner = ConstrainedStateLifecycleOwner(parentLifecycleOwner.lifecycle)
+        lifecycleOwner = ConstrainedStateLifecycleOwner(parentLifecycleOwner)
         observer = mock()
     }
 
