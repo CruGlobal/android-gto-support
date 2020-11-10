@@ -5,12 +5,18 @@ import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LifecycleRegistry
 
-class ConstrainedStateLifecycleOwner(private val parent: Lifecycle) : LifecycleOwner {
-    constructor(parent: LifecycleOwner) : this(parent.lifecycle)
+class ConstrainedStateLifecycleOwner(
+    private val parent: Lifecycle,
+    maxState: Lifecycle.State = Lifecycle.State.RESUMED
+) : LifecycleOwner {
+    constructor(
+        parent: LifecycleOwner,
+        maxState: Lifecycle.State = Lifecycle.State.RESUMED
+    ) : this(parent.lifecycle, maxState)
 
     private val registry = LifecycleRegistry(this)
 
-    var maxState = Lifecycle.State.RESUMED
+    var maxState = maxState
         set(value) {
             field = value
             reconcileState()
