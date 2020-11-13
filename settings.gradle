@@ -41,7 +41,7 @@ include 'gto-support-sync'
 include 'gto-support-util'
 include 'gto-support-viewpager'
 
-include 'testing:gto-support-picasso-testing'
+include 'testing:gto-support-picasso'
 
 // deprecated modules
 include 'gto-support-api'

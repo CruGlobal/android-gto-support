@@ -88,7 +88,7 @@ plugins {
     id 'org.jlleitschuh.gradle.ktlint' version '9.4.1'
 }
 
-subprojects {
+configure(subprojects.findAll { it.path.contains("gto-support") }) {
     apply plugin: 'com.android.library'
     apply plugin: 'kotlin-android'
     apply plugin: 'kotlin-kapt'
