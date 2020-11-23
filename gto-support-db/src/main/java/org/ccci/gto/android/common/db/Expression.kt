@@ -1,8 +1,8 @@
 package org.ccci.gto.android.common.db
 
 import android.os.Parcelable
-import kotlinx.android.parcel.IgnoredOnParcel
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.IgnoredOnParcel
+import kotlinx.parcelize.Parcelize
 import org.ccci.gto.android.common.db.AbstractDao.Companion.bindValues
 
 sealed class Expression : Parcelable {

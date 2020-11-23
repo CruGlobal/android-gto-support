@@ -1,4 +1,4 @@
-apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-parcelize'
 
 dependencies {
     api "androidx.collection:collection:${deps.androidX.collection}"
