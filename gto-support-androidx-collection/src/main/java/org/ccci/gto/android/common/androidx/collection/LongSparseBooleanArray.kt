@@ -3,8 +3,8 @@ package org.ccci.gto.android.common.androidx.collection
 import android.os.Parcel
 import android.os.Parcelable
 import androidx.collection.LongSparseArray
-import kotlinx.android.parcel.Parceler
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parceler
+import kotlinx.parcelize.Parcelize
 
 @Parcelize
 class LongSparseBooleanArray : LongSparseArray<Boolean>(), Parcelable {
