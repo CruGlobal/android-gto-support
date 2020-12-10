@@ -1,4 +1,8 @@
 android {
+    defaultConfig {
+        consumerProguardFiles 'proguard-consumer.pro'
+    }
+
     buildFeatures {
         dataBinding = true
     }
@@ -8,6 +12,8 @@ android {
 }
 
 dependencies {
+    implementation project(':gto-support-util')
+
     api "com.airbnb.android:lottie:${deps.lottie}"
 
     compileOnly "androidx.databinding:databinding-adapters:${deps.androidX.databinding}"
