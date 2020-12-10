@@ -1,3 +1,14 @@
+android {
+    buildFeatures {
+        dataBinding = true
+    }
+    dataBinding {
+        addDefaultAdapters = false
+    }
+}
+
 dependencies {
     api "com.airbnb.android:lottie:${deps.lottie}"
+
+    compileOnly "androidx.databinding:databinding-adapters:${deps.androidX.databinding}"
 }
