@@ -48,13 +48,13 @@ class LottieAnimationViewBindingAdapterTest {
     @Test
     fun testBindAutoPlayInitial() {
         view.bindAutoPlay(false)
-        verify(view, never()).playAnimation()
+        verify(view, never()).resumeAnimation()
         verify(view).pauseAnimation()
         verify(view).setTag(R.id.lottie_autoplay_enabled, false)
         clearInvocations(view)
 
         view.bindAutoPlay(true)
-        verify(view).playAnimation()
+        verify(view).resumeAnimation()
         verify(view, never()).pauseAnimation()
         verify(view).setTag(R.id.lottie_autoplay_enabled, true)
     }
@@ -68,7 +68,7 @@ class LottieAnimationViewBindingAdapterTest {
         verifyNoMoreInteractions(view)
 
         view.bindAutoPlay(true)
-        verify(view).playAnimation()
+        verify(view).resumeAnimation()
         verify(view, never()).pauseAnimation()
         verify(view).setTag(R.id.lottie_autoplay_enabled, true)
     }
@@ -82,7 +82,7 @@ class LottieAnimationViewBindingAdapterTest {
         verifyNoMoreInteractions(view)
 
         view.bindAutoPlay(false)
-        verify(view, never()).playAnimation()
+        verify(view, never()).resumeAnimation()
         verify(view).pauseAnimation()
         verify(view).setTag(R.id.lottie_autoplay_enabled, false)
     }

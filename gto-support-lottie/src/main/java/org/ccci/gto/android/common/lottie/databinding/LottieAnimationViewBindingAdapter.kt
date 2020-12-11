@@ -16,7 +16,7 @@ internal fun LottieAnimationView.bindAutoPlay(autoPlay: Boolean) {
     if (getTag(R.id.lottie_autoplay_enabled) == autoPlay) return
 
     if (autoPlay) {
-        playAnimation()
+        resumeAnimation()
     } else {
         pauseAnimation()
     }
