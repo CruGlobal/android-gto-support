@@ -26,5 +26,9 @@ dependencies {
     // databinding adapter dependencies
     compileOnly "androidx.databinding:databinding-runtime:${deps.androidX.databinding}"
 
+    compileOnly "org.jetbrains.kotlinx:kotlinx-coroutines-core:${deps.kotlinCoroutines}"
+
     testImplementation "com.google.android.material:material:${deps.materialDesign}"
+    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:${deps.kotlinCoroutines}"
+    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:${deps.kotlinCoroutines}"
 }
