@@ -1,5 +1,6 @@
 package org.ccci.gto.android.common.testing.timber
 
+import java.io.Closeable
 import timber.log.Timber
 
 object ExceptionRaisingTree : Timber.Tree() {
@@ -10,7 +11,11 @@ object ExceptionRaisingTree : Timber.Tree() {
         if (t != null) throw t
     }
 
-    fun plant() = Timber.plant(this)
+    fun plant(): Closeable {
+        Timber.plant(this)
+        return Closeable { uproot() }
+    }
+
     fun uproot() {
         Timber.uproot(this)
         seen?.let {
