@@ -21,7 +21,7 @@ buildscript {
             junitParams         : '1.1.1',
             kotlin              : '1.4.21',
             kotlinCoroutines    : '1.4.2',
-            leakcanary2         : '2.5',
+            leakcanary2         : '2.6',
             lightweightStream   : '1.2.1',
             lottie              : '3.5.0',
             materialDesign      : '1.2.1',
