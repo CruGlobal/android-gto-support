@@ -23,7 +23,7 @@ buildscript {
             kotlinCoroutines    : '1.4.2',
             leakcanary2         : '2.6',
             lightweightStream   : '1.2.1',
-            lottie              : '3.5.0',
+            lottie              : '3.6.0',
             materialDesign      : '1.2.1',
             mockito             : '3.6.28',
             mockitoKotlin       : '2.2.0',
