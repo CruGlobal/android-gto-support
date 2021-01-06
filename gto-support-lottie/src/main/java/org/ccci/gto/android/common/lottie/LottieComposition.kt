@@ -8,8 +8,8 @@ import com.airbnb.lottie.LottieResult
 import com.airbnb.lottie.LottieTask
 import com.airbnb.lottie.parser.moshi.JsonReader
 import java.io.File
-import okio.Okio.buffer
-import okio.Okio.source
+import okio.buffer
+import okio.source
 
 // TODO: utilize LottieCompositionFactory.cache() to leverage the cache
 @SuppressLint("RestrictedApi")
@@ -18,4 +18,4 @@ fun File.loadLottieComposition(cacheKey: String? = "file_$path") = LottieTask { 
 @WorkerThread
 @SuppressLint("RestrictedApi")
 fun File.loadLottieCompositionSync(cacheKey: String? = null): LottieResult<LottieComposition> =
-    LottieCompositionFactory.fromJsonReaderSync(JsonReader.of(buffer(source(this))), cacheKey)
+    LottieCompositionFactory.fromJsonReaderSync(JsonReader.of(source().buffer()), cacheKey)

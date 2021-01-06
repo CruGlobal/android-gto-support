@@ -15,6 +15,8 @@ dependencies {
     implementation project(':gto-support-util')
 
     api "com.airbnb.android:lottie:${deps.lottie}"
+    implementation "androidx.appcompat:appcompat:${deps.androidX.appCompat}"
 
     compileOnly "androidx.databinding:databinding-adapters:${deps.androidX.databinding}"
+    compileOnly "com.squareup.okio:okio:${deps.okio}"
 }
