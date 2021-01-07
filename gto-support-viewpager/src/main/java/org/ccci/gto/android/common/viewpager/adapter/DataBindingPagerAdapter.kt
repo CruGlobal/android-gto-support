@@ -9,11 +9,14 @@ import com.karumi.weak.weak
 abstract class DataBindingPagerAdapter<B : ViewDataBinding>(lifecycleOwner: LifecycleOwner? = null) :
     BaseDataBindingPagerAdapter<B, DataBindingViewHolder<B>>(lifecycleOwner) {
     final override fun onCreateViewHolder(parent: ViewGroup) = DataBindingViewHolder(
-        onCreateViewDataBinding(parent)
-            .also { it.lifecycleOwner = lifecycleOwner }
+        onCreateViewDataBinding(parent).also {
+            it.lifecycleOwner = lifecycleOwner
+            onViewDataBindingCreated(it)
+        }
     )
 
     abstract fun onCreateViewDataBinding(parent: ViewGroup): B
+    open fun onViewDataBindingCreated(binding: B) = Unit
 }
 
 abstract class BaseDataBindingPagerAdapter<B : ViewDataBinding, VH : DataBindingViewHolder<B>>(
