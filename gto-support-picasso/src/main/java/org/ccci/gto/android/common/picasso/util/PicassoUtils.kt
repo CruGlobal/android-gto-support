@@ -24,6 +24,3 @@ fun Picasso.Builder.injectVectorAwareContext(context: Context): Picasso.Builder 
     }
     return this
 }
-
-@Deprecated("Since v3.2.0, This is an old method signature", ReplaceWith("builder.injectVectorAwareContext(context)"))
-fun injectVectorAwareContext(context: Context, builder: Picasso.Builder) = builder.injectVectorAwareContext(context)
