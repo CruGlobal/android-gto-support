@@ -10,7 +10,8 @@ import javax.inject.Provider
 
 @Reusable
 class DaggerWorkerFactory @Inject constructor(
-    private val factories: Map<Class<out ListenableWorker>, @JvmSuppressWildcards Provider<AssistedWorkerFactory>>
+    private val factories: Map<Class<out ListenableWorker>,
+        @JvmSuppressWildcards Provider<AssistedWorkerFactory<out ListenableWorker>>>
 ) : WorkerFactory() {
     override fun createWorker(
         appContext: Context,

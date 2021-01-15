@@ -7,5 +7,5 @@ import dagger.multibindings.Multibinds
 @Module
 abstract class WorkManagerModule {
     @Multibinds
-    abstract fun assistedWorkerFactories(): Map<Class<out ListenableWorker>, AssistedWorkerFactory>
+    abstract fun workerFactories(): Map<Class<out ListenableWorker>, AssistedWorkerFactory<out ListenableWorker>>
 }
