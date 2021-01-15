@@ -5,7 +5,7 @@ buildscript {
     ext.deps = [
             advrecyclerview     : '1.0.0',
             crashlytics         : '2.10.1',
-            dagger              : '2.30.1',
+            dagger              : '2.31',
             daggerHilt          : '2.30.1-alpha',
             eventbus            : '3.2.0',
             facebookFlipper     : '0.64.0',
