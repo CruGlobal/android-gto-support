@@ -6,7 +6,7 @@ buildscript {
             advrecyclerview     : '1.0.0',
             crashlytics         : '2.10.1',
             dagger              : '2.31.2',
-            daggerHilt          : '2.31.1-alpha',
+            daggerHilt          : '2.31.2-alpha',
             eventbus            : '3.2.0',
             facebookFlipper     : '0.64.0',
             gradleAndroidPlugin : '4.1.2',
