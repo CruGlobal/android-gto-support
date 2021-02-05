@@ -1,14 +1,6 @@
-android {
-    lintOptions {
-        // XXX: disable the OutdatedLibrary lint check until we remove the Fabric Crashlytics dependency
-        warning 'OutdatedLibrary'
-    }
-}
-
 dependencies {
     implementation "com.squareup.leakcanary:leakcanary-android:${deps.leakcanary2}"
 
-    compileOnly "com.crashlytics.sdk.android:crashlytics:${deps.crashlytics}"
     compileOnly "com.google.firebase:firebase-crashlytics:${deps.firebase.crashlytics}"
     compileOnly "com.jakewharton.timber:timber:${deps.timber}"
 }
