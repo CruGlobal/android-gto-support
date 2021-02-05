@@ -4,7 +4,6 @@ buildscript {
     // define dependency versions for this project
     ext.deps = [
             advrecyclerview     : '1.0.0',
-            crashlytics         : '2.10.1',
             dagger              : '2.31.2',
             daggerHilt          : '2.31.2-alpha',
             eventbus            : '3.2.0',
@@ -99,7 +98,6 @@ configure(subprojects.findAll { it.path.contains("gto-support") }) {
 
     repositories {
         google()
-        maven { url 'https://maven.fabric.io/public' }
         jcenter()
         maven { url "https://jitpack.io" }
         maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }

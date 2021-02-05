@@ -50,7 +50,4 @@ open class Session protected constructor(
     }
 
     override fun hashCode() = id?.hashCode() ?: 0
-
-    @Deprecated("Since v3.3.0, use prefAttrName() instead", ReplaceWith("prefAttrName(type)"))
-    protected fun getPrefAttrName(type: String) = prefAttrName(type)
 }

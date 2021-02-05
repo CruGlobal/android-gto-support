@@ -1,7 +1,0 @@
-dependencies {
-    implementation project(':gto-support-core')
-    implementation project(':gto-support-api-base')
-
-    implementation "com.google.guava:guava:${deps.guava}"
-    implementation "me.thekey.android:thekey-api:${deps.thekey}"
-}
