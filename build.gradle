@@ -84,7 +84,6 @@ buildscript {
     }
 }
 plugins {
-    id 'digital.wup.android-maven-publish' version '3.6.3' apply false
     id 'org.jlleitschuh.gradle.ktlint' version '9.4.1'
 }
 
@@ -228,36 +227,43 @@ configure(subprojects.findAll { it.path.contains("gto-support") }) {
     }
 
     // configure publishing
-    apply plugin: 'digital.wup.android-maven-publish'
+    apply plugin: 'maven-publish'
     task sourcesJar(type: Jar) {
         from android.sourceSets.main.java.srcDirs
     }
-    publishing {
-        publications {
-            release(MavenPublication) {
-                from components.android
-                pom.withXml {
-                    def scm = asNode().appendNode('scm')
-                    scm.appendNode('connection', POM_SCM_CONNECTION)
-                    scm.appendNode('developerConnection', POM_SCM_CONNECTION)
-                }
+    afterEvaluate {
+        publishing {
+            publications {
+                release(MavenPublication) {
+                    from components.release
 
-                artifact sourcesJar {
-                    classifier 'sources'
+                    groupId = project.group
+                    artifactId = project.name
+                    version = project.version
+
+                    pom.withXml {
+                        def scm = asNode().appendNode('scm')
+                        scm.appendNode('connection', POM_SCM_CONNECTION)
+                        scm.appendNode('developerConnection', POM_SCM_CONNECTION)
+                    }
+
+                    artifact sourcesJar {
+                        classifier 'sources'
+                    }
                 }
             }
-        }
-        repositories {
-            maven {
-                if (project.version.endsWith('-SNAPSHOT')) {
-                    url "https://cruglobal.jfrog.io/cruglobal/list/maven-cru-android-public-snapshots-local/"
-                } else {
-                    url "https://cruglobal.jfrog.io/cruglobal/list/maven-cru-android-public-releases-local/"
-                }
+            repositories {
+                maven {
+                    if (project.version.endsWith('-SNAPSHOT')) {
+                        url "https://cruglobal.jfrog.io/cruglobal/list/maven-cru-android-public-snapshots-local/"
+                    } else {
+                        url "https://cruglobal.jfrog.io/cruglobal/list/maven-cru-android-public-releases-local/"
+                    }
 
-                credentials {
-                    username cruGlobalMavenRepositoryUsername
-                    password cruGlobalMavenRepositoryPassword
+                    credentials {
+                        username cruGlobalMavenRepositoryUsername
+                        password cruGlobalMavenRepositoryPassword
+                    }
                 }
             }
         }
