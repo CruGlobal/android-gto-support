@@ -5,7 +5,7 @@ buildscript {
     ext.deps = [
             advrecyclerview     : '1.0.0',
             dagger              : '2.32',
-            daggerHilt          : '2.31.2-alpha',
+            daggerHilt          : '2.32-alpha',
             eventbus            : '3.2.0',
             facebookFlipper     : '0.64.0',
             gradleAndroidPlugin : '4.1.2',
