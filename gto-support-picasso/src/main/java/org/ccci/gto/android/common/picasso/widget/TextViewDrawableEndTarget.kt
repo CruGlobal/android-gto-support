@@ -12,7 +12,7 @@ class TextViewDrawableEndTarget(view: TextView) : BaseViewTarget<TextView>(view)
 
     companion object {
         fun of(view: TextView) = view.getTag(R.id.picasso_textViewDrawableEndTarget) as? TextViewDrawableEndTarget
-                ?: TextViewDrawableEndTarget(view)
+            ?: TextViewDrawableEndTarget(view)
     }
 
     public override fun updateDrawable(drawable: Drawable?) {
