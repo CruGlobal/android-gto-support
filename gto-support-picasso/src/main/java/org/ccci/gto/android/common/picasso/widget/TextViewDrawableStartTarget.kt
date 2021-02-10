@@ -15,8 +15,9 @@ class TextViewDrawableStartTarget(view: TextView) : BaseViewTarget<TextView>(vie
             ?: TextViewDrawableStartTarget(view)
     }
 
-    override fun updateDrawable(drawable: Drawable?) {
+    public override fun updateDrawable(drawable: Drawable?) {
         val current = view.compoundDrawablesRelative
+        drawable?.apply { setBounds(0, 0, intrinsicWidth, intrinsicHeight) }
         view.setCompoundDrawablesRelative(drawable, current[1], current[2], current[3])
     }
 }
