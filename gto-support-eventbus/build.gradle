@@ -7,4 +7,6 @@ dependencies {
     compileOnly "com.jakewharton.timber:timber:${deps.timber}"
 
     testImplementation "androidx.arch.core:core-testing:${deps.androidX.arch}"
+    testImplementation "androidx.lifecycle:lifecycle-runtime-testing:${deps.androidX.lifecycle}"
+    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:${deps.kotlinCoroutines}"
 }

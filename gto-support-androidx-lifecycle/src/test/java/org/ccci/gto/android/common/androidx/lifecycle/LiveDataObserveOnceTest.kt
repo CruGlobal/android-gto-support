@@ -2,15 +2,16 @@ package org.ccci.gto.android.common.androidx.lifecycle
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.LifecycleRegistry
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.testing.TestLifecycleOwner
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.eq
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.never
 import com.nhaarman.mockitokotlin2.reset
 import com.nhaarman.mockitokotlin2.verify
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.TestCoroutineDispatcher
 import org.junit.Rule
 import org.junit.Test
 
@@ -18,16 +19,12 @@ class LiveDataObserveOnceTest {
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
-    private val lifecycleOwner = object : LifecycleOwner {
-        val lifecycleRegistry = LifecycleRegistry(this)
-        override fun getLifecycle(): Lifecycle = lifecycleRegistry
-    }
+    @OptIn(ExperimentalCoroutinesApi::class)
+    private val lifecycleOwner = TestLifecycleOwner(Lifecycle.State.STARTED, TestCoroutineDispatcher())
     private val liveData = MutableLiveData<Int>()
 
     @Test
     fun verifyObserveOnceOnlyCalledOneTime() {
-        lifecycleOwner.lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_START)
-
         // observe before LiveData has data
         val observer: (Int) -> Unit = mock()
         liveData.observeOnce(lifecycleOwner, observer)
@@ -70,12 +67,11 @@ class LiveDataObserveOnceTest {
 
     @Test
     fun verifyObserveOnceRespectsLifecycle() {
-        lifecycleOwner.lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_START)
         val observer: (Int) -> Unit = mock()
         liveData.observeOnce(lifecycleOwner, observer)
 
         // Lifecycle is destroyed so observer is removed before it can be called
-        lifecycleOwner.lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_DESTROY)
+        lifecycleOwner.currentState = Lifecycle.State.DESTROYED
         liveData.value = 1
         verify(observer, never()).invoke(any())
     }
