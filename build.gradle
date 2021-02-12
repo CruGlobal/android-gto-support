@@ -12,7 +12,7 @@ buildscript {
             gson                : '2.8.6',
             guava               : '30.1-android',
             hamcrest            : '2.2',
-            jacoco              : '0.8.5',
+            jacoco              : '0.8.6',
             jetbrainsAnnotations: '20.1.0',
             json                : '20201115',
             jsonUnit            : '2.24.0',
@@ -77,13 +77,10 @@ buildscript {
     dependencies {
         classpath "com.android.tools.build:gradle:${deps.gradleAndroidPlugin}"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:${deps.kotlin}"
-
-        // HACK: use master-SNAPSHOT version to work around a gradle 6 incompatibility with v0.1.4 of the jacoco-android plugin
-//        classpath 'com.dicedmelon.gradle:jacoco-android:0.1.4'
-        classpath 'com.github.arturdm:jacoco-android-gradle-plugin:master-SNAPSHOT'
     }
 }
 plugins {
+    id "com.vanniktech.android.junit.jacoco" version "0.16.0"
     id 'org.jlleitschuh.gradle.ktlint' version '10.0.0' apply false
 }
 
@@ -216,15 +213,6 @@ configure(subprojects.findAll { it.path.contains("gto-support") }) {
         }
     }
 
-    // configure jacoco
-    apply plugin: 'jacoco-android'
-    jacoco {
-        toolVersion = deps.jacoco
-    }
-    android.testOptions.unitTests.all {
-        jacoco.includeNoLocationClasses = true
-    }
-
     // configure publishing
     apply plugin: 'maven-publish'
     task sourcesJar(type: Jar) {
@@ -266,5 +254,20 @@ configure(subprojects.findAll { it.path.contains("gto-support") }) {
                 }
             }
         }
+    }
+}
+
+// jacoco config
+junitJacoco {
+    jacocoVersion = deps.jacoco
+    includeNoLocationClasses = true
+}
+task jacocoTestReport {
+    subprojects.each { dependsOn(it.tasks.withType(JacocoReport)) }
+}
+allprojects {
+    if (gradle.startParameter.excludedTaskNames.contains("test")) {
+        // exclude all test type tasks when the test task is excluded
+        tasks.withType(Test).all { gradle.startParameter.excludedTaskNames += it.name }
     }
 }
