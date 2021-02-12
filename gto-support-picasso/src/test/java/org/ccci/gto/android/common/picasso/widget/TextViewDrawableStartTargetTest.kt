@@ -3,15 +3,12 @@ package org.ccci.gto.android.common.picasso.widget
 import android.graphics.drawable.Drawable
 import android.widget.TextView
 import com.nhaarman.mockitokotlin2.any
-import com.nhaarman.mockitokotlin2.argumentCaptor
 import com.nhaarman.mockitokotlin2.clearInvocations
 import com.nhaarman.mockitokotlin2.doReturn
 import com.nhaarman.mockitokotlin2.eq
 import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.nullableArgumentCaptor
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
-import org.junit.Assert.assertNull
 import org.junit.Assert.assertSame
 import org.junit.Before
 import org.junit.Test
@@ -21,20 +18,18 @@ private const val HEIGHT = 10
 
 class TextViewDrawableStartTargetTest {
     private lateinit var view: TextView
-    private lateinit var compoundDrawables: Array<Drawable>
+    private lateinit var current: Array<Drawable>
     private lateinit var target: TextViewDrawableStartTarget
     private lateinit var drawable: Drawable
 
     @Before
     fun setup() {
-        compoundDrawables = Array(4) { mock() }
+        current = Array(4) { mock() }
         drawable = mock {
             on { intrinsicWidth } doReturn WIDTH
             on { intrinsicHeight } doReturn HEIGHT
         }
-        view = mock {
-            on { compoundDrawablesRelative } doReturn compoundDrawables
-        }
+        view = mock { on { compoundDrawablesRelative } doReturn current }
         target = TextViewDrawableStartTarget.of(view)
         clearInvocations(drawable, view)
     }
@@ -57,28 +52,12 @@ class TextViewDrawableStartTargetTest {
     fun verifyUpdateDrawableSetsDrawable() {
         target.updateDrawable(drawable)
         verify(drawable).setBounds(0, 0, WIDTH, HEIGHT)
-        argumentCaptor<Drawable> {
-            verify(view).setCompoundDrawablesRelative(
-                capture(),
-                eq(compoundDrawables[1]),
-                eq(compoundDrawables[2]),
-                eq(compoundDrawables[3])
-            )
-            assertSame(drawable, firstValue)
-        }
+        verify(view).setCompoundDrawablesRelative(drawable, current[1], current[2], current[3])
     }
 
     @Test
     fun verifyUpdateDrawableClearsDrawableWhenDrawableIsNull() {
         target.updateDrawable(null)
-        nullableArgumentCaptor<Drawable> {
-            verify(view).setCompoundDrawablesRelative(
-                capture(),
-                eq(compoundDrawables[1]),
-                eq(compoundDrawables[2]),
-                eq(compoundDrawables[3])
-            )
-            assertNull(firstValue)
-        }
+        verify(view).setCompoundDrawablesRelative(null, current[1], current[2], current[3])
     }
 }
