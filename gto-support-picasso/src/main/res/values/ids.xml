@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <item name="picasso_chipIconTarget" type="id" />
+    <item name="picasso_textViewDrawableStartTarget" type="id" />
+    <item name="picasso_textViewDrawableEndTarget" type="id" />
 </resources>
