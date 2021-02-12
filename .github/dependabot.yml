@@ -1,7 +1,6 @@
 version: 2
 updates:
 - package-ecosystem: gradle
-  target-branch: "feature/kotlinGradle"
   directory: "/"
   schedule:
     interval: daily
