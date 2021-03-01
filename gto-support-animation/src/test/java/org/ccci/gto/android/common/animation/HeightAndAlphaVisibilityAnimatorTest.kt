@@ -31,8 +31,8 @@ class HeightAndAlphaVisibilityAnimatorTest {
         assertEquals(d, animator.duration)
         assertSame(i, animator.interpolator)
 
-        view.stub { on { getTag(R.id.gto_height_alpha_animator)} doReturn animator }
-        val animator2 = HeightAndAlphaVisibilityAnimator.of(view) { fail("onInit() block shouldn't run on reused animator") }
+        view.stub { on { getTag(R.id.gto_height_alpha_animator) } doReturn animator }
+        val animator2 = HeightAndAlphaVisibilityAnimator.of(view) { fail("onInit() shouldn't run for reused animator") }
         assertSame(animator, animator2)
     }
 }
