@@ -9,7 +9,7 @@ import android.view.View
 import androidx.annotation.UiThread
 import androidx.core.animation.addListener
 
-class HeightAndAlphaVisibilityAnimator private constructor(private val view: View) {
+class HeightAndAlphaVisibilityAnimator private constructor(private val view: View, private var isVisible: Boolean) {
     init {
         view.setTag(R.id.gto_height_alpha_animator, this)
     }
@@ -17,7 +17,6 @@ class HeightAndAlphaVisibilityAnimator private constructor(private val view: Vie
     var interpolator: TimeInterpolator? = null
     var duration: Long? = null
 
-    private var isVisible = view.visibility != View.GONE
     private var current: Animator? = null
 
     private var _originalHeight: Int? = null
@@ -89,9 +88,12 @@ class HeightAndAlphaVisibilityAnimator private constructor(private val view: Vie
     }
 
     companion object {
-        fun of(view: View, onInit: (HeightAndAlphaVisibilityAnimator.() -> Unit)? = null) =
-            view.getTag(R.id.gto_height_alpha_animator) as? HeightAndAlphaVisibilityAnimator
-                ?: HeightAndAlphaVisibilityAnimator(view).also { onInit?.invoke(it) }
+        fun of(
+            view: View,
+            isVisible: Boolean = view.visibility != View.GONE,
+            onInit: (HeightAndAlphaVisibilityAnimator.() -> Unit)? = null
+        ) = view.getTag(R.id.gto_height_alpha_animator) as? HeightAndAlphaVisibilityAnimator
+            ?: HeightAndAlphaVisibilityAnimator(view, isVisible).also { onInit?.invoke(it) }
 
         private val HEIGHT = object : Property<View, Int>(Int::class.java, "height") {
             override fun get(view: View) = view.layoutParams.height
