@@ -1,3 +1,5 @@
 dependencies {
+    implementation project(':gto-support-util')
+
     api "androidx.drawerlayout:drawerlayout:${deps.androidX.drawerLayout}"
 }
