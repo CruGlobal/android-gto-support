@@ -14,7 +14,7 @@ class HackyDrawerLayout @JvmOverloads constructor(
     defStyleAttr: Int = R.attr.drawerLayoutStyle
 ) : DrawerLayout(context, attrs, defStyleAttr) {
     @SuppressLint("ClickableViewAccessibility")
-    override fun onTouchEvent(ev: MotionEvent?) = try {
+    override fun onTouchEvent(ev: MotionEvent) = try {
         super.onTouchEvent(ev)
     } catch (e: RuntimeException) {
         ViewUtils.handleOnTouchEventException(e)
