@@ -1,5 +1,6 @@
 include("gto-support-androidx-collection")
 include("gto-support-androidx-databinding")
+include("gto-support-androidx-drawerlayout")
 include("gto-support-androidx-fragment")
 include("gto-support-androidx-lifecycle")
 include("gto-support-androidx-room")

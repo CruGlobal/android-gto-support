@@ -51,6 +51,7 @@ buildscript {
             concurrent           : '1.1.0',
             core                 : '1.3.2',
             databinding          : deps.gradleAndroidPlugin,
+            drawerLayout         : '1.1.1',
             fragment             : '1.2.5',
             lifecycle            : '2.3.0',
             loader               : '1.1.0',
