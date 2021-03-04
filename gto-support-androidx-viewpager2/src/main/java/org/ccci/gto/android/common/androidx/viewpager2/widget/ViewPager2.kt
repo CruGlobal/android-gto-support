@@ -11,6 +11,11 @@ fun ViewPager2.whileMaintainingVisibleCurrentItem(block: (RecyclerView.Adapter<*
     val visible = adapter?.takeIf { it.hasStableIds() }?.getItemId(currentItem)
     block(adapter)
     if (visible != null) {
-        (0 until adapter.itemCount).firstOrNull { adapter.getItemId(it) == visible }?.let { setCurrentItem(it, false) }
+        for (pos in 0 until adapter.itemCount) {
+            if (adapter.getItemId(pos) == visible) {
+                setCurrentItem(pos, false)
+                break
+            }
+        }
     }
 }
