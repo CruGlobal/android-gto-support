@@ -107,11 +107,31 @@ abstract class CollectionLiveDataTest(private val synchronous: Boolean) {
     }
 
     @Test
-    fun testRemoveAllMissing() {
+    fun testRemoveAllNoChange() {
         executeTask { liveData += setOf("a") }
         clearInvocations(observer)
 
         executeTask { assertFalse(liveData.removeAll(setOf("b", "c"))) }
+        verify(observer, never()).onChanged(any())
+        assertThat(liveData.value, containsInAnyOrder("a"))
+    }
+
+    @Test
+    fun testRetainAll() {
+        executeTask { liveData += setOf("a", "b") }
+        clearInvocations(observer)
+
+        executeTask { assertTrue(liveData.retainAll(setOf("b", "c"))) }
+        verify(observer).onChanged(any())
+        assertThat(liveData.value, containsInAnyOrder("b"))
+    }
+
+    @Test
+    fun testRetainAllNoChange() {
+        executeTask { liveData += setOf("a") }
+        clearInvocations(observer)
+
+        executeTask { assertFalse(liveData.retainAll(setOf("a", "b"))) }
         verify(observer, never()).onChanged(any())
         assertThat(liveData.value, containsInAnyOrder("a"))
     }
