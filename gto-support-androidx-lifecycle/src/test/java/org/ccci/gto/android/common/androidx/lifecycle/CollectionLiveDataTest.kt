@@ -7,16 +7,20 @@ import com.nhaarman.mockitokotlin2.clearInvocations
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.never
 import com.nhaarman.mockitokotlin2.verify
+import java.util.concurrent.CountDownLatch
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.containsInAnyOrder
 import org.hamcrest.Matchers.empty
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
+import org.junit.Assert.fail
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import org.junit.runner.RunWith
+import org.junit.runners.Parameterized
 
-abstract class CollectionLiveDataTest {
+abstract class CollectionLiveDataTest(private val synchronous: Boolean) {
     @get:Rule
     val rule = JunitTaskExecutorRule(1, false)
 
@@ -26,7 +30,7 @@ abstract class CollectionLiveDataTest {
     @Before
     fun setupLiveData() {
         observer = mock()
-        executeTask(mainThread = true, awaitExecution = true) { liveData.observeForever(observer) }
+        executeTask(mainThread = true) { liveData.observeForever(observer) }
         clearInvocations(observer)
     }
 
@@ -169,7 +173,54 @@ abstract class CollectionLiveDataTest {
         assertThat(liveData.value, empty())
     }
 
-    private fun executeTask(mainThread: Boolean = false, awaitExecution: Boolean = true, block: () -> Unit) {
+    @Test
+    fun testAsynchronous() {
+        // HACK: we can't use "assumeFalse(synchronous)" because JunitTaskExecutorRule wraps AssumptionViolatedException
+        if (synchronous) return
+
+        // stall the main thread while we run the background thread update
+        val latch = CountDownLatch(1)
+        executeTask(mainThread = true, awaitExecution = false) { latch.await() }
+
+        // asynchronous CollectionLiveData can update the LiveData on a background thread.
+        // observer updates are still triggered from the main thread at a later time
+        executeTask(mainThread = false) {
+            liveData += "a"
+            verify(observer, never()).onChanged(any())
+
+            // allow the main thread to proceed
+            latch.countDown()
+        }
+        verify(observer).onChanged(any())
+    }
+
+    @Test
+    fun testSynchronous() {
+        // HACK: we can't use "assumeTrue(synchronous)" because JunitTaskExecutorRule wraps AssumptionViolatedException
+        if (!synchronous) return
+
+        executeTask(mainThread = true) {
+            liveData += "a"
+            verify(observer).onChanged(any())
+        }
+    }
+
+    @Test
+    fun testSynchronousFromBackgroundThread() {
+        // HACK: we can't use "assumeTrue(synchronous)" because JunitTaskExecutorRule wraps AssumptionViolatedException
+        if (!synchronous) return
+
+        // updating fails on a background thread
+        executeTask(mainThread = false) {
+            try {
+                liveData += "b"
+                fail("You shouldn't be able to update the LiveData from a background thread when using synchronous")
+            } catch (e: IllegalStateException) {
+            }
+        }
+    }
+
+    private fun executeTask(mainThread: Boolean = synchronous, awaitExecution: Boolean = true, block: () -> Unit) {
         try {
             if (mainThread) {
                 rule.taskExecutor.executeOnMainThread(block)
@@ -179,16 +230,25 @@ abstract class CollectionLiveDataTest {
         } finally {
             if (awaitExecution) {
                 rule.drainTasks(1)
-                rule.drainTasks(1)
+                // drain one additional time for asynchronous because LiveData.postValue queues up another task
+                if (!synchronous) rule.drainTasks(1)
             }
         }
     }
+
+    companion object {
+        @JvmStatic
+        @Parameterized.Parameters(name = "synchronous = {0}")
+        fun parameters() = listOf(arrayOf(true), arrayOf(false))
+    }
 }
 
-class ListLiveDataTest : CollectionLiveDataTest() {
-    override val liveData = ListLiveData<String>()
+@RunWith(Parameterized::class)
+class ListLiveDataTest(synchronous: Boolean) : CollectionLiveDataTest(synchronous) {
+    override val liveData = ListLiveData<String>(synchronous)
 }
 
-class SetLiveDataTest : CollectionLiveDataTest() {
-    override val liveData = SetLiveData<String>()
+@RunWith(Parameterized::class)
+class SetLiveDataTest(synchronous: Boolean) : CollectionLiveDataTest(synchronous) {
+    override val liveData = SetLiveData<String>(synchronous)
 }
