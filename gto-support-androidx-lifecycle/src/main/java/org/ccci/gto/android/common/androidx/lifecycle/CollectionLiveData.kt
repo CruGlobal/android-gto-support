@@ -4,7 +4,8 @@ import androidx.annotation.RestrictTo
 import androidx.lifecycle.LiveData
 
 sealed class CollectionLiveData<T, C : Collection<T>>(
-    private val collection: ChangeAwareCollection<T>
+    private val collection: ChangeAwareCollection<T>,
+    private val synchronous: Boolean
 ) : LiveData<C>(collection as C) {
     init {
         collection.liveData = this
@@ -16,7 +17,7 @@ sealed class CollectionLiveData<T, C : Collection<T>>(
     fun removeAll(items: Collection<T>) = collection.removeAll(items)
     fun clear() = collection.clear()
 
-    private fun notifyChanged() = postValue(collection as C)
+    private fun notifyChanged() = (collection as C).let { if (synchronous) setValue(it) else postValue(it) }
 
     @JvmSynthetic
     operator fun plusAssign(item: T) {
@@ -55,7 +56,7 @@ sealed class CollectionLiveData<T, C : Collection<T>>(
     }
 }
 
-class ListLiveData<T> : CollectionLiveData<T, List<T>>(ChangeAwareList()) {
+class ListLiveData<T>(synchronous: Boolean = false) : CollectionLiveData<T, List<T>>(ChangeAwareList(), synchronous) {
     private class ChangeAwareList<T>(
         private val delegate: MutableList<T> = mutableListOf()
     ) : ChangeAwareCollection<T>(delegate), MutableList<T>, List<T> by delegate {
@@ -73,7 +74,7 @@ class ListLiveData<T> : CollectionLiveData<T, List<T>>(ChangeAwareList()) {
     }
 }
 
-class SetLiveData<T> : CollectionLiveData<T, Set<T>>(ChangeAwareSet()) {
+class SetLiveData<T>(synchronous: Boolean = false) : CollectionLiveData<T, Set<T>>(ChangeAwareSet(), synchronous) {
     private class ChangeAwareSet<T>(
         private val delegate: MutableSet<T> = mutableSetOf()
     ) : ChangeAwareCollection<T>(delegate), MutableSet<T>, Set<T> by delegate {
@@ -86,4 +87,4 @@ class SetLiveData<T> : CollectionLiveData<T, Set<T>>(ChangeAwareSet()) {
 @Deprecated("Since v3.4.0, this is just a shim to prop up the version in gto-support-lifecycle")
 open class CollectionLiveDataShim<T, C : Collection<T>> protected constructor(
     collection: ChangeAwareCollection<T>
-) : CollectionLiveData<T, C>(collection)
+) : CollectionLiveData<T, C>(collection, false)

@@ -1,170 +1,254 @@
 package org.ccci.gto.android.common.androidx.lifecycle
 
+import androidx.arch.core.executor.JunitTaskExecutorRule
+import androidx.lifecycle.Observer
 import com.nhaarman.mockitokotlin2.any
+import com.nhaarman.mockitokotlin2.clearInvocations
+import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.never
-import com.nhaarman.mockitokotlin2.reset
 import com.nhaarman.mockitokotlin2.verify
+import java.util.concurrent.CountDownLatch
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.containsInAnyOrder
 import org.hamcrest.Matchers.empty
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
+import org.junit.Assert.fail
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
+import org.junit.runner.RunWith
+import org.junit.runners.Parameterized
 
-abstract class CollectionLiveDataTest : BaseLiveDataTest() {
+abstract class CollectionLiveDataTest(private val synchronous: Boolean) {
+    @get:Rule
+    val rule = JunitTaskExecutorRule(1, false)
+
     abstract val liveData: CollectionLiveData<String, out Collection<String>>
+    lateinit var observer: Observer<Any?>
 
     @Before
     fun setupLiveData() {
-        liveData.observeForever(observer)
-        reset(observer)
+        observer = mock()
+        executeTask(mainThread = true) { liveData.observeForever(observer) }
+        clearInvocations(observer)
     }
 
     @Test
     fun testAdd() {
-        assertTrue(liveData.add("a"))
+        executeTask { assertTrue(liveData.add("a")) }
         verify(observer).onChanged(any())
         assertThat(liveData.value, containsInAnyOrder("a"))
     }
 
     @Test
     fun testAddAll() {
-        assertTrue(liveData.addAll(setOf("a", "b", "c")))
+        executeTask { assertTrue(liveData.addAll(setOf("a", "b", "c"))) }
         verify(observer).onChanged(any())
         assertThat(liveData.value, containsInAnyOrder("a", "b", "c"))
     }
 
     @Test
     fun testAddAllEmpty() {
-        assertFalse(liveData.addAll(emptySet()))
+        executeTask { assertFalse(liveData.addAll(emptySet())) }
         verify(observer, never()).onChanged(any())
         assertThat(liveData.value, empty())
     }
 
     @Test
     fun testPlusAssign() {
-        liveData += "a"
+        executeTask { liveData += "a" }
         verify(observer).onChanged(any())
         assertThat(liveData.value, containsInAnyOrder("a"))
     }
 
     @Test
     fun testPlusAssignCollection() {
-        liveData += setOf("a", "b", "c")
+        executeTask { liveData += setOf("a", "b", "c") }
         verify(observer).onChanged(any())
         assertThat(liveData.value, containsInAnyOrder("a", "b", "c"))
     }
 
     @Test
     fun testPlusAssignCollectionEmpty() {
-        liveData += emptySet()
+        executeTask { liveData += emptySet() }
         verify(observer, never()).onChanged(any())
         assertThat(liveData.value, empty())
     }
 
     @Test
     fun testRemove() {
-        liveData += setOf("a", "b")
-        reset(observer)
+        executeTask { liveData += setOf("a", "b") }
+        clearInvocations(observer)
 
-        assertTrue(liveData.remove("a"))
+        executeTask { assertTrue(liveData.remove("a")) }
         verify(observer).onChanged(any())
         assertThat(liveData.value, containsInAnyOrder("b"))
     }
 
     @Test
     fun testRemoveMissing() {
-        liveData += setOf("a")
-        reset(observer)
+        executeTask { liveData += setOf("a") }
+        clearInvocations(observer)
 
-        assertFalse(liveData.remove("b"))
+        executeTask { assertFalse(liveData.remove("b")) }
         verify(observer, never()).onChanged(any())
         assertThat(liveData.value, containsInAnyOrder("a"))
     }
 
     @Test
     fun testRemoveAll() {
-        liveData += setOf("a", "b")
-        reset(observer)
+        executeTask { liveData += setOf("a", "b") }
+        clearInvocations(observer)
 
-        assertTrue(liveData.removeAll(setOf("b", "c")))
+        executeTask { assertTrue(liveData.removeAll(setOf("b", "c"))) }
         verify(observer).onChanged(any())
         assertThat(liveData.value, containsInAnyOrder("a"))
     }
 
     @Test
     fun testRemoveAllMissing() {
-        liveData += setOf("a")
-        reset(observer)
+        executeTask { liveData += setOf("a") }
+        clearInvocations(observer)
 
-        assertFalse(liveData.removeAll(setOf("b", "c")))
+        executeTask { assertFalse(liveData.removeAll(setOf("b", "c"))) }
         verify(observer, never()).onChanged(any())
         assertThat(liveData.value, containsInAnyOrder("a"))
     }
 
     @Test
     fun testMinusAssign() {
-        liveData += setOf("a", "b")
-        reset(observer)
+        executeTask { liveData += setOf("a", "b") }
+        clearInvocations(observer)
 
-        liveData -= "a"
+        executeTask { liveData -= "a" }
         verify(observer).onChanged(any())
         assertThat(liveData.value, containsInAnyOrder("b"))
     }
 
     @Test
     fun testMinusAssignMissing() {
-        liveData += setOf("a")
-        reset(observer)
+        executeTask { liveData += setOf("a") }
+        clearInvocations(observer)
 
-        liveData -= "b"
+        executeTask { liveData -= "b" }
         verify(observer, never()).onChanged(any())
         assertThat(liveData.value, containsInAnyOrder("a"))
     }
 
     @Test
     fun testMinusAssignCollection() {
-        liveData += setOf("a", "b")
-        reset(observer)
+        executeTask { liveData += setOf("a", "b") }
+        clearInvocations(observer)
 
-        liveData -= setOf("b", "c")
+        executeTask { liveData -= setOf("b", "c") }
         verify(observer).onChanged(any())
         assertThat(liveData.value, containsInAnyOrder("a"))
     }
 
     @Test
     fun testMinusAssignCollectionMissing() {
-        liveData += setOf("a")
-        reset(observer)
+        executeTask { liveData += setOf("a") }
+        clearInvocations(observer)
 
-        liveData -= setOf("b", "c")
+        executeTask { liveData -= setOf("b", "c") }
         verify(observer, never()).onChanged(any())
         assertThat(liveData.value, containsInAnyOrder("a"))
     }
 
     @Test
     fun testClear() {
-        liveData += setOf("a")
-        reset(observer)
+        executeTask { liveData += setOf("a") }
+        clearInvocations(observer)
 
-        liveData.clear()
+        executeTask { liveData.clear() }
         verify(observer).onChanged(any())
         assertThat(liveData.value, empty())
     }
 
     @Test
     fun testClearEmpty() {
-        liveData.clear()
+        executeTask { liveData.clear() }
         verify(observer).onChanged(any())
         assertThat(liveData.value, empty())
     }
+
+    @Test
+    fun testAsynchronous() {
+        // HACK: we can't use "assumeFalse(synchronous)" because JunitTaskExecutorRule wraps AssumptionViolatedException
+        if (synchronous) return
+
+        // stall the main thread while we run the background thread update
+        val latch = CountDownLatch(1)
+        executeTask(mainThread = true, awaitExecution = false) { latch.await() }
+
+        // asynchronous CollectionLiveData can update the LiveData on a background thread.
+        // observer updates are still triggered from the main thread at a later time
+        executeTask(mainThread = false) {
+            liveData += "a"
+            verify(observer, never()).onChanged(any())
+
+            // allow the main thread to proceed
+            latch.countDown()
+        }
+        verify(observer).onChanged(any())
+    }
+
+    @Test
+    fun testSynchronous() {
+        // HACK: we can't use "assumeTrue(synchronous)" because JunitTaskExecutorRule wraps AssumptionViolatedException
+        if (!synchronous) return
+
+        executeTask(mainThread = true) {
+            liveData += "a"
+            verify(observer).onChanged(any())
+        }
+    }
+
+    @Test
+    fun testSynchronousFromBackgroundThread() {
+        // HACK: we can't use "assumeTrue(synchronous)" because JunitTaskExecutorRule wraps AssumptionViolatedException
+        if (!synchronous) return
+
+        // updating fails on a background thread
+        executeTask(mainThread = false) {
+            try {
+                liveData += "b"
+                fail("You shouldn't be able to update the LiveData from a background thread when using synchronous")
+            } catch (e: IllegalStateException) {
+            }
+        }
+    }
+
+    private fun executeTask(mainThread: Boolean = synchronous, awaitExecution: Boolean = true, block: () -> Unit) {
+        try {
+            if (mainThread) {
+                rule.taskExecutor.executeOnMainThread(block)
+            } else {
+                rule.taskExecutor.executeOnDiskIO(block)
+            }
+        } finally {
+            if (awaitExecution) {
+                rule.drainTasks(1)
+                // drain one additional time for asynchronous because LiveData.postValue queues up another task
+                if (!synchronous) rule.drainTasks(1)
+            }
+        }
+    }
+
+    companion object {
+        @JvmStatic
+        @Parameterized.Parameters(name = "synchronous = {0}")
+        fun parameters() = listOf(arrayOf(true), arrayOf(false))
+    }
 }
 
-class ListLiveDataTest : CollectionLiveDataTest() {
-    override val liveData = ListLiveData<String>()
+@RunWith(Parameterized::class)
+class ListLiveDataTest(synchronous: Boolean) : CollectionLiveDataTest(synchronous) {
+    override val liveData = ListLiveData<String>(synchronous)
 }
 
-class SetLiveDataTest : CollectionLiveDataTest() {
-    override val liveData = SetLiveData<String>()
+@RunWith(Parameterized::class)
+class SetLiveDataTest(synchronous: Boolean) : CollectionLiveDataTest(synchronous) {
+    override val liveData = SetLiveData<String>(synchronous)
 }
