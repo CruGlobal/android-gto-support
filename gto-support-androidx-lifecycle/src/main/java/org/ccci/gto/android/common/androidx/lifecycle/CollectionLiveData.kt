@@ -15,6 +15,7 @@ sealed class CollectionLiveData<T, C : Collection<T>>(
     fun addAll(items: Collection<T>) = collection.addAll(items)
     fun remove(item: T) = collection.remove(item)
     fun removeAll(items: Collection<T>) = collection.removeAll(items)
+    fun removeAll(predicate: (T) -> Boolean) = collection.removeAll(predicate).also { if (it) notifyChanged() }
     fun retainAll(elements: Collection<T>) = collection.retainAll(elements)
     fun clear() = collection.clear()
 
