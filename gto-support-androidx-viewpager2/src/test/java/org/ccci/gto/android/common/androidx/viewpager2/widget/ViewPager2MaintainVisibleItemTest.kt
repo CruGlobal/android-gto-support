@@ -8,6 +8,8 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.viewpager2.widget.ViewPager2
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotEquals
+import org.junit.Assert.assertNull
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -73,6 +75,16 @@ class ViewPager2MaintainVisibleItemTest {
             adapter.notifyDataSetChanged()
         }
         assertEquals(11L, adapter.getItemId(viewpager.currentItem))
+    }
+
+    @Test
+    fun verifyWhileMaintainingVisibleNoAdapter() {
+        var blockRan = false
+        viewpager.whileMaintainingVisibleCurrentItem {
+            assertNull(it)
+            blockRan = true
+        }
+        assertTrue(blockRan)
     }
 
     private class ItemsAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
