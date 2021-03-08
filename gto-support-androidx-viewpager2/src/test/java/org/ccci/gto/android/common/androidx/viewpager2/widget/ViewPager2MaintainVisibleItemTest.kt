@@ -64,6 +64,17 @@ class ViewPager2MaintainVisibleItemTest {
         assertNotEquals(unexpected, adapter.getItemId(viewpager.currentItem))
     }
 
+    @Test
+    fun verifyWhileMaintainingVisibleEmptyAdapter() {
+        adapter.items.clear()
+        viewpager.adapter = adapter
+        viewpager.whileMaintainingVisibleCurrentItem {
+            adapter.items.add(11L)
+            adapter.notifyDataSetChanged()
+        }
+        assertEquals(11L, adapter.getItemId(viewpager.currentItem))
+    }
+
     private class ItemsAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         init {
             setHasStableIds(true)
