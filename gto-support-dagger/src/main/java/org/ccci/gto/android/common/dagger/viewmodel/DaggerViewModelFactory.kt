@@ -7,6 +7,7 @@ import dagger.Reusable
 import javax.inject.Inject
 import javax.inject.Provider
 
+@Deprecated("Since v3.7.2, use Hilt ViewModel support instead")
 @Reusable
 class DaggerViewModelFactory @Inject constructor(
     app: Application,

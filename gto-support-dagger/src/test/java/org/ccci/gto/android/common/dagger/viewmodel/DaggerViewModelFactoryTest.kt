@@ -17,6 +17,7 @@ import org.junit.Assert.assertNull
 import org.junit.Before
 import org.junit.Test
 
+@Deprecated("Since v3.7.2, use Hilt ViewModel support instead")
 class DaggerViewModelFactoryTest {
     lateinit var app: Application
     lateinit var factory: DaggerViewModelFactory
