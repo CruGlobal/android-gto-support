@@ -11,6 +11,7 @@ import androidx.savedstate.SavedStateRegistryOwner
 import dagger.Reusable
 import javax.inject.Inject
 
+@Deprecated("Since v3.7.2, use Hilt ViewModel support instead")
 @Reusable
 class DaggerSavedStateViewModelProviderFactory @Inject constructor(
     private val app: Application,

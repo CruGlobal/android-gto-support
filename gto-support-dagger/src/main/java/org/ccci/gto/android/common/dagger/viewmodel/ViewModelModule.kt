@@ -6,6 +6,7 @@ import dagger.Binds
 import dagger.Module
 import dagger.multibindings.Multibinds
 
+@Deprecated("Since v3.7.2, use Hilt ViewModel support instead")
 @Module
 abstract class ViewModelModule {
     @Multibinds
