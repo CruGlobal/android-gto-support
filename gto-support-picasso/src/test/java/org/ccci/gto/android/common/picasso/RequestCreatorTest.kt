@@ -6,11 +6,13 @@ import android.os.HandlerThread
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
 import com.squareup.picasso.Picasso
 import com.squareup.picasso.RequestCreator
 import com.squareup.picasso.StubRequestCreator
 import com.squareup.picasso.Target
+import com.squareup.picasso.picasso
 import java.lang.ref.Reference
 import java.lang.ref.WeakReference
 import java.util.concurrent.Executors
@@ -104,7 +106,20 @@ class RequestCreatorTest {
         }
     }
 
-    private class TargetCapturingRequestCreator : StubRequestCreator() {
+    @Test
+    fun `getBitmap() should cancel Picasso request on task cancellation`() {
+        val picasso = mock<Picasso>()
+        val request = TargetCapturingRequestCreator(picasso)
+        val target = runBlocking {
+            val task = launch(Dispatchers.Default) { request.getBitmap() }
+            val target = request.targets.receive().get()!!
+            task.cancel()
+            return@runBlocking target
+        }
+        verify(picasso).cancelRequest(target)
+    }
+
+    private class TargetCapturingRequestCreator(picasso: Picasso? = null) : StubRequestCreator(picasso) {
         val targets = Channel<Reference<Target>>(1)
 
         override fun into(target: Target) {
