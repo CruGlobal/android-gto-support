@@ -1,6 +1,7 @@
 android {
     defaultConfig {
-        consumerProguardFiles 'proguard-consumer.pro'
+        consumerProguardFile 'proguard-consumer.pro'
+        consumerProguardFile 'proguard-consumer-requestcreator.pro'
     }
 
     buildFeatures {

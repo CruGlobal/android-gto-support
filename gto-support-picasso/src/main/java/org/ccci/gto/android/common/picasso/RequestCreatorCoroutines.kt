@@ -5,17 +5,23 @@ import android.graphics.drawable.Drawable
 import com.squareup.picasso.Picasso
 import com.squareup.picasso.RequestCreator
 import com.squareup.picasso.Target
-import kotlin.coroutines.Continuation
+import com.squareup.picasso.picasso
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
-import kotlin.coroutines.suspendCoroutine
+import kotlinx.coroutines.CancellableContinuation
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
 
-suspend fun RequestCreator.getBitmap(): Bitmap =
-    withContext(Dispatchers.Main) { suspendCoroutine { into(BitmapContinuationTarget(it)) } }
+suspend fun RequestCreator.getBitmap(): Bitmap = withContext(Dispatchers.Main) {
+    suspendCancellableCoroutine { cont ->
+        val target = BitmapContinuationTarget(cont)
+        into(target)
+        cont.invokeOnCancellation { picasso?.cancelRequest(target) }
+    }
+}
 
-private class BitmapContinuationTarget(private val cont: Continuation<Bitmap>) : Target {
+private class BitmapContinuationTarget(private val cont: CancellableContinuation<Bitmap>) : Target {
     override fun onPrepareLoad(placeHolderDrawable: Drawable?) = Unit
     override fun onBitmapLoaded(bitmap: Bitmap, from: Picasso.LoadedFrom?) = cont.resume(bitmap)
     override fun onBitmapFailed(e: Exception, errorDrawable: Drawable?) = cont.resumeWithException(e)
