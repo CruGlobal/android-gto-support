@@ -8,7 +8,7 @@ buildscript {
             daggerHilt          : '2.33-beta',
             eventbus            : '3.2.0',
             facebookFlipper     : '0.81.0',
-            gradleAndroidPlugin : '4.1.2',
+            gradleAndroidPlugin : '4.1.3',
             gson                : '2.8.6',
             guava               : '30.1-android',
             hamcrest            : '2.2',
