@@ -44,7 +44,7 @@ buildscript {
             weakDelegate        : '1.0.1'
     ]
     ext.deps.androidX = [
-            annotation           : '1.1.0',
+            annotation           : '1.2.0',
             appCompat            : '1.2.0',
             arch                 : '2.1.0',
             collection           : '1.1.0',
