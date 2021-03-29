@@ -33,7 +33,7 @@ buildscript {
             picasso             : '2.8',
             playCore            : '1.8.3',
             powermock           : '2.0.9',
-            realm               : '10.0.1',
+            realm               : '10.4.0',
             realmAdapters       : '4.0.0',
             retrofit2           : '2.6.4',
             robolectric         : '4.5.1',
