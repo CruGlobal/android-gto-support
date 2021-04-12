@@ -6,13 +6,28 @@ package org.ccci.gto.android.common.util
 import android.content.Context
 import android.content.res.Resources
 import android.util.DisplayMetrics
-import kotlin.math.roundToInt
 
-inline class Px(val value: Float)
+inline class Px(val value: Float) {
+    /**
+     * Convert this value to an Int pixel size.
+     *
+     * This follows the same semantics as [android.util.TypedValue.complexToDimensionPixelSize] of requiring any
+     * non-zero dimension to be at least 1 pixel.
+     */
+    fun toPixelSize() = when (val resp = (if (value >= 0) value + 0.5f else value - 0.5f).toInt()) {
+        0 -> when {
+            value == 0f -> 0
+            value > 0f -> 1
+            else -> -1
+        }
+        else -> resp
+    }
+}
 inline class Dp(val value: Float)
 inline class Sp(val value: Float)
 
-inline fun Dp(value: Int) = Dp(value.toFloat())
+inline fun Px(value: Number) = Px(value.toFloat())
+inline fun Dp(value: Number) = Dp(value.toFloat())
 
 inline fun Dp.toPx(context: Context) = toPx(context.resources)
 inline fun Dp.toPx(resources: Resources) = toPx(resources.displayMetrics)
@@ -27,7 +42,7 @@ inline fun Dp.toPixelSize(context: Context) = toPixelSize(context.resources)
 @JvmName("dpToPixelSize")
 inline fun Dp.toPixelSize(resources: Resources) = toPixelSize(resources.displayMetrics)
 @JvmName("dpToPixelSize")
-inline fun Dp.toPixelSize(metrics: DisplayMetrics) = toPx(metrics).value.roundToInt()
+inline fun Dp.toPixelSize(metrics: DisplayMetrics) = toPx(metrics).toPixelSize()
 
 inline fun dpToPixelSize(dp: Int, context: Context) = Dp(dp).toPixelSize(context)
 inline fun dpToPixelSize(dp: Int, resources: Resources) = Dp(dp).toPixelSize(resources)
