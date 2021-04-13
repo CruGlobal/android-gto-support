@@ -53,18 +53,25 @@ class EventSynchronizerTest {
                     repeat(iterations) {
                         val event = mock<Event>()
                         EventSynchronizer.lockFor(event)
-                        assertEquals(0, EventSynchronizer.semaphore.availablePermits())
+                        assertEquals(
+                            "EventSynchronizer is not currently locked",
+                            0,
+                            EventSynchronizer.semaphore.availablePermits()
+                        )
                         assertTrue("Mutual Exclusion not maintained!", mutex.tryLock(this))
                         mutex.unlock(this)
                         count++
                         delay(Random.nextLong(5))
                         EventSynchronizer.unlockFor(event)
-                        assertTrue(EventSynchronizer.semaphore.availablePermits() <= 1)
+                        assertTrue(
+                            "There are too many permits in the semaphore",
+                            EventSynchronizer.semaphore.availablePermits() <= 1
+                        )
                     }
                 }
             }
         }
 
-        assertEquals(threads * iterations, count)
+        assertEquals("Not all iterations were processed", threads * iterations, count)
     }
 }

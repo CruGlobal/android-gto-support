@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.os.Build;
 import android.util.AttributeSet;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -16,7 +15,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
 import androidx.core.util.ObjectsCompat;
-import androidx.core.view.ViewCompat;
 
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.RequestCreator;
@@ -188,12 +186,13 @@ public interface PicassoImageView {
             }
 
             // if we are currently in a layout pass, track that we need an update once layout is complete
-            if (ViewCompat.isInLayout(mView) ||
-                    // attempt to detect if we are currently being laid out for older versions of android
-                    (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR2 && mView.isLayoutRequested())) {
+            if (mView.isInLayout()) {
                 mNeedsUpdate = true;
                 return;
             }
+
+            // clear the needs update flag
+            mNeedsUpdate = false;
 
             // create base request
             final RequestCreator update = onCreateUpdate(Picasso.get());
@@ -201,7 +200,7 @@ public interface PicassoImageView {
             // set placeholder & any transform options
             if (mPlaceholderResId != INVALID_DRAWABLE_RES) {
                 update.placeholder(mPlaceholderResId);
-            } else {
+            } else if (mPlaceholder != null) {
                 update.placeholder(mPlaceholder);
             }
 
@@ -217,9 +216,6 @@ public interface PicassoImageView {
             } else {
                 update.fetch();
             }
-
-            // clear the needs update flag
-            mNeedsUpdate = false;
         }
 
         @NonNull
