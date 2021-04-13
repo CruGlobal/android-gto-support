@@ -191,6 +191,9 @@ public interface PicassoImageView {
                 return;
             }
 
+            // clear the needs update flag
+            mNeedsUpdate = false;
+
             // create base request
             final RequestCreator update = onCreateUpdate(Picasso.get());
 
@@ -213,9 +216,6 @@ public interface PicassoImageView {
             } else {
                 update.fetch();
             }
-
-            // clear the needs update flag
-            mNeedsUpdate = false;
         }
 
         @NonNull
