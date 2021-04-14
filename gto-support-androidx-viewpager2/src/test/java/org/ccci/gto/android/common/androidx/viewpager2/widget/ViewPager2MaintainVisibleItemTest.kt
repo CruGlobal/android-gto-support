@@ -16,7 +16,7 @@ import org.junit.runner.RunWith
 import org.robolectric.annotation.Config
 
 @RunWith(AndroidJUnit4::class)
-@Config(sdk = [16, 17, 21, 28])
+@Config(sdk = [19, 21, 28])
 class ViewPager2MaintainVisibleItemTest {
     private lateinit var viewpager: ViewPager2
     private lateinit var adapter: ItemsAdapter
