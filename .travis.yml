@@ -7,7 +7,7 @@ env:
     - GRADLE_OPTS="-Xms128m -Xmx3072m -Dorg.gradle.jvmargs='-Xms128m'"
     - DEPLOY_USERNAME=travis-ci-android-gto-support
     # DEPLOY_PASSWORD={password}
-    - secure: "NpKiD/OhxURch8MhFvVohqNDgS6SVPfjiM2Qm/mQbjLmeEmdlfDQ3lPF+X2HNL960eWulhvpcTPr5TS8eUMUA83U5HBUaADQEnqnHN75oC1OYJtB54ELP2b+vXOEVD3hFQFFnBWsPLJKd6DK8XMpVe+eG+MnmGPM5AWC0a4cw6I="
+    - secure: "eswtL3VDqa+k8U3TivAXo9B90qG09fHAdnagLe/efD7d9y/CrrYn6PrDhDx29A4+mrenbuOw2WDtneN5mmZ/CxVvYA4ILUNbhK5DlOiqxxPosfNISJumC6sn2+nSpJcR59tvxwRhLuupbQzTfTyliPoTMj7T9OQQQQ4BnaEGvb4="
 branches:
   only:
   - master
