@@ -12,7 +12,6 @@ import org.json.JSONObject;
 
 import java.math.BigDecimal;
 import java.util.Date;
-import java.util.Locale;
 
 public final class CursorUtils {
     /**
@@ -118,27 +117,5 @@ public final class CursorUtils {
                                            @Nullable final JSONObject defValue) {
         final JSONObject json = CursorKt.getJSONObjectOrNull(c, field);
         return json != null ? json : defValue;
-    }
-
-    /**
-     * @deprecated Since v3.4.0,
-     * use {@link org.ccci.gto.android.common.util.database.CursorUtils#getLocale(Cursor, String)} instead.
-     */
-    @Nullable
-    @Deprecated
-    public static Locale getLocale(@NonNull final Cursor c, @NonNull final String field) {
-        return org.ccci.gto.android.common.util.database.CursorUtils.getLocale(c, field);
-    }
-
-    /**
-     * @deprecated Since v3.4.0,
-     * use {@link org.ccci.gto.android.common.util.database.CursorUtils#getLocale(Cursor, String, Locale)} instead.
-     */
-    @Nullable
-    @Deprecated
-    @Contract("_, _, !null -> !null")
-    public static Locale getLocale(@NonNull final Cursor c, @NonNull final String field,
-                                   @Nullable final Locale defValue) {
-        return org.ccci.gto.android.common.util.database.CursorUtils.getLocale(c, field, defValue);
     }
 }
