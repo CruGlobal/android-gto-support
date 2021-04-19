@@ -6,7 +6,6 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.util.AttributeSet;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 import android.widget.ImageView.ScaleType;
 
@@ -32,7 +31,7 @@ import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 import static org.ccci.gto.android.common.base.Constants.INVALID_DRAWABLE_RES;
 
 public interface PicassoImageView {
-    class Helper implements ViewTreeObserver.OnGlobalLayoutListener {
+    class Helper {
         @NonNull
         protected final ImageView mView;
 
@@ -138,24 +137,9 @@ public interface PicassoImageView {
         public final void onSizeChanged(int w, int h, int oldw, int oldh) {
             if (oldw != w || oldh != h) {
                 mSize = new Dimension(w, h);
-                // onSizeChanged() is called during layout, so we need to defer the actual processing
-                triggerUpdate(true);
+                // onSizeChanged() is called during layout, so we need to defer until after layout is complete
+                postTriggerUpdate();
             }
-        }
-
-        public final void onAttachedToWindow() {
-            mView.getViewTreeObserver().addOnGlobalLayoutListener(this);
-        }
-
-        @Override
-        public void onGlobalLayout() {
-            if (mNeedsUpdate) {
-                triggerUpdate();
-            }
-        }
-
-        public final void onDetachedFromWindow() {
-            mView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
         }
 
         @UiThread
@@ -173,21 +157,19 @@ public interface PicassoImageView {
             }
         }
 
-        @UiThread
-        protected final void triggerUpdate() {
-            triggerUpdate(false);
+        private void postTriggerUpdate() {
+            mNeedsUpdate = true;
+            mView.post(() -> {
+                if (mNeedsUpdate) {
+                    triggerUpdate();
+                }
+            });
         }
 
         @UiThread
-        protected final void triggerUpdate(final boolean defer) {
+        protected final void triggerUpdate() {
             // short-circuit if we are in edit mode within a development tool
             if (mView.isInEditMode()) {
-                return;
-            }
-
-            // we have requested to defer the update, track that we need an update for later execution
-            if (defer) {
-                mNeedsUpdate = true;
                 return;
             }
 
@@ -197,9 +179,9 @@ public interface PicassoImageView {
                 return;
             }
 
-            // if we are currently in a layout pass, track that we need an update once layout is complete
+            // if we are currently in a layout pass, trigger an update once layout is complete
             if (mView.isInLayout()) {
-                mNeedsUpdate = true;
+                postTriggerUpdate();
                 return;
             }
 
