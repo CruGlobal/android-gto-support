@@ -138,7 +138,8 @@ public interface PicassoImageView {
         public final void onSizeChanged(int w, int h, int oldw, int oldh) {
             if (oldw != w || oldh != h) {
                 mSize = new Dimension(w, h);
-                triggerUpdate();
+                // onSizeChanged() is called during layout, so we need to defer the actual processing
+                triggerUpdate(true);
             }
         }
 
@@ -174,8 +175,19 @@ public interface PicassoImageView {
 
         @UiThread
         protected final void triggerUpdate() {
+            triggerUpdate(false);
+        }
+
+        @UiThread
+        protected final void triggerUpdate(final boolean defer) {
             // short-circuit if we are in edit mode within a development tool
             if (mView.isInEditMode()) {
+                return;
+            }
+
+            // we have requested to defer the update, track that we need an update for later execution
+            if (defer) {
+                mNeedsUpdate = true;
                 return;
             }
 
