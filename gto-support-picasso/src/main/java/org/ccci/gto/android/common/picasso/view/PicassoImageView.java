@@ -115,6 +115,11 @@ public interface PicassoImageView {
         }
 
         @UiThread
+        public final void setScaleType(@NonNull final ScaleType type) {
+            triggerUpdate();
+        }
+
+        @UiThread
         public final void addTransform(@NonNull final Transformation transformation) {
             mTransforms.add(transformation);
             triggerUpdate();
@@ -135,11 +140,6 @@ public interface PicassoImageView {
                 mSize = new Dimension(w, h);
                 triggerUpdate();
             }
-        }
-
-        @UiThread
-        public final void setScaleType(@NonNull final ScaleType type) {
-            triggerUpdate();
         }
 
         public final void onAttachedToWindow() {
