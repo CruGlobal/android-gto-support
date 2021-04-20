@@ -12,18 +12,23 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.viewpager2.widget.ViewPager2
 import com.nhaarman.mockitokotlin2.argThat
 import com.nhaarman.mockitokotlin2.doReturn
+import com.nhaarman.mockitokotlin2.eq
 import com.nhaarman.mockitokotlin2.isNull
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.spy
+import com.nhaarman.mockitokotlin2.times
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.verifyNoMoreInteractions
+import com.nhaarman.mockitokotlin2.verifyZeroInteractions
 import org.junit.Assert.assertNotNull
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.verification.VerificationMode
 import org.robolectric.Shadows.shadowOf
 import org.robolectric.annotation.Config
+import org.robolectric.shadows.ShadowLooper
 
 @RunWith(AndroidJUnit4::class)
 @Config(sdk = [19, 28])
@@ -33,6 +38,7 @@ class PrimaryItemChangeObserverTest {
 
     private lateinit var viewPager: ViewPager2
     private lateinit var adapter: TestAdapter
+    private lateinit var looper: ShadowLooper
 
     @Before
     fun setup() {
@@ -41,6 +47,7 @@ class PrimaryItemChangeObserverTest {
             it.setContentView(viewPager)
         }
         adapter = spy(TestAdapter())
+        looper = shadowOf(Looper.getMainLooper())
     }
 
     // region register/unregister behavior
@@ -83,13 +90,13 @@ class PrimaryItemChangeObserverTest {
     @Test
     fun `testUpdatePrimaryItem - Initially Empty`() {
         viewPager.adapter = adapter
-        shadowOf(Looper.getMainLooper()).idle()
-        verifyNoMoreInteractions(adapter.updatesMock)
+        looper.idle()
+        verifyZeroInteractions(adapter.updatesMock)
 
         adapter.items = listOf(1, 2)
         adapter.notifyDataSetChanged()
-        shadowOf(Looper.getMainLooper()).idle()
-        verify(adapter.updatesMock).invoke(argThat { id == 1L }, isNull())
+        looper.idle()
+        verifyUpdatePrimaryItem(1)
         verifyNoMoreInteractions(adapter.updatesMock)
     }
 
@@ -97,11 +104,49 @@ class PrimaryItemChangeObserverTest {
     fun `testUpdatePrimaryItem - Callback for initial item`() {
         adapter.items = listOf(1, 2)
         viewPager.adapter = adapter
-        shadowOf(Looper.getMainLooper()).idle()
-
-        verify(adapter.updatesMock).invoke(argThat { id == 1L }, isNull())
+        looper.idle()
+        verifyUpdatePrimaryItem(1)
         verifyNoMoreInteractions(adapter.updatesMock)
     }
+
+    @Test
+    fun `testUpdatePrimaryItem - Clearing items`() {
+        adapter.items = listOf(1, 2)
+        viewPager.adapter = adapter
+        looper.idle()
+        verifyUpdatePrimaryItem(1)
+        verifyNoMoreInteractions(adapter.updatesMock)
+
+        adapter.items = emptyList()
+        adapter.notifyDataSetChanged()
+        looper.idle()
+        verifyUpdatePrimaryItem(null, 1)
+        verifyNoMoreInteractions(adapter.updatesMock)
+    }
+
+    @Test
+    fun `testUpdatePrimaryItem - Callback when changing current item`() {
+        adapter.items = listOf(1, 2)
+        viewPager.adapter = adapter
+        looper.idle()
+        verifyUpdatePrimaryItem(1)
+        verifyNoMoreInteractions(adapter.updatesMock)
+
+        viewPager.currentItem = 1
+        looper.idle()
+        verifyUpdatePrimaryItem(2, 1)
+        verifyNoMoreInteractions(adapter.updatesMock)
+    }
+
+    private fun verifyUpdatePrimaryItem(
+        primaryId: Long?,
+        previousPrimaryId: Long? = null,
+        mode: VerificationMode = times(1)
+    ) = verify(adapter.updatesMock, mode).invoke(
+        if (primaryId != null) argThat { id == primaryId } else isNull(),
+        eq(primaryId),
+        eq(previousPrimaryId)
+    )
     // endregion updatePrimaryItem()
 
     class TestAdapter : RecyclerView.Adapter<TestViewHolder>() {
@@ -112,7 +157,7 @@ class PrimaryItemChangeObserverTest {
         var items = emptyList<Long>()
 
         var observer: PrimaryItemChangeObserver<TestViewHolder>? = null
-        val updatesMock: (primaryItem: TestViewHolder?, previousPrimaryItem: TestViewHolder?) -> Unit = mock()
+        val updatesMock: (primary: TestViewHolder?, primaryId: Long?, previousPrimaryId: Long?) -> Unit = mock()
 
         override fun getItemId(position: Int) = items[position]
         override fun getItemCount() = items.size
@@ -127,6 +172,7 @@ class PrimaryItemChangeObserverTest {
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = TestViewHolder(parent)
         override fun onBindViewHolder(holder: TestViewHolder, position: Int) { holder.id = items[position] }
+        override fun onViewRecycled(holder: TestViewHolder) { holder.id = null }
     }
 
     class TestViewHolder(parent: ViewGroup) : RecyclerView.ViewHolder(

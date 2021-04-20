@@ -27,6 +27,7 @@ abstract class PrimaryItemChangeObserver<VH : RecyclerView.ViewHolder>(
         require(adapter.hasStableIds()) { "The adapter needs stable ids to monitor changes to the primary item" }
     }
 
+    private var primaryItemId: Long? = null
     private var primaryItem: VH? = null
 
     fun register() {
@@ -39,29 +40,40 @@ abstract class PrimaryItemChangeObserver<VH : RecyclerView.ViewHolder>(
         viewPager.unregisterOnPageChangeCallback(pageChangeObserver)
     }
 
-    abstract fun onUpdatePrimaryItem(primaryItem: VH?, previousPrimaryItem: VH?)
+    /**
+     * This method is called whenever the primary item is changed.
+     *
+     * @param primaryItem The current ViewHolder for the primary item, this item should not be stored locally because it
+     * could be recycled at any point after this method returns and no longer be valid.
+     * @param primaryItemId The id of the current primary item, or null if there are no items.
+     * @param previousPrimaryItemId The id of the previous primary item, or null if there was none.
+     */
+    abstract fun onUpdatePrimaryItem(
+        primaryItem: VH?,
+        primaryItemId: Long?,
+        previousPrimaryItemId: Long?
+    )
 
     private fun updatePrimaryItem() {
         // only update when the ViewPager is idle
         if (viewPager.scrollState != ViewPager2.SCROLL_STATE_IDLE) return
 
-        // clear the previous primary item if we had one and the adapter is now empty
-        val previous = primaryItem
-        if (adapter.itemCount == 0 && previous != null) {
-            primaryItem = null
-            onUpdatePrimaryItem(null, previous)
-        }
+        // determine the current primary item
+        val primaryId = viewPager.currentItem.takeIf { it < adapter.itemCount }?.let { adapter.getItemId(it) }
+        val primary = primaryId?.let { recyclerView.findViewHolderForItemId(it) as VH? }
 
-        // current item is yet to be updated; it is guaranteed to change, so we will be notified via
-        // [ViewPager2.OnPageChangeCallback.onPageSelected]
-        val currentItem = viewPager.currentItem
-        if (currentItem >= adapter.itemCount) return
+        // short-circuit if we are in an intermediate state
+        if (primaryId != null && primary == null) return
 
-        // find the ViewHolder for the current item
-        val current = recyclerView.findViewHolderForItemId(adapter.getItemId(currentItem)) as VH?
-        if (current !== previous) {
-            primaryItem = current
-            onUpdatePrimaryItem(current, previous)
+        // trigger a callback if the primary item changed
+        if (primaryId != primaryItemId || primary !== primaryItem) {
+            val previousId = primaryItemId
+            primaryItemId = primaryId
+            primaryItem = primary
+
+            // it is not possible to reliably provide the previous VH to this callback due to the RecyclerView
+            // potentially recycling it before updatePrimaryItem() is called.
+            onUpdatePrimaryItem(primaryItem, primaryItemId, previousId)
         }
     }
 }
@@ -71,8 +83,8 @@ private fun RecyclerView.inferViewPager() =
 
 fun <VH : RecyclerView.ViewHolder> RecyclerView.Adapter<VH>.onUpdatePrimaryItem(
     recyclerView: RecyclerView,
-    block: (primaryItem: VH?, previousPrimaryItem: VH?) -> Unit
+    block: (primaryItem: VH?, primaryItemId: Long?, previousPrimaryItemId: Long?) -> Unit
 ) = object : PrimaryItemChangeObserver<VH>(recyclerView, this) {
-    override fun onUpdatePrimaryItem(primaryItem: VH?, previousPrimaryItem: VH?) =
-        block(primaryItem, previousPrimaryItem)
+    override fun onUpdatePrimaryItem(primaryItem: VH?, primaryItemId: Long?, previousPrimaryItemId: Long?) =
+        block(primaryItem, primaryItemId, previousPrimaryItemId)
 }.also { it.register() }
