@@ -54,16 +54,6 @@ open class SimplePicassoImageView : ImageView, PicassoImageView {
     override fun setTransforms(transforms: List<Transformation?>?) = helper.setTransforms(transforms)
     override fun toggleBatchUpdates(enable: Boolean) = helper.toggleBatchUpdates(enable)
 
-    override fun onAttachedToWindow() {
-        super.onAttachedToWindow()
-        helper.onAttachedToWindow()
-    }
-
-    override fun onDetachedFromWindow() {
-        super.onDetachedFromWindow()
-        helper.onDetachedFromWindow()
-    }
-
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
         super.onSizeChanged(w, h, oldw, oldh)
         helper.onSizeChanged(w, h, oldw, oldh)

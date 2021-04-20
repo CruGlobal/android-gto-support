@@ -6,7 +6,6 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.util.AttributeSet;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 import android.widget.ImageView.ScaleType;
 
@@ -32,7 +31,7 @@ import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 import static org.ccci.gto.android.common.base.Constants.INVALID_DRAWABLE_RES;
 
 public interface PicassoImageView {
-    class Helper implements ViewTreeObserver.OnGlobalLayoutListener {
+    class Helper {
         @NonNull
         protected final ImageView mView;
 
@@ -115,6 +114,11 @@ public interface PicassoImageView {
         }
 
         @UiThread
+        public final void setScaleType(@NonNull final ScaleType type) {
+            triggerUpdate();
+        }
+
+        @UiThread
         public final void addTransform(@NonNull final Transformation transformation) {
             mTransforms.add(transformation);
             triggerUpdate();
@@ -133,28 +137,9 @@ public interface PicassoImageView {
         public final void onSizeChanged(int w, int h, int oldw, int oldh) {
             if (oldw != w || oldh != h) {
                 mSize = new Dimension(w, h);
-                triggerUpdate();
+                // onSizeChanged() is called during layout, so we need to defer until after layout is complete
+                postTriggerUpdate();
             }
-        }
-
-        @UiThread
-        public final void setScaleType(@NonNull final ScaleType type) {
-            triggerUpdate();
-        }
-
-        public final void onAttachedToWindow() {
-            mView.getViewTreeObserver().addOnGlobalLayoutListener(this);
-        }
-
-        @Override
-        public void onGlobalLayout() {
-            if (mNeedsUpdate) {
-                triggerUpdate();
-            }
-        }
-
-        public final void onDetachedFromWindow() {
-            mView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
         }
 
         @UiThread
@@ -172,6 +157,15 @@ public interface PicassoImageView {
             }
         }
 
+        private void postTriggerUpdate() {
+            mNeedsUpdate = true;
+            mView.post(() -> {
+                if (mNeedsUpdate) {
+                    triggerUpdate();
+                }
+            });
+        }
+
         @UiThread
         protected final void triggerUpdate() {
             // short-circuit if we are in edit mode within a development tool
@@ -185,9 +179,9 @@ public interface PicassoImageView {
                 return;
             }
 
-            // if we are currently in a layout pass, track that we need an update once layout is complete
+            // if we are currently in a layout pass, trigger an update once layout is complete
             if (mView.isInLayout()) {
-                mNeedsUpdate = true;
+                postTriggerUpdate();
                 return;
             }
 
