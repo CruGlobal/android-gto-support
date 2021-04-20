@@ -5,7 +5,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 
 abstract class PrimaryItemChangeObserver<VH : RecyclerView.ViewHolder>(
-    recyclerView: RecyclerView,
+    private val recyclerView: RecyclerView,
     private val adapter: RecyclerView.Adapter<VH>
 ) {
     private val viewPager = recyclerView.inferViewPager()
@@ -27,7 +27,7 @@ abstract class PrimaryItemChangeObserver<VH : RecyclerView.ViewHolder>(
         require(adapter.hasStableIds()) { "The adapter needs stable ids to monitor changes to the primary item" }
     }
 
-    private var primaryItemId: Long? = null
+    private var primaryItem: VH? = null
 
     fun register() {
         viewPager.registerOnPageChangeCallback(pageChangeObserver)
@@ -39,17 +39,17 @@ abstract class PrimaryItemChangeObserver<VH : RecyclerView.ViewHolder>(
         viewPager.unregisterOnPageChangeCallback(pageChangeObserver)
     }
 
-    abstract fun onUpdatePrimaryItemId(primaryItemId: Long?, previousPrimaryItemId: Long?)
+    abstract fun onUpdatePrimaryItem(primaryItem: VH?, previousPrimaryItem: VH?)
 
     private fun updatePrimaryItem() {
         // only update when the ViewPager is idle
         if (viewPager.scrollState != ViewPager2.SCROLL_STATE_IDLE) return
 
         // clear the previous primary item if we had one and the adapter is now empty
-        val previous = primaryItemId
-        if (adapter.itemCount == 0 && primaryItemId != null) {
-            primaryItemId = null
-            onUpdatePrimaryItemId(null, previous)
+        val previous = primaryItem
+        if (adapter.itemCount == 0 && previous != null) {
+            primaryItem = null
+            onUpdatePrimaryItem(null, previous)
         }
 
         // current item is yet to be updated; it is guaranteed to change, so we will be notified via
@@ -58,10 +58,10 @@ abstract class PrimaryItemChangeObserver<VH : RecyclerView.ViewHolder>(
         if (currentItem >= adapter.itemCount) return
 
         // find the ViewHolder for the current item
-        val current = adapter.getItemId(currentItem)
-        if (current != previous) {
-            primaryItemId = current
-            onUpdatePrimaryItemId(current, previous)
+        val current = recyclerView.findViewHolderForItemId(adapter.getItemId(currentItem)) as VH?
+        if (current !== previous) {
+            primaryItem = current
+            onUpdatePrimaryItem(current, previous)
         }
     }
 }
@@ -71,8 +71,8 @@ private fun RecyclerView.inferViewPager() =
 
 fun <VH : RecyclerView.ViewHolder> RecyclerView.Adapter<VH>.onUpdatePrimaryItem(
     recyclerView: RecyclerView,
-    block: (primaryItemId: Long?, previousPrimaryItemId: Long?) -> Unit
+    block: (primaryItem: VH?, previousPrimaryItem: VH?) -> Unit
 ) = object : PrimaryItemChangeObserver<VH>(recyclerView, this) {
-    override fun onUpdatePrimaryItemId(primaryItemId: Long?, previousPrimaryItemId: Long?) =
-        block(primaryItemId, previousPrimaryItemId)
+    override fun onUpdatePrimaryItem(primaryItem: VH?, previousPrimaryItem: VH?) =
+        block(primaryItem, previousPrimaryItem)
 }.also { it.register() }

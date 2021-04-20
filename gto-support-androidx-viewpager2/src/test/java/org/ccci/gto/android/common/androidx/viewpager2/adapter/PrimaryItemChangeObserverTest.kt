@@ -1,31 +1,45 @@
 package org.ccci.gto.android.common.androidx.viewpager2.adapter
 
+import android.app.Activity
+import android.os.Looper
 import android.view.ViewGroup
+import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ApplicationProvider
+import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.viewpager2.widget.ViewPager2
+import com.nhaarman.mockitokotlin2.argThat
 import com.nhaarman.mockitokotlin2.doReturn
+import com.nhaarman.mockitokotlin2.isNull
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.spy
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.verifyNoMoreInteractions
 import org.junit.Assert.assertNotNull
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.robolectric.Shadows.shadowOf
 import org.robolectric.annotation.Config
 
 @RunWith(AndroidJUnit4::class)
 @Config(sdk = [19, 28])
 class PrimaryItemChangeObserverTest {
+    @get:Rule
+    val activityScenario = ActivityScenarioRule(Activity::class.java)
+
     private lateinit var viewPager: ViewPager2
     private lateinit var adapter: TestAdapter
 
     @Before
     fun setup() {
-        viewPager = ViewPager2(ApplicationProvider.getApplicationContext())
+        activityScenario.scenario.onActivity {
+            viewPager = ViewPager2(it).apply { layoutParams = ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT) }
+            it.setContentView(viewPager)
+        }
         adapter = spy(TestAdapter())
     }
 
@@ -65,6 +79,31 @@ class PrimaryItemChangeObserverTest {
     }
     // endregion register/unregister behavior
 
+    // region updatePrimaryItem()
+    @Test
+    fun `testUpdatePrimaryItem - Initially Empty`() {
+        viewPager.adapter = adapter
+        shadowOf(Looper.getMainLooper()).idle()
+        verifyNoMoreInteractions(adapter.updatesMock)
+
+        adapter.items = listOf(1, 2)
+        adapter.notifyDataSetChanged()
+        shadowOf(Looper.getMainLooper()).idle()
+        verify(adapter.updatesMock).invoke(argThat { id == 1L }, isNull())
+        verifyNoMoreInteractions(adapter.updatesMock)
+    }
+
+    @Test
+    fun `testUpdatePrimaryItem - Callback for initial item`() {
+        adapter.items = listOf(1, 2)
+        viewPager.adapter = adapter
+        shadowOf(Looper.getMainLooper()).idle()
+
+        verify(adapter.updatesMock).invoke(argThat { id == 1L }, isNull())
+        verifyNoMoreInteractions(adapter.updatesMock)
+    }
+    // endregion updatePrimaryItem()
+
     class TestAdapter : RecyclerView.Adapter<TestViewHolder>() {
         init {
             setHasStableIds(true)
@@ -73,7 +112,7 @@ class PrimaryItemChangeObserverTest {
         var items = emptyList<Long>()
 
         var observer: PrimaryItemChangeObserver<TestViewHolder>? = null
-        val updatesMock: (primaryItemId: Long?, previousPrimaryItemId: Long?) -> Unit = mock()
+        val updatesMock: (primaryItem: TestViewHolder?, previousPrimaryItem: TestViewHolder?) -> Unit = mock()
 
         override fun getItemId(position: Int) = items[position]
         override fun getItemCount() = items.size
@@ -86,11 +125,13 @@ class PrimaryItemChangeObserverTest {
             observer = null
         }
 
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = TestViewHolder(TextView(parent.context))
-        override fun onBindViewHolder(holder: TestViewHolder, position: Int) {
-            holder.textView.text = "${items[position]}"
-        }
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = TestViewHolder(parent)
+        override fun onBindViewHolder(holder: TestViewHolder, position: Int) { holder.id = items[position] }
     }
 
-    class TestViewHolder(val textView: TextView) : RecyclerView.ViewHolder(textView)
+    class TestViewHolder(parent: ViewGroup) : RecyclerView.ViewHolder(
+        TextView(parent.context).apply { layoutParams = ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT) }
+    ) {
+        var id: Long? = null
+    }
 }
