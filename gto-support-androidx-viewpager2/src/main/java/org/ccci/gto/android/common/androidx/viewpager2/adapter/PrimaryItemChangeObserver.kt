@@ -1,5 +1,6 @@
 package org.ccci.gto.android.common.androidx.viewpager2.adapter
 
+import android.view.View
 import androidx.annotation.VisibleForTesting
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
@@ -15,12 +16,9 @@ abstract class PrimaryItemChangeObserver<VH : RecyclerView.ViewHolder>(
         override fun onPageScrollStateChanged(state: Int) = updatePrimaryItem()
     }
     @VisibleForTesting
-    internal val dataObserver = object : RecyclerView.AdapterDataObserver() {
-        override fun onChanged() = updatePrimaryItem()
-        override fun onItemRangeChanged(positionStart: Int, itemCount: Int) = updatePrimaryItem()
-        override fun onItemRangeInserted(positionStart: Int, itemCount: Int) = updatePrimaryItem()
-        override fun onItemRangeRemoved(positionStart: Int, itemCount: Int) = updatePrimaryItem()
-        override fun onItemRangeMoved(fromPosition: Int, toPosition: Int, itemCount: Int) = updatePrimaryItem()
+    internal val childAttachStateChangeListener = object : RecyclerView.OnChildAttachStateChangeListener {
+        override fun onChildViewAttachedToWindow(view: View) = updatePrimaryItem()
+        override fun onChildViewDetachedFromWindow(view: View) = updatePrimaryItem()
     }
 
     init {
@@ -32,27 +30,23 @@ abstract class PrimaryItemChangeObserver<VH : RecyclerView.ViewHolder>(
 
     fun register() {
         viewPager.registerOnPageChangeCallback(pageChangeObserver)
-        adapter.registerAdapterDataObserver(dataObserver)
+        recyclerView.addOnChildAttachStateChangeListener(childAttachStateChangeListener)
     }
 
     fun unregister() {
-        adapter.unregisterAdapterDataObserver(dataObserver)
+        recyclerView.removeOnChildAttachStateChangeListener(childAttachStateChangeListener)
         viewPager.unregisterOnPageChangeCallback(pageChangeObserver)
     }
 
     /**
-     * This method is called whenever the primary item is changed.
+     * This method is called whenever the primary item ViewHolder is changed.
      *
-     * @param primaryItem The current ViewHolder for the primary item, this item should not be stored locally because it
-     * could be recycled at any point after this method returns and no longer be valid.
-     * @param primaryItemId The id of the current primary item, or null if there are no items.
-     * @param previousPrimaryItemId The id of the previous primary item, or null if there was none.
+     * @param primaryItem The current primary item ViewHolder, this should not be tracked locally because it could be
+     * recycled at any point after this method returns and no longer be valid.
+     * @param previousItem The previous primary item ViewHolder, this should not be tracked locally because it could be
+     * recycled at any point after this method returns and no longer be valid.
      */
-    abstract fun onUpdatePrimaryItem(
-        primaryItem: VH?,
-        primaryItemId: Long?,
-        previousPrimaryItemId: Long?
-    )
+    abstract fun onUpdatePrimaryItem(primaryItem: VH?, previousItem: VH?)
 
     private fun updatePrimaryItem() {
         // only update when the ViewPager is idle
@@ -62,19 +56,15 @@ abstract class PrimaryItemChangeObserver<VH : RecyclerView.ViewHolder>(
         val primaryId = viewPager.currentItem.takeIf { it < adapter.itemCount }?.let { adapter.getItemId(it) }
         val primary = primaryId?.let { recyclerView.findViewHolderForItemId(it) as VH? }
 
-        // short-circuit if we are in an intermediate state
+        // short-circuit if the primary item hasn't changed or we are in an intermediate state
+        if (primaryId == primaryItemId && primary === primaryItem) return
         if (primaryId != null && primary == null) return
 
-        // trigger a callback if the primary item changed
-        if (primaryId != primaryItemId || primary !== primaryItem) {
-            val previousId = primaryItemId
-            primaryItemId = primaryId
-            primaryItem = primary
-
-            // it is not possible to reliably provide the previous VH to this callback due to the RecyclerView
-            // potentially recycling it before updatePrimaryItem() is called.
-            onUpdatePrimaryItem(primaryItem, primaryItemId, previousId)
-        }
+        // trigger the callback with the updated primary item
+        val previous = primaryItem
+        primaryItemId = primaryId
+        primaryItem = primary
+        onUpdatePrimaryItem(primaryItem, previous)
     }
 }
 
@@ -83,8 +73,10 @@ private fun RecyclerView.inferViewPager() =
 
 fun <VH : RecyclerView.ViewHolder> RecyclerView.Adapter<VH>.onUpdatePrimaryItem(
     recyclerView: RecyclerView,
-    block: (primaryItem: VH?, primaryItemId: Long?, previousPrimaryItemId: Long?) -> Unit
+    block: (primaryItem: VH?, previousItem: VH?) -> Unit
 ) = object : PrimaryItemChangeObserver<VH>(recyclerView, this) {
-    override fun onUpdatePrimaryItem(primaryItem: VH?, primaryItemId: Long?, previousPrimaryItemId: Long?) =
-        block(primaryItem, primaryItemId, previousPrimaryItemId)
+    override fun onUpdatePrimaryItem(
+        primaryItem: VH?,
+        previousItem: VH?
+    ) = block(primaryItem, previousItem)
 }.also { it.register() }

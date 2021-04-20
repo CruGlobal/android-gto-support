@@ -12,7 +12,6 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.viewpager2.widget.ViewPager2
 import com.nhaarman.mockitokotlin2.argThat
 import com.nhaarman.mockitokotlin2.doReturn
-import com.nhaarman.mockitokotlin2.eq
 import com.nhaarman.mockitokotlin2.isNull
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.spy
@@ -25,6 +24,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.internal.stubbing.answers.ClonesArguments
 import org.mockito.verification.VerificationMode
 import org.robolectric.Shadows.shadowOf
 import org.robolectric.annotation.Config
@@ -64,12 +64,12 @@ class PrimaryItemChangeObserverTest {
 
         adapter.onAttachedToRecyclerView(recyclerView)
         val observer = adapter.observer!!
-        verify(adapter).registerAdapterDataObserver(observer.dataObserver)
+        verify(recyclerView).addOnChildAttachStateChangeListener(observer.childAttachStateChangeListener)
         verify(viewPager).registerOnPageChangeCallback(observer.pageChangeObserver)
         verifyNoMoreInteractions(viewPager)
 
         adapter.onDetachedFromRecyclerView(recyclerView)
-        verify(adapter).unregisterAdapterDataObserver(observer.dataObserver)
+        verify(recyclerView).addOnChildAttachStateChangeListener(observer.childAttachStateChangeListener)
         verify(viewPager).unregisterOnPageChangeCallback(observer.pageChangeObserver)
         verifyNoMoreInteractions(viewPager)
     }
@@ -138,14 +138,28 @@ class PrimaryItemChangeObserverTest {
         verifyNoMoreInteractions(adapter.updatesMock)
     }
 
+    @Test
+    fun `testUpdatePrimaryItem - Callback when current item is removed`() {
+        adapter.items = listOf(1, 2)
+        viewPager.adapter = adapter
+        looper.idle()
+        verifyUpdatePrimaryItem(1)
+        verifyNoMoreInteractions(adapter.updatesMock)
+
+        adapter.items = listOf(2)
+        adapter.notifyDataSetChanged()
+        looper.idle()
+        verifyUpdatePrimaryItem(2, 1)
+        verifyNoMoreInteractions(adapter.updatesMock)
+    }
+
     private fun verifyUpdatePrimaryItem(
         primaryId: Long?,
         previousPrimaryId: Long? = null,
         mode: VerificationMode = times(1)
     ) = verify(adapter.updatesMock, mode).invoke(
         if (primaryId != null) argThat { id == primaryId } else isNull(),
-        eq(primaryId),
-        eq(previousPrimaryId)
+        if (previousPrimaryId != null) argThat { id == previousPrimaryId } else isNull(),
     )
     // endregion updatePrimaryItem()
 
@@ -157,7 +171,8 @@ class PrimaryItemChangeObserverTest {
         var items = emptyList<Long>()
 
         var observer: PrimaryItemChangeObserver<TestViewHolder>? = null
-        val updatesMock: (primary: TestViewHolder?, primaryId: Long?, previousPrimaryId: Long?) -> Unit = mock()
+        val updatesMock: (primary: TestViewHolder?, previous: TestViewHolder?) -> Unit =
+            mock(defaultAnswer = ClonesArguments())
 
         override fun getItemId(position: Int) = items[position]
         override fun getItemCount() = items.size
