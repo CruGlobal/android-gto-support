@@ -7,14 +7,41 @@ import android.util.AttributeSet
 import android.widget.ImageView
 import androidx.annotation.DrawableRes
 import androidx.annotation.UiThread
+import com.squareup.picasso.Picasso
+import com.squareup.picasso.RequestCreator
 import com.squareup.picasso.Transformation
 import java.io.File
 
 interface PicassoImageView {
-    open class Helper : BaseHelper {
-        constructor(view: ImageView) : super(view)
-        constructor(view: ImageView, attrs: AttributeSet?, defStyleAttr: Int, defStyleRes: Int) :
-            super(view, attrs, defStyleAttr, defStyleRes)
+    open class Helper(view: ImageView, attrs: AttributeSet? = null, defStyleAttr: Int = 0, defStyleRes: Int = 0) :
+        BaseHelper(view, attrs, defStyleAttr, defStyleRes) {
+        protected val imageView: ImageView = view
+
+        private var _picassoUri: Uri? = null
+        internal var picassoUri: Uri?
+            get() = _picassoUri
+            set(value) {
+                val changing = _picassoFile != null || value != _picassoUri
+                if(value != null) _picassoFile = null
+                _picassoUri = value
+                if (changing) triggerUpdate()
+            }
+
+        private var _picassoFile: File? = null
+        internal var picassoFile: File?
+            get() = _picassoFile
+            set(value) {
+                val changing = value != _picassoFile
+                if (value != null) _picassoUri = null
+                _picassoFile = value
+                if (changing) triggerUpdate()
+            }
+
+        @UiThread
+        override fun onCreateUpdate(picasso: Picasso): RequestCreator = picassoFile?.let { picasso.load(it) }
+            ?: picasso.load(picassoUri)
+
+        fun asImageView() = imageView
     }
 
     /**

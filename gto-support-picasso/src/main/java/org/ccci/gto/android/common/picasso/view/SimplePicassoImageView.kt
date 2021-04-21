@@ -46,8 +46,8 @@ open class SimplePicassoImageView : ImageView, PicassoImageView {
         PicassoImageView.Helper(this, attrs, defStyleAttr, defStyleRes)
 
     override fun asImageView() = helper.asImageView()
-    override fun setPicassoFile(file: File?) = helper.setPicassoFile(file)
-    override fun setPicassoUri(uri: Uri?) = helper.setPicassoUri(uri)
+    override fun setPicassoFile(file: File?) { helper.picassoFile = file }
+    override fun setPicassoUri(uri: Uri?) { helper.picassoUri = uri }
     override fun setPlaceholder(@DrawableRes placeholder: Int) = helper.setPlaceholder(placeholder)
     override fun setPlaceholder(placeholder: Drawable?) = helper.setPlaceholder(placeholder)
     override fun addTransform(transform: Transformation) = helper.addTransform(transform)

@@ -3,7 +3,6 @@ package org.ccci.gto.android.common.picasso.view;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.util.AttributeSet;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -12,7 +11,6 @@ import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
-import androidx.core.util.ObjectsCompat;
 
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.RequestCreator;
@@ -22,7 +20,6 @@ import org.ccci.gto.android.common.base.model.Dimension;
 import org.ccci.gto.android.common.picasso.R;
 import org.ccci.gto.android.common.picasso.transformation.ScaleTransformation;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,10 +30,6 @@ public abstract class BaseHelper {
     @NonNull
     protected final ImageView mView;
 
-    @Nullable
-    private Uri mPicassoUri;
-    @Nullable
-    private File mPicassoFile;
     @NonNull
     private Dimension mSize = new Dimension(0, 0);
     @DrawableRes
@@ -47,10 +40,6 @@ public abstract class BaseHelper {
 
     private int mBatching = 0;
     private boolean mNeedsUpdate = false;
-
-    public BaseHelper(@NonNull final ImageView view) {
-        this(view, null, 0, 0);
-    }
 
     public BaseHelper(@NonNull final ImageView view, @Nullable final AttributeSet attrs, final int defStyleAttr,
                   final int defStyleRes) {
@@ -64,31 +53,6 @@ public abstract class BaseHelper {
                 context.obtainStyledAttributes(attrs, R.styleable.PicassoImageView, defStyleAttr, defStyleRes);
         mPlaceholderResId = a.getResourceId(R.styleable.PicassoImageView_placeholder, INVALID_DRAWABLE_RES);
         a.recycle();
-    }
-
-    @NonNull
-    public final ImageView asImageView() {
-        return mView;
-    }
-
-    @UiThread
-    public final void setPicassoUri(@Nullable final Uri uri) {
-        final boolean changing = mPicassoFile != null || !ObjectsCompat.equals(uri, mPicassoUri);
-        mPicassoFile = null;
-        mPicassoUri = uri;
-        if (changing) {
-            triggerUpdate();
-        }
-    }
-
-    @UiThread
-    public final void setPicassoFile(@Nullable final File file) {
-        final boolean changing = mPicassoUri != null || !ObjectsCompat.equals(file, mPicassoFile);
-        mPicassoUri = null;
-        mPicassoFile = file;
-        if (changing) {
-            triggerUpdate();
-        }
     }
 
     @UiThread
@@ -212,13 +176,7 @@ public abstract class BaseHelper {
 
     @NonNull
     @UiThread
-    protected RequestCreator onCreateUpdate(@NonNull final Picasso picasso) {
-        if (mPicassoFile != null) {
-            return picasso.load(mPicassoFile);
-        } else {
-            return picasso.load(mPicassoUri);
-        }
-    }
+    protected abstract RequestCreator onCreateUpdate(@NonNull final Picasso picasso);
 
     @UiThread
     protected void onSetUpdateScale(@NonNull final RequestCreator update, @NonNull final Dimension size) {
