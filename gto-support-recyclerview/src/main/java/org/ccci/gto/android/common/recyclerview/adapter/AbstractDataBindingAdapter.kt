@@ -12,10 +12,13 @@ abstract class AbstractDataBindingAdapter<B : ViewDataBinding, VH : DataBindingV
     private val lifecycleOwner by weak(lifecycleOwner)
 
     // region Lifecycle
-    final override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
-        onCreateViewDataBinding(parent, viewType)
-            .also { it.lifecycleOwner = lifecycleOwner }
-            .let { onCreateViewHolder(it, viewType) }
+    final override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = onCreateViewHolder(
+        onCreateViewDataBinding(parent, viewType).also {
+            it.lifecycleOwner = lifecycleOwner
+            onViewDataBindingCreated(it, viewType)
+        },
+        viewType
+    )
 
     final override fun onBindViewHolder(holder: VH, position: Int) {
         onBindViewHolder(holder, holder.binding, position)
@@ -23,6 +26,7 @@ abstract class AbstractDataBindingAdapter<B : ViewDataBinding, VH : DataBindingV
     }
 
     protected abstract fun onCreateViewDataBinding(parent: ViewGroup, viewType: Int): B
+    protected open fun onViewDataBindingCreated(binding: B, viewType: Int) = Unit
     protected abstract fun onCreateViewHolder(binding: B, viewType: Int): VH
     protected abstract fun onBindViewHolder(holder: VH, binding: B, position: Int)
 
