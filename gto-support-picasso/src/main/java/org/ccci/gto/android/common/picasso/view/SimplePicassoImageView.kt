@@ -1,41 +1,21 @@
 package org.ccci.gto.android.common.picasso.view
 
-import android.annotation.SuppressLint
-import android.annotation.TargetApi
 import android.content.Context
 import android.graphics.drawable.Drawable
 import android.net.Uri
-import android.os.Build
 import android.util.AttributeSet
-import android.widget.ImageView
 import androidx.annotation.DrawableRes
+import androidx.appcompat.widget.AppCompatImageView
 import com.squareup.picasso.Transformation
 import java.io.File
 
-@SuppressLint("AppCompatCustomView")
-open class SimplePicassoImageView : ImageView, PicassoImageView {
-    @JvmOverloads
-    constructor(
-        context: Context,
-        attrs: AttributeSet? = null,
-        defStyleAttr: Int = 0
-    ) : super(context, attrs, defStyleAttr) {
-        _helper = PicassoImageView.Helper(this, attrs, defStyleAttr)
-    }
-
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    constructor(
-        context: Context,
-        attrs: AttributeSet?,
-        defStyleAttr: Int,
-        defStyleRes: Int
-    ) : super(context, attrs, defStyleAttr, defStyleRes) {
-        _helper = PicassoImageView.Helper(this, attrs, defStyleAttr, defStyleRes)
-    }
-
-    // TODO: convert to lazy initialization once our minimum supported android version is Lollipop
-    private val _helper: PicassoImageView.Helper
-    protected open val helper: PicassoImageView.Helper get() = _helper
+open class SimplePicassoImageView @JvmOverloads constructor(
+    context: Context,
+    attrs: AttributeSet? = null,
+    defStyleAttr: Int = 0
+) : AppCompatImageView(context, attrs, defStyleAttr), PicassoImageView {
+    protected open val helper by lazy { PicassoImageView.Helper(this, attrs, defStyleAttr) }
+    private val initialized = true
 
     override fun setPicassoFile(file: File?) = helper.setPicassoFile(file)
     override fun setPicassoUri(uri: Uri?) = helper.setPicassoUri(uri)
@@ -52,7 +32,11 @@ open class SimplePicassoImageView : ImageView, PicassoImageView {
 
     override fun setScaleType(scaleType: ScaleType) {
         super.setScaleType(scaleType)
+
+        // HACK: setScaleType() could be called by a parent constructor, which can cause this statement to crash. The
+        //       current logic handles several possible crashes, but doesn't handle all the possibilities subclasses
+        //       could introduce.
         @Suppress("UNNECESSARY_SAFE_CALL")
-        helper?.onSetScaleType()
+        if (initialized) helper?.onSetScaleType()
     }
 }
