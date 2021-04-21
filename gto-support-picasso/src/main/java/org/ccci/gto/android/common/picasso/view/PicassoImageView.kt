@@ -47,25 +47,29 @@ interface PicassoImageView {
             }
 
         // region Placeholder Image
+        @DrawableRes
+        private var placeholderResId = INVALID_DRAWABLE_RES
+        private var placeholder: Drawable? = null
+
         init {
             imageView.context.withStyledAttributes(attrs, R.styleable.PicassoImageView, defStyleAttr, defStyleRes) {
-                mPlaceholderResId = getResourceId(R.styleable.PicassoImageView_placeholder, INVALID_DRAWABLE_RES)
+                placeholderResId = getResourceId(R.styleable.PicassoImageView_placeholder, placeholderResId)
             }
         }
 
         @UiThread
-        fun setPlaceholder(@DrawableRes placeholder: Int) {
-            val changing = placeholder != mPlaceholderResId || mPlaceholder != null
-            mPlaceholder = null
-            mPlaceholderResId = placeholder
+        fun setPlaceholder(@DrawableRes resId: Int) {
+            val changing = resId != placeholderResId || placeholder != null
+            placeholder = null
+            placeholderResId = resId
             if (changing) triggerUpdate()
         }
 
         @UiThread
-        fun setPlaceholder(placeholder: Drawable?) {
-            val changing = placeholder !== mPlaceholder || mPlaceholderResId != INVALID_DRAWABLE_RES
-            mPlaceholderResId = INVALID_DRAWABLE_RES
-            mPlaceholder = placeholder
+        fun setPlaceholder(image: Drawable?) {
+            val changing = image !== placeholder || placeholderResId != INVALID_DRAWABLE_RES
+            placeholderResId = INVALID_DRAWABLE_RES
+            placeholder = image
             if (changing) triggerUpdate()
         }
         // endregion Placeholder Image
@@ -73,34 +77,70 @@ interface PicassoImageView {
         @UiThread
         fun onSetScaleType() = triggerUpdate()
 
+        private var size = Dimension(0, 0)
         @UiThread
         fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
             if (oldw != w || oldh != h) {
-                mSize = Dimension(w, h)
+                size = Dimension(w, h)
                 // onSizeChanged() is called during layout, so we need to defer until after layout is complete
                 postTriggerUpdate()
             }
         }
 
+        // region triggerUpdate() logic
+        private var needsUpdate = false
+        private var batching = 0
+
         @UiThread
         fun batchUpdates(enable: Boolean) {
             if (enable) {
-                mBatching++
+                batching++
             } else {
-                mBatching--
-                if (mBatching <= 0) {
-                    mBatching = 0
-                    if (mNeedsUpdate) triggerUpdate()
+                batching--
+                if (batching <= 0) {
+                    batching = 0
+                    if (needsUpdate) triggerUpdate()
                 }
             }
         }
 
         @UiThread
-        override fun onCreateUpdate(picasso: Picasso): RequestCreator =
+        override fun triggerUpdate() {
+            // short-circuit if we are in edit mode within a development tool
+            if (imageView.isInEditMode) return
+
+            // if we are batching updates, track that we need an update, but don't trigger the update now
+            if (batching > 0) {
+                needsUpdate = true
+                return
+            }
+
+            // if we are currently in a layout pass, trigger an update once layout is complete
+            if (imageView.isInLayout) {
+                postTriggerUpdate()
+                return
+            }
+
+            // clear the needs update flag
+            needsUpdate = false
+
+            // build Picasso request
+            val update = onCreateUpdate(Picasso.get())
+            placeholderResId.takeIf { it != INVALID_DRAWABLE_RES }?.let { update.placeholder(it) }
+            placeholder?.let { update.placeholder(it) }
+            if (size.width > 0 || size.height > 0) onSetUpdateScale(update, size)
+            update.transform(mTransforms)
+
+            // fetch or load based on the target size
+            if (size.width > 0 || size.height > 0) update.into(imageView) else update.fetch()
+        }
+
+        @UiThread
+        protected open fun onCreateUpdate(picasso: Picasso): RequestCreator =
             picassoFile?.let { picasso.load(it) } ?: picasso.load(picassoUri)
 
         @UiThread
-        override fun onSetUpdateScale(update: RequestCreator, size: Dimension) {
+        protected open fun onSetUpdateScale(update: RequestCreator, size: Dimension) {
             // TODO: add some android integration tests for this behavior
 
             // is the view layout set to wrap content? if so we should just resize and not crop the image
@@ -133,6 +173,12 @@ interface PicassoImageView {
                 else -> update.transform(ScaleTransformation(size.width, size.height))
             }
         }
+
+        private fun postTriggerUpdate() {
+            needsUpdate = true
+            mView.post { if (needsUpdate) triggerUpdate() }
+        }
+        // endregion triggerUpdate() logic
 
         fun asImageView() = imageView
     }
