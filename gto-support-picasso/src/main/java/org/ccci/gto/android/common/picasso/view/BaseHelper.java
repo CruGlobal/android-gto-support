@@ -29,7 +29,7 @@ import java.util.List;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 import static org.ccci.gto.android.common.base.Constants.INVALID_DRAWABLE_RES;
 
-abstract class BaseHelper {
+public abstract class BaseHelper {
     @NonNull
     protected final ImageView mView;
 
