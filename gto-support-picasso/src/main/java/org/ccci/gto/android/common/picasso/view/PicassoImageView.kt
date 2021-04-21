@@ -25,7 +25,7 @@ interface PicassoImageView {
         attrs: AttributeSet? = null,
         defStyleAttr: Int = 0,
         defStyleRes: Int = 0
-    ) : BaseHelper() {
+    ) {
         @JvmField
         @Deprecated("Since v3.7.2, use the imageView property instead", replaceWith = ReplaceWith("imageView"))
         protected val mView = imageView
@@ -77,6 +77,26 @@ interface PicassoImageView {
         }
         // endregion Placeholder Image
 
+        // region Transformations
+        private val transforms = mutableListOf<Transformation>()
+
+        @UiThread
+        fun addTransform(transformation: Transformation) {
+            transforms.add(transformation)
+            triggerUpdate()
+        }
+
+        @UiThread
+        fun setTransforms(transformations: List<Transformation>?) {
+            // short-circuit if we aren't actually changing any transformations
+            if (transforms.isEmpty() && transformations.isNullOrEmpty()) return
+
+            transforms.clear()
+            if (transformations != null) transforms.addAll(transformations)
+            triggerUpdate()
+        }
+        // endregion Transformations
+
         @UiThread
         fun onSetScaleType() = triggerUpdate()
 
@@ -108,7 +128,7 @@ interface PicassoImageView {
         }
 
         @UiThread
-        override fun triggerUpdate() {
+        protected fun triggerUpdate() {
             // short-circuit if we are in edit mode within a development tool
             if (imageView.isInEditMode) return
 
@@ -132,7 +152,7 @@ interface PicassoImageView {
             placeholderResId.takeIf { it != INVALID_DRAWABLE_RES }?.let { update.placeholder(it) }
             placeholder?.let { update.placeholder(it) }
             if (size.width > 0 || size.height > 0) onSetUpdateScale(update, size)
-            update.transform(mTransforms)
+            update.transform(transforms)
 
             // fetch or load based on the target size
             if (size.width > 0 || size.height > 0) update.into(imageView) else update.fetch()
