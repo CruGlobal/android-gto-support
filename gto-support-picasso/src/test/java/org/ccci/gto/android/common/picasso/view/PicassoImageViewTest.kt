@@ -12,8 +12,6 @@ import com.nhaarman.mockitokotlin2.verifyNoMoreInteractions
 import com.nhaarman.mockitokotlin2.verifyZeroInteractions
 import java.io.File
 import org.ccci.gto.android.common.testing.picasso.PicassoSingletonRule
-import org.junit.Assert.assertNull
-import org.junit.Assert.assertSame
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -37,36 +35,32 @@ class PicassoImageViewTest {
     @Test
     fun testPicassoFile() {
         val file = mock<File>()
-        helper.picassoUri = mock()
+        helper.setPicassoUri(mock())
         clearInvocations(picasso)
 
         // changing the file should trigger a single update
-        helper.picassoFile = file
-        assertNull(helper.picassoUri)
-        assertSame(file, helper.picassoFile)
+        helper.setPicassoFile(file)
         verify(picasso).load(file)
         verifyNoMoreInteractions(picasso)
 
         // setting the same uri a second time shouldn't trigger a new update
-        helper.picassoFile = file
+        helper.setPicassoFile(file)
         verifyZeroInteractions(picasso)
     }
 
     @Test
     fun testPicassoUri() {
         val uri = mock<Uri>()
-        helper.picassoFile = mock()
+        helper.setPicassoFile(mock())
         clearInvocations(picasso)
 
         // changing the uri should trigger a single update
-        helper.picassoUri = uri
-        assertNull(helper.picassoFile)
-        assertSame(uri, helper.picassoUri)
+        helper.setPicassoUri(uri)
         verify(picasso).load(uri)
         verifyNoMoreInteractions(picasso)
 
         // setting the same uri a second time shouldn't trigger a new update
-        helper.picassoUri = uri
+        helper.setPicassoUri(uri)
         verifyZeroInteractions(picasso)
     }
 }

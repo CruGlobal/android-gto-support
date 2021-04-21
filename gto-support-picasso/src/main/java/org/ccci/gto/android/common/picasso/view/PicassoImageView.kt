@@ -25,26 +25,29 @@ interface PicassoImageView {
         attrs: AttributeSet? = null,
         defStyleAttr: Int = 0,
         defStyleRes: Int = 0
-    ) : BaseHelper(imageView) {
-        private var _picassoUri: Uri? = null
-        internal var picassoUri: Uri?
-            get() = _picassoUri
-            set(value) {
-                val changing = _picassoFile != null || value != _picassoUri
-                if(value != null) _picassoFile = null
-                _picassoUri = value
-                if (changing) triggerUpdate()
-            }
+    ) : BaseHelper() {
+        @JvmField
+        @Deprecated("Since v3.7.2, use the imageView property instead", replaceWith = ReplaceWith("imageView"))
+        protected val mView = imageView
 
-        private var _picassoFile: File? = null
-        internal var picassoFile: File?
-            get() = _picassoFile
-            set(value) {
-                val changing = value != _picassoFile
-                if (value != null) _picassoUri = null
-                _picassoFile = value
-                if (changing) triggerUpdate()
-            }
+        // region Image Source
+        private var picassoFile: File? = null
+        private var picassoUri: Uri? = null
+
+        fun setPicassoFile(file: File?) {
+            val changing = file != picassoFile
+            if (file != null) picassoUri = null
+            picassoFile = file
+            if (changing) triggerUpdate()
+        }
+
+        fun setPicassoUri(uri: Uri?) {
+            val changing = uri != picassoUri
+            if (uri != null) picassoFile = null
+            picassoUri = uri
+            if (changing) triggerUpdate()
+        }
+        // endregion Image Source
 
         // region Placeholder Image
         @DrawableRes
@@ -92,7 +95,7 @@ interface PicassoImageView {
         private var batching = 0
 
         @UiThread
-        fun batchUpdates(enable: Boolean) {
+        fun toggleBatchUpdates(enable: Boolean) {
             if (enable) {
                 batching++
             } else {
@@ -156,7 +159,7 @@ interface PicassoImageView {
                 return
             }
 
-            when (mView.scaleType) {
+            when (imageView.scaleType) {
                 ScaleType.CENTER_CROP ->
                     // centerCrop crops the image to the exact size specified by resize. So, if a dimension is 0 we
                     // can't crop the image anyways.
@@ -176,7 +179,7 @@ interface PicassoImageView {
 
         private fun postTriggerUpdate() {
             needsUpdate = true
-            mView.post { if (needsUpdate) triggerUpdate() }
+            imageView.post { if (needsUpdate) triggerUpdate() }
         }
         // endregion triggerUpdate() logic
 
