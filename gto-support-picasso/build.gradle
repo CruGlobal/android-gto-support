@@ -20,6 +20,7 @@ dependencies {
     api "com.squareup.picasso:picasso:${deps.picasso}"
 
     compileOnly "androidx.appcompat:appcompat:${deps.androidX.appCompat}"
+    compileOnly "androidx.core:core-ktx:${deps.androidX.core}"
 
     compileOnly "com.google.android.material:material:${deps.materialDesign}"
     implementation "com.jakewharton.timber:timber:${deps.timber}"

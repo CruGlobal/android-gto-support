@@ -1,9 +1,6 @@
 package org.ccci.gto.android.common.picasso.view;
 
-import android.content.Context;
-import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
-import android.util.AttributeSet;
 import android.widget.ImageView;
 
 import androidx.annotation.DrawableRes;
@@ -16,7 +13,6 @@ import com.squareup.picasso.RequestCreator;
 import com.squareup.picasso.Transformation;
 
 import org.ccci.gto.android.common.base.model.Dimension;
-import org.ccci.gto.android.common.picasso.R;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,53 +24,18 @@ public abstract class BaseHelper {
     protected final ImageView mView;
 
     @NonNull
-    private Dimension mSize = new Dimension(0, 0);
+    Dimension mSize = new Dimension(0, 0);
     @DrawableRes
-    private int mPlaceholderResId = INVALID_DRAWABLE_RES;
+    int mPlaceholderResId = INVALID_DRAWABLE_RES;
     @Nullable
-    private Drawable mPlaceholder = null;
+    Drawable mPlaceholder = null;
     private final ArrayList<Transformation> mTransforms = new ArrayList<>();
 
-    private int mBatching = 0;
-    private boolean mNeedsUpdate = false;
+    int mBatching = 0;
+    boolean mNeedsUpdate = false;
 
-    public BaseHelper(@NonNull final ImageView view, @Nullable final AttributeSet attrs, final int defStyleAttr,
-                  final int defStyleRes) {
+    public BaseHelper(@NonNull final ImageView view) {
         mView = view;
-        init(mView.getContext(), attrs, defStyleAttr, defStyleRes);
-    }
-
-    private void init(@NonNull final Context context, @Nullable final AttributeSet attrs, final int defStyleAttr,
-                      final int defStyleRes) {
-        final TypedArray a =
-                context.obtainStyledAttributes(attrs, R.styleable.PicassoImageView, defStyleAttr, defStyleRes);
-        mPlaceholderResId = a.getResourceId(R.styleable.PicassoImageView_placeholder, INVALID_DRAWABLE_RES);
-        a.recycle();
-    }
-
-    @UiThread
-    public final void setPlaceholder(@DrawableRes final int placeholder) {
-        final boolean changing = mPlaceholder != null || mPlaceholderResId != placeholder;
-        mPlaceholder = null;
-        mPlaceholderResId = placeholder;
-        if (changing) {
-            triggerUpdate();
-        }
-    }
-
-    @UiThread
-    public final void setPlaceholder(@Nullable final Drawable placeholder) {
-        final boolean changing = mPlaceholderResId != INVALID_DRAWABLE_RES || placeholder != mPlaceholder;
-        mPlaceholderResId = INVALID_DRAWABLE_RES;
-        mPlaceholder = placeholder;
-        if (changing) {
-            triggerUpdate();
-        }
-    }
-
-    @UiThread
-    public final void setScaleType(@NonNull final ImageView.ScaleType type) {
-        triggerUpdate();
     }
 
     @UiThread
@@ -92,31 +53,7 @@ public abstract class BaseHelper {
         triggerUpdate();
     }
 
-    @UiThread
-    public final void onSizeChanged(int w, int h, int oldw, int oldh) {
-        if (oldw != w || oldh != h) {
-            mSize = new Dimension(w, h);
-            // onSizeChanged() is called during layout, so we need to defer until after layout is complete
-            postTriggerUpdate();
-        }
-    }
-
-    @UiThread
-    public final void toggleBatchUpdates(final boolean enable) {
-        if (enable) {
-            mBatching++;
-        } else {
-            mBatching--;
-            if (mBatching <= 0) {
-                mBatching = 0;
-                if (mNeedsUpdate) {
-                    triggerUpdate();
-                }
-            }
-        }
-    }
-
-    private void postTriggerUpdate() {
+    void postTriggerUpdate() {
         mNeedsUpdate = true;
         mView.post(() -> {
             if (mNeedsUpdate) {

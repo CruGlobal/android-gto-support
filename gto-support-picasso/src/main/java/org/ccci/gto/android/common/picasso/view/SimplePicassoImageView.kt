@@ -52,7 +52,7 @@ open class SimplePicassoImageView : ImageView, PicassoImageView {
     override fun setPlaceholder(placeholder: Drawable?) = helper.setPlaceholder(placeholder)
     override fun addTransform(transform: Transformation) = helper.addTransform(transform)
     override fun setTransforms(transforms: List<Transformation?>?) = helper.setTransforms(transforms)
-    override fun toggleBatchUpdates(enable: Boolean) = helper.toggleBatchUpdates(enable)
+    override fun toggleBatchUpdates(enable: Boolean) = helper.batchUpdates(enable)
 
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
         super.onSizeChanged(w, h, oldw, oldh)
@@ -62,6 +62,6 @@ open class SimplePicassoImageView : ImageView, PicassoImageView {
     override fun setScaleType(scaleType: ScaleType) {
         super.setScaleType(scaleType)
         @Suppress("UNNECESSARY_SAFE_CALL")
-        helper?.setScaleType(scaleType)
+        helper?.onSetScaleType()
     }
 }

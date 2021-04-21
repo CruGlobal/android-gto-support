@@ -9,18 +9,23 @@ import android.widget.ImageView
 import android.widget.ImageView.ScaleType
 import androidx.annotation.DrawableRes
 import androidx.annotation.UiThread
+import androidx.core.content.withStyledAttributes
 import com.squareup.picasso.Picasso
 import com.squareup.picasso.RequestCreator
 import com.squareup.picasso.Transformation
 import java.io.File
+import org.ccci.gto.android.common.base.Constants.INVALID_DRAWABLE_RES
 import org.ccci.gto.android.common.base.model.Dimension
+import org.ccci.gto.android.common.picasso.R
 import org.ccci.gto.android.common.picasso.transformation.ScaleTransformation
 
 interface PicassoImageView {
-    open class Helper(view: ImageView, attrs: AttributeSet? = null, defStyleAttr: Int = 0, defStyleRes: Int = 0) :
-        BaseHelper(view, attrs, defStyleAttr, defStyleRes) {
-        protected val imageView: ImageView = view
-
+    open class Helper(
+        protected val imageView: ImageView,
+        attrs: AttributeSet? = null,
+        defStyleAttr: Int = 0,
+        defStyleRes: Int = 0
+    ) : BaseHelper(imageView) {
         private var _picassoUri: Uri? = null
         internal var picassoUri: Uri?
             get() = _picassoUri
@@ -40,6 +45,55 @@ interface PicassoImageView {
                 _picassoFile = value
                 if (changing) triggerUpdate()
             }
+
+        // region Placeholder Image
+        init {
+            imageView.context.withStyledAttributes(attrs, R.styleable.PicassoImageView, defStyleAttr, defStyleRes) {
+                mPlaceholderResId = getResourceId(R.styleable.PicassoImageView_placeholder, INVALID_DRAWABLE_RES)
+            }
+        }
+
+        @UiThread
+        fun setPlaceholder(@DrawableRes placeholder: Int) {
+            val changing = placeholder != mPlaceholderResId || mPlaceholder != null
+            mPlaceholder = null
+            mPlaceholderResId = placeholder
+            if (changing) triggerUpdate()
+        }
+
+        @UiThread
+        fun setPlaceholder(placeholder: Drawable?) {
+            val changing = placeholder !== mPlaceholder || mPlaceholderResId != INVALID_DRAWABLE_RES
+            mPlaceholderResId = INVALID_DRAWABLE_RES
+            mPlaceholder = placeholder
+            if (changing) triggerUpdate()
+        }
+        // endregion Placeholder Image
+
+        @UiThread
+        fun onSetScaleType() = triggerUpdate()
+
+        @UiThread
+        fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
+            if (oldw != w || oldh != h) {
+                mSize = Dimension(w, h)
+                // onSizeChanged() is called during layout, so we need to defer until after layout is complete
+                postTriggerUpdate()
+            }
+        }
+
+        @UiThread
+        fun batchUpdates(enable: Boolean) {
+            if (enable) {
+                mBatching++
+            } else {
+                mBatching--
+                if (mBatching <= 0) {
+                    mBatching = 0
+                    if (mNeedsUpdate) triggerUpdate()
+                }
+            }
+        }
 
         @UiThread
         override fun onCreateUpdate(picasso: Picasso): RequestCreator =
