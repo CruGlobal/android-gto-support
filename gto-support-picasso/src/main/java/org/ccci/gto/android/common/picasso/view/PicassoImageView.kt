@@ -1,6 +1,5 @@
 package org.ccci.gto.android.common.picasso.view
 
-import android.content.Context
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.util.AttributeSet
@@ -19,7 +18,7 @@ import org.ccci.gto.android.common.base.model.Dimension
 import org.ccci.gto.android.common.picasso.R
 import org.ccci.gto.android.common.picasso.transformation.ScaleTransformation
 
-interface PicassoImageView {
+interface PicassoImageView : ImageViewMethods {
     open class Helper(
         protected val imageView: ImageView,
         attrs: AttributeSet? = null,
@@ -202,14 +201,7 @@ interface PicassoImageView {
             imageView.post { if (needsUpdate) triggerUpdate() }
         }
         // endregion triggerUpdate() logic
-
-        fun asImageView() = imageView
     }
-
-    /**
-     * @return The ImageView this PicassoImageView represents.
-     */
-    fun asImageView(): ImageView
 
     @UiThread
     fun setPicassoFile(file: File?)
@@ -232,6 +224,8 @@ interface PicassoImageView {
     @UiThread
     fun toggleBatchUpdates(enable: Boolean)
 
-    /* Methods already present on View objects */
-    fun getContext(): Context
+    /**
+     * @return The ImageView this PicassoImageView represents.
+     */
+    fun asImageView(): ImageView
 }
