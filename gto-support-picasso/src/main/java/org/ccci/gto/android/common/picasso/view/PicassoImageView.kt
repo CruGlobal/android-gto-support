@@ -227,7 +227,7 @@ interface PicassoImageView {
     fun addTransform(transform: Transformation)
 
     @UiThread
-    fun setTransforms(transforms: List<Transformation?>?)
+    fun setTransforms(transforms: List<Transformation>?)
 
     @UiThread
     fun toggleBatchUpdates(enable: Boolean)

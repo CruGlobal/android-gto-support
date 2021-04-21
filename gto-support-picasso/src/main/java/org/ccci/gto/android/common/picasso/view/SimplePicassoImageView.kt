@@ -51,7 +51,7 @@ open class SimplePicassoImageView : ImageView, PicassoImageView {
     override fun setPlaceholder(@DrawableRes placeholder: Int) = helper.setPlaceholder(placeholder)
     override fun setPlaceholder(placeholder: Drawable?) = helper.setPlaceholder(placeholder)
     override fun addTransform(transform: Transformation) = helper.addTransform(transform)
-    override fun setTransforms(transforms: List<Transformation?>?) = helper.setTransforms(transforms)
+    override fun setTransforms(transforms: List<Transformation>?) = helper.setTransforms(transforms)
     override fun toggleBatchUpdates(enable: Boolean) = helper.toggleBatchUpdates(enable)
 
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
