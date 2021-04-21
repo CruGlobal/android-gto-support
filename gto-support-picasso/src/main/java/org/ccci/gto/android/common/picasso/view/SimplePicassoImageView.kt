@@ -20,8 +20,7 @@ open class SimplePicassoImageView : ImageView, PicassoImageView {
         attrs: AttributeSet? = null,
         defStyleAttr: Int = 0
     ) : super(context, attrs, defStyleAttr) {
-        _helper = createHelper(attrs, defStyleAttr)
-        mHelper = helper
+        _helper = PicassoImageView.Helper(this, attrs, defStyleAttr)
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
@@ -31,19 +30,12 @@ open class SimplePicassoImageView : ImageView, PicassoImageView {
         defStyleAttr: Int,
         defStyleRes: Int
     ) : super(context, attrs, defStyleAttr, defStyleRes) {
-        _helper = createHelper(attrs, defStyleAttr, defStyleRes)
-        mHelper = helper
+        _helper = PicassoImageView.Helper(this, attrs, defStyleAttr, defStyleRes)
     }
 
-    @JvmField
-    @Deprecated("Since v3.6.1, use the helper property instead")
-    protected val mHelper: PicassoImageView.Helper?
+    // TODO: convert to lazy initialization once our minimum supported android version is Lollipop
     private val _helper: PicassoImageView.Helper
     protected open val helper: PicassoImageView.Helper get() = _helper
-
-    @Deprecated("Since v3.6.1, override the helper property instead")
-    protected open fun createHelper(attrs: AttributeSet?, defStyleAttr: Int, defStyleRes: Int = 0) =
-        PicassoImageView.Helper(this, attrs, defStyleAttr, defStyleRes)
 
     override fun setPicassoFile(file: File?) = helper.setPicassoFile(file)
     override fun setPicassoUri(uri: Uri?) = helper.setPicassoUri(uri)
