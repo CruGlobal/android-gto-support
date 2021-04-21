@@ -20,6 +20,7 @@ dependencies {
     api "com.squareup.picasso:picasso:${deps.picasso}"
 
     compileOnly "androidx.appcompat:appcompat:${deps.androidX.appCompat}"
+    compileOnly "androidx.core:core-ktx:${deps.androidX.core}"
 
     compileOnly "com.google.android.material:material:${deps.materialDesign}"
     implementation "com.jakewharton.timber:timber:${deps.timber}"
@@ -29,6 +30,7 @@ dependencies {
 
     compileOnly "org.jetbrains.kotlinx:kotlinx-coroutines-core:${deps.kotlinCoroutines}"
 
+    testImplementation project(':testing:gto-support-picasso')
     testImplementation "com.google.android.material:material:${deps.materialDesign}"
     testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:${deps.kotlinCoroutines}"
     testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:${deps.kotlinCoroutines}"

@@ -45,13 +45,13 @@ open class SimplePicassoImageView : ImageView, PicassoImageView {
     protected open fun createHelper(attrs: AttributeSet?, defStyleAttr: Int, defStyleRes: Int = 0) =
         PicassoImageView.Helper(this, attrs, defStyleAttr, defStyleRes)
 
-    override fun asImageView() = helper.asImageView()
+    override fun asImageView() = this
     override fun setPicassoFile(file: File?) = helper.setPicassoFile(file)
     override fun setPicassoUri(uri: Uri?) = helper.setPicassoUri(uri)
     override fun setPlaceholder(@DrawableRes placeholder: Int) = helper.setPlaceholder(placeholder)
     override fun setPlaceholder(placeholder: Drawable?) = helper.setPlaceholder(placeholder)
     override fun addTransform(transform: Transformation) = helper.addTransform(transform)
-    override fun setTransforms(transforms: List<Transformation?>?) = helper.setTransforms(transforms)
+    override fun setTransforms(transforms: List<Transformation>?) = helper.setTransforms(transforms)
     override fun toggleBatchUpdates(enable: Boolean) = helper.toggleBatchUpdates(enable)
 
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
@@ -62,6 +62,6 @@ open class SimplePicassoImageView : ImageView, PicassoImageView {
     override fun setScaleType(scaleType: ScaleType) {
         super.setScaleType(scaleType)
         @Suppress("UNNECESSARY_SAFE_CALL")
-        helper?.setScaleType(scaleType)
+        helper?.onSetScaleType()
     }
 }
