@@ -23,11 +23,14 @@ interface PicassoImageView {
         protected val imageView: ImageView,
         attrs: AttributeSet? = null,
         defStyleAttr: Int = 0,
-        defStyleRes: Int = 0
+        defStyleRes: Int = 0,
+        picasso: Picasso? = null
     ) {
         @JvmField
         @Deprecated("Since v3.7.2, use the imageView property instead", replaceWith = ReplaceWith("imageView"))
         protected val mView = imageView
+
+        private val picasso by lazy { picasso ?: Picasso.get() }
 
         // region Image Source
         private var picassoFile: File? = null
@@ -147,7 +150,7 @@ interface PicassoImageView {
             needsUpdate = false
 
             // build Picasso request
-            val update = onCreateUpdate(Picasso.get())
+            val update = onCreateUpdate(picasso)
             placeholderResId.takeIf { it != INVALID_DRAWABLE_RES }?.let { update.placeholder(it) }
             placeholder?.let { update.placeholder(it) }
             if (size.width > 0 || size.height > 0) onSetUpdateScale(update, size)
