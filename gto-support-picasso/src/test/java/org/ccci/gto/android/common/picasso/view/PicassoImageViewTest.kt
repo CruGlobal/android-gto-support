@@ -10,26 +10,25 @@ import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.verifyNoMoreInteractions
 import com.nhaarman.mockitokotlin2.verifyZeroInteractions
+import com.squareup.picasso.Picasso
 import java.io.File
-import org.ccci.gto.android.common.testing.picasso.PicassoSingletonRule
 import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.Mockito
 
 @RunWith(AndroidJUnit4::class)
 class PicassoImageViewTest {
-    @get:Rule
-    val picassoSingletonRule = PicassoSingletonRule()
-    private val picasso get() = picassoSingletonRule.mock
-
     private lateinit var imageView: ImageView
+    private lateinit var picasso: Picasso
+
     private lateinit var helper: PicassoImageView.Helper
 
     @Before
     fun setup() {
         imageView = mock { on { context } doReturn ApplicationProvider.getApplicationContext() }
-        helper = PicassoImageView.Helper(imageView)
+        picasso = mock(defaultAnswer = Mockito.RETURNS_DEEP_STUBS)
+        helper = PicassoImageView.Helper(imageView, picasso = picasso)
     }
 
     @Test

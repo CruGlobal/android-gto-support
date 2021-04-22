@@ -1,49 +1,21 @@
 package org.ccci.gto.android.common.picasso.view
 
-import android.annotation.SuppressLint
-import android.annotation.TargetApi
 import android.content.Context
 import android.graphics.drawable.Drawable
 import android.net.Uri
-import android.os.Build
 import android.util.AttributeSet
-import android.widget.ImageView
 import androidx.annotation.DrawableRes
+import androidx.appcompat.widget.AppCompatImageView
 import com.squareup.picasso.Transformation
 import java.io.File
 
-@SuppressLint("AppCompatCustomView")
-open class SimplePicassoImageView : ImageView, PicassoImageView {
-    @JvmOverloads
-    constructor(
-        context: Context,
-        attrs: AttributeSet? = null,
-        defStyleAttr: Int = 0
-    ) : super(context, attrs, defStyleAttr) {
-        _helper = createHelper(attrs, defStyleAttr)
-        mHelper = helper
-    }
+open class SimplePicassoImageView constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) :
+    AppCompatImageView(context, attrs, defStyleAttr), PicassoImageView {
+    constructor(context: Context) : this(context, null, 0)
+    constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
 
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    constructor(
-        context: Context,
-        attrs: AttributeSet?,
-        defStyleAttr: Int,
-        defStyleRes: Int
-    ) : super(context, attrs, defStyleAttr, defStyleRes) {
-        _helper = createHelper(attrs, defStyleAttr, defStyleRes)
-        mHelper = helper
-    }
-
-    @JvmField
-    @Deprecated("Since v3.6.1, use the helper property instead")
-    protected val mHelper: PicassoImageView.Helper?
-    private val _helper: PicassoImageView.Helper
-    protected open val helper: PicassoImageView.Helper get() = _helper
-
-    @Deprecated("Since v3.6.1, override the helper property instead")
-    protected open fun createHelper(attrs: AttributeSet?, defStyleAttr: Int, defStyleRes: Int = 0) =
-        PicassoImageView.Helper(this, attrs, defStyleAttr, defStyleRes)
+    protected open val helper by lazy { PicassoImageView.Helper(this, attrs, defStyleAttr) }
+    private val initialized = true
 
     override fun setPicassoFile(file: File?) = helper.setPicassoFile(file)
     override fun setPicassoUri(uri: Uri?) = helper.setPicassoUri(uri)
@@ -60,7 +32,11 @@ open class SimplePicassoImageView : ImageView, PicassoImageView {
 
     override fun setScaleType(scaleType: ScaleType) {
         super.setScaleType(scaleType)
+
+        // HACK: setScaleType() could be called by a parent constructor, which can cause this statement to crash. The
+        //       current logic handles several possible crashes, but doesn't handle all the possibilities subclasses
+        //       could introduce.
         @Suppress("UNNECESSARY_SAFE_CALL")
-        helper?.onSetScaleType()
+        if (initialized) helper?.onSetScaleType()
     }
 }
