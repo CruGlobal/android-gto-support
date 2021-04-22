@@ -9,11 +9,11 @@ import androidx.appcompat.widget.AppCompatImageView
 import com.squareup.picasso.Transformation
 import java.io.File
 
-open class SimplePicassoImageView @JvmOverloads constructor(
-    context: Context,
-    attrs: AttributeSet? = null,
-    defStyleAttr: Int = 0
-) : AppCompatImageView(context, attrs, defStyleAttr), PicassoImageView {
+open class SimplePicassoImageView constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) :
+    AppCompatImageView(context, attrs, defStyleAttr), PicassoImageView {
+    constructor(context: Context) : this(context, null, 0)
+    constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
+
     protected open val helper by lazy { PicassoImageView.Helper(this, attrs, defStyleAttr) }
     private val initialized = true
 
