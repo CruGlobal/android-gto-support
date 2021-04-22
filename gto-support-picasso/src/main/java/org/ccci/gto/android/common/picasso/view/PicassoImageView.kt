@@ -18,7 +18,7 @@ import org.ccci.gto.android.common.base.model.Dimension
 import org.ccci.gto.android.common.picasso.R
 import org.ccci.gto.android.common.picasso.transformation.ScaleTransformation
 
-interface PicassoImageView : ImageViewMethods {
+interface PicassoImageView {
     open class Helper(
         protected val imageView: ImageView,
         attrs: AttributeSet? = null,
@@ -227,5 +227,5 @@ interface PicassoImageView : ImageViewMethods {
     /**
      * @return The ImageView this PicassoImageView represents.
      */
-    fun asImageView(): ImageView
+    fun asImageView() = this as ImageView
 }
