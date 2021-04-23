@@ -1,0 +1,10 @@
+apply plugin: 'dagger.hilt.android.plugin'
+
+dependencies {
+    implementation "com.google.dagger:dagger:${deps.dagger}"
+    api "com.google.dagger:hilt-android:${deps.dagger}"
+
+    api "androidx.appcompat:appcompat:${deps.androidX.appCompat}"
+
+    kapt "com.google.dagger:hilt-compiler:${deps.dagger}"
+}

@@ -76,6 +76,7 @@ buildscript {
     }
     dependencies {
         classpath "com.android.tools.build:gradle:${deps.gradleAndroidPlugin}"
+        classpath "com.google.dagger:hilt-android-gradle-plugin:${deps.dagger}"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:${deps.kotlin}"
     }
 }

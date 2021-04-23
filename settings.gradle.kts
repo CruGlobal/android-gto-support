@@ -44,6 +44,7 @@ include("gto-support-sync")
 include("gto-support-util")
 include("gto-support-viewpager")
 
+include("testing:gto-support-dagger")
 include("testing:gto-support-picasso")
 include("testing:gto-support-timber")
 
