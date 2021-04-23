@@ -5,7 +5,7 @@ dependencies {
 
     // Split Install dependencies
     compileOnly "com.google.android.play:core:${deps.playCore}"
-    compileOnly "com.google.dagger:hilt-android:${deps.daggerHilt}"
+    compileOnly "com.google.dagger:hilt-android:${deps.dagger}"
 
     // OkHttp3 Module dependencies
     compileOnly "com.squareup.okhttp3:okhttp:${deps.okhttp3}"
@@ -22,7 +22,7 @@ dependencies {
     testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:${deps.mockitoKotlin}"
     testImplementation "androidx.lifecycle:lifecycle-viewmodel:${deps.androidX.lifecycle}"
     testImplementation "com.google.android.play:core:${deps.playCore}"
-    testImplementation "com.google.dagger:hilt-android:${deps.daggerHilt}"
+    testImplementation "com.google.dagger:hilt-android:${deps.dagger}"
     testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:${deps.kotlinCoroutines}"
     kaptTest "com.google.dagger:dagger-compiler:${deps.dagger}"
 }
