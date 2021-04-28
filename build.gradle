@@ -91,7 +91,7 @@ configure(subprojects.findAll { it.path.contains("gto-support") }) {
     apply plugin: 'kotlin-kapt'
 
     group 'org.ccci.gto.android'
-    version '3.7.2-SNAPSHOT'
+    version '3.8.0'
 
     repositories {
         google()
