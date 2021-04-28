@@ -9,10 +9,7 @@ updates:
   assignees:
   - frett
   ignore:
-  - dependency-name: com.squareup.okhttp3:mockwebserver
-    versions:
-    - ">= 3.13.a"
-  - dependency-name: com.squareup.okhttp3:okhttp
+  - dependency-name: com.squareup.okhttp3:*
     versions:
     - ">= 3.13.a"
   - dependency-name: com.squareup.picasso:picasso
@@ -23,4 +20,4 @@ updates:
     - ">= 2.7.a"
   - dependency-name: org.jetbrains.kotlinx:kotlinx-coroutines-core
     versions:
-    - "= 1.4.2-native-mt"
+    - "1.4.3-native-mt"
