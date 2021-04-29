@@ -12,7 +12,6 @@ import com.squareup.picasso.Picasso
 import com.squareup.picasso.RequestCreator
 import com.squareup.picasso.StubRequestCreator
 import com.squareup.picasso.Target
-import com.squareup.picasso.picasso
 import java.lang.ref.Reference
 import java.lang.ref.WeakReference
 import java.util.concurrent.Executors

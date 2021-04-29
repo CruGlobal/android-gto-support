@@ -10,6 +10,8 @@ import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlinx.coroutines.CancellableContinuation
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
 
@@ -17,7 +19,7 @@ suspend fun RequestCreator.getBitmap(): Bitmap = withContext(Dispatchers.Main) {
     suspendCancellableCoroutine { cont ->
         val target = BitmapContinuationTarget(cont)
         into(target)
-        cont.invokeOnCancellation { picasso?.cancelRequest(target) }
+        cont.invokeOnCancellation { GlobalScope.launch(Dispatchers.Main.immediate) { picasso?.cancelRequest(target) } }
     }
 }
 
