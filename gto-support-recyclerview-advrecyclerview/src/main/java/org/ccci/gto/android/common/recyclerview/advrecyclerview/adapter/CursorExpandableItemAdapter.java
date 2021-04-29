@@ -2,6 +2,7 @@ package org.ccci.gto.android.common.recyclerview.advrecyclerview.adapter;
 
 import android.database.Cursor;
 import android.provider.BaseColumns;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
@@ -44,11 +45,14 @@ public abstract class CursorExpandableItemAdapter<GVH extends ViewHolder, CVH ex
         final Cursor oldCursor = mCursor;
 
         // process the cursor
-        int groupIdColumnIndex = -1;
-        int idColumnIndex = -1;
+        final int groupIdColumnIndex;
+        final int idColumnIndex;
         if (cursor != null) {
-            groupIdColumnIndex = cursor.getColumnIndexOrThrow(mGroupIdColumn);
+            groupIdColumnIndex = cursor.getColumnIndex(mGroupIdColumn);
             idColumnIndex = cursor.getColumnIndexOrThrow(mIdColumn);
+        } else {
+            groupIdColumnIndex = -1;
+            idColumnIndex = -1;
         }
 
         // store the new index and cursor
