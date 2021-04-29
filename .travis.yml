@@ -15,8 +15,8 @@ branches:
 
 stages:
 - test
-- name: deploy
-  if: type = push AND (branch = master OR tag =~ /^v\d+(\.\d+){1,}$/)
+#- name: deploy
+#  if: type = push AND (branch = master OR tag =~ /^v\d+(\.\d+){1,}$/)
 
 before_cache:
 - rm -f $HOME/.gradle/caches/modules-2/modules-2.lock
@@ -55,26 +55,26 @@ jobs:
 
     install: skip
     script: ./gradlew test jacocoTestReport --continue --stacktrace --parallel --max-workers 2
-
-    after_success:
-    - bash <(curl -s https://codecov.io/bash)
-
-  - name: "Release"
-    stage: deploy
-
-    install:
-    - echo cruGlobalMavenRepositoryUsername=$DEPLOY_USERNAME >> $HOME/.gradle/gradle.properties
-    - echo cruGlobalMavenRepositoryPassword=$DEPLOY_PASSWORD >> $HOME/.gradle/gradle.properties
-    script: skip
-
-    deploy:
-      provider: script
-      skip_cleanup: true
-      script: ./gradlew publish --parallel
-      on:
-        repo: CruGlobal/android-gto-support
-        all_branches: true
-        jdk: oraclejdk8
+#
+#    after_success:
+#    - bash <(curl -s https://codecov.io/bash)
+#
+#  - name: "Release"
+#    stage: deploy
+#
+#    install:
+#    - echo cruGlobalMavenRepositoryUsername=$DEPLOY_USERNAME >> $HOME/.gradle/gradle.properties
+#    - echo cruGlobalMavenRepositoryPassword=$DEPLOY_PASSWORD >> $HOME/.gradle/gradle.properties
+#    script: skip
+#
+#    deploy:
+#      provider: script
+#      skip_cleanup: true
+#      script: ./gradlew publish --parallel
+#      on:
+#        repo: CruGlobal/android-gto-support
+#        all_branches: true
+#        jdk: oraclejdk8
 
 notifications:
   email: false
