@@ -5,8 +5,10 @@ import android.os.Handler
 import android.os.HandlerThread
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.nhaarman.mockitokotlin2.any
+import com.nhaarman.mockitokotlin2.doAnswer
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
+import com.nhaarman.mockitokotlin2.verifyNoMoreInteractions
 import com.nhaarman.mockitokotlin2.whenever
 import com.squareup.picasso.Picasso
 import com.squareup.picasso.RequestCreator
@@ -27,6 +29,7 @@ import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.setMain
 import org.junit.After
+import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertSame
 import org.junit.Assert.assertTrue
@@ -116,6 +119,30 @@ class RequestCreatorTest {
             return@runBlocking target
         }
         verify(picasso).cancelRequest(target)
+    }
+
+    @Test
+    fun `getBitmap() should cancel Picasso request on main thread`() {
+        val thread = HandlerThread("").apply { start() }
+        assertTrue(thread.isAlive)
+        Dispatchers.setMain(Handler(thread.looper).asCoroutineDispatcher())
+        var cancelRequestThread: Thread? = null
+        val picasso = mock<Picasso> {
+            on { cancelRequest(any<Target>()) } doAnswer { cancelRequestThread = Thread.currentThread() }
+        }
+
+        val request = TargetCapturingRequestCreator(picasso)
+        val target = runBlocking {
+            val task = launch(TestCoroutineDispatcher()) { request.getBitmap() }
+            val target = request.targets.receive().get()!!
+            task.cancel()
+            return@runBlocking target
+        }
+        thread.quitSafely()
+        thread.join()
+        assertEquals(thread, cancelRequestThread)
+        verify(picasso).cancelRequest(target)
+        verifyNoMoreInteractions(picasso)
     }
 
     private class TargetCapturingRequestCreator(picasso: Picasso? = null) : StubRequestCreator(picasso) {
