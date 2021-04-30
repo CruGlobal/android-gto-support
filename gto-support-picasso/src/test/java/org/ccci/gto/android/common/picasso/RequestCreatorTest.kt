@@ -128,6 +128,12 @@ class RequestCreatorTest {
         Dispatchers.setMain(Handler(thread.looper).asCoroutineDispatcher())
         var cancelRequestThread: Thread? = null
         val picasso = mock<Picasso> {
+            // we capture the thread that cancelRequest is called on, that way we can assert later that it was the
+            // "Main" thread.
+            //
+            // We can't directly throw an assertion because GlobalScope.launch() will swallow the exception and process
+            // it with an UncaughtExceptionHandler not on the call stack for this test. The exception will print to the
+            // console, but the test will still report as passing
             on { cancelRequest(any<Target>()) } doAnswer { cancelRequestThread = Thread.currentThread() }
         }
 
