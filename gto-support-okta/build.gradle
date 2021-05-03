@@ -1,7 +1,5 @@
 android {
     defaultConfig {
-        minSdkVersion 19
-
         consumerProguardFiles 'proguard-consumer.pro'
     }
 }
