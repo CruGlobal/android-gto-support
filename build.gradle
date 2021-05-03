@@ -97,10 +97,13 @@ configure(subprojects.findAll { it.path.contains("gto-support") }) {
             url 'https://cruglobal.jfrog.io/cruglobal/list/maven-locals/'
             content { includeGroup 'me.thekey.android' }
         }
+        maven {
+            url 'https://jitpack.io'
+            content { includeGroupByRegex 'com\\.github\\..*' }
+        }
         google()
         mavenCentral()
         jcenter()
-        maven { url "https://jitpack.io" }
     }
 
     beforeEvaluate {
