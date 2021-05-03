@@ -3,8 +3,6 @@ android {
         minSdkVersion 19
 
         consumerProguardFiles 'proguard-consumer.pro'
-
-        manifestPlaceholders += [appAuthRedirectScheme: "org.ccci.gto.android.okta.test"]
     }
 }
 
@@ -26,6 +24,7 @@ dependencies {
     compileOnly "com.squareup.okhttp3:okhttp:${deps.okhttp3}"
     // endregion OkHttpOktaHttpClient
 
+    testImplementation project(':testing:gto-support-okta')
     testImplementation "androidx.arch.core:core-testing:${deps.androidX.arch}"
     testImplementation "com.squareup.okhttp3:mockwebserver:${deps.okhttp3}"
     testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:${deps.kotlinCoroutines}"
