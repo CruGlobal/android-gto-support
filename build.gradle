@@ -71,7 +71,7 @@ buildscript {
 
     repositories {
         google()
-        jcenter()
+        mavenCentral()
         maven { url 'https://jitpack.io' }
     }
     dependencies {
@@ -95,11 +95,11 @@ configure(subprojects.findAll { it.path.contains("gto-support") }) {
 
     repositories {
         google()
+        mavenCentral()
         jcenter()
         maven { url "https://jitpack.io" }
         maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
         maven { url 'https://cruglobal.jfrog.io/cruglobal/list/maven-locals/' }
-        mavenLocal()
     }
 
     beforeEvaluate {
