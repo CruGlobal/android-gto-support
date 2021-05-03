@@ -71,8 +71,7 @@ buildscript {
 
     repositories {
         google()
-        jcenter()
-        maven { url 'https://jitpack.io' }
+        mavenCentral()
     }
     dependencies {
         classpath "com.android.tools.build:gradle:${deps.gradleAndroidPlugin}"
@@ -94,12 +93,17 @@ configure(subprojects.findAll { it.path.contains("gto-support") }) {
     version '3.8.2-SNAPSHOT'
 
     repositories {
+        maven {
+            url 'https://cruglobal.jfrog.io/cruglobal/list/maven-locals/'
+            content { includeGroup 'me.thekey.android' }
+        }
+        maven {
+            url 'https://jitpack.io'
+            content { includeGroupByRegex 'com\\.github\\..*' }
+        }
         google()
+        mavenCentral()
         jcenter()
-        maven { url "https://jitpack.io" }
-        maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
-        maven { url 'https://cruglobal.jfrog.io/cruglobal/list/maven-locals/' }
-        mavenLocal()
     }
 
     beforeEvaluate {
