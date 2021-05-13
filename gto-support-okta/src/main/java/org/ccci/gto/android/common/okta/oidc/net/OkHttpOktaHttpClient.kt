@@ -35,17 +35,17 @@ class OkHttpOktaHttpClient(okhttp: OkHttpClient = OkHttpClient()) : OktaHttpClie
             }
             .build()
         currentResponse = okhttp.newCall(request).execute()
-        return currentResponse?.body()?.byteStream()
+        return currentResponse?.body?.byteStream()
     }
 
-    override fun getResponseCode() = currentResponse?.code() ?: -1
-    override fun getResponseMessage() = currentResponse?.message()
-    override fun getHeaderFields() = currentResponse?.headers()?.toMultimap()
+    override fun getResponseCode() = currentResponse?.code ?: -1
+    override fun getResponseMessage() = currentResponse?.message
+    override fun getHeaderFields() = currentResponse?.headers?.toMultimap()
     override fun getHeader(header: String) = currentResponse?.header(header)
     override fun getContentLength() = currentResponse?.header("Content-Length")?.toIntOrNull() ?: -1
 
     override fun cancel() {
-        currentResponse?.body()?.close()
+        currentResponse?.body?.close()
     }
 
     override fun cleanUp() {
