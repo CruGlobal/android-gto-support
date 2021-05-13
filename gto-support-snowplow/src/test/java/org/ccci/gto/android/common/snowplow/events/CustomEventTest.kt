@@ -6,14 +6,14 @@ import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.spy
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.verifyZeroInteractions
-import com.snowplowanalytics.snowplow.tracker.Emitter
-import com.snowplowanalytics.snowplow.tracker.Executor
-import com.snowplowanalytics.snowplow.tracker.Subject.SubjectBuilder
-import com.snowplowanalytics.snowplow.tracker.Tracker
-import com.snowplowanalytics.snowplow.tracker.events.AbstractEvent
-import com.snowplowanalytics.snowplow.tracker.events.Event
-import com.snowplowanalytics.snowplow.tracker.payload.Payload
-import com.snowplowanalytics.snowplow.tracker.utils.Logger
+import com.snowplowanalytics.snowplow.event.AbstractEvent
+import com.snowplowanalytics.snowplow.event.Event
+import com.snowplowanalytics.snowplow.internal.emitter.Emitter
+import com.snowplowanalytics.snowplow.internal.emitter.Executor
+import com.snowplowanalytics.snowplow.internal.tracker.Logger
+import com.snowplowanalytics.snowplow.internal.tracker.Subject
+import com.snowplowanalytics.snowplow.internal.tracker.Tracker
+import com.snowplowanalytics.snowplow.payload.Payload
 import java.util.concurrent.TimeUnit
 import org.ccci.gto.android.common.snowplow.utils.TimberLogger
 import org.hamcrest.MatcherAssert.assertThat
@@ -39,16 +39,16 @@ abstract class CustomEventTest<B> where B : AbstractEvent.Builder<B>, B : Custom
         emitter = mock()
         tree = spy(Timber.DebugTree())
         tracker = Tracker.TrackerBuilder(emitter, "", "", mock())
-            .subject(SubjectBuilder().build())
+            .subject(Subject.SubjectBuilder().build())
             .build()
-        Logger.setErrorLogger(TimberLogger)
+        Logger.setDelegate(TimberLogger)
         Timber.plant(tree)
     }
 
     @After
     fun cleanupTracker() {
         Timber.uproot(tree)
-        Logger.setErrorLogger(null)
+        Logger.setDelegate(null)
         Tracker.close()
     }
 
@@ -63,7 +63,7 @@ abstract class CustomEventTest<B> where B : AbstractEvent.Builder<B>, B : Custom
             .buildEvent()
 
         tracker.track(event)
-        Executor.shutdown().awaitTermination(10, TimeUnit.SECONDS)
+        Executor.shutdown()?.awaitTermination(10, TimeUnit.SECONDS)
         argumentCaptor<Payload> {
             verify(emitter).add(capture())
             assertThat(firstValue.map, allOf(hasEntry("custom", "value"), not(hasKey("null"))))

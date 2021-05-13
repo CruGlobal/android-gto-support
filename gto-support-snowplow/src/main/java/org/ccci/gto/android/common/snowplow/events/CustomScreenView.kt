@@ -1,7 +1,7 @@
 package org.ccci.gto.android.common.snowplow.events
 
-import com.snowplowanalytics.snowplow.tracker.Tracker
-import com.snowplowanalytics.snowplow.tracker.events.ScreenView
+import com.snowplowanalytics.snowplow.event.ScreenView
+import com.snowplowanalytics.snowplow.internal.tracker.Tracker
 
 class CustomScreenView(builder: Builder) : ScreenView(builder) {
     private val attributes = builder.attributes
