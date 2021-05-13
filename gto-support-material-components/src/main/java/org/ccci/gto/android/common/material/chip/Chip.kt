@@ -1,19 +1,12 @@
 package org.ccci.gto.android.common.material.chip
 
-import android.os.Build
 import com.google.android.material.chip.Chip
-import com.google.android.material.chip.ChipDrawable
 
+@Deprecated("Since v3.9.0, use Chip.elevation directly")
 @get:JvmName("getElevation")
 @set:JvmName("setElevation")
 var Chip.elevationCompat
-    get() = when {
-        Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP -> elevation
-        else -> (chipDrawable as? ChipDrawable)?.elevation ?: 0f
-    }
+    get() = elevation
     set(value) {
-        when {
-            Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP -> elevation = value
-            else -> (chipDrawable as? ChipDrawable)?.elevation = value
-        }
+        elevation = value
     }
