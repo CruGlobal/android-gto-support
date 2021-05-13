@@ -51,4 +51,3 @@ include("testing:gto-support-timber")
 
 // deprecated modules
 include("gto-support-design")
-include("gto-support-lifecycle")
