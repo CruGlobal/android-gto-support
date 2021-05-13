@@ -73,7 +73,7 @@ class OkHttpOktaHttpClientTest {
             .scheme("http").host("a")
             .query(request.body.readUtf8())
             .build()
-            .run { queryParameterNames().associateWith { queryParameter(it) } }.toMap()
+            .run { queryParameterNames.associateWith { queryParameter(it) } }.toMap()
         assertThat(postParams, allOf(aMapWithSize(2), hasEntry(PARAM1, VALUE3), hasEntry(PARAM2, VALUE4)))
     }
 
