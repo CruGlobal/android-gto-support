@@ -17,7 +17,7 @@ buildscript {
             jsonUnit            : '2.25.0',
             junit               : '4.13.2',
             junitParams         : '1.1.1',
-            kotlin              : '1.4.32',
+            kotlin              : '1.5.0',
             kotlinCoroutines    : '1.4.3',
             leakcanary2         : '2.7',
             lightweightStream   : '1.2.2',
