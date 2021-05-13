@@ -1,7 +1,7 @@
 package org.ccci.gto.android.common.snowplow.events
 
-import com.snowplowanalytics.snowplow.tracker.Tracker
-import com.snowplowanalytics.snowplow.tracker.events.Structured
+import com.snowplowanalytics.snowplow.event.Structured
+import com.snowplowanalytics.snowplow.internal.tracker.Tracker
 
 class CustomStructured(builder: Builder) : Structured(builder) {
     private val attributes = builder.attributes

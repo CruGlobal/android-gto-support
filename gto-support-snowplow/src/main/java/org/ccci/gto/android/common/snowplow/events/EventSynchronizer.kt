@@ -1,7 +1,7 @@
 package org.ccci.gto.android.common.snowplow.events
 
 import androidx.annotation.VisibleForTesting
-import com.snowplowanalytics.snowplow.tracker.events.Event
+import com.snowplowanalytics.snowplow.event.Event
 import java.util.concurrent.Semaphore
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicReference

@@ -1,7 +1,7 @@
 package org.ccci.gto.android.common.snowplow.events
 
 import com.nhaarman.mockitokotlin2.mock
-import com.snowplowanalytics.snowplow.tracker.events.Event
+import com.snowplowanalytics.snowplow.event.Event
 import kotlin.random.Random
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
