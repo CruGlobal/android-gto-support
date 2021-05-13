@@ -5,9 +5,6 @@ import com.okta.oidc.net.response.UserInfo
 import org.ccci.gto.android.common.base.TimeConstants.DAY_IN_MS
 import org.ccci.gto.android.common.base.TimeConstants.HOUR_IN_MS
 import org.ccci.gto.android.common.base.TimeConstants.WEEK_IN_MS
-import org.hamcrest.CoreMatchers.both
-import org.hamcrest.Matchers.greaterThanOrEqualTo
-import org.hamcrest.Matchers.lessThanOrEqualTo
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Test
@@ -17,7 +14,7 @@ import org.junit.runner.RunWith
 class PersistableUserInfoTest {
     @Test
     fun verifyNextRefreshDelay() {
-        val userInfo = PersistableUserInfo("", UserInfo(null), System.currentTimeMillis())
+        val userInfo = PersistableUserInfo("", UserInfo(null))
         assertEquals(DAY_IN_MS, userInfo.nextRefreshDelay, 1000)
     }
 
@@ -33,7 +30,4 @@ class PersistableUserInfoTest {
         assertTrue(actual >= expected - delta)
         assertTrue(actual <= expected + delta)
     }
-
-    private fun matchesTime(time: Long, delta: Long) =
-        both(greaterThanOrEqualTo(time - delta)).and(lessThanOrEqualTo(time + delta))
 }

@@ -10,7 +10,7 @@ private const val CLAIM_RETRIEVED_AT = "retrieved_at"
 
 @SuppressLint("RestrictedApi")
 internal class PersistableUserInfo(
-    val oktaUserId: String,
+    private val oktaUserId: String,
     val userInfo: UserInfo,
     private val retrievedAt: Long = System.currentTimeMillis()
 ) : Persistable {
