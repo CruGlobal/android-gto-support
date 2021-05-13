@@ -9,15 +9,9 @@ updates:
   assignees:
   - frett
   ignore:
-  - dependency-name: com.squareup.okhttp3:*
-    versions:
-    - ">= 3.13.a"
   - dependency-name: com.squareup.picasso:picasso
     versions:
     - "= 2.71828"
-  - dependency-name: com.squareup.retrofit2:retrofit
-    versions:
-    - ">= 2.7.a"
   - dependency-name: org.jetbrains.kotlinx:kotlinx-coroutines-core
     versions:
     - "1.4.3-native-mt"

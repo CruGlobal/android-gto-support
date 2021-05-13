@@ -9,8 +9,6 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.annotation.RestrictTo;
 
-import org.ccci.gto.android.common.compat.util.LocaleCompat;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -18,8 +16,6 @@ import java.util.IllformedLocaleException;
 import java.util.LinkedHashSet;
 import java.util.Locale;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class LocaleUtils {
     // define a few fixed fallbacks
@@ -46,13 +42,9 @@ public class LocaleUtils {
         FALLBACKS.put("zlm", "ms");
     }
 
-    static final Pattern PATTERN_EXTENSIONS = Pattern.compile("-[a-z0-9]-.*$", Pattern.CASE_INSENSITIVE);
-
     private static final Compat COMPAT;
     static {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            COMPAT = new FroyoCompat();
-        } else if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
             COMPAT = new LollipopCompat();
         } else {
             COMPAT = new NougatCompat();
@@ -111,58 +103,8 @@ public class LocaleUtils {
     }
 
     @RestrictTo({RestrictTo.Scope.LIBRARY})
-    static class FroyoCompat implements Compat {
-        @Nullable
-        private String getFallback(@NonNull final String locale) {
-            // try fixed fallback first
-            final String fallback = FALLBACKS.get(locale);
-            if (fallback != null) {
-                return fallback;
-            }
-
-            // remove extensions as the fallback if any are defined.
-            final Matcher extensionMatcher = PATTERN_EXTENSIONS.matcher(locale);
-            if (extensionMatcher.find(0)) {
-                return extensionMatcher.replaceAll("");
-            }
-
-            // try splitting on "-"
-            int c = locale.lastIndexOf('-');
-            if (c >= 0) {
-                return locale.substring(0, c);
-            }
-
-            // default to no fallback
-            return null;
-        }
-
-        @Nullable
-        @Override
-        public Locale getFallback(@NonNull final Locale locale) {
-            final String fallback = getFallback(LocaleCompat.toLanguageTag(locale));
-            return fallback != null ? LocaleCompat.forLanguageTag(fallback) : null;
-        }
-
-        @NonNull
-        @Override
-        public Locale[] getFallbacks(@NonNull final Locale locale) {
-            // add initial locale
-            final LinkedHashSet<Locale> locales = new LinkedHashSet<>();
-            locales.add(locale);
-
-            // generate all fallback variants
-            for (String raw = getFallback(LocaleCompat.toLanguageTag(locale)); raw != null; raw = getFallback(raw)) {
-                locales.add(LocaleCompat.forLanguageTag(raw));
-            }
-
-            // return the locales as an array
-            return locales.toArray(new Locale[locales.size()]);
-        }
-    }
-
-    @RestrictTo({RestrictTo.Scope.LIBRARY})
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
-    static class LollipopCompat extends FroyoCompat {
+    static class LollipopCompat implements Compat {
         @Nullable
         @Override
         public Locale getFallback(@NonNull final Locale locale) {

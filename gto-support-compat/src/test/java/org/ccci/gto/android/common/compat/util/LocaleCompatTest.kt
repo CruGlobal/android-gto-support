@@ -1,15 +1,11 @@
 package org.ccci.gto.android.common.compat.util
 
-import android.os.Build
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import java.util.Locale
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.equalToIgnoringCase
-import org.hamcrest.Matchers.greaterThanOrEqualTo
-import org.hamcrest.Matchers.lessThan
 import org.junit.Assert.assertEquals
-import org.junit.Assume.assumeThat
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.annotation.Config
@@ -31,7 +27,7 @@ private val LOCALES = mapOf<String, Locale>(
 )
 
 @RunWith(AndroidJUnit4::class)
-@Config(sdk = [16, 17, 18, 19, 21, 24])
+@Config(sdk = [21, 24])
 internal class LocaleCompatTest {
     @Test
     fun testForLanguageTag() {
@@ -40,8 +36,6 @@ internal class LocaleCompatTest {
 
     @Test
     fun testForLanguageTagWithScript() {
-        assumeScriptSupported()
-
         with(LocaleCompat.forLanguageTag("zh-Hans-CN")) {
             assertThat(this, equalTo(Locale.Builder().setLanguage("zh").setScript("Hans").setRegion("CN").build()))
             assertEquals("zh", language)
@@ -51,34 +45,11 @@ internal class LocaleCompatTest {
     }
 
     @Test
-    fun testForLanguageTagWithScriptBeforeLollipop() {
-        assumeScriptNotSupported()
-
-        with(LocaleCompat.forLanguageTag("zh-Hans-CN")) {
-            assertThat(this, equalTo(Locale("zh", "CN")))
-            assertEquals("zh", language)
-            assertEquals("CN", country)
-        }
-    }
-
-    @Test
     fun testForLanguageTagWithExtension() {
-        assumeExtensionSupported()
-
         with(LocaleCompat.forLanguageTag("en-x-US")) {
             assertEquals("en", language)
             assertEquals("", country)
             assertThat(getExtension('x'), equalToIgnoringCase("US"))
-        }
-    }
-
-    @Test
-    fun testForLanguageTagWithExtensionBeforeLollipop() {
-        assumeExtensionNotSupported()
-
-        with(LocaleCompat.forLanguageTag("en-x-US")) {
-            assertEquals("en", language)
-            assertEquals("", country)
         }
     }
 
@@ -89,15 +60,6 @@ internal class LocaleCompatTest {
 
     @Test
     fun testToLanguageTagWithScript() {
-        assumeScriptSupported()
         assertEquals("zh-Hans-CN", LocaleCompat.toLanguageTag(Locale.forLanguageTag("zh-Hans-CN")))
     }
 }
-
-// script & extension support is only available starting with Lollipop
-private fun assumeLollipop() = assumeThat(Build.VERSION.SDK_INT, greaterThanOrEqualTo(Build.VERSION_CODES.LOLLIPOP))
-private fun assumePreLollipop() = assumeThat(Build.VERSION.SDK_INT, lessThan(Build.VERSION_CODES.LOLLIPOP))
-private fun assumeScriptSupported() = assumeLollipop()
-private fun assumeScriptNotSupported() = assumePreLollipop()
-private fun assumeExtensionSupported() = assumeLollipop()
-private fun assumeExtensionNotSupported() = assumePreLollipop()
