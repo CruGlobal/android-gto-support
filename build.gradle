@@ -34,7 +34,7 @@ buildscript {
             powermock           : '2.0.9',
             realm               : '10.5.0',
             realmAdapters       : '4.0.0',
-            retrofit2           : '2.6.4',
+            retrofit2           : '2.9.0',
             robolectric         : '4.5.1',
             scarlet             : '0.1.11',
             snowplow            : '1.7.1',
