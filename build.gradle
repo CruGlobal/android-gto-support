@@ -90,7 +90,7 @@ configure(subprojects.findAll { it.path.contains("gto-support") }) {
     apply plugin: 'kotlin-kapt'
 
     group 'org.ccci.gto.android'
-    version '3.8.2-SNAPSHOT'
+    version '3.9.0-SNAPSHOT'
 
     repositories {
         maven {
@@ -111,7 +111,7 @@ configure(subprojects.findAll { it.path.contains("gto-support") }) {
             compileSdkVersion 30
 
             defaultConfig {
-                minSdkVersion 19
+                minSdkVersion 21
                 targetSdkVersion 30
 
                 consumerProguardFiles "$rootProject.projectDir/proguard-consumer-jetbrains.pro"
