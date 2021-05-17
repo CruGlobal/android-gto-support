@@ -78,11 +78,11 @@ class OktaUserProfileProvider @VisibleForTesting internal constructor(
 
             // suspend until we need to reload the profile
             select<Unit> {
-                channel.onReceiveOrNull {}
+                channel.onReceiveCatching {}
 
                 // enable other monitors when there are active flows
                 if (hasActiveFlows) {
-                    oktaUserIdChannel.onReceiveOrNull {}
+                    oktaUserIdChannel.onReceiveCatching {}
 
                     if (userId != null && refreshIfStale) {
                         onTimeout((userInfo?.nextRefreshDelay ?: 0).coerceAtLeast(MIN_IN_MS)) {}
