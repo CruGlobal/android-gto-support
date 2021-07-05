@@ -35,7 +35,7 @@ buildscript {
             realm               : '10.6.1',
             realmAdapters       : '4.0.0',
             retrofit2           : '2.9.0',
-            robolectric         : '4.6',
+            robolectric         : '4.6.1',
             scarlet             : '0.1.12',
             snowplow            : '2.1.1',
             thekey              : '4.0.0',
