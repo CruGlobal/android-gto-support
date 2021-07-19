@@ -30,7 +30,7 @@ buildscript {
             okio                : '2.10.0',
             okta                : '1.0.18',
             picasso             : '2.8',
-            playCore            : '1.8.3',
+            playCore            : '1.10.0',
             powermock           : '2.0.9',
             realm               : '10.6.1',
             realmAdapters       : '4.0.0',
