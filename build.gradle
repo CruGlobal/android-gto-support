@@ -29,7 +29,7 @@ buildscript {
             okhttp3             : '4.9.1',
             okio                : '2.10.0',
             okta                : '1.0.18',
-            picasso             : '2.8',
+            picasso             : '2.71828',
             playCore            : '1.10.0',
             powermock           : '2.0.9',
             realm               : '10.6.1',
