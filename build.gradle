@@ -28,7 +28,7 @@ buildscript {
             moshi               : '1.12.0',
             okhttp3             : '4.9.1',
             okio                : '2.10.0',
-            okta                : '1.0.16',
+            okta                : '1.0.18',
             picasso             : '2.8',
             playCore            : '1.8.3',
             powermock           : '2.0.9',
