@@ -4,5 +4,5 @@ dependencies {
     implementation "androidx.concurrent:concurrent-futures:${deps.androidX.concurrent}"
 
     //noinspection GradleDependency
-    api "com.google.guava:listenablefuture:1.0"
+    api "com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava"
 }
