@@ -8,7 +8,7 @@ dependencies {
     implementation project(':gto-support-base')
     implementation project(':gto-support-util')
 
-    api "com.okta.android:oidc-androidx:${deps.okta}"
+    api "com.okta.android:okta-oidc-android:${deps.okta}"
 
     // region Coroutines
     compileOnly "org.jetbrains.kotlinx:kotlinx-coroutines-core:${deps.kotlinCoroutines}"
