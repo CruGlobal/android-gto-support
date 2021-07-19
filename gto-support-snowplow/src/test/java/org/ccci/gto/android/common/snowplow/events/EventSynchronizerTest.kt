@@ -61,7 +61,7 @@ class EventSynchronizerTest {
                         assertTrue("Mutual Exclusion not maintained!", mutex.tryLock(this))
                         mutex.unlock(this)
                         count++
-                        delay(Random.nextLong(5))
+                        delay(Random.nextLong(1, 5))
                         EventSynchronizer.unlockFor(event)
                         assertTrue(
                             "There are too many permits in the semaphore",
