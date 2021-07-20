@@ -4,7 +4,7 @@ buildscript {
     // define dependency versions for this project
     ext.deps = [
             advrecyclerview     : '1.0.0',
-            dagger              : '2.37',
+            dagger              : '2.38',
             eventbus            : '3.2.0',
             facebookFlipper     : '0.98.0',
             gradleAndroidPlugin : '4.2.2',
