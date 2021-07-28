@@ -174,6 +174,7 @@ configure(subprojects.findAll { it.path.contains("gto-support") }) {
                 force "androidx.lifecycle:lifecycle-viewmodel-savedstate:${deps.androidX.lifecycle}"
                 force "com.squareup.okio:okio:${deps.okio}"
                 force "junit:junit:${deps.junit}"
+                force "org.jetbrains.kotlinx:kotlinx-coroutines-core:${deps.kotlinCoroutines}"
                 force "org.jetbrains:annotations:${deps.jetbrainsAnnotations}"
 
                 dependencySubstitution {
