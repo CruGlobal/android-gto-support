@@ -265,6 +265,13 @@ junitJacoco {
     jacocoVersion = deps.jacoco
     includeNoLocationClasses = true
 }
+allprojects {
+    afterEvaluate {
+        tasks.withType(Test) {
+            jacoco.excludes = ['jdk.internal.*']
+        }
+    }
+}
 task jacocoTestReport {
     subprojects.each { dependsOn(it.tasks.withType(JacocoReport)) }
 }
