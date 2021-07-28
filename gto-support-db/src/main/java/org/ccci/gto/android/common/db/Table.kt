@@ -3,8 +3,8 @@ package org.ccci.gto.android.common.db
 import android.annotation.SuppressLint
 import android.os.Parcelable
 import androidx.annotation.RestrictTo
-import kotlinx.android.parcel.IgnoredOnParcel
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.IgnoredOnParcel
+import kotlinx.parcelize.Parcelize
 
 @Parcelize
 @SuppressLint("SupportAnnotationUsage")
