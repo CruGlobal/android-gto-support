@@ -18,5 +18,6 @@ dependencies {
     implementation "androidx.appcompat:appcompat:${deps.androidX.appCompat}"
 
     compileOnly "androidx.databinding:databinding-adapters:${deps.androidX.databinding}"
+    compileOnly "androidx.databinding:databinding-runtime:${deps.androidX.databinding}"
     compileOnly "com.squareup.okio:okio:${deps.okio}"
 }
