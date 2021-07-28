@@ -126,9 +126,6 @@ configure(subprojects.findAll { it.path.contains("gto-support") }) {
                 sourceCompatibility JavaVersion.VERSION_1_8
                 targetCompatibility JavaVersion.VERSION_1_8
             }
-            dexOptions {
-                preDexLibraries !project.hasProperty('disablePreDex')
-            }
             kotlinOptions {
                 jvmTarget = JavaVersion.VERSION_1_8.toString()
                 freeCompilerArgs += '-Xjvm-default=all'
