@@ -6,6 +6,10 @@ import android.content.Intent;
 import androidx.annotation.NonNull;
 import androidx.loader.content.Loader;
 
+/**
+ * @deprecated Since v3.9.0, use LiveData & coroutines to asynchronously load data for a UI.
+ */
+@Deprecated
 public class LoaderBroadcastReceiver extends BroadcastReceiver {
     @NonNull
     private final Loader mLoader;

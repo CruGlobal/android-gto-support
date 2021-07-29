@@ -1,19 +1,23 @@
 package org.ccci.gto.android.common.db.support.v4.content;
 
+import static org.ccci.gto.android.common.db.AbstractDao.ARG_WHERE;
+
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.IntentFilter;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import org.ccci.gto.android.common.db.AbstractDao;
 import org.ccci.gto.android.common.db.Table;
 import org.ccci.gto.android.common.support.v4.content.BroadcastReceiverLoaderHelper;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
-import static org.ccci.gto.android.common.db.AbstractDao.ARG_WHERE;
-
+/**
+ * @deprecated Since v3.9.0, use LiveData & coroutines to asynchronously load data for a UI.
+ */
+@Deprecated
 public class DaoCursorBroadcastReceiverLoader<T> extends DaoCursorLoader<T>
         implements BroadcastReceiverLoaderHelper.Interface {
     @NonNull

@@ -6,6 +6,10 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.loader.content.AsyncTaskLoader;
 
+/**
+ * @deprecated Since v3.9.0, use LiveData & coroutines to asynchronously load data for a UI.
+ */
+@Deprecated
 public abstract class CachingAsyncTaskLoader<D> extends AsyncTaskLoader<D> {
     @Nullable
     private D mData;

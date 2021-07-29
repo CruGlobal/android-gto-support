@@ -8,6 +8,10 @@ import androidx.loader.content.Loader;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * @deprecated Since v3.9.0, use LiveData & coroutines to asynchronously load data for a UI.
+ */
+@Deprecated
 public final class SharedPreferencesChangeLoaderHelper {
     public interface Interface {
         void addPreferenceKey(@Nullable String key);

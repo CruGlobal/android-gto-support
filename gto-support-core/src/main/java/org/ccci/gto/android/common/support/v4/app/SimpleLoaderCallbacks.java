@@ -6,6 +6,10 @@ import androidx.annotation.Nullable;
 import androidx.loader.app.LoaderManager;
 import androidx.loader.content.Loader;
 
+/**
+ * @deprecated Since v3.9.0, use LiveData & coroutines to asynchronously load data for a UI.
+ */
+@Deprecated
 public abstract class SimpleLoaderCallbacks<D> implements LoaderManager.LoaderCallbacks<D> {
     @Override
     public void onLoaderReset(@NonNull final Loader<D> loader) {
