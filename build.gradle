@@ -115,8 +115,6 @@ configure(subprojects.findAll { it.path.contains("gto-support") }) {
                 targetSdkVersion 30
 
                 consumerProguardFiles "$rootProject.projectDir/proguard-consumer-jetbrains.pro"
-
-                testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
             }
 
             compileOptions {
