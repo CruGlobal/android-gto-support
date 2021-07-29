@@ -1,7 +1,6 @@
 package org.ccci.gto.android.common.util
 
 import java.util.Locale
-import org.ccci.gto.android.common.compat.util.LocaleCompat
 
 fun Locale.getOptionalDisplayName(inLocale: Locale? = null) = when {
     inLocale != null && getDisplayLanguage(inLocale) == language -> null
@@ -11,4 +10,4 @@ fun Locale.getOptionalDisplayName(inLocale: Locale? = null) = when {
 }
 
 @JvmSynthetic
-fun String.toLocale() = LocaleCompat.forLanguageTag(this)
+fun String.toLocale() = Locale.forLanguageTag(this)
