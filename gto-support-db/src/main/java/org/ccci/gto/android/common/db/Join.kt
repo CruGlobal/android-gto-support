@@ -19,10 +19,6 @@ data class Join<S : Any, T : Any> private constructor(
         val NO_JOINS = emptyArray<Join<*, *>>()
 
         @JvmStatic
-        @Deprecated("Since v3.3.0, use source.join() instead", ReplaceWith("source.join(target)"))
-        fun <S : Any, T : Any> create(source: Table<S>, target: Table<T>) = source.join(target)
-
-        @JvmStatic
         fun <S : Any, T : Any> create(target: Table<T>) = Join<S, T>(target = target)
     }
 
