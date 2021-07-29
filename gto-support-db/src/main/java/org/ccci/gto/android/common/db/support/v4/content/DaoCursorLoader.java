@@ -1,8 +1,18 @@
 package org.ccci.gto.android.common.db.support.v4.content;
 
+import static org.ccci.gto.android.common.db.AbstractDao.ARG_DISTINCT;
+import static org.ccci.gto.android.common.db.AbstractDao.ARG_JOINS;
+import static org.ccci.gto.android.common.db.AbstractDao.ARG_ORDER_BY;
+import static org.ccci.gto.android.common.db.AbstractDao.ARG_PROJECTION;
+import static org.ccci.gto.android.common.db.AbstractDao.ARG_WHERE;
+
 import android.content.Context;
 import android.database.Cursor;
 import android.os.Bundle;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.WorkerThread;
 
 import org.ccci.gto.android.common.db.AbstractDao;
 import org.ccci.gto.android.common.db.Expression;
@@ -13,16 +23,10 @@ import org.ccci.gto.android.common.db.Table;
 import org.ccci.gto.android.common.support.v4.content.SimpleCursorLoader;
 import org.ccci.gto.android.common.util.os.BundleUtils;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.annotation.WorkerThread;
-
-import static org.ccci.gto.android.common.db.AbstractDao.ARG_DISTINCT;
-import static org.ccci.gto.android.common.db.AbstractDao.ARG_JOINS;
-import static org.ccci.gto.android.common.db.AbstractDao.ARG_ORDER_BY;
-import static org.ccci.gto.android.common.db.AbstractDao.ARG_PROJECTION;
-import static org.ccci.gto.android.common.db.AbstractDao.ARG_WHERE;
-
+/**
+ * @deprecated Since v3.9.0, use LiveData & coroutines to asynchronously load data for a UI.
+ */
+@Deprecated
 public class DaoCursorLoader<T> extends SimpleCursorLoader {
     @NonNull
     protected final AbstractDao mDao;

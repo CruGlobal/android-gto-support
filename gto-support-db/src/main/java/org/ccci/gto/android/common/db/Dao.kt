@@ -22,11 +22,9 @@ interface Dao {
     @WorkerThread
     fun <T : Any> get(query: Query<T>): List<T>
 
-    @JvmDefault
     @WorkerThread
     fun getCursor(clazz: Class<*>) = getCursor(Query.select(clazz))
 
-    @JvmDefault
     @WorkerThread
     fun getCursor(clazz: Class<*>, whereClause: String?, whereBindValues: Array<String>?, orderBy: String?) =
         getCursor(Query.select(clazz).where(whereClause, *whereBindValues.orEmpty()).orderBy(orderBy))
@@ -36,14 +34,12 @@ interface Dao {
     // endregion Read-Only
 
     // region Read-Write
-    @JvmDefault
     @WorkerThread
     fun <T : Any> insert(obj: T) = insert(obj, SQLiteDatabase.CONFLICT_NONE)
 
     @WorkerThread
     fun <T : Any> insert(obj: T, conflictAlgorithm: Int): Long
 
-    @JvmDefault
     @WorkerThread
     fun <T : Any> update(obj: T, where: Expression?, vararg projection: String): Int =
         update(obj, where, SQLiteDatabase.CONFLICT_NONE, *projection)
@@ -66,7 +62,6 @@ interface Dao {
     @WorkerThread
     fun <T : Any> update(obj: T, where: Expression?, conflictAlgorithm: Int, vararg projection: String): Int
 
-    @JvmDefault
     @WorkerThread
     fun updateOrInsert(obj: Any, vararg projection: String) =
         updateOrInsert(obj, SQLiteDatabase.CONFLICT_NONE, *projection)

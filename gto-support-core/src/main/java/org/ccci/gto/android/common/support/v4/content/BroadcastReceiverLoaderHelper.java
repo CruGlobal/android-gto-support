@@ -9,6 +9,10 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import java.util.ArrayList;
 
+/**
+ * @deprecated Since v3.9.0, use LiveData & coroutines to asynchronously load data for a UI.
+ */
+@Deprecated
 public final class BroadcastReceiverLoaderHelper {
     public interface Interface {
         void addIntentFilter(@NonNull IntentFilter filter);

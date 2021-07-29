@@ -7,6 +7,10 @@ import androidx.annotation.Nullable;
 import androidx.annotation.WorkerThread;
 import androidx.loader.content.CursorLoader;
 
+/**
+ * @deprecated Since v3.9.0, use LiveData & coroutines to asynchronously load data for a UI.
+ */
+@Deprecated
 public abstract class SimpleCursorLoader extends CursorLoader {
     public SimpleCursorLoader(@NonNull final Context context) {
         super(context);

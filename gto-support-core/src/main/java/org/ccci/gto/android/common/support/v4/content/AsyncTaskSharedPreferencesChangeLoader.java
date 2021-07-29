@@ -5,6 +5,10 @@ import android.content.SharedPreferences;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+/**
+ * @deprecated Since v3.9.0, use LiveData & coroutines to asynchronously load data for a UI.
+ */
+@Deprecated
 public abstract class AsyncTaskSharedPreferencesChangeLoader<D> extends CachingAsyncTaskLoader<D>
         implements SharedPreferencesChangeLoaderHelper.Interface {
     private final SharedPreferencesChangeLoaderHelper mHelper;

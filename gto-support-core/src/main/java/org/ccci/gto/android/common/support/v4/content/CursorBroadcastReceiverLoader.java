@@ -6,6 +6,10 @@ import android.content.IntentFilter;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+/**
+ * @deprecated Since v3.9.0, use LiveData & coroutines to asynchronously load data for a UI.
+ */
+@Deprecated
 public abstract class CursorBroadcastReceiverLoader extends SimpleCursorLoader
         implements BroadcastReceiverLoaderHelper.Interface {
     @NonNull

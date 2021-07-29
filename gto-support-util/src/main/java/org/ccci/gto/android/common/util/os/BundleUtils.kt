@@ -5,7 +5,6 @@ package org.ccci.gto.android.common.util.os
 import android.os.Bundle
 import android.os.Parcelable
 import java.util.Locale
-import org.ccci.gto.android.common.compat.util.LocaleCompat
 import org.jetbrains.annotations.Contract
 
 // region Enums
@@ -29,14 +28,12 @@ inline fun <reified T : Enum<T>> Bundle.getEnum(key: String?, defValue: T? = nul
 // endregion Enums
 
 // region Locales
-
-fun Bundle.putLocale(key: String?, locale: Locale?) =
-    putString(key, if (locale != null) LocaleCompat.toLanguageTag(locale) else null)
+fun Bundle.putLocale(key: String?, locale: Locale?) = putString(key, locale?.toLanguageTag())
 
 @JvmOverloads
 @Contract("_, _, !null -> !null")
 fun Bundle.getLocale(key: String?, defValue: Locale? = null) =
-    getString(key)?.let { LocaleCompat.forLanguageTag(it) } ?: defValue
+    getString(key)?.let { Locale.forLanguageTag(it) } ?: defValue
 
 /**
  * Store an array of Locales in the provided Bundle
@@ -48,7 +45,7 @@ fun Bundle.getLocale(key: String?, defValue: Locale? = null) =
  */
 @JvmOverloads
 fun Bundle.putLocaleArray(key: String?, locales: Array<Locale?>?, singleString: Boolean = false) {
-    val tags = locales?.map { it?.let { LocaleCompat.toLanguageTag(it) } }?.toTypedArray()
+    val tags = locales?.map { it?.toLanguageTag() }?.toTypedArray()
 
     if (singleString) {
         putString(key, tags?.joinToString(","))
@@ -59,8 +56,7 @@ fun Bundle.putLocaleArray(key: String?, locales: Array<Locale?>?, singleString: 
 
 fun Bundle.getLocaleArray(key: String?) =
     (getStringArray(key) ?: getString(key)?.split(",")?.toTypedArray())
-        ?.map { it?.let { LocaleCompat.forLanguageTag(it) } }?.toTypedArray()
-
+        ?.map { it?.let { Locale.forLanguageTag(it) } }?.toTypedArray()
 // endregion Locales
 
 // region Parcelables

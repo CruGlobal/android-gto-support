@@ -2,13 +2,17 @@ package org.ccci.gto.android.common.eventbus.content;
 
 import android.content.Context;
 
-import org.ccci.gto.android.common.support.v4.content.SimpleCursorLoader;
-import org.greenrobot.eventbus.EventBus;
-
 import androidx.annotation.MainThread;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import org.ccci.gto.android.common.support.v4.content.SimpleCursorLoader;
+import org.greenrobot.eventbus.EventBus;
+
+/**
+ * @deprecated Since v3.9.0, use LiveData & coroutines to asynchronously load data for a UI.
+ */
+@Deprecated
 public abstract class CursorEventBusLoader extends SimpleCursorLoader implements EventBusLoaderHelper.Interface {
     @NonNull
     private final EventBusLoaderHelper mHelper;

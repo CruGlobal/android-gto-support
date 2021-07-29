@@ -11,6 +11,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * @deprecated Since v3.9.0, use LiveData & coroutines to asynchronously load data for a UI.
+ */
+@Deprecated
 public class SwipeRefreshLayoutBroadcastReceiverHelper {
     SwipeRefreshLayout mRefreshLayout = null;
 

@@ -10,7 +10,6 @@ import org.ccci.gto.android.common.util.os.toTypedArray
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.arrayContaining
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertSame
 import org.junit.Assume.assumeTrue
 import org.junit.Before
 import org.junit.Test
@@ -30,15 +29,7 @@ class ContextTest {
     }
 
     @Test
-    fun verifyLocalizeSdk16() {
-        assumeTrue(Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR1)
-
-        assertSame(context, context.localize(Locale.FRENCH))
-    }
-
-    @Test
-    fun verifyLocalizeSdk17() {
-        assumeTrue(Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1)
+    fun verifyLocalizeSdk21() {
         assumeTrue(Build.VERSION.SDK_INT < Build.VERSION_CODES.N)
 
         context.resources.configuration.setLocale(Locale.ENGLISH)

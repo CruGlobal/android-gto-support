@@ -2,8 +2,6 @@ package org.ccci.gto.android.common.api.retrofit2.converter;
 
 import androidx.annotation.Nullable;
 
-import org.ccci.gto.android.common.compat.util.LocaleCompat;
-
 import java.io.IOException;
 import java.util.Locale;
 
@@ -15,7 +13,7 @@ class LocaleConverters {
 
         @Override
         public String convert(@Nullable final Locale locale) throws IOException {
-            return locale != null ? LocaleCompat.toLanguageTag(locale) : null;
+            return locale != null ? locale.toLanguageTag() : null;
         }
     }
 }
