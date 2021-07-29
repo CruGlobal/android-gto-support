@@ -125,10 +125,6 @@ configure(subprojects.findAll { it.path.contains("gto-support") }) {
                 jvmTarget = JavaVersion.VERSION_1_8.toString()
                 freeCompilerArgs += '-Xjvm-default=all'
             }
-            lintOptions {
-                // HACK: disable Timber lint checks until https://github.com/JakeWharton/timber/issues/408 is fixed
-                disable 'LogNotTimber','StringFormatInTimber','ThrowableNotAtBeginning','BinaryOperationInTimber','TimberArgCount','TimberArgTypes','TimberTagLength','TimberExceptionLogging'
-            }
             testOptions {
                 unitTests {
                     includeAndroidResources = true
