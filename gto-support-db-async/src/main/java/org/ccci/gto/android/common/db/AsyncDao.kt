@@ -1,5 +1,6 @@
 package org.ccci.gto.android.common.db
 
+import android.annotation.SuppressLint
 import android.database.sqlite.SQLiteDatabase
 import androidx.concurrent.futures.CallbackToFutureAdapter
 import com.google.common.util.concurrent.ListenableFuture
@@ -25,6 +26,7 @@ interface AsyncDao : Dao {
 
     companion object {
         @JvmSynthetic
+        @SuppressLint("RestrictedApi")
         inline fun <T> AsyncDao.runAsync(crossinline block: () -> T): ListenableFuture<T> =
             CallbackToFutureAdapter.getFuture<T> {
                 backgroundExecutor.execute {

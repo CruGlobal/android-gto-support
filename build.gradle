@@ -7,7 +7,7 @@ buildscript {
             dagger              : '2.38.1',
             eventbus            : '3.2.0',
             facebookFlipper     : '0.100.0',
-            gradleAndroidPlugin : '4.2.2',
+            gradleAndroidPlugin : '7.0.0',
             gson                : '2.8.6',
             guava               : '30.1.1-android',
             hamcrest            : '2.2',
@@ -126,12 +126,13 @@ configure(subprojects.findAll { it.path.contains("gto-support") }) {
                 sourceCompatibility JavaVersion.VERSION_1_8
                 targetCompatibility JavaVersion.VERSION_1_8
             }
-            dexOptions {
-                preDexLibraries !project.hasProperty('disablePreDex')
-            }
             kotlinOptions {
                 jvmTarget = JavaVersion.VERSION_1_8.toString()
                 freeCompilerArgs += '-Xjvm-default=all'
+            }
+            lintOptions {
+                // HACK: disable Timber lint checks until https://github.com/JakeWharton/timber/issues/408 is fixed
+                disable 'LogNotTimber','StringFormatInTimber','ThrowableNotAtBeginning','BinaryOperationInTimber','TimberArgCount','TimberArgTypes','TimberTagLength','TimberExceptionLogging'
             }
             testOptions {
                 unitTests {
@@ -140,10 +141,6 @@ configure(subprojects.findAll { it.path.contains("gto-support") }) {
                     all {
                         // increase unit tests max heap size
                         jvmArgs "-Xmx2g"
-
-                        // enable only SDKs we actually support in robolectric
-                        // TODO: SDK >= 29 requires Java 9 which we don't currently support
-                        systemProperty 'robolectric.enabledSdks', (android.defaultConfig.minSdkVersion.apiLevel..28).join(" ")
                     }
                 }
             }
@@ -177,6 +174,7 @@ configure(subprojects.findAll { it.path.contains("gto-support") }) {
                 force "androidx.lifecycle:lifecycle-viewmodel-savedstate:${deps.androidX.lifecycle}"
                 force "com.squareup.okio:okio:${deps.okio}"
                 force "junit:junit:${deps.junit}"
+                force "org.jetbrains.kotlinx:kotlinx-coroutines-core:${deps.kotlinCoroutines}"
                 force "org.jetbrains:annotations:${deps.jetbrainsAnnotations}"
 
                 dependencySubstitution {
@@ -266,6 +264,13 @@ configure(subprojects.findAll { it.path.contains("gto-support") }) {
 junitJacoco {
     jacocoVersion = deps.jacoco
     includeNoLocationClasses = true
+}
+allprojects {
+    afterEvaluate {
+        tasks.withType(Test) {
+            jacoco.excludes = ['jdk.internal.*']
+        }
+    }
 }
 task jacocoTestReport {
     subprojects.each { dependsOn(it.tasks.withType(JacocoReport)) }

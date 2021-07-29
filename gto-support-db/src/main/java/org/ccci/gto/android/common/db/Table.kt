@@ -1,11 +1,13 @@
 package org.ccci.gto.android.common.db
 
+import android.annotation.SuppressLint
 import android.os.Parcelable
 import androidx.annotation.RestrictTo
 import kotlinx.android.parcel.IgnoredOnParcel
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
+@SuppressLint("SupportAnnotationUsage")
 data class Table<T : Any> internal constructor(
     @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP) val type: Class<T>,
     private val alias: String? = null

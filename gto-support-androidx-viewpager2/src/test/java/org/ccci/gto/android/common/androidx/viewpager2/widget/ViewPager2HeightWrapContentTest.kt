@@ -18,9 +18,10 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.annotation.Config
+import org.robolectric.annotation.Config.TARGET_SDK
 
 @RunWith(AndroidJUnit4::class)
-@Config(sdk = [19, 21, 28])
+@Config(sdk = [21, TARGET_SDK])
 class ViewPager2HeightWrapContentTest {
     private lateinit var framelayout: FrameLayout
     private lateinit var viewpager: ViewPager2

@@ -27,11 +27,9 @@ import org.junit.runner.RunWith
 import org.mockito.internal.stubbing.answers.ClonesArguments
 import org.mockito.verification.VerificationMode
 import org.robolectric.Shadows.shadowOf
-import org.robolectric.annotation.Config
 import org.robolectric.shadows.ShadowLooper
 
 @RunWith(AndroidJUnit4::class)
-@Config(sdk = [19, 28])
 class PrimaryItemChangeObserverTest {
     @get:Rule
     val activityScenario = ActivityScenarioRule(Activity::class.java)
