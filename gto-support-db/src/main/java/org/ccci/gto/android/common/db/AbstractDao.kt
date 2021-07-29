@@ -11,7 +11,6 @@ import androidx.collection.SimpleArrayMap
 import java.util.Date
 import java.util.Locale
 import java.util.concurrent.Executor
-import org.ccci.gto.android.common.compat.util.LocaleCompat
 import org.ccci.gto.android.common.db.CommonTables.LastSyncTable
 import org.ccci.gto.android.common.util.ArrayUtils
 import org.ccci.gto.android.common.util.database.getLong
@@ -33,7 +32,7 @@ abstract class AbstractDao(private val helper: SQLiteOpenHelper) : Dao {
                 is String -> it
                 is Boolean -> if (it) "1" else "0"
                 is Date -> it.time.toString()
-                is Locale -> LocaleCompat.toLanguageTag(it)
+                is Locale -> it.toLanguageTag()
                 else -> it.toString()
             }
         }.toTypedArray()

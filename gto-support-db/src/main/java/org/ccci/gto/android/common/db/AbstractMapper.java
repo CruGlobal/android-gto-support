@@ -6,7 +6,6 @@ import android.database.Cursor;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import org.ccci.gto.android.common.compat.util.LocaleCompat;
 import org.ccci.gto.android.common.db.util.CursorUtils;
 import org.ccci.gto.android.common.util.database.CursorKt;
 import org.json.JSONArray;
@@ -95,7 +94,7 @@ public abstract class AbstractMapper<T> implements Mapper<T> {
 
     @Nullable
     protected final String serialize(@Nullable final Locale locale) {
-        return locale != null ? LocaleCompat.toLanguageTag(locale) : null;
+        return locale != null ? locale.toLanguageTag() : null;
     }
 
     /**
