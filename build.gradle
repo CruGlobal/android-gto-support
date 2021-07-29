@@ -119,9 +119,6 @@ configure(subprojects.findAll { it.path.contains("gto-support") }) {
                 testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
             }
 
-            adbOptions {
-               timeOutInMs 600000
-            }
             compileOptions {
                 sourceCompatibility JavaVersion.VERSION_1_8
                 targetCompatibility JavaVersion.VERSION_1_8
