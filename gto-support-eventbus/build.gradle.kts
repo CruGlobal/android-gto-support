@@ -8,7 +8,6 @@ configureAndroidLibrary()
 dependencies {
     implementation(project(":gto-support-androidx-lifecycle"))
     implementation(project(":gto-support-core"))
-    compileOnly(project(":gto-support-db"))
 
     api(libs.eventbus)
 
