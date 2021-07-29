@@ -17,9 +17,10 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.Robolectric
 import org.robolectric.annotation.Config
+import org.robolectric.annotation.Config.TARGET_SDK
 
 @RunWith(AndroidJUnit4::class)
-@Config(sdk = [16, 17, 23, 24, 28])
+@Config(sdk = [21, 23, 24, TARGET_SDK])
 class ContextTest {
     private lateinit var context: Context
 
