@@ -39,7 +39,7 @@ buildscript {
             scarlet             : '0.1.12',
             snowplow            : '2.2.0',
             thekey              : '4.0.0',
-            timber              : '4.7.1',
+            timber              : '5.0.0',
             weakDelegate        : '1.0.1'
     ]
     ext.deps.androidX = [
