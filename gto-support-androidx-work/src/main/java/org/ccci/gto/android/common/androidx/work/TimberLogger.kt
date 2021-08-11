@@ -37,3 +37,5 @@ class TimberLogger(private val loggingLevel: Int) : Logger(loggingLevel) {
 
     fun install() = setLogger(this)
 }
+
+private inline fun Timber.Forest.tag(tag: String?) = apply { if (tag != null) tag(tag) }
