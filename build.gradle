@@ -12,7 +12,7 @@ buildscript {
             guava               : '30.1.1-android',
             hamcrest            : '2.2',
             jacoco              : '0.8.7',
-            jetbrainsAnnotations: '21.0.1',
+            jetbrainsAnnotations: '22.0.0',
             json                : '20210307',
             jsonUnit            : '2.27.0',
             junit               : '4.13.2',
