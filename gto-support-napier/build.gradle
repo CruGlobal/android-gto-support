@@ -1,0 +1,5 @@
+dependencies {
+    api "io.github.aakira:napier:${deps.napier}"
+
+    compileOnly "com.jakewharton.timber:timber:${deps.timber}"
+}
