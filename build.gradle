@@ -82,7 +82,7 @@ buildscript {
 }
 plugins {
     id "com.vanniktech.android.junit.jacoco" version "0.16.0"
-    id 'org.jlleitschuh.gradle.ktlint' version '10.1.0' apply false
+    id 'org.jlleitschuh.gradle.ktlint' version '10.2.0' apply false
 }
 
 configure(subprojects.findAll { it.path.contains("gto-support") }) {
