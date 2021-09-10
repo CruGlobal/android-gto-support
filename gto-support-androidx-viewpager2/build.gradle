@@ -10,6 +10,6 @@ android {
 dependencies {
     api "androidx.viewpager2:viewpager2:${deps.androidX.viewPager2}"
 
-    compileOnly "androidx.databinding:databinding-adapters:${deps.androidX.databinding}"
-    compileOnly "androidx.databinding:databinding-runtime:${deps.androidX.databinding}"
+    compileOnly libs.androidx.databinding.adapters
+    compileOnly libs.androidx.databinding.runtime
 }

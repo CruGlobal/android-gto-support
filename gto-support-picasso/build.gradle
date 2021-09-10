@@ -19,14 +19,14 @@ dependencies {
 
     api "com.squareup.picasso:picasso:${deps.picasso}"
 
-    compileOnly "androidx.appcompat:appcompat:${deps.androidX.appCompat}"
+    compileOnly libs.androidx.appcompat
     compileOnly "androidx.core:core-ktx:${deps.androidX.core}"
 
     compileOnly "com.google.android.material:material:${deps.materialDesign}"
     implementation "com.jakewharton.timber:timber:${deps.timber}"
 
     // databinding adapter dependencies
-    compileOnly "androidx.databinding:databinding-runtime:${deps.androidX.databinding}"
+    compileOnly libs.androidx.databinding.runtime
 
     compileOnly "org.jetbrains.kotlinx:kotlinx-coroutines-core:${deps.kotlinCoroutines}"
 

@@ -9,7 +9,7 @@ dependencies {
     implementation 'com.github.Karumi:WeakDelegate:1.0.1'
 
     // Data Binding adapter dependencies
-    compileOnly "androidx.databinding:databinding-runtime:${deps.androidX.databinding}"
+    compileOnly libs.androidx.databinding.runtime
 
     // Lifecycle dependencies
     compileOnly "androidx.lifecycle:lifecycle-common:${deps.androidX.lifecycle}"
