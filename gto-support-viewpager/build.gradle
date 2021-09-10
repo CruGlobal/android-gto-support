@@ -9,7 +9,7 @@ dependencies {
     implementation project(':gto-support-util')
 
     api "androidx.viewpager:viewpager:${deps.androidX.viewPager}"
-    compileOnly "androidx.fragment:fragment:${deps.androidX.fragment}"
+    compileOnly libs.androidx.fragment
     compileOnly "androidx.swiperefreshlayout:swiperefreshlayout:${deps.androidX.swipeRefreshLayout}"
 
     implementation 'com.github.Karumi:WeakDelegate:1.0.1'
