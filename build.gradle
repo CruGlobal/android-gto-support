@@ -48,7 +48,6 @@ buildscript {
             collection           : '1.1.0',
             concurrent           : '1.1.0',
             core                 : '1.6.0',
-            databinding          : libs.versions.android.gradle.plugin.get(),
             drawerLayout         : '1.1.1',
             fragment             : '1.3.6',
             lifecycle            : '2.3.1',

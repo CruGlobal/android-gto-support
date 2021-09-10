@@ -8,5 +8,5 @@ dependencies {
 
     // Data Binding adapter dependencies
     compileOnly project(':gto-support-recyclerview')
-    compileOnly "androidx.databinding:databinding-runtime:${deps.androidX.databinding}"
+    compileOnly libs.androidx.databinding.runtime
 }
