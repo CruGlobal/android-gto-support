@@ -1,6 +1,7 @@
 [versions]
 android-gradle-plugin = "7.0.2"
 androidx-appcompat = "1.3.1"
+androidx-collection = "1.1.0"
 androidx-fragment = "1.3.6"
 androidx-work = "2.5.0"
 napier = "2.1.0"
@@ -10,6 +11,8 @@ timber = "5.0.1"
 [libraries]
 android-gradle = { module = "com.android.tools.build:gradle", version.ref = "android-gradle-plugin" }
 androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "androidx-appcompat" }
+androidx-collection = { module = "androidx.collection:collection", version.ref = "androidx-collection" }
+androidx-collection-ktx = { module = "androidx.collection:collection-ktx", version.ref = "androidx-collection" }
 androidx-databinding-adapters = { module = "androidx.databinding:databinding-adapters", version.ref = "android-gradle-plugin" }
 androidx-databinding-runtime = { module = "androidx.databinding:databinding-runtime", version.ref = "android-gradle-plugin" }
 androidx-fragment = { module = "androidx.fragment:fragment", version.ref = "androidx-fragment" }

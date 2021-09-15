@@ -1,7 +1,7 @@
 apply plugin: 'kotlin-parcelize'
 
 dependencies {
-    api "androidx.collection:collection:${deps.androidX.collection}"
+    api libs.androidx.collection
 
-    testImplementation "androidx.collection:collection-ktx:${deps.androidX.collection}"
+    testImplementation libs.androidx.collection.ktx
 }

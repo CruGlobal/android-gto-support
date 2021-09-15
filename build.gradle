@@ -40,7 +40,6 @@ buildscript {
     ext.deps.androidX = [
             annotation           : '1.2.0',
             arch                 : '2.1.0',
-            collection           : '1.1.0',
             concurrent           : '1.1.0',
             core                 : '1.6.0',
             drawerLayout         : '1.1.1',
@@ -150,7 +149,6 @@ configure(subprojects.findAll { it.path.contains("gto-support") }) {
             resolutionStrategy {
                 force "androidx.annotation:annotation:${deps.androidX.annotation}"
                 force "androidx.arch.core:core-common:${deps.androidX.arch}"
-                force "androidx.collection:collection:${deps.androidX.collection}"
                 force "androidx.core:core:${deps.androidX.core}"
                 force "androidx.lifecycle:lifecycle-runtime:${deps.androidX.lifecycle}"
                 force "androidx.lifecycle:lifecycle-viewmodel-savedstate:${deps.androidX.lifecycle}"
