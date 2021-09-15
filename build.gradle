@@ -41,7 +41,6 @@ buildscript {
             arch                 : '2.1.0',
             concurrent           : '1.1.0',
             core                 : '1.6.0',
-            drawerLayout         : '1.1.1',
             lifecycle            : '2.3.1',
             loader               : '1.1.0',
             localBroadcastManager: '1.0.0',
