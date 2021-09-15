@@ -28,7 +28,6 @@ buildscript {
             okio                : '2.10.0',
             picasso             : '2.8',
             playCore            : '1.10.0',
-            powermock           : '2.0.9',
             realm               : '10.8.0',
             realmAdapters       : '4.0.0',
             retrofit2           : '2.9.0',
