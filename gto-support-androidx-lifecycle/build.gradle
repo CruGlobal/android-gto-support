@@ -4,7 +4,7 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:${deps.androidX.lifecycle}"
     implementation "androidx.lifecycle:lifecycle-viewmodel:${deps.androidX.lifecycle}"
 
-    implementation "com.github.Karumi:WeakDelegate:${deps.weakDelegate}"
+    implementation libs.weakdelegate
 
     // Data Binding adapter dependencies
     compileOnly libs.androidx.databinding.runtime

@@ -33,7 +33,6 @@ buildscript {
             robolectric         : '4.6.1',
             scarlet             : '0.1.12',
             snowplow            : '2.2.1',
-            weakDelegate        : '1.0.1'
     ]
     ext.deps.androidX = [
             annotation           : '1.2.0',

@@ -6,7 +6,7 @@ android {
 
 dependencies {
     api "androidx.recyclerview:recyclerview:${deps.androidX.recyclerView}"
-    implementation 'com.github.Karumi:WeakDelegate:1.0.1'
+    implementation libs.weakdelegate
 
     // Data Binding adapter dependencies
     compileOnly libs.androidx.databinding.runtime

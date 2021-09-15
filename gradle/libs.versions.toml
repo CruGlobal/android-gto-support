@@ -26,3 +26,4 @@ lightweightStream = { module = "com.annimon:stream", version = "1.2.2" }
 napier = { module = "io.github.aakira:napier", version.ref = "napier" }
 okta = { module = "com.okta.android:okta-oidc-android", version.ref = "okta" }
 timber = { module = "com.jakewharton.timber:timber", version.ref = "timber" }
+weakdelegate = { module = "com.github.Karumi:WeakDelegate", version = "1.0.1" }

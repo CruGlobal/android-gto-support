@@ -12,8 +12,8 @@ dependencies {
     compileOnly libs.androidx.fragment
     compileOnly "androidx.swiperefreshlayout:swiperefreshlayout:${deps.androidX.swipeRefreshLayout}"
 
-    implementation 'com.github.Karumi:WeakDelegate:1.0.1'
     implementation libs.timber
+    implementation libs.weakdelegate
 
     // Data Binding adapter dependencies
     compileOnly libs.androidx.databinding.runtime
