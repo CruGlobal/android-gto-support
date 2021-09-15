@@ -38,7 +38,6 @@ buildscript {
             annotation           : '1.2.0',
             arch                 : '2.1.0',
             concurrent           : '1.1.0',
-            core                 : '1.6.0',
             lifecycle            : '2.3.1',
             loader               : '1.1.0',
             localBroadcastManager: '1.0.0',
@@ -142,7 +141,7 @@ configure(subprojects.findAll { it.path.contains("gto-support") }) {
             resolutionStrategy {
                 force "androidx.annotation:annotation:${deps.androidX.annotation}"
                 force "androidx.arch.core:core-common:${deps.androidX.arch}"
-                force "androidx.core:core:${deps.androidX.core}"
+                force "androidx.core:core:${libs.versions.androidx.core.get()}"
                 force "androidx.lifecycle:lifecycle-runtime:${deps.androidX.lifecycle}"
                 force "androidx.lifecycle:lifecycle-viewmodel-savedstate:${deps.androidX.lifecycle}"
                 force "com.squareup.okio:okio:${deps.okio}"
