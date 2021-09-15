@@ -10,5 +10,5 @@ dependencies {
 
     implementation libs.androidx.appcompat
 
-    implementation "com.jakewharton.timber:timber:${deps.timber}"
+    implementation libs.timber
 }

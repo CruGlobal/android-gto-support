@@ -7,7 +7,7 @@ android {
 dependencies {
     implementation project(':gto-support-compat')
 
-    implementation "com.jakewharton.timber:timber:${deps.timber}"
+    implementation libs.timber
 
     testImplementation "net.javacrumbs.json-unit:json-unit:${deps.jsonUnit}"
     testImplementation "org.json:json:${deps.json}"

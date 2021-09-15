@@ -23,7 +23,7 @@ dependencies {
     compileOnly "androidx.core:core-ktx:${deps.androidX.core}"
 
     compileOnly "com.google.android.material:material:${deps.materialDesign}"
-    implementation "com.jakewharton.timber:timber:${deps.timber}"
+    implementation libs.timber
 
     // databinding adapter dependencies
     compileOnly libs.androidx.databinding.runtime

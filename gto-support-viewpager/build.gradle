@@ -13,7 +13,7 @@ dependencies {
     compileOnly "androidx.swiperefreshlayout:swiperefreshlayout:${deps.androidX.swipeRefreshLayout}"
 
     implementation 'com.github.Karumi:WeakDelegate:1.0.1'
-    implementation "com.jakewharton.timber:timber:${deps.timber}"
+    implementation libs.timber
 
     // Data Binding adapter dependencies
     compileOnly libs.androidx.databinding.runtime

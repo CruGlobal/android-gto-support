@@ -1,5 +1,5 @@
 dependencies {
     implementation "com.google.firebase:firebase-crashlytics:${deps.firebase.crashlytics}"
 
-    compileOnly "com.jakewharton.timber:timber:${deps.timber}"
+    compileOnly libs.timber
 }

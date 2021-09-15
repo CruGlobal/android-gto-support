@@ -1,5 +1,5 @@
 dependencies {
     api "androidx.work:work-runtime:${deps.androidX.work}"
 
-    compileOnly "com.jakewharton.timber:timber:${deps.timber}"
+    compileOnly libs.timber
 }

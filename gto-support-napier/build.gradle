@@ -1,5 +1,5 @@
 dependencies {
     api libs.napier
 
-    compileOnly "com.jakewharton.timber:timber:${deps.timber}"
+    compileOnly libs.timber
 }
