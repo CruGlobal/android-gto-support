@@ -1,3 +1,0 @@
-dependencies {
-    api "com.jakewharton.timber:timber:${deps.timber}"
-}

@@ -15,6 +15,4 @@ dependencies {
     implementation "androidx.localbroadcastmanager:localbroadcastmanager:${deps.androidX.localBroadcastManager}"
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:${deps.androidX.swipeRefreshLayout}"
     compileOnly 'androidx.cursoradapter:cursoradapter:1.0.0'
-
-    androidTestImplementation "org.hamcrest:hamcrest:${deps.hamcrest}"
 }

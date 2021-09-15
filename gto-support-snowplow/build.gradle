@@ -1,8 +1,8 @@
 dependencies {
     api "com.snowplowanalytics:snowplow-android-tracker:${deps.snowplow}"
 
-    compileOnly "com.jakewharton.timber:timber:${deps.timber}"
+    compileOnly libs.timber
 
-    testImplementation "com.jakewharton.timber:timber:${deps.timber}"
+    testImplementation libs.timber
     testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:${deps.kotlinCoroutines}"
 }

@@ -4,7 +4,7 @@ dependencies {
     compileOnly project(':gto-support-db')
 
     api "org.greenrobot:eventbus:${deps.eventbus}"
-    compileOnly "com.jakewharton.timber:timber:${deps.timber}"
+    compileOnly libs.timber
 
     testImplementation "androidx.arch.core:core-testing:${deps.androidX.arch}"
     testImplementation "androidx.lifecycle:lifecycle-runtime-testing:${deps.androidX.lifecycle}"

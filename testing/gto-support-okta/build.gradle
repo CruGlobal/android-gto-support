@@ -1,3 +1,0 @@
-dependencies {
-    api "com.okta.android:okta-oidc-android:${deps.okta}"
-}

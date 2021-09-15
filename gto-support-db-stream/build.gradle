@@ -1,5 +1,0 @@
-dependencies {
-    api project(':gto-support-db')
-
-    api "com.annimon:stream:${deps.lightweightStream}"
-}

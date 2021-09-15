@@ -1,12 +1,32 @@
 [versions]
 android-gradle-plugin = "7.0.2"
 androidx-appcompat = "1.3.1"
+androidx-collection = "1.1.0"
+androidx-core = "1.6.0"
+androidx-drawerlayout = "1.1.1"
 androidx-fragment = "1.3.6"
+androidx-work = "2.5.0"
+firebase-crashlytics = "18.2.1"
+napier = "2.1.0"
+okta = "1.0.20"
+timber = "5.0.1"
 
 [libraries]
 android-gradle = { module = "com.android.tools.build:gradle", version.ref = "android-gradle-plugin" }
 androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "androidx-appcompat" }
+androidx-collection = { module = "androidx.collection:collection", version.ref = "androidx-collection" }
+androidx-collection-ktx = { module = "androidx.collection:collection-ktx", version.ref = "androidx-collection" }
+androidx-core = { module = "androidx.core:core", version.ref = "androidx-core" }
+androidx-core-ktx = { module = "androidx.core:core-ktx", version.ref = "androidx-core" }
 androidx-databinding-adapters = { module = "androidx.databinding:databinding-adapters", version.ref = "android-gradle-plugin" }
 androidx-databinding-runtime = { module = "androidx.databinding:databinding-runtime", version.ref = "android-gradle-plugin" }
+androidx-drawerlayout = { module = "androidx.drawerlayout:drawerlayout", version.ref = "androidx-drawerlayout" }
 androidx-fragment = { module = "androidx.fragment:fragment", version.ref = "androidx-fragment" }
 androidx-fragment-ktx = { module = "androidx.fragment:fragment-ktx", version.ref = "androidx-fragment" }
+androidx-work-runtime = { module = "androidx.work:work-runtime", version.ref = "androidx-work" }
+firebase-crashlytics = { module = "com.google.firebase:firebase-crashlytics", version.ref = "firebase-crashlytics" }
+lightweightStream = { module = "com.annimon:stream", version = "1.2.2" }
+napier = { module = "io.github.aakira:napier", version.ref = "napier" }
+okta = { module = "com.okta.android:okta-oidc-android", version.ref = "okta" }
+timber = { module = "com.jakewharton.timber:timber", version.ref = "timber" }
+weakdelegate = { module = "com.github.Karumi:WeakDelegate", version = "1.0.1" }

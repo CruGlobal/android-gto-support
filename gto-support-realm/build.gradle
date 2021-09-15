@@ -1,6 +1,6 @@
 dependencies {
     api "io.realm:realm-android-library:${deps.realm}"
-    implementation 'com.github.Karumi:WeakDelegate:1.0.1'
+    implementation libs.weakdelegate
 
     // RecyclerViewAdapter dependencies
     compileOnly "io.realm:android-adapters:${deps.realmAdapters}"
