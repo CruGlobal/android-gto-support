@@ -15,7 +15,7 @@ dependencies {
     compileOnly "androidx.lifecycle:lifecycle-viewmodel-savedstate:${deps.androidX.lifecycle}"
 
     // WorkManager Module dependencies
-    compileOnly "androidx.work:work-runtime:${deps.androidX.work}"
+    compileOnly libs.androidx.work.runtime
 
     kapt "com.google.dagger:dagger-compiler:${deps.dagger}"
 
