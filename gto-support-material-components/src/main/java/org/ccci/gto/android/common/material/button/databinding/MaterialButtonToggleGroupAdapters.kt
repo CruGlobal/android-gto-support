@@ -31,3 +31,4 @@ internal fun MaterialButtonToggleGroup.setCheckedButtonBindingListener(listener:
             ListenerUtil.trackListener(this, it, R.id.gto_support_MaterialButtonToggleGroup_checkedButtonAttr)
                 ?.let { old -> removeOnButtonCheckedListener(old) }
         }
+        ?.let { addOnButtonCheckedListener(it) }
