@@ -8,7 +8,7 @@ android {
 }
 
 dependencies {
-    api "androidx.viewpager2:viewpager2:${deps.androidX.viewPager2}"
+    api libs.androidx.viewpager2
 
     compileOnly libs.androidx.databinding.adapters
     compileOnly libs.androidx.databinding.runtime
