@@ -22,7 +22,7 @@ dependencies {
     compileOnly libs.androidx.appcompat
     compileOnly libs.androidx.core.ktx
 
-    compileOnly "com.google.android.material:material:${deps.materialDesign}"
+    compileOnly libs.materialComponents
     implementation libs.timber
 
     // databinding adapter dependencies
@@ -31,7 +31,7 @@ dependencies {
     compileOnly "org.jetbrains.kotlinx:kotlinx-coroutines-core:${deps.kotlinCoroutines}"
 
     testImplementation project(':testing:gto-support-picasso')
-    testImplementation "com.google.android.material:material:${deps.materialDesign}"
+    testImplementation libs.materialComponents
     testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:${deps.kotlinCoroutines}"
     testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:${deps.kotlinCoroutines}"
 }
