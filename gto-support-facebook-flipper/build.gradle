@@ -1,5 +1,5 @@
 dependencies {
-    compileOnly "androidx.sqlite:sqlite:${deps.androidX.sqlite}"
+    compileOnly libs.androidx.sqlite
 
     implementation "com.facebook.flipper:flipper:${deps.facebookFlipper}"
 }
