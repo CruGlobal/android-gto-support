@@ -26,7 +26,6 @@ buildscript {
             playCore            : '1.10.0',
             realm               : '10.8.0',
             realmAdapters       : '4.0.0',
-            retrofit2           : '2.9.0',
             robolectric         : '4.6.1',
             scarlet             : '0.1.12',
             snowplow            : '2.2.1',

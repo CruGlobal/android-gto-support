@@ -1,7 +1,7 @@
 dependencies {
     api project(':gto-support-jsonapi')
 
-    api "com.squareup.retrofit2:retrofit:${deps.retrofit2}"
+    api libs.retrofit
 
     testImplementation libs.okhttp3.mockwebserver
     testImplementation "net.javacrumbs.json-unit:json-unit:${deps.jsonUnit}"

@@ -1,5 +1,5 @@
 dependencies {
     implementation project(':gto-support-compat')
 
-    api "com.squareup.retrofit2:retrofit:${deps.retrofit2}"
+    api libs.retrofit
 }
