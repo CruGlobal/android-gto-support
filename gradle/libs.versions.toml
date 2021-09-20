@@ -9,6 +9,7 @@ androidx-room = "2.3.0"
 androidx-viewpager2 = "1.0.0"
 androidx-work = "2.6.0"
 firebase-crashlytics = "18.2.1"
+kotlinCoroutines = "1.5.2"
 materialComponents = "1.4.0"
 leakcanary = "2.7"
 moshi = "1.12.0"
@@ -34,6 +35,9 @@ androidx-room-common = { module = "androidx.room:room-common", version.ref = "an
 androidx-viewpager2 = { module = "androidx.viewpager2:viewpager2", version.ref = "androidx-viewpager2" }
 androidx-work-runtime = { module = "androidx.work:work-runtime", version.ref = "androidx-work" }
 firebase-crashlytics = { module = "com.google.firebase:firebase-crashlytics", version.ref = "firebase-crashlytics" }
+kotlin-coroutines = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinCoroutines" }
+kotlin-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlinCoroutines" }
+kotlin-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinCoroutines" }
 leakcanary = { module = "com.squareup.leakcanary:leakcanary-android", version.ref = "leakcanary" }
 lightweightStream = { module = "com.annimon:stream", version = "1.2.2" }
 materialComponents = { module = "com.google.android.material:material", version.ref = "materialComponents" }

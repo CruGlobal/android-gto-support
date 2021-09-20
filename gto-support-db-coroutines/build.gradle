@@ -1,7 +1,7 @@
 dependencies {
     api project(':gto-support-db')
 
-    api "org.jetbrains.kotlinx:kotlinx-coroutines-core:${deps.kotlinCoroutines}"
+    api libs.kotlin.coroutines
 
     // TODO: These dependencies are temporary for coroutines flow support.
     //       They should go away once we implement proper flow support

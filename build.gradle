@@ -16,7 +16,6 @@ buildscript {
             junit               : '4.13.2',
             junitParams         : '1.1.1',
             kotlin              : '1.5.30',
-            kotlinCoroutines    : '1.5.2',
             lottie              : '4.1.0',
             mockito             : '3.12.4',
             mockitoKotlin       : '2.2.0',
@@ -139,7 +138,7 @@ configure(subprojects.findAll { it.path.contains("gto-support") }) {
                 force "androidx.lifecycle:lifecycle-viewmodel-savedstate:${deps.androidX.lifecycle}"
                 force "com.squareup.okio:okio:${deps.okio}"
                 force "junit:junit:${deps.junit}"
-                force "org.jetbrains.kotlinx:kotlinx-coroutines-core:${deps.kotlinCoroutines}"
+                force "org.jetbrains.kotlinx:kotlinx-coroutines-core:${libs.versions.kotlinCoroutines.get()}"
                 force "org.jetbrains:annotations:${deps.jetbrainsAnnotations}"
 
                 dependencySubstitution {
