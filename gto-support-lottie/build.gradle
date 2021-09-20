@@ -18,5 +18,5 @@ dependencies {
     implementation libs.androidx.appcompat
 
     compileOnly libs.androidx.databinding.runtime
-    compileOnly "com.squareup.okio:okio:${deps.okio}"
+    compileOnly libs.okio
 }

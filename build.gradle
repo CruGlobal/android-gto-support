@@ -18,7 +18,6 @@ buildscript {
             lottie              : '4.1.0',
             mockito             : '3.12.4',
             mockitoKotlin       : '2.2.0',
-            okio                : '2.10.0',
             picasso             : '2.8',
             playCore            : '1.10.0',
             realm               : '10.8.0',
@@ -134,7 +133,7 @@ configure(subprojects.findAll { it.path.contains("gto-support") }) {
                 force "androidx.core:core:${libs.versions.androidx.core.get()}"
                 force "androidx.lifecycle:lifecycle-runtime:${deps.androidX.lifecycle}"
                 force "androidx.lifecycle:lifecycle-viewmodel-savedstate:${deps.androidX.lifecycle}"
-                force "com.squareup.okio:okio:${deps.okio}"
+                force "com.squareup.okio:okio:${libs.versions.okio.get()}"
                 force "junit:junit:${deps.junit}"
                 force "org.jetbrains.kotlinx:kotlinx-coroutines-core:${libs.versions.kotlinCoroutines.get()}"
                 force "org.jetbrains:annotations:${deps.jetbrainsAnnotations}"
