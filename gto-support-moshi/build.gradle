@@ -1,5 +1,5 @@
 dependencies {
     implementation project(':gto-support-compat')
 
-    api "com.squareup.moshi:moshi:${deps.moshi}"
+    api libs.moshi
 }
