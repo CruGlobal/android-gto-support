@@ -1,5 +1,5 @@
 dependencies {
-    implementation "com.squareup.leakcanary:leakcanary-android:${deps.leakcanary2}"
+    implementation libs.leakcanary
 
     compileOnly libs.firebase.crashlytics
     compileOnly libs.timber

@@ -17,7 +17,6 @@ buildscript {
             junitParams         : '1.1.1',
             kotlin              : '1.5.30',
             kotlinCoroutines    : '1.5.2',
-            leakcanary2         : '2.7',
             lottie              : '4.1.0',
             mockito             : '3.12.4',
             mockitoKotlin       : '2.2.0',

@@ -10,6 +10,7 @@ androidx-viewpager2 = "1.0.0"
 androidx-work = "2.6.0"
 firebase-crashlytics = "18.2.1"
 materialComponents = "1.4.0"
+leakcanary = "2.7"
 moshi = "1.12.0"
 napier = "2.1.0"
 okhttp3 = "4.9.1"
@@ -33,6 +34,7 @@ androidx-room-common = { module = "androidx.room:room-common", version.ref = "an
 androidx-viewpager2 = { module = "androidx.viewpager2:viewpager2", version.ref = "androidx-viewpager2" }
 androidx-work-runtime = { module = "androidx.work:work-runtime", version.ref = "androidx-work" }
 firebase-crashlytics = { module = "com.google.firebase:firebase-crashlytics", version.ref = "firebase-crashlytics" }
+leakcanary = { module = "com.squareup.leakcanary:leakcanary-android", version.ref = "leakcanary" }
 lightweightStream = { module = "com.annimon:stream", version = "1.2.2" }
 materialComponents = { module = "com.google.android.material:material", version.ref = "materialComponents" }
 moshi = { module = "com.squareup.moshi:moshi", version.ref = "moshi" }
