@@ -19,11 +19,11 @@ dependencies {
     // endregion LiveData
 
     // region OkHttpOktaHttpClient
-    compileOnly "com.squareup.okhttp3:okhttp:${deps.okhttp3}"
+    compileOnly libs.okhttp3
     // endregion OkHttpOktaHttpClient
 
     testImplementation project(':testing:gto-support-okta')
     testImplementation "androidx.arch.core:core-testing:${deps.androidX.arch}"
-    testImplementation "com.squareup.okhttp3:mockwebserver:${deps.okhttp3}"
+    testImplementation libs.okhttp3.mockwebserver
     testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:${deps.kotlinCoroutines}"
 }

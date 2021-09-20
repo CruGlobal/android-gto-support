@@ -8,7 +8,7 @@ dependencies {
     compileOnly "com.google.dagger:hilt-android:${deps.dagger}"
 
     // OkHttp3 Module dependencies
-    compileOnly "com.squareup.okhttp3:okhttp:${deps.okhttp3}"
+    compileOnly libs.okhttp3
 
     // ViewModel Module dependencies
     compileOnly "androidx.lifecycle:lifecycle-viewmodel:${deps.androidX.lifecycle}"
