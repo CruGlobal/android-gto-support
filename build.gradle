@@ -14,7 +14,7 @@ buildscript {
             jsonUnit            : '2.28.0',
             junit               : '4.13.2',
             junitParams         : '1.1.1',
-            kotlin              : '1.5.30',
+            kotlin              : '1.5.31',
             lottie              : '4.1.0',
             mockito             : '3.12.4',
             mockitoKotlin       : '2.2.0',
