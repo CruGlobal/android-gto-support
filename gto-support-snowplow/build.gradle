@@ -3,6 +3,6 @@ dependencies {
 
     compileOnly libs.timber
 
+    testImplementation libs.kotlin.coroutines
     testImplementation libs.timber
-    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:${deps.kotlinCoroutines}"
 }
