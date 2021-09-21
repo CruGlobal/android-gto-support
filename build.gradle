@@ -10,7 +10,6 @@ buildscript {
             hamcrest            : '2.2',
             jacoco              : '0.8.7',
             jetbrainsAnnotations: '22.0.0',
-            json                : '20210307',
             jsonUnit            : '2.28.0',
             junit               : '4.13.2',
             junitParams         : '1.1.1',

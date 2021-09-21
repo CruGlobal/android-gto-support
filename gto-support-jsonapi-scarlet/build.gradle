@@ -4,5 +4,5 @@ dependencies {
 
     api libs.scarlet.core
 
-    testImplementation "org.json:json:${deps.json}"
+    testImplementation libs.json
 }

@@ -12,7 +12,7 @@ dependencies {
 
     testImplementation "net.javacrumbs.json-unit:json-unit:${deps.jsonUnit}"
     testImplementation "net.javacrumbs.json-unit:json-unit-fluent:${deps.jsonUnit}"
-    testImplementation "org.json:json:${deps.json}"
+    testImplementation libs.json
     testImplementation "pl.pragmatists:JUnitParams:${deps.junitParams}"
 
     kapt libs.moshi.kotlin.codegen
