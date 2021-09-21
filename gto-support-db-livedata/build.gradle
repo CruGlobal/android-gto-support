@@ -4,6 +4,6 @@ dependencies {
     implementation libs.androidx.collection
     api libs.androidx.lifecycle.livedata
 
-    testImplementation "androidx.arch.core:core-testing:${deps.androidX.arch}"
+    testImplementation libs.androidx.arch.core.testing
     testImplementation libs.kotlin.coroutines
 }

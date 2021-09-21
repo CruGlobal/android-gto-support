@@ -6,7 +6,7 @@ dependencies {
     api "org.greenrobot:eventbus:${deps.eventbus}"
     compileOnly libs.timber
 
-    testImplementation "androidx.arch.core:core-testing:${deps.androidX.arch}"
+    testImplementation libs.androidx.arch.core.testing
     testImplementation libs.androidx.lifecycle.runtime.testing
     testImplementation libs.kotlin.coroutines.test
 }

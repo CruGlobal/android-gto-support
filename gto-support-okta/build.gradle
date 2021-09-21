@@ -23,7 +23,7 @@ dependencies {
     // endregion OkHttpOktaHttpClient
 
     testImplementation project(':testing:gto-support-okta')
-    testImplementation "androidx.arch.core:core-testing:${deps.androidX.arch}"
+    testImplementation libs.androidx.arch.core.testing
     testImplementation libs.okhttp3.mockwebserver
     testImplementation libs.kotlin.coroutines.test
 }

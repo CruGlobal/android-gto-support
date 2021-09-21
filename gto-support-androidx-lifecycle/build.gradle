@@ -9,7 +9,7 @@ dependencies {
     // Data Binding adapter dependencies
     compileOnly libs.androidx.databinding.runtime
 
-    testImplementation "androidx.arch.core:core-testing:${deps.androidX.arch}"
+    testImplementation libs.androidx.arch.core.testing
     testImplementation libs.androidx.core.ktx
     testImplementation libs.androidx.lifecycle.runtime.testing
     testImplementation libs.kotlin.coroutines.test

@@ -1,6 +1,7 @@
 [versions]
 android-gradle-plugin = "7.0.2"
 androidx-appcompat = "1.3.1"
+androidx-arch = "2.1.0"
 androidx-collection = "1.1.0"
 androidx-concurrent = "1.1.0"
 androidx-core = "1.6.0"
@@ -27,6 +28,7 @@ scarlet = "0.1.12"
 [libraries]
 android-gradle = { module = "com.android.tools.build:gradle", version.ref = "android-gradle-plugin" }
 androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "androidx-appcompat" }
+androidx-arch-core-testing = { module = "androidx.arch.core:core-testing", version.ref = "androidx-arch" }
 androidx-collection = { module = "androidx.collection:collection", version.ref = "androidx-collection" }
 androidx-collection-ktx = { module = "androidx.collection:collection-ktx", version.ref = "androidx-collection" }
 androidx-concurrent-futures = { module = "androidx.concurrent:concurrent-futures", version.ref = "androidx-concurrent" }

@@ -21,7 +21,6 @@ buildscript {
     ]
     ext.deps.androidX = [
             annotation           : '1.2.0',
-            arch                 : '2.1.0',
             loader               : '1.1.0',
             localBroadcastManager: '1.0.0',
             recyclerView         : '1.2.1',
@@ -119,7 +118,6 @@ configure(subprojects.findAll { it.path.contains("gto-support") }) {
         configurations.all {
             resolutionStrategy {
                 force "androidx.annotation:annotation:${deps.androidX.annotation}"
-                force "androidx.arch.core:core-common:${deps.androidX.arch}"
                 force "androidx.core:core:${libs.versions.androidx.core.get()}"
                 force "com.squareup.okio:okio:${libs.versions.okio.get()}"
                 force "org.jetbrains.kotlinx:kotlinx-coroutines-core:${libs.versions.kotlinCoroutines.get()}"
