@@ -13,6 +13,6 @@ dependencies {
     api "androidx.loader:loader:${deps.androidX.loader}"
     implementation libs.androidx.fragment
     implementation "androidx.localbroadcastmanager:localbroadcastmanager:${deps.androidX.localBroadcastManager}"
-    implementation "androidx.swiperefreshlayout:swiperefreshlayout:${deps.androidX.swipeRefreshLayout}"
+    implementation libs.androidx.swiperefreshlayout
     compileOnly 'androidx.cursoradapter:cursoradapter:1.0.0'
 }
