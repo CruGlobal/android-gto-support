@@ -1,8 +1,0 @@
-dependencies {
-    implementation project(':gto-support-db')
-
-    implementation libs.androidx.concurrent.futures
-
-    //noinspection GradleDependency
-    api libs.guava.listenablefuture
-}
