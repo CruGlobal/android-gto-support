@@ -11,7 +11,6 @@ buildscript {
             jacoco              : '0.8.7',
             jetbrainsAnnotations: '22.0.0',
             jsonUnit            : '2.28.0',
-            junit               : '4.13.2',
             junitParams         : '1.1.1',
             kotlin              : '1.5.31',
             lottie              : '4.1.0',
@@ -119,7 +118,7 @@ configure(subprojects.findAll { it.path.contains("gto-support") }) {
 
             testImplementation "androidx.test.ext:junit:${deps.androidX.testJUnit}"
             testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:${deps.mockitoKotlin}"
-            testImplementation "junit:junit:${deps.junit}"
+            testImplementation libs.junit
             testImplementation "org.mockito:mockito-inline:${deps.mockito}"
             testImplementation "org.robolectric:robolectric:${deps.robolectric}"
         }
@@ -132,7 +131,6 @@ configure(subprojects.findAll { it.path.contains("gto-support") }) {
                 force "androidx.lifecycle:lifecycle-runtime:${deps.androidX.lifecycle}"
                 force "androidx.lifecycle:lifecycle-viewmodel-savedstate:${deps.androidX.lifecycle}"
                 force "com.squareup.okio:okio:${libs.versions.okio.get()}"
-                force "junit:junit:${deps.junit}"
                 force "org.jetbrains.kotlinx:kotlinx-coroutines-core:${libs.versions.kotlinCoroutines.get()}"
                 force "org.jetbrains:annotations:${deps.jetbrainsAnnotations}"
 

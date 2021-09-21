@@ -42,6 +42,7 @@ androidx-work-runtime = { module = "androidx.work:work-runtime", version.ref = "
 facebookFlipper = { module = "com.facebook.flipper:flipper", version.ref = "facebookFlipper" }
 firebase-crashlytics = { module = "com.google.firebase:firebase-crashlytics", version.ref = "firebase-crashlytics" }
 json = { module = "org.json:json", version = "20210307" }
+junit = { module = "junit:junit", version = "4.13.2" }
 kotlin-coroutines = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinCoroutines" }
 kotlin-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlinCoroutines" }
 kotlin-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinCoroutines" }
