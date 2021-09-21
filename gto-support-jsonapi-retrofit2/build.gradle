@@ -6,5 +6,5 @@ dependencies {
     testImplementation libs.okhttp3.mockwebserver
     testImplementation "net.javacrumbs.json-unit:json-unit:${deps.jsonUnit}"
     testImplementation "net.javacrumbs.json-unit:json-unit-fluent:${deps.jsonUnit}"
-    testImplementation "org.json:json:${deps.json}"
+    testImplementation libs.json
 }

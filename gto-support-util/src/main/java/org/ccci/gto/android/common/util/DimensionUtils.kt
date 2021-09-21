@@ -7,7 +7,8 @@ import android.content.Context
 import android.content.res.Resources
 import android.util.DisplayMetrics
 
-inline class Px(val value: Float) {
+@JvmInline
+value class Px(val value: Float) {
     /**
      * Convert this value to an Int pixel size.
      *
@@ -23,8 +24,10 @@ inline class Px(val value: Float) {
         else -> resp
     }
 }
-inline class Dp(val value: Float)
-inline class Sp(val value: Float)
+@JvmInline
+value class Dp(val value: Float)
+@JvmInline
+value class Sp(val value: Float)
 
 inline fun Px(value: Number) = Px(value.toFloat())
 inline fun Dp(value: Number) = Dp(value.toFloat())

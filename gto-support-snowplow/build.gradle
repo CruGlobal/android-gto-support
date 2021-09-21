@@ -1,8 +1,0 @@
-dependencies {
-    api "com.snowplowanalytics:snowplow-android-tracker:${deps.snowplow}"
-
-    compileOnly libs.timber
-
-    testImplementation libs.timber
-    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:${deps.kotlinCoroutines}"
-}

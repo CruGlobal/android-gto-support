@@ -1,8 +1,0 @@
-dependencies {
-    api project(':gto-support-jsonapi')
-    implementation project(':gto-support-scarlet')
-
-    api "com.tinder.scarlet:scarlet-core:${deps.scarlet}"
-
-    testImplementation "org.json:json:${deps.json}"
-}

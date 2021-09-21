@@ -1,6 +1,0 @@
-dependencies {
-    implementation project(':gto-support-androidx-collection')
-    api project(':gto-support-core')
-
-    compileOnly "androidx.swiperefreshlayout:swiperefreshlayout:${deps.androidX.swipeRefreshLayout}"
-}

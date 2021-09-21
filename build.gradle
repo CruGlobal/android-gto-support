@@ -4,37 +4,28 @@ buildscript {
     // define dependency versions for this project
     ext.deps = [
             advrecyclerview     : '1.0.0',
-            dagger              : '2.38.1',
             eventbus            : '3.2.0',
             guava               : '30.1.1-android',
             hamcrest            : '2.2',
             jacoco              : '0.8.7',
             jetbrainsAnnotations: '22.0.0',
-            json                : '20210307',
             jsonUnit            : '2.28.0',
-            junit               : '4.13.2',
             junitParams         : '1.1.1',
             kotlin              : '1.5.31',
             lottie              : '4.1.0',
             mockito             : '3.12.4',
-            mockitoKotlin       : '2.2.0',
-            picasso             : '2.8',
             playCore            : '1.10.0',
             realm               : '10.8.0',
             realmAdapters       : '4.0.0',
             robolectric         : '4.6.1',
-            scarlet             : '0.1.12',
-            snowplow            : '2.2.1',
     ]
     ext.deps.androidX = [
             annotation           : '1.2.0',
             arch                 : '2.1.0',
-            concurrent           : '1.1.0',
             lifecycle            : '2.3.1',
             loader               : '1.1.0',
             localBroadcastManager: '1.0.0',
             recyclerView         : '1.2.1',
-            swipeRefreshLayout   : '1.1.0',
             test                 : '1.4.0',
             testJUnit            : '1.1.3',
             viewPager            : '1.0.0',
@@ -46,7 +37,7 @@ buildscript {
     }
     dependencies {
         classpath libs.android.gradle
-        classpath "com.google.dagger:hilt-android-gradle-plugin:${deps.dagger}"
+        classpath libs.dagger.hilt.androidGradle
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:${deps.kotlin}"
     }
 }
@@ -120,8 +111,8 @@ configure(subprojects.findAll { it.path.contains("gto-support") }) {
             androidTestImplementation "org.hamcrest:hamcrest-library:${deps.hamcrest}"
 
             testImplementation "androidx.test.ext:junit:${deps.androidX.testJUnit}"
-            testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:${deps.mockitoKotlin}"
-            testImplementation "junit:junit:${deps.junit}"
+            testImplementation libs.mockitoKotlin
+            testImplementation libs.junit
             testImplementation "org.mockito:mockito-inline:${deps.mockito}"
             testImplementation "org.robolectric:robolectric:${deps.robolectric}"
         }
@@ -134,7 +125,6 @@ configure(subprojects.findAll { it.path.contains("gto-support") }) {
                 force "androidx.lifecycle:lifecycle-runtime:${deps.androidX.lifecycle}"
                 force "androidx.lifecycle:lifecycle-viewmodel-savedstate:${deps.androidX.lifecycle}"
                 force "com.squareup.okio:okio:${libs.versions.okio.get()}"
-                force "junit:junit:${deps.junit}"
                 force "org.jetbrains.kotlinx:kotlinx-coroutines-core:${libs.versions.kotlinCoroutines.get()}"
                 force "org.jetbrains:annotations:${deps.jetbrainsAnnotations}"
 
