@@ -1,3 +1,0 @@
-dependencies {
-    api "com.squareup.okhttp3:okhttp:${deps.okhttp3}"
-}

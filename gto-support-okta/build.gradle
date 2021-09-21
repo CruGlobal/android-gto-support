@@ -11,7 +11,7 @@ dependencies {
     api libs.okta
 
     // region Coroutines
-    compileOnly "org.jetbrains.kotlinx:kotlinx-coroutines-core:${deps.kotlinCoroutines}"
+    compileOnly libs.kotlin.coroutines
     // endregion Coroutines
 
     // region LiveData
@@ -19,11 +19,11 @@ dependencies {
     // endregion LiveData
 
     // region OkHttpOktaHttpClient
-    compileOnly "com.squareup.okhttp3:okhttp:${deps.okhttp3}"
+    compileOnly libs.okhttp3
     // endregion OkHttpOktaHttpClient
 
     testImplementation project(':testing:gto-support-okta')
     testImplementation "androidx.arch.core:core-testing:${deps.androidX.arch}"
-    testImplementation "com.squareup.okhttp3:mockwebserver:${deps.okhttp3}"
-    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:${deps.kotlinCoroutines}"
+    testImplementation libs.okhttp3.mockwebserver
+    testImplementation libs.kotlin.coroutines.test
 }

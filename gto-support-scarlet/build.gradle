@@ -2,5 +2,5 @@ dependencies {
     api "com.tinder.scarlet:scarlet-core:${deps.scarlet}"
     compileOnly "com.tinder.scarlet:scarlet:${deps.scarlet}"
 
-    implementation "com.squareup.okio:okio:${deps.okio}"
+    implementation libs.okio
 }

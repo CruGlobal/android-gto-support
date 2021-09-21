@@ -1,14 +1,14 @@
 dependencies {
     implementation "com.google.dagger:dagger:${deps.dagger}"
 
-    compileOnly "org.jetbrains.kotlinx:kotlinx-coroutines-core:${deps.kotlinCoroutines}"
+    compileOnly libs.kotlin.coroutines
 
     // Split Install dependencies
     compileOnly "com.google.android.play:core:${deps.playCore}"
     compileOnly "com.google.dagger:hilt-android:${deps.dagger}"
 
     // OkHttp3 Module dependencies
-    compileOnly "com.squareup.okhttp3:okhttp:${deps.okhttp3}"
+    compileOnly libs.okhttp3
 
     // ViewModel Module dependencies
     compileOnly "androidx.lifecycle:lifecycle-viewmodel:${deps.androidX.lifecycle}"
@@ -23,6 +23,6 @@ dependencies {
     testImplementation "androidx.lifecycle:lifecycle-viewmodel:${deps.androidX.lifecycle}"
     testImplementation "com.google.android.play:core:${deps.playCore}"
     testImplementation "com.google.dagger:hilt-android:${deps.dagger}"
-    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:${deps.kotlinCoroutines}"
+    testImplementation libs.kotlin.coroutines.test
     kaptTest "com.google.dagger:dagger-compiler:${deps.dagger}"
 }

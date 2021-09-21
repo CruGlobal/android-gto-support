@@ -9,12 +9,10 @@ dependencies {
     }
     compileOnly "com.tinder.scarlet:websocket-okhttp:${deps.scarlet}"
 
-    implementation "com.squareup.moshi:moshi:${deps.moshi}"
-
     testImplementation "net.javacrumbs.json-unit:json-unit:${deps.jsonUnit}"
     testImplementation "net.javacrumbs.json-unit:json-unit-fluent:${deps.jsonUnit}"
     testImplementation "org.json:json:${deps.json}"
     testImplementation "pl.pragmatists:JUnitParams:${deps.junitParams}"
 
-    kapt "com.squareup.moshi:moshi-kotlin-codegen:${deps.moshi}"
+    kapt libs.moshi.kotlin.codegen
 }
