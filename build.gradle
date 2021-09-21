@@ -15,7 +15,6 @@ buildscript {
             kotlin              : '1.5.31',
             lottie              : '4.1.0',
             mockito             : '3.12.4',
-            mockitoKotlin       : '2.2.0',
             picasso             : '2.8',
             playCore            : '1.10.0',
             realm               : '10.8.0',
@@ -117,7 +116,7 @@ configure(subprojects.findAll { it.path.contains("gto-support") }) {
             androidTestImplementation "org.hamcrest:hamcrest-library:${deps.hamcrest}"
 
             testImplementation "androidx.test.ext:junit:${deps.androidX.testJUnit}"
-            testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:${deps.mockitoKotlin}"
+            testImplementation libs.mockitoKotlin
             testImplementation libs.junit
             testImplementation "org.mockito:mockito-inline:${deps.mockito}"
             testImplementation "org.robolectric:robolectric:${deps.robolectric}"

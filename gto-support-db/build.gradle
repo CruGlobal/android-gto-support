@@ -5,6 +5,5 @@ dependencies {
     implementation project(':gto-support-core')
     implementation project(':gto-support-util')
 
-    testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:${deps.mockitoKotlin}"
     testImplementation "org.mockito:mockito-core:${deps.mockito}"
 }
