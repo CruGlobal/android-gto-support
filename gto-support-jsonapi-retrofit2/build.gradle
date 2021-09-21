@@ -3,8 +3,8 @@ dependencies {
 
     api libs.retrofit
 
-    testImplementation libs.okhttp3.mockwebserver
-    testImplementation "net.javacrumbs.json-unit:json-unit:${deps.jsonUnit}"
-    testImplementation "net.javacrumbs.json-unit:json-unit-fluent:${deps.jsonUnit}"
     testImplementation libs.json
+    testImplementation libs.jsonUnit
+    testImplementation libs.jsonUnit.fluent
+    testImplementation libs.okhttp3.mockwebserver
 }

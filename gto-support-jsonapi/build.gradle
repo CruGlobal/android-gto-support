@@ -8,7 +8,7 @@ dependencies {
     implementation project(':gto-support-compat')
     implementation project(':gto-support-core')
 
-    testImplementation "net.javacrumbs.json-unit:json-unit:${deps.jsonUnit}"
-    testImplementation "net.javacrumbs.json-unit:json-unit-fluent:${deps.jsonUnit}"
     testImplementation libs.json
+    testImplementation libs.jsonUnit
+    testImplementation libs.jsonUnit.fluent
 }

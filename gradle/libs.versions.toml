@@ -15,6 +15,7 @@ androidx-viewpager2 = "1.0.0"
 androidx-work = "2.6.0"
 dagger = "2.38.1"
 firebase-crashlytics = "18.2.1"
+jsonUnit = "2.28.0"
 kotlinCoroutines = "1.5.2"
 leakcanary = "2.7"
 materialComponents = "1.4.0"
@@ -59,6 +60,8 @@ facebookFlipper = { module = "com.facebook.flipper:flipper", version = "0.110.0"
 firebase-crashlytics = { module = "com.google.firebase:firebase-crashlytics", version.ref = "firebase-crashlytics" }
 guava-listenablefuture = { module = "com.google.guava:listenablefuture", version = "1.0" }
 json = { module = "org.json:json", version = "20210307" }
+jsonUnit = { module = "net.javacrumbs.json-unit:json-unit", version.ref = "jsonUnit" }
+jsonUnit-fluent = { module = "net.javacrumbs.json-unit:json-unit-fluent", version.ref = "jsonUnit" }
 junit = { module = "junit:junit", version = "4.13.2" }
 kotlin-coroutines = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinCoroutines" }
 kotlin-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlinCoroutines" }

@@ -9,6 +9,6 @@ dependencies {
 
     implementation libs.timber
 
-    testImplementation "net.javacrumbs.json-unit:json-unit:${deps.jsonUnit}"
     testImplementation libs.json
+    testImplementation libs.jsonUnit
 }
