@@ -45,6 +45,7 @@ androidx-viewpager2 = { module = "androidx.viewpager2:viewpager2", version.ref =
 androidx-work-runtime = { module = "androidx.work:work-runtime", version.ref = "androidx-work" }
 facebookFlipper = { module = "com.facebook.flipper:flipper", version.ref = "facebookFlipper" }
 firebase-crashlytics = { module = "com.google.firebase:firebase-crashlytics", version.ref = "firebase-crashlytics" }
+guava-listenablefuture = { module = "com.google.guava:listenablefuture", version = "1.0" }
 json = { module = "org.json:json", version = "20210307" }
 junit = { module = "junit:junit", version = "4.13.2" }
 kotlin-coroutines = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinCoroutines" }
