@@ -8,7 +8,4 @@ dependencies {
     implementation project(':gto-support-util')
 
     compileOnly libs.androidx.core
-
-    // Used by DataBindingArrayAdapter
-    compileOnly "androidx.lifecycle:lifecycle-livedata-core:${deps.androidX.lifecycle}"
 }

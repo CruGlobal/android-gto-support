@@ -7,6 +7,6 @@ dependencies {
     compileOnly libs.timber
 
     testImplementation "androidx.arch.core:core-testing:${deps.androidX.arch}"
-    testImplementation "androidx.lifecycle:lifecycle-runtime-testing:${deps.androidX.lifecycle}"
+    testImplementation libs.androidx.lifecycle.runtime.testing
     testImplementation libs.kotlin.coroutines.test
 }

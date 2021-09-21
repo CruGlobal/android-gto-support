@@ -2,7 +2,7 @@ dependencies {
     api project(':gto-support-db')
 
     implementation "androidx.collection:collection:${deps.androidX.collection}"
-    api "androidx.lifecycle:lifecycle-livedata:${deps.androidX.lifecycle}"
+    api libs.androidx.lifecycle.livedata
 
     testImplementation "androidx.arch.core:core-testing:${deps.androidX.arch}"
     testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:${deps.mockitoKotlin}"

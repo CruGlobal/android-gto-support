@@ -15,7 +15,7 @@ dependencies {
     // endregion Coroutines
 
     // region LiveData
-    compileOnly "androidx.lifecycle:lifecycle-livedata-ktx:${deps.androidX.lifecycle}"
+    compileOnly libs.androidx.lifecycle.livedata.ktx
     // endregion LiveData
 
     // region OkHttpOktaHttpClient

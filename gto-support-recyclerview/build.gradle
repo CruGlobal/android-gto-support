@@ -10,7 +10,4 @@ dependencies {
 
     // Data Binding adapter dependencies
     compileOnly libs.androidx.databinding.runtime
-
-    // Lifecycle dependencies
-    compileOnly "androidx.lifecycle:lifecycle-common:${deps.androidX.lifecycle}"
 }

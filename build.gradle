@@ -22,7 +22,6 @@ buildscript {
     ext.deps.androidX = [
             annotation           : '1.2.0',
             arch                 : '2.1.0',
-            lifecycle            : '2.3.1',
             loader               : '1.1.0',
             localBroadcastManager: '1.0.0',
             recyclerView         : '1.2.1',
@@ -122,8 +121,6 @@ configure(subprojects.findAll { it.path.contains("gto-support") }) {
                 force "androidx.annotation:annotation:${deps.androidX.annotation}"
                 force "androidx.arch.core:core-common:${deps.androidX.arch}"
                 force "androidx.core:core:${libs.versions.androidx.core.get()}"
-                force "androidx.lifecycle:lifecycle-runtime:${deps.androidX.lifecycle}"
-                force "androidx.lifecycle:lifecycle-viewmodel-savedstate:${deps.androidX.lifecycle}"
                 force "com.squareup.okio:okio:${libs.versions.okio.get()}"
                 force "org.jetbrains.kotlinx:kotlinx-coroutines-core:${libs.versions.kotlinCoroutines.get()}"
                 force "org.jetbrains:annotations:${deps.jetbrainsAnnotations}"
