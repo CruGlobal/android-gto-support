@@ -1,7 +1,7 @@
 dependencies {
     api project(':gto-support-db')
 
-    implementation "androidx.collection:collection:${deps.androidX.collection}"
+    implementation libs.androidx.collection
     api libs.androidx.lifecycle.livedata
 
     testImplementation "androidx.arch.core:core-testing:${deps.androidX.arch}"
