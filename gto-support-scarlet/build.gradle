@@ -1,6 +1,6 @@
 dependencies {
-    api "com.tinder.scarlet:scarlet-core:${deps.scarlet}"
-    compileOnly "com.tinder.scarlet:scarlet:${deps.scarlet}"
+    api libs.scarlet.core
+    compileOnly libs.scarlet
 
     implementation libs.okio
 }
