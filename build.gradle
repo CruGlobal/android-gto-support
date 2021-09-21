@@ -19,7 +19,6 @@ buildscript {
             realm               : '10.8.0',
             realmAdapters       : '4.0.0',
             robolectric         : '4.6.1',
-            snowplow            : '2.2.1',
     ]
     ext.deps.androidX = [
             annotation           : '1.2.0',
