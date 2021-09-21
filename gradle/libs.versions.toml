@@ -57,6 +57,7 @@ okhttp3 = { module = "com.squareup.okhttp3:okhttp", version.ref = "okhttp3" }
 okhttp3-mockwebserver = { module = "com.squareup.okhttp3:mockwebserver", version.ref = "okhttp3" }
 okio = { module = "com.squareup.okio:okio", version.ref = "okio" }
 okta = { module = "com.okta.android:okta-oidc-android", version.ref = "okta" }
+picasso = { module = "com.squareup.picasso:picasso", version = "2.8" }
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
 scarlet = { module = "com.tinder.scarlet:scarlet", version.ref = "scarlet" }
 scarlet-core = { module = "com.tinder.scarlet:scarlet-core", version.ref = "scarlet" }

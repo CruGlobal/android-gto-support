@@ -15,7 +15,6 @@ buildscript {
             kotlin              : '1.5.31',
             lottie              : '4.1.0',
             mockito             : '3.12.4',
-            picasso             : '2.8',
             playCore            : '1.10.0',
             realm               : '10.8.0',
             realmAdapters       : '4.0.0',

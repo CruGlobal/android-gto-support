@@ -17,7 +17,7 @@ dependencies {
     implementation project(':gto-support-compat')
     implementation project(':gto-support-util')
 
-    api "com.squareup.picasso:picasso:${deps.picasso}"
+    api libs.picasso
 
     compileOnly libs.androidx.appcompat
     compileOnly libs.androidx.core.ktx
