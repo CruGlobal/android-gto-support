@@ -1,11 +1,11 @@
 dependencies {
-    implementation "com.google.dagger:dagger:${deps.dagger}"
+    implementation libs.dagger
 
     compileOnly libs.kotlin.coroutines
 
     // Split Install dependencies
     compileOnly "com.google.android.play:core:${deps.playCore}"
-    compileOnly "com.google.dagger:hilt-android:${deps.dagger}"
+    compileOnly libs.dagger.hilt.android
 
     // OkHttp3 Module dependencies
     compileOnly libs.okhttp3
@@ -17,11 +17,11 @@ dependencies {
     // WorkManager Module dependencies
     compileOnly libs.androidx.work.runtime
 
-    kapt "com.google.dagger:dagger-compiler:${deps.dagger}"
+    kapt libs.dagger.compiler
 
     testImplementation "androidx.lifecycle:lifecycle-viewmodel:${deps.androidX.lifecycle}"
     testImplementation "com.google.android.play:core:${deps.playCore}"
-    testImplementation "com.google.dagger:hilt-android:${deps.dagger}"
+    testImplementation libs.dagger.hilt.android
     testImplementation libs.kotlin.coroutines.test
-    kaptTest "com.google.dagger:dagger-compiler:${deps.dagger}"
+    kaptTest libs.dagger.compiler
 }
