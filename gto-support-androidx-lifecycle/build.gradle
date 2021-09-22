@@ -1,16 +1,16 @@
 dependencies {
-    implementation "androidx.lifecycle:lifecycle-common-java8:${deps.androidX.lifecycle}"
-    implementation "androidx.lifecycle:lifecycle-livedata:${deps.androidX.lifecycle}"
-    implementation "androidx.lifecycle:lifecycle-livedata-ktx:${deps.androidX.lifecycle}"
-    implementation "androidx.lifecycle:lifecycle-viewmodel:${deps.androidX.lifecycle}"
+    implementation libs.androidx.lifecycle.common.java8
+    implementation libs.androidx.lifecycle.livedata
+    implementation libs.androidx.lifecycle.livedata.ktx
+    implementation libs.androidx.lifecycle.viewmodel
 
     implementation libs.weakdelegate
 
     // Data Binding adapter dependencies
     compileOnly libs.androidx.databinding.runtime
 
-    testImplementation "androidx.arch.core:core-testing:${deps.androidX.arch}"
+    testImplementation libs.androidx.arch.core.testing
     testImplementation libs.androidx.core.ktx
-    testImplementation "androidx.lifecycle:lifecycle-runtime-testing:${deps.androidX.lifecycle}"
+    testImplementation libs.androidx.lifecycle.runtime.testing
     testImplementation libs.kotlin.coroutines.test
 }

@@ -10,9 +10,9 @@ dependencies {
     }
     compileOnly libs.scarlet.websocket.okhttp
 
-    testImplementation "net.javacrumbs.json-unit:json-unit:${deps.jsonUnit}"
-    testImplementation "net.javacrumbs.json-unit:json-unit-fluent:${deps.jsonUnit}"
     testImplementation libs.json
+    testImplementation libs.jsonUnit
+    testImplementation libs.jsonUnit.fluent
     testImplementation "pl.pragmatists:JUnitParams:${deps.junitParams}"
 
     kapt libs.moshi.kotlin.codegen

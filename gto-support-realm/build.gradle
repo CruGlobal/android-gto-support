@@ -6,5 +6,5 @@ dependencies {
     compileOnly "io.realm:android-adapters:${deps.realmAdapters}"
     compileOnly project(':gto-support-recyclerview')
     compileOnly libs.androidx.databinding.runtime
-    compileOnly "androidx.lifecycle:lifecycle-livedata-core:${deps.androidX.lifecycle}"
+    compileOnly libs.androidx.lifecycle.livedata.core
 }

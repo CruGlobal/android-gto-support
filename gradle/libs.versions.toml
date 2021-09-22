@@ -1,34 +1,36 @@
 [versions]
 android-gradle-plugin = "7.0.2"
 androidx-appcompat = "1.3.1"
+androidx-arch = "2.1.0"
 androidx-collection = "1.1.0"
 androidx-concurrent = "1.1.0"
 androidx-core = "1.6.0"
 androidx-drawerlayout = "1.1.1"
 androidx-fragment = "1.3.6"
+androidx-lifecycle = "2.3.1"
 androidx-room = "2.3.0"
 androidx-sqlite = "2.1.0"
 androidx-swiperefreshlayout = "1.1.0"
 androidx-viewpager2 = "1.0.0"
 androidx-work = "2.6.0"
 dagger = "2.38.1"
-facebookFlipper = "0.110.0"
 firebase-crashlytics = "18.2.1"
+jsonUnit = "2.28.0"
 kotlinCoroutines = "1.5.2"
-materialComponents = "1.4.0"
 leakcanary = "2.7"
+materialComponents = "1.4.0"
 moshi = "1.12.0"
 napier = "2.1.0"
 okhttp3 = "4.9.1"
 okio = "2.10.0"
-okta = "1.0.20"
 retrofit = "2.9.0"
 scarlet = "0.1.12"
-timber = "5.0.1"
 
 [libraries]
+advancedrecyclerview = { module = "com.h6ah4i.android.widget.advrecyclerview:advrecyclerview", version = "1.0.0" }
 android-gradle = { module = "com.android.tools.build:gradle", version.ref = "android-gradle-plugin" }
 androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "androidx-appcompat" }
+androidx-arch-core-testing = { module = "androidx.arch.core:core-testing", version.ref = "androidx-arch" }
 androidx-collection = { module = "androidx.collection:collection", version.ref = "androidx-collection" }
 androidx-collection-ktx = { module = "androidx.collection:collection-ktx", version.ref = "androidx-collection" }
 androidx-concurrent-futures = { module = "androidx.concurrent:concurrent-futures", version.ref = "androidx-concurrent" }
@@ -39,6 +41,13 @@ androidx-databinding-runtime = { module = "androidx.databinding:databinding-runt
 androidx-drawerlayout = { module = "androidx.drawerlayout:drawerlayout", version.ref = "androidx-drawerlayout" }
 androidx-fragment = { module = "androidx.fragment:fragment", version.ref = "androidx-fragment" }
 androidx-fragment-ktx = { module = "androidx.fragment:fragment-ktx", version.ref = "androidx-fragment" }
+androidx-lifecycle-common-java8 = { module = "androidx.lifecycle:lifecycle-common-java8", version.ref = "androidx-lifecycle" }
+androidx-lifecycle-livedata = { module = "androidx.lifecycle:lifecycle-livedata", version.ref = "androidx-lifecycle" }
+androidx-lifecycle-livedata-core = { module = "androidx.lifecycle:lifecycle-livedata-core", version.ref = "androidx-lifecycle" }
+androidx-lifecycle-livedata-ktx = { module = "androidx.lifecycle:lifecycle-livedata-ktx", version.ref = "androidx-lifecycle" }
+androidx-lifecycle-runtime-testing = { module = "androidx.lifecycle:lifecycle-runtime-testing", version.ref = "androidx-lifecycle" }
+androidx-lifecycle-viewmodel = { module = "androidx.lifecycle:lifecycle-viewmodel", version.ref = "androidx-lifecycle" }
+androidx-recyclerview = { module = "androidx.recyclerview:recyclerview", version = "1.2.1" }
 androidx-room-common = { module = "androidx.room:room-common", version.ref = "androidx-room" }
 androidx-sqlite = { module = "androidx.sqlite:sqlite", version.ref = "androidx-sqlite" }
 androidx-swiperefreshlayout = { module = "androidx.swiperefreshlayout:swiperefreshlayout", version.ref = "androidx-swiperefreshlayout" }
@@ -49,16 +58,20 @@ dagger-compiler = { module = "com.google.dagger:dagger-compiler", version.ref = 
 dagger-hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "dagger" }
 dagger-hilt-androidGradle = { module = "com.google.dagger:hilt-android-gradle-plugin", version.ref = "dagger" }
 dagger-hilt-compiler = { module = "com.google.dagger:hilt-compiler", version.ref = "dagger" }
-facebookFlipper = { module = "com.facebook.flipper:flipper", version.ref = "facebookFlipper" }
+eventbus = { module = "org.greenrobot:eventbus", version = "3.2.0" }
+facebookFlipper = { module = "com.facebook.flipper:flipper", version = "0.110.0" }
 firebase-crashlytics = { module = "com.google.firebase:firebase-crashlytics", version.ref = "firebase-crashlytics" }
 guava-listenablefuture = { module = "com.google.guava:listenablefuture", version = "1.0" }
 json = { module = "org.json:json", version = "20210307" }
+jsonUnit = { module = "net.javacrumbs.json-unit:json-unit", version.ref = "jsonUnit" }
+jsonUnit-fluent = { module = "net.javacrumbs.json-unit:json-unit-fluent", version.ref = "jsonUnit" }
 junit = { module = "junit:junit", version = "4.13.2" }
 kotlin-coroutines = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinCoroutines" }
 kotlin-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlinCoroutines" }
 kotlin-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinCoroutines" }
 leakcanary = { module = "com.squareup.leakcanary:leakcanary-android", version.ref = "leakcanary" }
 lightweightStream = { module = "com.annimon:stream", version = "1.2.2" }
+lottie = { module = "com.airbnb.android:lottie", version = "4.1.0" }
 materialComponents = { module = "com.google.android.material:material", version.ref = "materialComponents" }
 mockitoKotlin = { module = "com.nhaarman.mockitokotlin2:mockito-kotlin", version = "2.2.0" }
 moshi = { module = "com.squareup.moshi:moshi", version.ref = "moshi" }
@@ -67,7 +80,7 @@ napier = { module = "io.github.aakira:napier", version.ref = "napier" }
 okhttp3 = { module = "com.squareup.okhttp3:okhttp", version.ref = "okhttp3" }
 okhttp3-mockwebserver = { module = "com.squareup.okhttp3:mockwebserver", version.ref = "okhttp3" }
 okio = { module = "com.squareup.okio:okio", version.ref = "okio" }
-okta = { module = "com.okta.android:okta-oidc-android", version.ref = "okta" }
+okta = { module = "com.okta.android:okta-oidc-android", version = "1.0.20" }
 picasso = { module = "com.squareup.picasso:picasso", version = "2.8" }
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
 scarlet = { module = "com.tinder.scarlet:scarlet", version.ref = "scarlet" }
@@ -76,5 +89,5 @@ scarlet-messageadapter-builtin = { module = "com.tinder.scarlet:message-adapter-
 scarlet-messageadapter-moshi = { module = "com.tinder.scarlet:message-adapter-moshi", version.ref = "scarlet" }
 scarlet-websocket-okhttp = { module = "com.tinder.scarlet:websocket-okhttp", version.ref = "scarlet" }
 snowplow = { module = "com.snowplowanalytics:snowplow-android-tracker", version = "2.2.1" }
-timber = { module = "com.jakewharton.timber:timber", version.ref = "timber" }
+timber = { module = "com.jakewharton.timber:timber", version = "5.0.1" }
 weakdelegate = { module = "com.github.Karumi:WeakDelegate", version = "1.0.1" }
