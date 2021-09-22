@@ -1,9 +1,8 @@
 dependencies {
-    implementation libs.androidx.appcompat
+    api libs.advancedrecyclerview
     api libs.androidx.recyclerview
 
-    api "com.h6ah4i.android.widget.advrecyclerview:advrecyclerview:${deps.advrecyclerview}"
-
+    implementation libs.androidx.appcompat
     implementation libs.weakdelegate
 
     // Data Binding adapter dependencies
