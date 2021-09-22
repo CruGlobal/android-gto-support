@@ -3,7 +3,7 @@ dependencies {
     implementation project(':gto-support-core')
     compileOnly project(':gto-support-db')
 
-    api "org.greenrobot:eventbus:${deps.eventbus}"
+    api libs.eventbus
     compileOnly libs.timber
 
     testImplementation libs.androidx.arch.core.testing
