@@ -7,7 +7,7 @@ import timber.log.Timber
 
 object TimberAntilog : Antilog() {
     override fun performLog(priority: LogLevel, tag: String?, throwable: Throwable?, message: String?) =
-        Timber.apply { tag?.let { tag(it) } }.log(priority.toValue(), message, throwable)
+        Timber.apply { tag?.let { tag(it) } }.log(priority.toValue(), throwable, message)
 
     private fun LogLevel.toValue() = when (this) {
         LogLevel.VERBOSE -> Log.VERBOSE
