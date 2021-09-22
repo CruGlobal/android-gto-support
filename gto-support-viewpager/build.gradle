@@ -8,7 +8,7 @@ dependencies {
     implementation project(':gto-support-androidx-collection')
     implementation project(':gto-support-util')
 
-    api "androidx.viewpager:viewpager:${deps.androidX.viewPager}"
+    api libs.androidx.viewpager
     compileOnly libs.androidx.fragment
     compileOnly libs.androidx.swiperefreshlayout
 
