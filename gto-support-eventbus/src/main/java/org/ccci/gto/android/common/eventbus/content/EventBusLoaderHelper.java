@@ -1,15 +1,19 @@
 package org.ccci.gto.android.common.eventbus.content;
 
-import org.greenrobot.eventbus.EventBus;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import androidx.annotation.MainThread;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.loader.content.Loader;
 
+import org.greenrobot.eventbus.EventBus;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * @deprecated Since v3.9.0, use LiveData & coroutines to asynchronously load data for a UI.
+ */
+@Deprecated
 public final class EventBusLoaderHelper {
     public interface Interface {
         void addEventBusSubscriber(@NonNull EventBusSubscriber subscriber);
