@@ -1,8 +1,5 @@
 android {
-    defaultConfig.consumerProguardFiles(
-        "proguard-consumer.pro",
-        "proguard-consumer-requestcreator.pro"
-    )
+    defaultConfig.consumerProguardFiles("proguard-consumer-requestcreator.pro")
 
     buildFeatures.dataBinding = true
     dataBinding.addDefaultAdapters = false
