@@ -5,7 +5,7 @@ android {
 }
 
 dependencies {
-    api "androidx.recyclerview:recyclerview:${deps.androidX.recyclerView}"
+    api libs.androidx.recyclerview
     implementation libs.weakdelegate
 
     // Data Binding adapter dependencies

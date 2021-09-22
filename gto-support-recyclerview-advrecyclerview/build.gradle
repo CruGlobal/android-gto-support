@@ -1,6 +1,6 @@
 dependencies {
     implementation libs.androidx.appcompat
-    api "androidx.recyclerview:recyclerview:${deps.androidX.recyclerView}"
+    api libs.androidx.recyclerview
 
     api "com.h6ah4i.android.widget.advrecyclerview:advrecyclerview:${deps.advrecyclerview}"
 
