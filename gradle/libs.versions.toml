@@ -59,7 +59,7 @@ dagger-hilt-android = { module = "com.google.dagger:hilt-android", version.ref =
 dagger-hilt-androidGradle = { module = "com.google.dagger:hilt-android-gradle-plugin", version.ref = "dagger" }
 dagger-hilt-compiler = { module = "com.google.dagger:hilt-compiler", version.ref = "dagger" }
 eventbus = { module = "org.greenrobot:eventbus", version = "3.2.0" }
-facebookFlipper = { module = "com.facebook.flipper:flipper", version = "0.110.0" }
+facebookFlipper = { module = "com.facebook.flipper:flipper", version = "0.111.0" }
 firebase-crashlytics = { module = "com.google.firebase:firebase-crashlytics", version.ref = "firebase-crashlytics" }
 guava-listenablefuture = { module = "com.google.guava:listenablefuture", version = "1.0" }
 json = { module = "org.json:json", version = "20210307" }
