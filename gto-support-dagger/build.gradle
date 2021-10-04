@@ -11,15 +11,15 @@ dependencies {
     compileOnly libs.okhttp3
 
     // ViewModel Module dependencies
-    compileOnly "androidx.lifecycle:lifecycle-viewmodel:${deps.androidX.lifecycle}"
-    compileOnly "androidx.lifecycle:lifecycle-viewmodel-savedstate:${deps.androidX.lifecycle}"
+    compileOnly libs.androidx.lifecycle.viewmodel
+    compileOnly libs.androidx.lifecycle.viewmodel.savedstate
 
     // WorkManager Module dependencies
     compileOnly libs.androidx.work.runtime
 
     kapt libs.dagger.compiler
 
-    testImplementation "androidx.lifecycle:lifecycle-viewmodel:${deps.androidX.lifecycle}"
+    testImplementation libs.androidx.lifecycle.viewmodel
     testImplementation libs.dagger.hilt.android
     testImplementation libs.kotlin.coroutines.test
     testImplementation libs.play.core
