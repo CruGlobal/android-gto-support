@@ -57,7 +57,9 @@ configure(subprojects.findAll { it.path.contains("gto-support") }) {
         }
         google()
         mavenCentral()
-        jcenter()
+        jcenter {
+            content { includeModule 'io.realm', 'android-adapters' }
+        }
     }
 
     beforeEvaluate {
