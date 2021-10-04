@@ -4,7 +4,6 @@ buildscript {
     // define dependency versions for this project
     ext.deps = [
             hamcrest            : '2.2',
-            jetbrainsAnnotations: '22.0.0',
             kotlin              : '1.5.31',
             mockito             : '3.12.4',
             robolectric         : '4.6.1',
@@ -89,7 +88,6 @@ configure(subprojects.findAll { it.path.contains("gto-support") }) {
             implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:${deps.kotlin}"
 
             compileOnly "androidx.annotation:annotation:${deps.androidX.annotation}"
-            compileOnly "org.jetbrains:annotations:${deps.jetbrainsAnnotations}"
 
             androidTestImplementation "androidx.test:runner:${deps.androidX.test}"
             androidTestImplementation "androidx.test:rules:${deps.androidX.test}"
@@ -109,7 +107,6 @@ configure(subprojects.findAll { it.path.contains("gto-support") }) {
                 force "androidx.core:core:${libs.versions.androidx.core.get()}"
                 force "com.squareup.okio:okio:${libs.versions.okio.get()}"
                 force "org.jetbrains.kotlinx:kotlinx-coroutines-core:${libs.versions.kotlinCoroutines.get()}"
-                force "org.jetbrains:annotations:${deps.jetbrainsAnnotations}"
 
                 dependencySubstitution {
                     substitute module('org.jetbrains.kotlin:kotlin-stdlib-jdk8') with module("org.jetbrains.kotlin:kotlin-stdlib-jdk7:${deps.kotlin}")
