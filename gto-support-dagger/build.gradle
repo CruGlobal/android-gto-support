@@ -4,8 +4,8 @@ dependencies {
     compileOnly libs.kotlin.coroutines
 
     // Split Install dependencies
-    compileOnly "com.google.android.play:core:${deps.playCore}"
     compileOnly libs.dagger.hilt.android
+    compileOnly libs.play.core
 
     // OkHttp3 Module dependencies
     compileOnly libs.okhttp3
@@ -20,8 +20,8 @@ dependencies {
     kapt libs.dagger.compiler
 
     testImplementation "androidx.lifecycle:lifecycle-viewmodel:${deps.androidX.lifecycle}"
-    testImplementation "com.google.android.play:core:${deps.playCore}"
     testImplementation libs.dagger.hilt.android
     testImplementation libs.kotlin.coroutines.test
+    testImplementation libs.play.core
     kaptTest libs.dagger.compiler
 }
