@@ -69,6 +69,7 @@ json = { module = "org.json:json", version = "20210307" }
 jsonUnit = { module = "net.javacrumbs.json-unit:json-unit", version.ref = "jsonUnit" }
 jsonUnit-fluent = { module = "net.javacrumbs.json-unit:json-unit-fluent", version.ref = "jsonUnit" }
 junit = { module = "junit:junit", version = "4.13.2" }
+junitParams = { module = "pl.pragmatists:JUnitParams", version = "1.1.1" }
 kotlin-coroutines = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinCoroutines" }
 kotlin-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlinCoroutines" }
 kotlin-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinCoroutines" }

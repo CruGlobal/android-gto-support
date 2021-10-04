@@ -13,7 +13,7 @@ dependencies {
     testImplementation libs.json
     testImplementation libs.jsonUnit
     testImplementation libs.jsonUnit.fluent
-    testImplementation "pl.pragmatists:JUnitParams:${deps.junitParams}"
+    testImplementation libs.junitParams
 
     kapt libs.moshi.kotlin.codegen
 }
