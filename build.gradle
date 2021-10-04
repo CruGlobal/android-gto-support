@@ -8,10 +8,6 @@ buildscript {
             mockito             : '3.12.4',
             robolectric         : '4.6.1',
     ]
-    ext.deps.androidX = [
-            test                 : '1.4.0',
-            testJUnit            : '1.1.3',
-    ]
 
     repositories {
         google()
@@ -88,7 +84,7 @@ configure(subprojects.findAll { it.path.contains("gto-support") }) {
 
             compileOnly libs.androidx.annotation
 
-            testImplementation "androidx.test.ext:junit:${deps.androidX.testJUnit}"
+            testImplementation libs.androidx.test.junit
             testImplementation libs.mockitoKotlin
             testImplementation libs.junit
             testImplementation "org.mockito:mockito-inline:${deps.mockito}"
