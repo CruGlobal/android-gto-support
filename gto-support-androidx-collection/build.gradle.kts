@@ -1,5 +1,5 @@
 plugins {
-    id("org.jetbrains.kotlin.plugin.parcelize")
+    kotlin("plugin.parcelize")
 }
 
 dependencies {
