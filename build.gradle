@@ -89,11 +89,6 @@ configure(subprojects.findAll { it.path.contains("gto-support") }) {
 
             compileOnly "androidx.annotation:annotation:${deps.androidX.annotation}"
 
-            androidTestImplementation "androidx.test:runner:${deps.androidX.test}"
-            androidTestImplementation "androidx.test:rules:${deps.androidX.test}"
-            androidTestImplementation "androidx.test.ext:junit:${deps.androidX.testJUnit}"
-            androidTestImplementation "org.hamcrest:hamcrest-library:${deps.hamcrest}"
-
             testImplementation "androidx.test.ext:junit:${deps.androidX.testJUnit}"
             testImplementation libs.mockitoKotlin
             testImplementation libs.junit
