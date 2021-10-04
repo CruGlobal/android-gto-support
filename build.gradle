@@ -1,11 +1,6 @@
 import org.jlleitschuh.gradle.ktlint.reporter.ReporterType
 
 buildscript {
-    // define dependency versions for this project
-    ext.deps = [
-            hamcrest            : '2.2',
-    ]
-
     repositories {
         google()
         mavenCentral()
@@ -98,8 +93,8 @@ configure(subprojects.findAll { it.path.contains("gto-support") }) {
 
                 dependencySubstitution {
                     // use the new condensed version of hamcrest
-                    substitute module('org.hamcrest:hamcrest-core') with module("org.hamcrest:hamcrest:${deps.hamcrest}")
-                    substitute module('org.hamcrest:hamcrest-library') with module("org.hamcrest:hamcrest:${deps.hamcrest}")
+                    substitute module('org.hamcrest:hamcrest-core') with module("org.hamcrest:hamcrest:${libs.versions.hamcrest.get()}")
+                    substitute module('org.hamcrest:hamcrest-library') with module("org.hamcrest:hamcrest:${libs.versions.hamcrest.get()}")
                 }
             }
         }
