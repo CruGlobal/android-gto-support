@@ -4,8 +4,6 @@ buildscript {
     // define dependency versions for this project
     ext.deps = [
             hamcrest            : '2.2',
-            mockito             : '3.12.4',
-            robolectric         : '4.6.1',
     ]
 
     repositories {
@@ -84,10 +82,10 @@ configure(subprojects.findAll { it.path.contains("gto-support") }) {
             compileOnly libs.androidx.annotation
 
             testImplementation libs.androidx.test.junit
-            testImplementation libs.mockitoKotlin
             testImplementation libs.junit
-            testImplementation "org.mockito:mockito-inline:${deps.mockito}"
-            testImplementation "org.robolectric:robolectric:${deps.robolectric}"
+            testImplementation libs.mockito
+            testImplementation libs.mockitoKotlin
+            testImplementation libs.robolectric
         }
 
         configurations.all {
