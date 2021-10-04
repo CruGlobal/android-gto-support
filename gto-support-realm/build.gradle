@@ -1,9 +1,9 @@
 dependencies {
-    api "io.realm:realm-android-library:${deps.realm}"
+    api libs.realm
     implementation libs.weakdelegate
 
     // RecyclerViewAdapter dependencies
-    compileOnly "io.realm:android-adapters:${deps.realmAdapters}"
+    compileOnly libs.realm.adapters
     compileOnly project(':gto-support-recyclerview')
     compileOnly libs.androidx.databinding.runtime
     compileOnly libs.androidx.lifecycle.livedata.core

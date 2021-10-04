@@ -9,8 +9,6 @@ buildscript {
             junitParams         : '1.1.1',
             kotlin              : '1.5.31',
             mockito             : '3.12.4',
-            realm               : '10.8.0',
-            realmAdapters       : '4.0.0',
             robolectric         : '4.6.1',
     ]
     ext.deps.androidX = [
