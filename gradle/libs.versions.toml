@@ -18,6 +18,7 @@ dagger = "2.39.1"
 firebase-crashlytics = "18.2.3"
 jacoco = "0.8.7"
 jsonUnit = "2.28.0"
+kotlin = "1.5.31"
 kotlinCoroutines = "1.5.2"
 leakcanary = "2.7"
 materialComponents = "1.4.0"
@@ -80,6 +81,8 @@ junitParams = { module = "pl.pragmatists:JUnitParams", version = "1.1.1" }
 kotlin-coroutines = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinCoroutines" }
 kotlin-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlinCoroutines" }
 kotlin-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinCoroutines" }
+kotlin-gradle = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
+kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "kotlin" }
 leakcanary = { module = "com.squareup.leakcanary:leakcanary-android", version.ref = "leakcanary" }
 lightweightStream = { module = "com.annimon:stream", version = "1.2.2" }
 lottie = { module = "com.airbnb.android:lottie", version = "4.2.0" }

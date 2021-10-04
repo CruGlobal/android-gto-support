@@ -4,7 +4,6 @@ buildscript {
     // define dependency versions for this project
     ext.deps = [
             hamcrest            : '2.2',
-            kotlin              : '1.5.31',
             mockito             : '3.12.4',
             robolectric         : '4.6.1',
     ]
@@ -16,7 +15,7 @@ buildscript {
     dependencies {
         classpath libs.android.gradle
         classpath libs.dagger.hilt.androidGradle
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:${deps.kotlin}"
+        classpath libs.kotlin.gradle
     }
 }
 plugins {
@@ -80,7 +79,7 @@ configure(subprojects.findAll { it.path.contains("gto-support") }) {
         }
 
         dependencies {
-            implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:${deps.kotlin}"
+            implementation libs.kotlin.stdlib
 
             compileOnly libs.androidx.annotation
 
@@ -96,11 +95,10 @@ configure(subprojects.findAll { it.path.contains("gto-support") }) {
                 force "androidx.annotation:annotation:${libs.versions.androidx.annotation.get()}"
                 force "androidx.core:core:${libs.versions.androidx.core.get()}"
                 force "com.squareup.okio:okio:${libs.versions.okio.get()}"
+                force "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${libs.versions.kotlin.get()}"
                 force "org.jetbrains.kotlinx:kotlinx-coroutines-core:${libs.versions.kotlinCoroutines.get()}"
 
                 dependencySubstitution {
-                    substitute module('org.jetbrains.kotlin:kotlin-stdlib-jdk8') with module("org.jetbrains.kotlin:kotlin-stdlib-jdk7:${deps.kotlin}")
-
                     // use the new condensed version of hamcrest
                     substitute module('org.hamcrest:hamcrest-core') with module("org.hamcrest:hamcrest:${deps.hamcrest}")
                     substitute module('org.hamcrest:hamcrest-library') with module("org.hamcrest:hamcrest:${deps.hamcrest}")
