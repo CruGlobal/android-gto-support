@@ -5,7 +5,7 @@ import com.nhaarman.mockitokotlin2.argumentCaptor
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.spy
 import com.nhaarman.mockitokotlin2.verify
-import com.nhaarman.mockitokotlin2.verifyZeroInteractions
+import com.nhaarman.mockitokotlin2.verifyNoMoreInteractions
 import com.snowplowanalytics.snowplow.event.AbstractEvent
 import com.snowplowanalytics.snowplow.event.Event
 import com.snowplowanalytics.snowplow.internal.emitter.Emitter
@@ -68,6 +68,6 @@ abstract class CustomEventTest<B> where B : AbstractEvent.Builder<B>, B : Custom
             verify(emitter).add(capture())
             assertThat(firstValue.map, allOf(hasEntry("custom", "value"), not(hasKey("null"))))
         }
-        verifyZeroInteractions(tree)
+        verifyNoMoreInteractions(tree)
     }
 }

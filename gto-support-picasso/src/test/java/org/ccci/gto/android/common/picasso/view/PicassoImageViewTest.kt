@@ -9,7 +9,6 @@ import com.nhaarman.mockitokotlin2.doReturn
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.verifyNoMoreInteractions
-import com.nhaarman.mockitokotlin2.verifyZeroInteractions
 import com.squareup.picasso.Picasso
 import java.io.File
 import org.junit.Before
@@ -44,7 +43,7 @@ class PicassoImageViewTest {
 
         // setting the same uri a second time shouldn't trigger a new update
         helper.setPicassoFile(file)
-        verifyZeroInteractions(picasso)
+        verifyNoMoreInteractions(picasso)
     }
 
     @Test
@@ -60,6 +59,6 @@ class PicassoImageViewTest {
 
         // setting the same uri a second time shouldn't trigger a new update
         helper.setPicassoUri(uri)
-        verifyZeroInteractions(picasso)
+        verifyNoMoreInteractions(picasso)
     }
 }
