@@ -18,7 +18,6 @@ import com.nhaarman.mockitokotlin2.spy
 import com.nhaarman.mockitokotlin2.times
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.verifyNoMoreInteractions
-import com.nhaarman.mockitokotlin2.verifyZeroInteractions
 import org.junit.Assert.assertNotNull
 import org.junit.Before
 import org.junit.Rule
@@ -89,7 +88,7 @@ class PrimaryItemChangeObserverTest {
     fun `testUpdatePrimaryItem - Initially Empty`() {
         viewPager.adapter = adapter
         looper.idle()
-        verifyZeroInteractions(adapter.updatesMock)
+        verifyNoMoreInteractions(adapter.updatesMock)
 
         adapter.items = listOf(1, 2)
         adapter.notifyDataSetChanged()
