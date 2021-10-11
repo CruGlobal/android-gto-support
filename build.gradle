@@ -14,14 +14,7 @@ plugins {
     alias(libs.plugins.ktlint) apply false
 }
 
-configure(subprojects.findAll { it.path.contains("gto-support") }) {
-    apply plugin: 'com.android.library'
-    apply plugin: 'kotlin-android'
-    apply plugin: 'kotlin-kapt'
-
-    group 'org.ccci.gto.android'
-    version '3.9.2-SNAPSHOT'
-
+allprojects {
     repositories {
         maven {
             url 'https://cruglobal.jfrog.io/cruglobal/list/maven-locals/'
@@ -37,63 +30,44 @@ configure(subprojects.findAll { it.path.contains("gto-support") }) {
             content { includeModule 'io.realm', 'android-adapters' }
         }
     }
+}
+
+configure(subprojects.findAll { it.path.contains("gto-support") }) {
+    apply plugin: 'com.android.library'
+    apply plugin: 'kotlin-android'
+    apply plugin: 'kotlin-kapt'
+
+    group 'org.ccci.gto.android'
+    version '3.9.2-SNAPSHOT'
 
     beforeEvaluate {
-        android {
-            compileSdkVersion 30
+        AndroidConfigurationKt.configureAndroidLibrary(project)
+    }
 
-            defaultConfig {
-                minSdkVersion 21
-                targetSdkVersion 30
+    dependencies {
+        implementation libs.kotlin.stdlib
 
-                consumerProguardFiles "$rootProject.projectDir/proguard-consumer-jetbrains.pro"
-            }
+        compileOnly libs.androidx.annotation
 
-            compileOptions {
-                sourceCompatibility JavaVersion.VERSION_1_8
-                targetCompatibility JavaVersion.VERSION_1_8
-            }
-            kotlinOptions {
-                jvmTarget = JavaVersion.VERSION_1_8.toString()
-                freeCompilerArgs += '-Xjvm-default=all'
-            }
-            testOptions {
-                unitTests {
-                    includeAndroidResources = true
+        testImplementation libs.androidx.test.junit
+        testImplementation libs.junit
+        testImplementation libs.mockito
+        testImplementation libs.mockitoKotlin
+        testImplementation libs.robolectric
+    }
 
-                    all {
-                        // increase unit tests max heap size
-                        jvmArgs "-Xmx2g"
-                    }
-                }
-            }
-        }
+    configurations.all {
+        resolutionStrategy {
+            force "androidx.annotation:annotation:${libs.versions.androidx.annotation.get()}"
+            force "androidx.core:core:${libs.versions.androidx.core.get()}"
+            force "com.squareup.okio:okio:${libs.versions.okio.get()}"
+            force "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${libs.versions.kotlin.get()}"
+            force "org.jetbrains.kotlinx:kotlinx-coroutines-core:${libs.versions.kotlinCoroutines.get()}"
 
-        dependencies {
-            implementation libs.kotlin.stdlib
-
-            compileOnly libs.androidx.annotation
-
-            testImplementation libs.androidx.test.junit
-            testImplementation libs.junit
-            testImplementation libs.mockito
-            testImplementation libs.mockitoKotlin
-            testImplementation libs.robolectric
-        }
-
-        configurations.all {
-            resolutionStrategy {
-                force "androidx.annotation:annotation:${libs.versions.androidx.annotation.get()}"
-                force "androidx.core:core:${libs.versions.androidx.core.get()}"
-                force "com.squareup.okio:okio:${libs.versions.okio.get()}"
-                force "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${libs.versions.kotlin.get()}"
-                force "org.jetbrains.kotlinx:kotlinx-coroutines-core:${libs.versions.kotlinCoroutines.get()}"
-
-                dependencySubstitution {
-                    // use the new condensed version of hamcrest
-                    substitute module('org.hamcrest:hamcrest-core') with module("org.hamcrest:hamcrest:${libs.versions.hamcrest.get()}")
-                    substitute module('org.hamcrest:hamcrest-library') with module("org.hamcrest:hamcrest:${libs.versions.hamcrest.get()}")
-                }
+            dependencySubstitution {
+                // use the new condensed version of hamcrest
+                substitute module('org.hamcrest:hamcrest-core') with module("org.hamcrest:hamcrest:${libs.versions.hamcrest.get()}")
+                substitute module('org.hamcrest:hamcrest-library') with module("org.hamcrest:hamcrest:${libs.versions.hamcrest.get()}")
             }
         }
     }
@@ -125,8 +99,6 @@ configure(subprojects.findAll { it.path.contains("gto-support") }) {
             reporter(ReporterType.CHECKSTYLE)
         }
     }
-
-    PublishingConfigurationKt.enablePublishing(project)
 }
 
 // jacoco config

@@ -14,7 +14,7 @@ import org.gradle.kotlin.dsl.register
 
 private const val POM_SCM_CONNECTION = "scm:git:git@github.com:CruGlobal/android-gto-support.git"
 
-fun Project.enablePublishing() {
+fun Project.configurePublishing() {
     apply(plugin = "maven-publish")
     val sourcesJar = tasks.register<Jar>("sourcesJar") {
         with(project.extensions.getByType<BaseExtension>().sourceSets["main"]) {
