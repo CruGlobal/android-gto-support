@@ -6,9 +6,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath libs.android.gradle
         classpath libs.dagger.hilt.androidGradle
-        classpath libs.kotlin.gradle
     }
 }
 plugins {
@@ -128,48 +126,7 @@ configure(subprojects.findAll { it.path.contains("gto-support") }) {
         }
     }
 
-    // configure publishing
-    apply plugin: 'maven-publish'
-    task sourcesJar(type: Jar) {
-        from android.sourceSets.main.java.srcDirs
-    }
-    afterEvaluate {
-        publishing {
-            publications {
-                release(MavenPublication) {
-                    from components.release
-
-                    groupId = project.group
-                    artifactId = project.name
-                    version = project.version
-
-                    pom.withXml {
-                        def scm = asNode().appendNode('scm')
-                        scm.appendNode('connection', POM_SCM_CONNECTION)
-                        scm.appendNode('developerConnection', POM_SCM_CONNECTION)
-                    }
-
-                    artifact sourcesJar {
-                        classifier 'sources'
-                    }
-                }
-            }
-            repositories {
-                maven {
-                    if (project.version.endsWith('-SNAPSHOT')) {
-                        url "https://cruglobal.jfrog.io/cruglobal/list/maven-cru-android-public-snapshots-local/"
-                    } else {
-                        url "https://cruglobal.jfrog.io/cruglobal/list/maven-cru-android-public-releases-local/"
-                    }
-
-                    credentials {
-                        username cruGlobalMavenRepositoryUsername
-                        password cruGlobalMavenRepositoryPassword
-                    }
-                }
-            }
-        }
-    }
+    PublishingConfigurationKt.enablePublishing(project)
 }
 
 // jacoco config
