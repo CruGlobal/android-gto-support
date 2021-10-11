@@ -37,7 +37,6 @@ allprojects {
 configure(subprojects.findAll { it.path.contains("gto-support") }) {
     apply plugin: 'com.android.library'
     apply plugin: 'kotlin-android'
-    apply plugin: 'kotlin-kapt'
 
     group 'org.ccci.gto.android'
     version '3.9.2-SNAPSHOT'

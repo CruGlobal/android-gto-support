@@ -1,3 +1,9 @@
+plugins {
+    id("com.android.library")
+    kotlin("android")
+    kotlin("kapt")
+}
+
 dependencies {
     implementation(project(":gto-support-moshi"))
     implementation(project(":gto-support-scarlet"))

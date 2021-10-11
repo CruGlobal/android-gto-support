@@ -1,3 +1,9 @@
+plugins {
+    id("com.android.library")
+    kotlin("android")
+    kotlin("kapt")
+}
+
 android {
     buildFeatures.dataBinding = true
 }
