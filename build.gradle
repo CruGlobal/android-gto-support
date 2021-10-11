@@ -30,6 +30,8 @@ allprojects {
             content { includeModule 'io.realm', 'android-adapters' }
         }
     }
+
+    CheckstyleConfigurationKt.configureCheckstyle(project, libs.versions.checkstyle.get())
 }
 
 configure(subprojects.findAll { it.path.contains("gto-support") }) {
@@ -70,24 +72,6 @@ configure(subprojects.findAll { it.path.contains("gto-support") }) {
                 substitute module('org.hamcrest:hamcrest-library') with module("org.hamcrest:hamcrest:${libs.versions.hamcrest.get()}")
             }
         }
-    }
-
-    // configure checkstyle
-    apply plugin: 'checkstyle'
-    checkstyle {
-        toolVersion '7.8.2'
-    }
-    task checkstyle(type: Checkstyle) {
-        configFile rootProject.file('config/checkstyle/checkstyle.xml')
-        source 'src'
-        include '*/java/**/*.java'
-        ignoreFailures false
-        showViolations true
-
-        classpath = files()
-    }
-    afterEvaluate {
-        project.tasks.findByName("check")?.dependsOn('checkstyle')
     }
 
     // configure ktlint
