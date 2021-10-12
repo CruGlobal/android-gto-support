@@ -5,6 +5,8 @@ plugins {
     kotlin("kapt")
 }
 
+configureAndroidTestingLibrary()
+
 dependencies {
     implementation(libs.dagger)
     api(libs.dagger.hilt.android)

@@ -4,6 +4,8 @@ plugins {
     kotlin("kapt")
 }
 
+configureAndroidLibrary()
+
 dependencies {
     implementation(libs.dagger)
 

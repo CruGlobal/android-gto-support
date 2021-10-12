@@ -4,20 +4,27 @@ import org.gradle.api.JavaVersion
 import org.gradle.api.Project
 import org.gradle.api.plugins.ExtensionAware
 import org.gradle.kotlin.dsl.configure
+import org.gradle.kotlin.dsl.findByType
 import org.jetbrains.kotlin.gradle.dsl.KotlinJvmOptions
 
-@JvmOverloads
-fun Project.configureAndroidLibrary(block: LibraryExtension.() -> Unit = {}) {
+private const val GROUP = "org.ccci.gto.android"
+private const val GROUP_TESTING = "org.ccci.gto.android.testing"
+
+fun Project.configureAndroidLibrary() {
+    group = GROUP
     extensions.configure<LibraryExtension> {
         configureSdk()
         configureProguardRules()
         configureCompilerOptions()
         configureTestOptions()
-
-        block()
     }
 
     configurePublishing()
+}
+
+fun Project.configureAndroidTestingLibrary() {
+    configureAndroidLibrary()
+    group = GROUP_TESTING
 }
 
 private fun BaseExtension.configureSdk() {
@@ -40,7 +47,7 @@ private fun BaseExtension.configureCompilerOptions() {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
-    (this as ExtensionAware).extensions.configure<KotlinJvmOptions> {
+    (this as ExtensionAware).extensions.findByType<KotlinJvmOptions>()?.apply {
         jvmTarget = JavaVersion.VERSION_1_8.toString()
         freeCompilerArgs += "-Xjvm-default=all"
     }

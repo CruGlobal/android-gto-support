@@ -38,11 +38,19 @@ configure(subprojects.findAll { it.path.contains("gto-support") }) {
     apply plugin: 'com.android.library'
     apply plugin: 'kotlin-android'
 
-    group 'org.ccci.gto.android'
     version '3.9.2-SNAPSHOT'
 
     beforeEvaluate {
-        AndroidConfigurationKt.configureAndroidLibrary(project)
+        switch (it.name) {
+            case "gto-support-dagger":
+            case "gto-support-okta":
+            case "gto-support-picasso":
+            case "gto-support-timber":
+                // these modules are configured directly
+                break
+            default:
+                AndroidConfigurationKt.configureAndroidLibrary(project)
+        }
     }
 
     dependencies {

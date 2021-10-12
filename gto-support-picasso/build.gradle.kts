@@ -4,6 +4,8 @@ plugins {
     kotlin("kapt")
 }
 
+configureAndroidLibrary()
+
 android {
     defaultConfig.consumerProguardFiles("proguard-consumer-requestcreator.pro")
 
