@@ -1,3 +1,11 @@
+plugins {
+    id("com.android.library")
+    kotlin("android")
+    kotlin("kapt")
+}
+
+configureAndroidLibrary()
+
 dependencies {
     implementation(libs.dagger)
 
