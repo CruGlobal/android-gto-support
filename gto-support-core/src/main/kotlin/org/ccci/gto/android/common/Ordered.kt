@@ -1,7 +1,6 @@
 package org.ccci.gto.android.common
 
 interface Ordered {
-    @JvmDefault
     val order: Int get() = DEFAULT_PRECEDENCE
 
     companion object {
