@@ -5,7 +5,5 @@ plugins {
 configureAndroidLibrary()
 
 dependencies {
-    implementation(project(":gto-support-compat"))
-
-    api(libs.retrofit)
+    api(project(":gto-support-retrofit2"))
 }
