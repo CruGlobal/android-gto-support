@@ -62,11 +62,27 @@ allprojects {
             }
         }
     }
+}
 
+// region checkstyle
+allprojects {
     afterEvaluate {
-        configureCheckstyle(version = libs.versions.checkstyle.get())
+        apply(plugin = "checkstyle")
+        extensions.configure<CheckstyleExtension> {
+            toolVersion = libs.versions.checkstyle.get()
+        }
+        val task = tasks.register<Checkstyle>("checkstyle") {
+            configFile = rootProject.file("config/checkstyle/checkstyle.xml")
+            setSource("src")
+            include("*/java/**/*.java")
+            ignoreFailures = false
+            isShowViolations = true
+            classpath = files()
+        }
+        tasks.findByName("check")?.dependsOn(task)
     }
 }
+// endregion checkstyle
 
 // region jacoco
 junitJacoco {
