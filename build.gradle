@@ -35,7 +35,7 @@ allprojects {
 }
 
 configure(subprojects.findAll { it.path.contains("gto-support") }) {
-    version '3.9.2-SNAPSHOT'
+    version '3.10.0-SNAPSHOT'
 
     afterEvaluate {
         dependencies {
