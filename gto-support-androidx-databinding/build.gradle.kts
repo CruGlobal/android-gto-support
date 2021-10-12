@@ -4,6 +4,8 @@ plugins {
     kotlin("kapt")
 }
 
+configureAndroidLibrary()
+
 android {
     buildFeatures.dataBinding = true
 }

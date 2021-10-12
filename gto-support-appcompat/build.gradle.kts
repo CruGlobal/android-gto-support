@@ -1,7 +1,12 @@
+plugins {
+    id("com.android.library")
+    kotlin("android")
+}
+
+configureAndroidLibrary()
+
 android {
-    defaultConfig {
-        consumerProguardFiles("proguard-consumer.pro")
-    }
+    defaultConfig.consumerProguardFiles("proguard-consumer.pro")
 }
 
 dependencies {

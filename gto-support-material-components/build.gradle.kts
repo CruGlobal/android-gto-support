@@ -4,6 +4,8 @@ plugins {
     kotlin("kapt")
 }
 
+configureAndroidLibrary()
+
 android {
     defaultConfig.consumerProguardFile("proguard-consumer-tablayout.pro")
 

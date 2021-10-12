@@ -4,6 +4,8 @@ plugins {
     kotlin("kapt")
 }
 
+configureAndroidLibrary()
+
 dependencies {
     implementation(project(":gto-support-moshi"))
     implementation(project(":gto-support-scarlet"))
