@@ -1,0 +1,109 @@
+import org.jlleitschuh.gradle.ktlint.reporter.ReporterType
+
+buildscript {
+    repositories {
+        google()
+        mavenCentral()
+    }
+    dependencies {
+        classpath(libs.dagger.hilt.androidGradle)
+    }
+}
+plugins {
+    alias(libs.plugins.junitJacoco)
+    alias(libs.plugins.ktlint)
+}
+
+allprojects {
+    version = "3.10.0-SNAPSHOT"
+
+    repositories {
+        maven {
+            setUrl("https://jitpack.io")
+            content { includeGroupByRegex("com\\.github\\..*") }
+        }
+        google()
+        mavenCentral()
+        jcenter {
+            content { includeModule("io.realm", "android-adapters") }
+        }
+    }
+
+    afterEvaluate {
+        configurations.all {
+            resolutionStrategy {
+                force("androidx.annotation:annotation:${libs.versions.androidx.annotation.get()}")
+                force("androidx.core:core:${libs.versions.androidx.core.get()}")
+                force("com.squareup.okio:okio:${libs.versions.okio.get()}")
+                force("org.jetbrains.kotlin:kotlin-stdlib-jdk8:${libs.versions.kotlin.get()}")
+                force("org.jetbrains.kotlinx:kotlinx-coroutines-core:${libs.versions.kotlinCoroutines.get()}")
+
+                dependencySubstitution {
+                    // use the new condensed version of hamcrest
+                    substitute(module("org.hamcrest:hamcrest-core"))
+                        .using(module("org.hamcrest:hamcrest:${libs.versions.hamcrest.get()}"))
+                    substitute(module("org.hamcrest:hamcrest-library"))
+                        .using(module("org.hamcrest:hamcrest:${libs.versions.hamcrest.get()}"))
+                }
+            }
+        }
+
+        if (extensions.findByType<com.android.build.gradle.BaseExtension>() != null) {
+            dependencies {
+                add("implementation", libs.kotlin.stdlib)
+
+                add("compileOnly", libs.androidx.annotation)
+
+                add("testImplementation", libs.androidx.test.junit)
+                add("testImplementation", libs.junit)
+                add("testImplementation", libs.mockito)
+                add("testImplementation", libs.mockitoKotlin)
+                add("testImplementation", libs.robolectric)
+            }
+        }
+    }
+
+    afterEvaluate {
+        configureCheckstyle(version = libs.versions.checkstyle.get())
+    }
+}
+
+// region jacoco
+junitJacoco {
+    jacocoVersion = libs.versions.jacoco.get()
+    includeNoLocationClasses = true
+}
+allprojects {
+    afterEvaluate {
+        tasks.withType<Test> {
+            extensions.configure<JacocoTaskExtension> {
+                excludes = listOf("jdk.internal.*")
+            }
+        }
+    }
+}
+tasks.register("jacocoTestReport") {
+    subprojects.forEach { dependsOn(it.tasks.withType<JacocoReport>()) }
+}
+allprojects {
+    if (gradle.startParameter.excludedTaskNames.contains("test")) {
+        // exclude all test type tasks when the test task is excluded
+        tasks.withType<Test>().configureEach {
+            gradle.startParameter.excludedTaskNames += name
+        }
+    }
+}
+// endregion jacoco
+
+// region ktlint
+allprojects {
+    apply(plugin = "org.jlleitschuh.gradle.ktlint")
+    ktlint {
+        android.set(true)
+        reporters {
+            reporter(ReporterType.PLAIN_GROUP_BY_FILE)
+            reporter(ReporterType.CHECKSTYLE)
+        }
+    }
+}
+// endregion ktlint
