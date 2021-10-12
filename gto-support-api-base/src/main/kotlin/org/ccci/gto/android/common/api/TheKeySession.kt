@@ -36,4 +36,4 @@ class TheKeySession private constructor(
     override fun hashCode() = super.hashCode() * 31 + (guid?.hashCode() ?: 0)
 }
 
-private fun String?.sanitizeGuid(suffix: String = "") = if (this != null) "${toUpperCase(Locale.US)}$suffix" else ""
+private fun String?.sanitizeGuid(suffix: String = "") = if (this != null) "${uppercase(Locale.US)}$suffix" else ""
