@@ -56,7 +56,7 @@ class OktaUserProfileProvider @VisibleForTesting internal constructor(
         .onStart {
             activeFlows.incrementAndGet()
             if (refreshIfStale) refreshIfStaleFlows.incrementAndGet()
-            refreshActor.offer(Unit)
+            refreshActor.send(Unit)
         }
         .onCompletion {
             if (refreshIfStale) refreshIfStaleFlows.decrementAndGet()
