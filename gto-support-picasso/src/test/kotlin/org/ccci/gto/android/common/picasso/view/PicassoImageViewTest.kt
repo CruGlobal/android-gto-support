@@ -41,7 +41,7 @@ class PicassoImageViewTest {
         verify(picasso).load(file)
         verifyNoMoreInteractions(picasso)
 
-        // setting the same uri a second time shouldn't trigger a new update
+        // setting the same file a second time shouldn't trigger a new update
         helper.setPicassoFile(file)
         verifyNoMoreInteractions(picasso)
     }

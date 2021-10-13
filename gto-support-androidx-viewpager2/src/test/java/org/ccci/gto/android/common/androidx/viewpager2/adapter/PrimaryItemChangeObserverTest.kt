@@ -23,6 +23,7 @@ import org.mockito.kotlin.mock
 import org.mockito.kotlin.spy
 import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
+import org.mockito.kotlin.verifyNoInteractions
 import org.mockito.kotlin.verifyNoMoreInteractions
 import org.mockito.verification.VerificationMode
 import org.robolectric.Shadows.shadowOf
@@ -88,7 +89,7 @@ class PrimaryItemChangeObserverTest {
     fun `testUpdatePrimaryItem - Initially Empty`() {
         viewPager.adapter = adapter
         looper.idle()
-        verifyNoMoreInteractions(adapter.updatesMock)
+        verifyNoInteractions(adapter.updatesMock)
 
         adapter.items = listOf(1, 2)
         adapter.notifyDataSetChanged()

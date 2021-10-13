@@ -24,7 +24,7 @@ import org.mockito.kotlin.argumentCaptor
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.spy
 import org.mockito.kotlin.verify
-import org.mockito.kotlin.verifyNoMoreInteractions
+import org.mockito.kotlin.verifyNoInteractions
 import timber.log.Timber
 
 @RunWith(AndroidJUnit4::class)
@@ -68,6 +68,6 @@ abstract class CustomEventTest<B> where B : AbstractEvent.Builder<B>, B : Custom
             verify(emitter).add(capture())
             assertThat(firstValue.map, allOf(hasEntry("custom", "value"), not(hasKey("null"))))
         }
-        verifyNoMoreInteractions(tree)
+        verifyNoInteractions(tree)
     }
 }
