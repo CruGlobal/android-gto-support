@@ -1,6 +1,5 @@
 package org.ccci.gto.android.common.snowplow.events
 
-import com.nhaarman.mockitokotlin2.mock
 import com.snowplowanalytics.snowplow.event.Event
 import kotlin.random.Random
 import kotlinx.coroutines.Dispatchers
@@ -12,6 +11,7 @@ import kotlinx.coroutines.sync.Mutex
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
+import org.mockito.kotlin.mock
 
 class EventSynchronizerTest {
     private val threads = 50

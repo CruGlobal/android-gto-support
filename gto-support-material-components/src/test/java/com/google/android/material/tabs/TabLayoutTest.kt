@@ -1,9 +1,9 @@
 package com.google.android.material.tabs
 
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.verify
 import org.ccci.gto.android.common.material.tabs.notifyPagerAdapterChanged
 import org.junit.Test
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.verify
 
 class TabLayoutTest {
     @Test

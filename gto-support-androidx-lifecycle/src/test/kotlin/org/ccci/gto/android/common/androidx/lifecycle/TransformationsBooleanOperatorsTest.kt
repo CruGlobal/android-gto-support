@@ -1,14 +1,14 @@
 package org.ccci.gto.android.common.androidx.lifecycle
 
 import androidx.lifecycle.MutableLiveData
-import com.nhaarman.mockitokotlin2.argumentCaptor
-import com.nhaarman.mockitokotlin2.times
-import com.nhaarman.mockitokotlin2.verify
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.contains
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Test
+import org.mockito.kotlin.argumentCaptor
+import org.mockito.kotlin.times
+import org.mockito.kotlin.verify
 
 class TransformationsBooleanOperatorsTest : BaseLiveDataTest() {
     private val bool1 = MutableLiveData(false)

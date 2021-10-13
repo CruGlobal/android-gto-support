@@ -1,7 +1,5 @@
 package org.ccci.gto.android.common.db
 
-import com.nhaarman.mockitokotlin2.doReturn
-import com.nhaarman.mockitokotlin2.mock
 import java.util.Locale
 import kotlin.random.Random
 import org.ccci.gto.android.common.db.model.Model2
@@ -13,6 +11,8 @@ import org.hamcrest.beans.HasPropertyWithValue
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
+import org.mockito.kotlin.doReturn
+import org.mockito.kotlin.mock
 
 class ExpressionTest {
     private val tname = "t${Random.nextInt(0, Int.MAX_VALUE)}"

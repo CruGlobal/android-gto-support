@@ -2,13 +2,13 @@ package org.ccci.gto.android.common.androidx.lifecycle
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.nhaarman.mockitokotlin2.argumentCaptor
-import com.nhaarman.mockitokotlin2.atLeast
-import com.nhaarman.mockitokotlin2.verify
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.contains
 import org.junit.Assert.assertEquals
 import org.junit.Test
+import org.mockito.kotlin.argumentCaptor
+import org.mockito.kotlin.atLeast
+import org.mockito.kotlin.verify
 
 class TransformationsFoldTest : BaseLiveDataTest() {
     @Test
