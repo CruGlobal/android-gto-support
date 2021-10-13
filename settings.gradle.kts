@@ -92,6 +92,5 @@ include("testing:gto-support-picasso")
 include("testing:gto-support-timber")
 
 // deprecated modules
-include("gto-support-api-retrofit2")
 include("gto-support-db-async")
 include("testing:gto-support-okta")
