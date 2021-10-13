@@ -1,11 +1,6 @@
 package org.ccci.gto.android.common.snowplow.events
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.nhaarman.mockitokotlin2.argumentCaptor
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.spy
-import com.nhaarman.mockitokotlin2.verify
-import com.nhaarman.mockitokotlin2.verifyNoMoreInteractions
 import com.snowplowanalytics.snowplow.event.AbstractEvent
 import com.snowplowanalytics.snowplow.event.Event
 import com.snowplowanalytics.snowplow.internal.emitter.Emitter
@@ -25,6 +20,11 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.kotlin.argumentCaptor
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.spy
+import org.mockito.kotlin.verify
+import org.mockito.kotlin.verifyNoInteractions
 import timber.log.Timber
 
 @RunWith(AndroidJUnit4::class)
@@ -68,6 +68,6 @@ abstract class CustomEventTest<B> where B : AbstractEvent.Builder<B>, B : Custom
             verify(emitter).add(capture())
             assertThat(firstValue.map, allOf(hasEntry("custom", "value"), not(hasKey("null"))))
         }
-        verifyNoMoreInteractions(tree)
+        verifyNoInteractions(tree)
     }
 }

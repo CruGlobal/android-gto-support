@@ -1,9 +1,6 @@
 package org.ccci.gto.android.common.okta.oidc.clients.sessions
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.nhaarman.mockitokotlin2.doReturn
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.whenever
 import com.okta.oidc.Tokens
 import com.okta.oidc.clients.sessions.SessionClient
 import org.ccci.gto.android.common.okta.oidc.ID_TOKEN
@@ -14,6 +11,9 @@ import org.junit.Assert.assertNull
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.kotlin.doReturn
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.whenever
 
 @RunWith(AndroidJUnit4::class)
 class SessionClientTest {

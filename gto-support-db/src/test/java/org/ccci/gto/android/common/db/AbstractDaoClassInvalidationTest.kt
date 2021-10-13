@@ -2,9 +2,6 @@ package org.ccci.gto.android.common.db
 
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteTransactionListener
-import com.nhaarman.mockitokotlin2.any
-import com.nhaarman.mockitokotlin2.doAnswer
-import com.nhaarman.mockitokotlin2.whenever
 import java.util.Stack
 import org.ccci.gto.android.common.db.model.Model1
 import org.ccci.gto.android.common.db.model.Model2
@@ -14,6 +11,9 @@ import org.hamcrest.collection.IsIterableContainingInOrder.contains
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
+import org.mockito.kotlin.any
+import org.mockito.kotlin.doAnswer
+import org.mockito.kotlin.whenever
 
 class AbstractDaoClassInvalidationTest : BaseAbstractDaoTest() {
     @Before

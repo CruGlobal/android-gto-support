@@ -1,14 +1,14 @@
 package org.ccci.gto.android.common.util.xmlpull
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.never
-import com.nhaarman.mockitokotlin2.verify
 import java.io.InputStream
 import java.io.Reader
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.never
+import org.mockito.kotlin.verify
 
 @RunWith(AndroidJUnit4::class)
 class CloseableXmlPullParserTest {

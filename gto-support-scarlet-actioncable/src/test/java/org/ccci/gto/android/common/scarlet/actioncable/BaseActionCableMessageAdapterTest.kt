@@ -1,11 +1,11 @@
 package org.ccci.gto.android.common.scarlet.actioncable
 
-import com.nhaarman.mockitokotlin2.any
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.whenever
 import com.tinder.scarlet.MessageAdapter
 import org.ccci.gto.android.common.scarlet.actioncable.model.Message
 import org.junit.Before
+import org.mockito.kotlin.any
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.whenever
 
 abstract class BaseActionCableMessageAdapterTest {
     protected lateinit var factory: MessageAdapter.Factory

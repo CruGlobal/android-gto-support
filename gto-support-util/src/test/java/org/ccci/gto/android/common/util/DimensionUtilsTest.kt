@@ -3,11 +3,11 @@ package org.ccci.gto.android.common.util
 import android.content.Context
 import android.content.res.Resources
 import android.util.DisplayMetrics
-import com.nhaarman.mockitokotlin2.doReturn
-import com.nhaarman.mockitokotlin2.mock
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
+import org.mockito.kotlin.doReturn
+import org.mockito.kotlin.mock
 
 class DimensionUtilsTest {
     private lateinit var context: Context

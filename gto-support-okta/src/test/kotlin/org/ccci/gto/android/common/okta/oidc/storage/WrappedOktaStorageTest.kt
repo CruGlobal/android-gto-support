@@ -1,12 +1,12 @@
 package org.ccci.gto.android.common.okta.oidc.storage
 
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.never
-import com.nhaarman.mockitokotlin2.reset
-import com.nhaarman.mockitokotlin2.verify
 import com.okta.oidc.storage.OktaStorage
 import org.junit.Before
 import org.junit.Test
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.never
+import org.mockito.kotlin.reset
+import org.mockito.kotlin.verify
 
 private const val KEY = "key"
 private const val VALUE = "value"

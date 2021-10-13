@@ -6,13 +6,13 @@ import androidx.appcompat.view.ContextThemeWrapper
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipDrawable
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.verify
 import org.ccci.gto.android.common.material.components.R
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.verify
 import org.robolectric.Robolectric
 import org.robolectric.annotation.Config
 

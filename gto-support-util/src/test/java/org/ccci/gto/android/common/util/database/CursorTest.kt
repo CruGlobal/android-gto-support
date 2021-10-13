@@ -1,10 +1,6 @@
 package org.ccci.gto.android.common.util.database
 
 import android.database.Cursor
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.never
-import com.nhaarman.mockitokotlin2.verify
-import com.nhaarman.mockitokotlin2.whenever
 import net.javacrumbs.jsonunit.JsonMatchers.jsonEquals
 import org.hamcrest.MatcherAssert.assertThat
 import org.json.JSONArray
@@ -13,7 +9,11 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
 import org.junit.Before
 import org.junit.Test
-import org.mockito.ArgumentMatchers.anyInt
+import org.mockito.kotlin.any
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.never
+import org.mockito.kotlin.verify
+import org.mockito.kotlin.whenever
 
 private const val VALID = "valid"
 private const val INVALID = "invalid"
@@ -52,7 +52,7 @@ class CursorTest {
     @Test
     fun verifyGetJSONArrayOrNullWhenNonExistentField() {
         assertNull(cursor.getJSONArrayOrNull(INVALID))
-        verify(cursor, never()).getString(anyInt())
+        verify(cursor, never()).getString(any())
     }
     // endregion getJSONArrayOrNull()
 
@@ -78,7 +78,7 @@ class CursorTest {
     @Test
     fun verifyGetJSONObjectOrNullWhenNonExistentField() {
         assertNull(cursor.getJSONObjectOrNull(INVALID))
-        verify(cursor, never()).getString(anyInt())
+        verify(cursor, never()).getString(any())
     }
     // endregion getJSONObjectOrNull()
 
@@ -110,7 +110,7 @@ class CursorTest {
         assertNull(cursor.getLong(INVALID))
         assertEquals(1, cursor.getLong(INVALID, 1))
         assertNull(cursor.getLong(INVALID, null))
-        verify(cursor, never()).getString(anyInt())
+        verify(cursor, never()).getString(any())
     }
     // endregion getLong()
 
@@ -134,7 +134,7 @@ class CursorTest {
         assertNull(cursor.getString(INVALID))
         assertEquals("default", cursor.getString(INVALID, "default"))
         assertNull(cursor.getString(INVALID, null))
-        verify(cursor, never()).getString(anyInt())
+        verify(cursor, never()).getString(any())
     }
     // endregion getString()
 

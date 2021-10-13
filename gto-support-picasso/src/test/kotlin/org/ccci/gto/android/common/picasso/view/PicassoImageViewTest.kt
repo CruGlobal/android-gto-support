@@ -4,17 +4,17 @@ import android.net.Uri
 import android.widget.ImageView
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.nhaarman.mockitokotlin2.clearInvocations
-import com.nhaarman.mockitokotlin2.doReturn
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.verify
-import com.nhaarman.mockitokotlin2.verifyNoMoreInteractions
 import com.squareup.picasso.Picasso
 import java.io.File
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mockito
+import org.mockito.kotlin.clearInvocations
+import org.mockito.kotlin.doReturn
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.verify
+import org.mockito.kotlin.verifyNoMoreInteractions
 
 @RunWith(AndroidJUnit4::class)
 class PicassoImageViewTest {
@@ -41,7 +41,7 @@ class PicassoImageViewTest {
         verify(picasso).load(file)
         verifyNoMoreInteractions(picasso)
 
-        // setting the same uri a second time shouldn't trigger a new update
+        // setting the same file a second time shouldn't trigger a new update
         helper.setPicassoFile(file)
         verifyNoMoreInteractions(picasso)
     }

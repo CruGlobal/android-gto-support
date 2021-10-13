@@ -2,15 +2,15 @@ package org.ccci.gto.android.common.animation
 
 import android.animation.TimeInterpolator
 import android.view.View
-import com.nhaarman.mockitokotlin2.doReturn
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.stub
 import kotlin.random.Random
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertSame
 import org.junit.Assert.fail
 import org.junit.Before
 import org.junit.Test
+import org.mockito.kotlin.doReturn
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.stub
 
 class HeightAndAlphaVisibilityAnimatorTest {
     private lateinit var view: View

@@ -10,20 +10,21 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.viewpager2.widget.ViewPager2
-import com.nhaarman.mockitokotlin2.argThat
-import com.nhaarman.mockitokotlin2.doReturn
-import com.nhaarman.mockitokotlin2.isNull
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.spy
-import com.nhaarman.mockitokotlin2.times
-import com.nhaarman.mockitokotlin2.verify
-import com.nhaarman.mockitokotlin2.verifyNoMoreInteractions
 import org.junit.Assert.assertNotNull
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.internal.stubbing.answers.ClonesArguments
+import org.mockito.kotlin.argThat
+import org.mockito.kotlin.doReturn
+import org.mockito.kotlin.isNull
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.spy
+import org.mockito.kotlin.times
+import org.mockito.kotlin.verify
+import org.mockito.kotlin.verifyNoInteractions
+import org.mockito.kotlin.verifyNoMoreInteractions
 import org.mockito.verification.VerificationMode
 import org.robolectric.Shadows.shadowOf
 import org.robolectric.shadows.ShadowLooper
@@ -88,7 +89,7 @@ class PrimaryItemChangeObserverTest {
     fun `testUpdatePrimaryItem - Initially Empty`() {
         viewPager.adapter = adapter
         looper.idle()
-        verifyNoMoreInteractions(adapter.updatesMock)
+        verifyNoInteractions(adapter.updatesMock)
 
         adapter.items = listOf(1, 2)
         adapter.notifyDataSetChanged()

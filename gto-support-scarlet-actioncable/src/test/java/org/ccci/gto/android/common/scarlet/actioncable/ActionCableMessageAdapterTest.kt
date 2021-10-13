@@ -1,10 +1,5 @@
 package org.ccci.gto.android.common.scarlet.actioncable
 
-import com.nhaarman.mockitokotlin2.any
-import com.nhaarman.mockitokotlin2.eq
-import com.nhaarman.mockitokotlin2.never
-import com.nhaarman.mockitokotlin2.verify
-import com.nhaarman.mockitokotlin2.whenever
 import com.tinder.scarlet.Message as ScarletMessage
 import com.tinder.scarlet.MessageAdapter
 import net.javacrumbs.jsonunit.fluent.JsonFluentAssert.assertThatJson
@@ -17,6 +12,11 @@ import org.json.JSONObject
 import org.junit.Assert.assertEquals
 import org.junit.Assert.fail
 import org.junit.Test
+import org.mockito.kotlin.any
+import org.mockito.kotlin.eq
+import org.mockito.kotlin.never
+import org.mockito.kotlin.verify
+import org.mockito.kotlin.whenever
 
 @Suppress("UNCHECKED_CAST")
 class ActionCableMessageAdapterTest : BaseActionCableMessageAdapterTest() {
