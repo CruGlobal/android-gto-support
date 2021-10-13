@@ -22,6 +22,10 @@ import java.util.concurrent.RunnableFuture;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * @deprecated Since v3.10.0, Use WorkManager or JobIntentService to manage background work instead.
+ */
+@Deprecated
 public abstract class ThreadedIntentService extends Service {
     public static final String EXTRA_PRIORITY = ThreadedIntentService.class.getName() + ".EXTRA_PRIORITY";
 

@@ -3,14 +3,18 @@ package org.ccci.gto.android.sync;
 import android.content.Context;
 import android.content.Intent;
 
-import org.ccci.gto.android.common.app.ThreadedIntentService;
-import org.ccci.gto.android.common.sync.SyncRegistry;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RestrictTo;
 import androidx.annotation.WorkerThread;
 
+import org.ccci.gto.android.common.app.ThreadedIntentService;
+import org.ccci.gto.android.common.sync.SyncRegistry;
+
+/**
+ * @deprecated Since v3.10.0, Use WorkManager or JobIntentService to manage background sync work instead.
+ */
+@Deprecated
 public abstract class ThreadedSyncIntentService extends ThreadedIntentService {
     static final String EXTRA_SYNCID = ThreadedSyncIntentService.class.getName() + ".EXTRA_SYNCID";
 
@@ -44,14 +48,6 @@ public abstract class ThreadedSyncIntentService extends ThreadedIntentService {
 
     @RestrictTo(RestrictTo.Scope.SUBCLASSES)
     protected void finishSync(final int syncId) {}
-
-    /**
-     * @deprecated Since v3.5.0, use the SyncRegistry to determine if a sync is running.
-     */
-    @Deprecated
-    public static boolean isSyncRunning(final int syncId) {
-        return SyncRegistry.INSTANCE.isSyncRunning(syncId);
-    }
 
     public static final class SyncTask implements Runnable, org.ccci.gto.android.common.sync.SyncTask {
         @NonNull
