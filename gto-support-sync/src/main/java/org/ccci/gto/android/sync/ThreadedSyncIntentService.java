@@ -11,6 +11,10 @@ import androidx.annotation.WorkerThread;
 import org.ccci.gto.android.common.app.ThreadedIntentService;
 import org.ccci.gto.android.common.sync.SyncRegistry;
 
+/**
+ * @deprecated Since v3.10.0, Use WorkManager or JobIntentService to manage background sync work instead.
+ */
+@Deprecated
 public abstract class ThreadedSyncIntentService extends ThreadedIntentService {
     static final String EXTRA_SYNCID = ThreadedSyncIntentService.class.getName() + ".EXTRA_SYNCID";
 
