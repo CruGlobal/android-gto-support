@@ -1,6 +1,7 @@
 package org.ccci.gto.android.common.util.content
 
 import android.content.Context
+import android.content.pm.ApplicationInfo
 import android.content.res.Configuration
 import android.os.Build
 import android.os.LocaleList
@@ -29,3 +30,8 @@ fun Context.localize(vararg locales: Locale, includeExisting: Boolean = true): C
 
 fun Context.getString(locale: Locale?, @StringRes resId: Int, vararg formatArgs: Any?) =
     (locale?.let { localize(locale) } ?: this).getString(resId, *formatArgs)
+
+/**
+ * replacement for BuildConfig.DEBUG to allow libraries to check final app debug mode.
+ */
+fun Context.isApplicationDebuggable() = applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE != 0
