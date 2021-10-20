@@ -1,17 +1,21 @@
 package org.ccci.gto.android.common.app;
 
 import android.content.Context;
-import android.content.pm.ApplicationInfo;
+
 import androidx.annotation.NonNull;
 
+import org.ccci.gto.android.common.util.content.ContextKt;
+
+/**
+ * @deprecated Since v3.10.0, use {@link ContextKt#isApplicationDebuggable(Context)} instead.
+ */
+@Deprecated
 public class ApplicationUtils {
     /**
-     * replacement for BuildConfig.DEBUG to allow libraries to check final app debug mode.
-     *
-     * @param context
-     * @return
+     * @deprecated Since v3.10.0, use {@link ContextKt#isApplicationDebuggable(Context)} instead.
      */
+    @Deprecated
     public static boolean isDebuggable(@NonNull final Context context) {
-        return 0 != (context.getApplicationInfo().flags & ApplicationInfo.FLAG_DEBUGGABLE);
+        return ContextKt.isApplicationDebuggable(context);
     }
 }
