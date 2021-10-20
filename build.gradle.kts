@@ -57,7 +57,7 @@ allprojects {
                 add("testImplementation", libs.androidx.test.junit)
                 add("testImplementation", libs.junit)
                 add("testImplementation", libs.mockito)
-                add("testImplementation", libs.mockitoKotlin)
+                add("testImplementation", libs.mockito.kotlin)
                 add("testImplementation", libs.robolectric)
             }
         }

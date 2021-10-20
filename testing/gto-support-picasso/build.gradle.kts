@@ -8,6 +8,6 @@ configureAndroidTestingLibrary()
 dependencies {
     api(libs.picasso)
 
-    implementation(libs.mockitoKotlin)
+    implementation(libs.mockito.kotlin)
     compileOnly(libs.junit)
 }
