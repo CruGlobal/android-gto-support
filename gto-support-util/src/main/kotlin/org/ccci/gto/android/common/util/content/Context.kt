@@ -10,7 +10,7 @@ import org.ccci.gto.android.common.util.os.locales
 
 fun Context.localize(vararg locales: Locale, includeExisting: Boolean = true): Context = when {
     locales.isEmpty() -> this
-    Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1 -> createConfigurationContext(
+    else -> createConfigurationContext(
         Configuration().apply {
             when {
                 Build.VERSION.SDK_INT >= Build.VERSION_CODES.N -> setLocales(
@@ -25,7 +25,6 @@ fun Context.localize(vararg locales: Locale, includeExisting: Boolean = true): C
             }
         }
     )
-    else -> this
 }
 
 fun Context.getString(locale: Locale?, @StringRes resId: Int, vararg formatArgs: Any?) =
