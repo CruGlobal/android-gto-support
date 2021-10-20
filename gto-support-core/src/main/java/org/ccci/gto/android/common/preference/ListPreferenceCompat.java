@@ -6,6 +6,10 @@ import android.os.Build;
 import android.preference.ListPreference;
 import android.util.AttributeSet;
 
+/**
+ * @deprecated Since v3.10.0, use {@link ListPreference} directly.
+ */
+@Deprecated
 public class ListPreferenceCompat extends ListPreference {
     public ListPreferenceCompat(final Context context) {
         super(context);
