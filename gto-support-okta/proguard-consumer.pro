@@ -8,6 +8,11 @@
     com.okta.oidc.OktaState mOktaState;
 }
 
+-keepclassmembernames class com.okta.oidc.clients.web.WebAuthClientImpl {
+    # keep for com.okta.oidc.clients.web.WebAuthClientInternalsKt#implSyncAuthClientField
+    com.okta.oidc.clients.web.SyncWebAuthClient mSyncAuthClient;
+}
+
 -keepclassmembernames class com.okta.oidc.storage.OktaRepository {
     # keep for com.okta.oidc.storage.OktaRepositoryInternalsKt#storageField
     com.okta.oidc.storage.OktaStorage storage;
