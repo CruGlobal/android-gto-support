@@ -2,8 +2,6 @@ package org.ccci.gto.android.common.compat.util
 
 import android.annotation.TargetApi
 import android.os.Build
-import androidx.annotation.RestrictTo
-import androidx.annotation.VisibleForTesting
 import java.util.Locale
 
 object LocaleCompat {
@@ -29,17 +27,14 @@ object LocaleCompat {
     enum class Category { DISPLAY, FORMAT }
 }
 
-@VisibleForTesting
 private sealed class LocaleCompatMethods {
     abstract fun getDefault(category: LocaleCompat.Category): Locale
 }
 
-@RestrictTo(RestrictTo.Scope.LIBRARY)
 private open class BaseLocaleCompatMethods : LocaleCompatMethods() {
     override fun getDefault(category: LocaleCompat.Category): Locale = Locale.getDefault()
 }
 
-@RestrictTo(RestrictTo.Scope.LIBRARY)
 @TargetApi(Build.VERSION_CODES.N)
 private class NougatLocaleCompatMethods : BaseLocaleCompatMethods() {
     override fun getDefault(category: LocaleCompat.Category): Locale = Locale.getDefault(
