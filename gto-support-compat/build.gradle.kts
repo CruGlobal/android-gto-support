@@ -4,3 +4,7 @@ plugins {
 }
 
 configureAndroidLibrary()
+
+dependencies {
+    implementation(libs.weakdelegate)
+}
