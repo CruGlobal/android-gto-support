@@ -1,14 +1,11 @@
 package org.ccci.gto.android.common.okta.oidc.clients.web
 
 import android.app.Activity
-import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.core.app.ComponentActivity
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.okta.oidc.clients.BaseAuth
 import com.okta.oidc.clients.web.SyncWebAuthClient
 import java.util.concurrent.CountDownLatch
-import kotlin.reflect.KClass
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
@@ -17,10 +14,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.TestCoroutineScope
-import kotlinx.coroutines.test.resetMain
-import kotlinx.coroutines.test.setMain
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -37,11 +31,9 @@ import org.mockito.kotlin.verifyNoMoreInteractions
 
 @RunWith(AndroidJUnit4::class)
 @OptIn(ExperimentalCoroutinesApi::class)
-abstract class SyncWebAuthClientCoroutinesTest<A : Activity>(clazz: KClass<A>) {
+class SyncWebAuthClientCoroutinesTest {
     @get:Rule
-    val activityScenario = ActivityScenarioRule(clazz.java)
-    @get:Rule
-    val instantTaskRule = InstantTaskExecutorRule()
+    val activityScenario = ActivityScenarioRule(Activity::class.java)
 
     private val revokeTokensLatch = CountDownLatch(1)
     private val signOutOfOktaLatch = CountDownLatch(1)
@@ -52,7 +44,6 @@ abstract class SyncWebAuthClientCoroutinesTest<A : Activity>(clazz: KClass<A>) {
 
     @Before
     fun setup() {
-        Dispatchers.setMain(TestCoroutineDispatcher())
         client = mock {
             var cancelled = false
 
@@ -74,14 +65,13 @@ abstract class SyncWebAuthClientCoroutinesTest<A : Activity>(clazz: KClass<A>) {
     fun cleanup() {
         assertEquals(0, testScope.coroutineContext.job.children.count())
         testScope.cleanupTestCoroutines()
-        Dispatchers.resetMain()
     }
 
     @Test(timeout = 5000)
-    fun `signOutCoroutine()`() {
+    fun `signOutSuspending()`() {
         activityScenario.scenario.onActivity {
             runBlocking {
-                val signOut = async(Dispatchers.IO) { client.signOutCoroutine(it) }
+                val signOut = async(Dispatchers.IO) { client.signOutSuspending(it) }
                 clearAllLatches()
                 assertEquals(BaseAuth.SUCCESS, signOut.await())
                 assertTrue(signOutCompleted)
@@ -92,10 +82,10 @@ abstract class SyncWebAuthClientCoroutinesTest<A : Activity>(clazz: KClass<A>) {
     }
 
     @Test(timeout = 5000)
-    fun `signOutCoroutine() - Client cancelled`() {
+    fun `signOutSuspending() - Client cancelled`() {
         activityScenario.scenario.onActivity {
             runBlocking {
-                val signOut = launch(Dispatchers.IO) { client.signOutCoroutine(it) }
+                val signOut = launch(Dispatchers.IO) { client.signOutSuspending(it) }
                 delay(100)
                 client.cancel()
                 clearAllLatches()
@@ -109,9 +99,9 @@ abstract class SyncWebAuthClientCoroutinesTest<A : Activity>(clazz: KClass<A>) {
     }
 
     @Test(timeout = 5000)
-    fun `signOutCoroutine() - Coroutine cancelled`() {
+    fun `signOutSuspending() - Coroutine cancelled`() {
         activityScenario.scenario.onActivity { activity ->
-            val signOut = testScope.launch(Dispatchers.IO) { client.signOutCoroutine(activity) }
+            val signOut = testScope.launch(Dispatchers.IO) { client.signOutSuspending(activity) }
             Thread.sleep(100)
             signOut.cancel()
             clearAllLatches()
@@ -124,9 +114,9 @@ abstract class SyncWebAuthClientCoroutinesTest<A : Activity>(clazz: KClass<A>) {
     }
 
     @Test(timeout = 5000)
-    fun `signOutCoroutine() - Activity finished`() = with(activityScenario.scenario) {
+    fun `signOutSuspending() - Activity finished`() = with(activityScenario.scenario) {
         var signOut: Job? = null
-        onActivity { signOut = testScope.launch(Dispatchers.IO) { client.signOutCoroutine(it) } }
+        onActivity { signOut = testScope.launch(Dispatchers.IO) { client.signOutSuspending(it) } }
         Thread.sleep(100)
         recreate()
         clearAllLatches()
@@ -142,5 +132,3 @@ abstract class SyncWebAuthClientCoroutinesTest<A : Activity>(clazz: KClass<A>) {
         signOutOfOktaLatch.countDown()
     }
 }
-
-class ActivitySyncWebAuthClientCoroutinesTest : SyncWebAuthClientCoroutinesTest<Activity>(Activity::class)
