@@ -13,17 +13,6 @@ object LocaleCompat {
     @JvmStatic
     fun getDefault(category: Category) = COMPAT.getDefault(category)
 
-    @Deprecated(
-        "Since v3.9.0, use Locale.forLanguageTag(tag) directly",
-        ReplaceWith("Locale.forLanguageTag(tag)", "java.util.Locale")
-    )
-    @JvmStatic
-    fun forLanguageTag(tag: String): Locale = Locale.forLanguageTag(tag)
-
-    @Deprecated("Since v3.9.0, use locale.toLanguageTag() instead.", ReplaceWith("locale.toLanguageTag()"))
-    @JvmStatic
-    fun toLanguageTag(locale: Locale): String = locale.toLanguageTag()
-
     enum class Category { DISPLAY, FORMAT }
 }
 
