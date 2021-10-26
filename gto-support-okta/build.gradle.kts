@@ -13,6 +13,7 @@ dependencies {
     api(libs.okta)
 
     implementation(project(":gto-support-base"))
+    implementation(project(":gto-support-compat"))
     implementation(project(":gto-support-util"))
 
     // region Coroutines
