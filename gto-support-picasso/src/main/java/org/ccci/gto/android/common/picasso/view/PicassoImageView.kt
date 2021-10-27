@@ -27,10 +27,6 @@ interface PicassoImageView {
         defStyleRes: Int = 0,
         picasso: Picasso? = null
     ) {
-        @JvmField
-        @Deprecated("Since v3.7.2, use the imageView property instead", replaceWith = ReplaceWith("imageView"))
-        protected val mView = imageView
-
         private val picasso by lazy { picasso ?: Picasso.get() }
 
         // region Image Source
