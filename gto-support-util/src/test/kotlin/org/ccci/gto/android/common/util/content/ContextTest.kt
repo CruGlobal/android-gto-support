@@ -10,16 +10,17 @@ import org.ccci.gto.android.common.util.os.toTypedArray
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.arrayContaining
 import org.junit.Assert.assertEquals
-import org.junit.Assume.assumeTrue
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.Robolectric
 import org.robolectric.annotation.Config
-import org.robolectric.annotation.Config.TARGET_SDK
+import org.robolectric.annotation.Config.NEWEST_SDK
+import org.robolectric.annotation.Config.OLDEST_SDK
 
 @RunWith(AndroidJUnit4::class)
-@Config(sdk = [21, 23, 24, TARGET_SDK])
+@Config(sdk = [OLDEST_SDK, 23, 24, NEWEST_SDK])
 class ContextTest {
     private lateinit var context: Context
 
@@ -29,8 +30,9 @@ class ContextTest {
     }
 
     @Test
+    @Config(sdk = [OLDEST_SDK, 23])
     fun verifyLocalizeSdk21() {
-        assumeTrue(Build.VERSION.SDK_INT < Build.VERSION_CODES.N)
+        assertTrue(Build.VERSION.SDK_INT < Build.VERSION_CODES.N)
 
         context.resources.configuration.setLocale(Locale.ENGLISH)
         assertEquals(Locale.ENGLISH, context.localize().resources.configuration.locale)
@@ -38,8 +40,9 @@ class ContextTest {
     }
 
     @Test
+    @Config(sdk = [24, NEWEST_SDK])
     fun verifyLocalizeSdk24() {
-        assumeTrue(Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
+        assertTrue(Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
 
         context.resources.configuration.setLocales(LocaleList(Locale.ENGLISH, Locale.GERMAN))
         assertThat(
@@ -57,8 +60,9 @@ class ContextTest {
     }
 
     @Test
+    @Config(sdk = [24, NEWEST_SDK])
     fun verifyLocalizeDuplicateLocale() {
-        assumeTrue(Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
+        assertTrue(Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
 
         context.resources.configuration.setLocales(LocaleList(Locale.ENGLISH))
         assertThat(
