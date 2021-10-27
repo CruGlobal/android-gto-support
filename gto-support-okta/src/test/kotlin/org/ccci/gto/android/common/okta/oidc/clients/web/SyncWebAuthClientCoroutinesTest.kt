@@ -86,7 +86,7 @@ class SyncWebAuthClientCoroutinesTest {
         activityScenario.scenario.onActivity {
             runBlocking {
                 val signOut = launch(Dispatchers.IO) { client.signOutSuspending(it) }
-                delay(100)
+                do { delay(50) } while (!signOut.isActive)
                 client.cancel()
                 clearAllLatches()
                 signOut.join()
