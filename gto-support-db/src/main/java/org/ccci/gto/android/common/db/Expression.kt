@@ -95,9 +95,6 @@ sealed class Expression : Parcelable {
 
     internal open fun binaryExpr(op: String, expression: Expression): Expression = Binary(op, this, expression)
 
-    @Deprecated("Since v3.7.0, This doesn't seem necessary")
-    open fun toRaw(dao: AbstractDao) = buildSql(dao).let { raw(it.sql, *it.args) }
-
     internal abstract fun buildSql(dao: AbstractDao): QueryComponent
 
     @Parcelize
@@ -159,8 +156,6 @@ sealed class Expression : Parcelable {
         override val numOfArgs get() = args.size
 
         override fun args(vararg args: String) = copy(args = args.toList())
-
-        override fun toRaw(dao: AbstractDao) = this
 
         override fun buildSql(dao: AbstractDao) = QueryComponent(expr, *args.toTypedArray())
     }
