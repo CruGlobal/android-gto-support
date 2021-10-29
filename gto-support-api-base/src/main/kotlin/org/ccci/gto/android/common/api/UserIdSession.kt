@@ -4,13 +4,13 @@ import android.content.SharedPreferences
 
 class UserIdSession private constructor(
     prefs: SharedPreferences?,
-    val userId: String,
+    val userId: String?,
     sessionId: String?,
     baseAttrName: String
-) : Session(prefs = prefs, id = sessionId, baseAttrName = "$baseAttrName|$userId") {
+) : Session(prefs = prefs, id = sessionId, baseAttrName = baseAttrName + userId?.let { "|$it" }.orEmpty()) {
     @JvmOverloads
     constructor(
-        userId: String,
+        userId: String?,
         sessionId: String?,
         baseAttrName: String = PREF_SESSION_BASE_NAME
     ) : this(prefs = null, userId = userId, sessionId = sessionId, baseAttrName = baseAttrName)
@@ -18,7 +18,7 @@ class UserIdSession private constructor(
     @JvmOverloads
     constructor(
         prefs: SharedPreferences,
-        userId: String,
+        userId: String?,
         baseAttrName: String = PREF_SESSION_BASE_NAME
     ) : this(prefs = prefs, userId = userId, sessionId = null, baseAttrName = baseAttrName)
 
