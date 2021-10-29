@@ -100,7 +100,7 @@ okio = { module = "com.squareup.okio:okio", version.ref = "okio" }
 okta = { module = "com.okta.android:okta-oidc-android", version = "1.2.1" }
 picasso = { module = "com.squareup.picasso:picasso", version = "2.8" }
 play-core = { module = "com.google.android.play:core", version = "1.10.2" }
-realm = { module = "io.realm:realm-android-library", version = "10.8.0" }
+realm = { module = "io.realm:realm-android-library", version = "10.8.1" }
 realm-adapters = { module = "io.realm:android-adapters", version = "4.0.0" }
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
 robolectric = { module = "org.robolectric:robolectric", version = "4.6.1" }
