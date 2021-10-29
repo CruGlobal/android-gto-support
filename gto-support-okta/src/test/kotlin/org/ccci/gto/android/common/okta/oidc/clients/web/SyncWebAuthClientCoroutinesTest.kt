@@ -101,15 +101,17 @@ class SyncWebAuthClientCoroutinesTest {
     @Test(timeout = 5000)
     fun `signOutSuspending() - Coroutine cancelled`() {
         activityScenario.scenario.onActivity { activity ->
-            val signOut = testScope.launch(Dispatchers.IO) { client.signOutSuspending(activity) }
-            Thread.sleep(100)
-            signOut.cancel()
-            clearAllLatches()
-            runBlocking { signOut.join() }
-            assertFalse(signOutCompleted)
-            verify(client).signOut(any(), any())
-            verify(client).cancel()
-            verifyNoMoreInteractions(client)
+            runBlocking {
+                val signOut = testScope.launch(Dispatchers.IO) { client.signOutSuspending(activity) }
+                do { delay(50) } while (!signOut.isActive)
+                signOut.cancel()
+                clearAllLatches()
+                signOut.join()
+                assertFalse(signOutCompleted)
+                verify(client).signOut(any(), any())
+                verify(client).cancel()
+                verifyNoMoreInteractions(client)
+            }
         }
     }
 
