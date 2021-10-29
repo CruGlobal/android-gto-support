@@ -78,12 +78,12 @@ abstract class SessionInterceptor<S : Session> @JvmOverloads protected construct
     @Throws(IOException::class)
     protected open fun establishSession(): S? = null
 
-    private fun saveSession(session: S) {
+    private fun saveSession(session: Session) {
         val changes = prefs.edit().apply { session.save(this) }
         synchronized(lockSession) { changes.apply() }
     }
 
-    private fun deleteSession(session: S) {
+    private fun deleteSession(session: Session) {
         val changes = prefs.edit().apply { session.delete(this) }
         synchronized(lockSession) { changes.apply() }
     }
