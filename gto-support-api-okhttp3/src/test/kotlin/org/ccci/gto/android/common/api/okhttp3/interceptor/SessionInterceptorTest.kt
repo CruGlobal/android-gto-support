@@ -17,9 +17,9 @@ import org.mockito.kotlin.doReturn
 import org.mockito.kotlin.eq
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.never
+import org.mockito.kotlin.spy
 import org.mockito.kotlin.stub
 import org.mockito.kotlin.verify
-import org.mockito.kotlin.verifyNoMoreInteractions
 
 class SessionInterceptorTest {
     private lateinit var response: Response
@@ -27,8 +27,8 @@ class SessionInterceptorTest {
     private lateinit var context: Context
     private lateinit var sessionInterceptor: MockSessionInterceptor
 
-    private val validSession = MockSession("valid")
-    private val invalidSession = MockSession(null)
+    private val validSession = spy(MockSession("valid"))
+    private val invalidSession = spy(MockSession(null))
 
     @Before
     fun setup() {
@@ -50,6 +50,7 @@ class SessionInterceptorTest {
         sessionInterceptor.intercept(chain)
         verify(sessionInterceptor.establishSession, never()).invoke()
         verify(sessionInterceptor.attachSession).invoke(any(), any())
+        verify(validSession, never()).save(any())
     }
 
     @Test
@@ -62,7 +63,8 @@ class SessionInterceptorTest {
         sessionInterceptor.intercept(chain)
         verify(sessionInterceptor.establishSession).invoke()
         verify(sessionInterceptor.attachSession).invoke(any(), eq(validSession))
-        verifyNoMoreInteractions(sessionInterceptor.attachSession)
+        verify(validSession).save(any())
+        verify(invalidSession, never()).save(any())
     }
 
     @Test
@@ -77,6 +79,7 @@ class SessionInterceptorTest {
         }
         verify(sessionInterceptor.establishSession).invoke()
         verify(sessionInterceptor.attachSession, never()).invoke(any(), any())
+        verify(invalidSession, never()).save(any())
     }
 
     @Test
@@ -89,7 +92,7 @@ class SessionInterceptorTest {
         sessionInterceptor.intercept(chain)
         verify(sessionInterceptor.establishSession).invoke()
         verify(sessionInterceptor.attachSession).invoke(any(), eq(validSession))
-        verifyNoMoreInteractions(sessionInterceptor.attachSession)
+        verify(validSession).save(any())
     }
 
     private class MockSession(id: String?) : Session(id)
