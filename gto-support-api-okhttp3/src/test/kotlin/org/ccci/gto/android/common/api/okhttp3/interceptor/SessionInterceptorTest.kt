@@ -2,10 +2,13 @@ package org.ccci.gto.android.common.api.okhttp3.interceptor
 
 import android.content.Context
 import android.content.SharedPreferences
+import java.io.IOException
+import java.util.concurrent.Callable
 import okhttp3.Interceptor
 import okhttp3.Request
 import okhttp3.Response
 import org.ccci.gto.android.common.api.Session
+import org.ccci.gto.android.common.api.okhttp3.EstablishSessionApiException
 import org.ccci.gto.android.common.api.okhttp3.InvalidSessionApiException
 import org.junit.Assert.assertThrows
 import org.junit.Before
@@ -14,6 +17,7 @@ import org.mockito.Mockito.RETURNS_DEEP_STUBS
 import org.mockito.kotlin.any
 import org.mockito.kotlin.doAnswer
 import org.mockito.kotlin.doReturn
+import org.mockito.kotlin.doThrow
 import org.mockito.kotlin.eq
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.never
@@ -48,7 +52,7 @@ class SessionInterceptorTest {
         }
 
         sessionInterceptor.intercept(chain)
-        verify(sessionInterceptor.establishSession, never()).invoke()
+        verify(sessionInterceptor.establishSession, never()).call()
         verify(sessionInterceptor.attachSession).invoke(any(), any())
         verify(validSession, never()).save(any())
     }
@@ -61,7 +65,7 @@ class SessionInterceptorTest {
         }
 
         sessionInterceptor.intercept(chain)
-        verify(sessionInterceptor.establishSession).invoke()
+        verify(sessionInterceptor.establishSession).call()
         verify(sessionInterceptor.attachSession).invoke(any(), eq(validSession))
         verify(validSession).save(any())
         verify(invalidSession, never()).save(any())
@@ -77,7 +81,22 @@ class SessionInterceptorTest {
         assertThrows(InvalidSessionApiException::class.java) {
             sessionInterceptor.intercept(chain)
         }
-        verify(sessionInterceptor.establishSession).invoke()
+        verify(sessionInterceptor.establishSession).call()
+        verify(sessionInterceptor.attachSession, never()).invoke(any(), any())
+        verify(invalidSession, never()).save(any())
+    }
+
+    @Test
+    fun `Existing session is invalid - establishSession() throws IOException`() {
+        sessionInterceptor.stub {
+            on { loadSession(any()) } doReturn invalidSession
+            on { establishSession() } doThrow IOException::class
+        }
+
+        assertThrows(EstablishSessionApiException::class.java) {
+            sessionInterceptor.intercept(chain)
+        }
+        verify(sessionInterceptor.establishSession).call()
         verify(sessionInterceptor.attachSession, never()).invoke(any(), any())
         verify(invalidSession, never()).save(any())
     }
@@ -90,7 +109,7 @@ class SessionInterceptorTest {
         }
 
         sessionInterceptor.intercept(chain)
-        verify(sessionInterceptor.establishSession).invoke()
+        verify(sessionInterceptor.establishSession).call()
         verify(sessionInterceptor.attachSession).invoke(any(), eq(validSession))
         verify(validSession).save(any())
     }
@@ -98,13 +117,13 @@ class SessionInterceptorTest {
     private class MockSession(id: String?) : Session(id)
     private class MockSessionInterceptor(context: Context) : SessionInterceptor<MockSession>(context) {
         val loadSession = mock<(SharedPreferences) -> MockSession?>()
-        val establishSession = mock<() -> MockSession?>()
+        val establishSession = mock<Callable<MockSession?>>()
         val attachSession = mock<(Request, MockSession) -> Request> {
             on { invoke(any(), any()) } doAnswer { it.getArgument(0) }
         }
 
         override fun loadSession(prefs: SharedPreferences) = loadSession.invoke(prefs)
-        override fun establishSession() = establishSession.invoke()
+        public override fun establishSession() = establishSession.call()
         override fun attachSession(request: Request, session: MockSession) = attachSession.invoke(request, session)
     }
 }
