@@ -31,10 +31,6 @@ abstract class SessionInterceptor<S : Session> @JvmOverloads protected construct
 
     protected val lockSession = Any()
 
-    @Deprecated("Since v3.10.0, use named parameters for the constructor instead.")
-    protected constructor(context: Context, prefFile: String?) :
-        this(context, DEFAULT_RETURN_INVALID_SESSION_RESPONSES, prefFile)
-
     @Throws(IOException::class)
     override fun intercept(chain: Chain): Response {
         val session = synchronized(lockSession) {
