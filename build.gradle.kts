@@ -15,7 +15,7 @@ plugins {
 }
 
 allprojects {
-    version = "3.10.0"
+    version = "3.10.1-SNAPSHOT"
 
     repositories {
         maven {
