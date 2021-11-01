@@ -31,13 +31,6 @@ abstract class SessionInterceptor<S : Session> @JvmOverloads protected construct
 
     protected val lockSession = Any()
 
-    @JvmField
-    @Deprecated("Since v3.10.0, use lockSession property instead", ReplaceWith("lockSession"))
-    protected val mLockSession = lockSession
-    @JvmField
-    @Deprecated("Since v3.10.0, use context property instead", ReplaceWith("context"))
-    protected val mContext = this.context
-
     @Deprecated("Since v3.10.0, use named parameters for the constructor instead.")
     protected constructor(context: Context, prefFile: String?) :
         this(context, DEFAULT_RETURN_INVALID_SESSION_RESPONSES, prefFile)
