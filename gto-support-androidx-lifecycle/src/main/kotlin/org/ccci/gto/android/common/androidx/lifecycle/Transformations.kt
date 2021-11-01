@@ -76,6 +76,60 @@ fun <IN1, IN2, IN3, IN4, IN5, OUT> LiveData<IN1>.combineWith(
     mapFunction(value as IN1, other.value as IN2, other2.value as IN3, other3.value as IN4, other4.value as IN5)
 }
 
+/**
+ * This method will combine 6 LiveData objects into a new LiveData object by running the {@param mapFunction} on the
+ * current values of all source LiveData objects.
+ *
+ * @see androidx.lifecycle.Transformations.map
+ */
+@JvmName("combine")
+fun <IN1, IN2, IN3, IN4, IN5, IN6, OUT> LiveData<IN1>.combineWith(
+    other: LiveData<IN2>,
+    other2: LiveData<IN3>,
+    other3: LiveData<IN4>,
+    other4: LiveData<IN5>,
+    other5: LiveData<IN6>,
+    mapFunction: (IN1, IN2, IN3, IN4, IN5, IN6) -> OUT
+) = combineWithInt(this, other, other2, other3, other4) {
+    @Suppress("UNCHECKED_CAST")
+    mapFunction(
+        value as IN1,
+        other.value as IN2,
+        other2.value as IN3,
+        other3.value as IN4,
+        other4.value as IN5,
+        other5.value as IN6
+    )
+}
+
+/**
+ * This method will combine 7 LiveData objects into a new LiveData object by running the {@param mapFunction} on the
+ * current values of all source LiveData objects.
+ *
+ * @see androidx.lifecycle.Transformations.map
+ */
+@JvmName("combine")
+fun <IN1, IN2, IN3, IN4, IN5, IN6, IN7, OUT> LiveData<IN1>.combineWith(
+    other: LiveData<IN2>,
+    other2: LiveData<IN3>,
+    other3: LiveData<IN4>,
+    other4: LiveData<IN5>,
+    other5: LiveData<IN6>,
+    other6: LiveData<IN7>,
+    mapFunction: (IN1, IN2, IN3, IN4, IN5, IN6, IN7) -> OUT
+) = combineWithInt(this, other, other2, other3, other4) {
+    @Suppress("UNCHECKED_CAST")
+    mapFunction(
+        value as IN1,
+        other.value as IN2,
+        other2.value as IN3,
+        other3.value as IN4,
+        other4.value as IN5,
+        other5.value as IN6,
+        other6.value as IN7
+    )
+}
+
 private inline fun <OUT> combineWithInt(
     vararg input: LiveData<*>,
     crossinline mapFunction: () -> OUT
