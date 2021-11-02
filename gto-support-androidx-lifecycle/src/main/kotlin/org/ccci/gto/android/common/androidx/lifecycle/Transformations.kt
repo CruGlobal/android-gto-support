@@ -9,7 +9,7 @@ import androidx.lifecycle.isInitialized
 import androidx.lifecycle.map
 import androidx.lifecycle.switchMap
 
-// region combineWith
+// region combine
 /**
  * This method will combine 2 LiveData objects into a new LiveData object by running the {@param mapFunction} on the
  * current values of both source LiveData objects.
@@ -20,7 +20,7 @@ import androidx.lifecycle.switchMap
 fun <IN1, IN2, OUT> LiveData<IN1>.combineWith(
     other: LiveData<IN2>,
     mapFunction: (IN1, IN2) -> OUT
-) = combineWithInt(this, other) {
+) = combineInt(this, other) {
     @Suppress("UNCHECKED_CAST")
     mapFunction(value as IN1, other.value as IN2)
 }
@@ -36,7 +36,7 @@ fun <IN1, IN2, IN3, OUT> LiveData<IN1>.combineWith(
     other: LiveData<IN2>,
     other2: LiveData<IN3>,
     mapFunction: (IN1, IN2, IN3) -> OUT
-) = combineWithInt(this, other, other2) {
+) = combineInt(this, other, other2) {
     @Suppress("UNCHECKED_CAST")
     mapFunction(value as IN1, other.value as IN2, other2.value as IN3)
 }
@@ -47,13 +47,30 @@ fun <IN1, IN2, IN3, OUT> LiveData<IN1>.combineWith(
  *
  * @see androidx.lifecycle.Transformations.map
  */
-@JvmName("combine")
+fun <IN1, IN2, IN3, IN4, OUT> combine(
+    source1: LiveData<IN1>,
+    source2: LiveData<IN2>,
+    source3: LiveData<IN3>,
+    source4: LiveData<IN4>,
+    mapFunction: (IN1, IN2, IN3, IN4) -> OUT
+) = combineInt(source1, source2, source3, source4) {
+    @Suppress("UNCHECKED_CAST")
+    mapFunction(source1.value as IN1, source2.value as IN2, source3.value as IN3, source4.value as IN4)
+}
+
+/**
+ * This method will combine 4 LiveData objects into a new LiveData object by running the {@param mapFunction} on the
+ * current values of all source LiveData objects.
+ *
+ * @see androidx.lifecycle.Transformations.map
+ */
+@JvmSynthetic
 fun <IN1, IN2, IN3, IN4, OUT> LiveData<IN1>.combineWith(
     other: LiveData<IN2>,
     other2: LiveData<IN3>,
     other3: LiveData<IN4>,
     mapFunction: (IN1, IN2, IN3, IN4) -> OUT
-) = combineWithInt(this, other, other2, other3) {
+) = combineInt(this, other, other2, other3) {
     @Suppress("UNCHECKED_CAST")
     mapFunction(value as IN1, other.value as IN2, other2.value as IN3, other3.value as IN4)
 }
@@ -71,7 +88,7 @@ fun <IN1, IN2, IN3, IN4, IN5, OUT> LiveData<IN1>.combineWith(
     other3: LiveData<IN4>,
     other4: LiveData<IN5>,
     mapFunction: (IN1, IN2, IN3, IN4, IN5) -> OUT
-) = combineWithInt(this, other, other2, other3, other4) {
+) = combineInt(this, other, other2, other3, other4) {
     @Suppress("UNCHECKED_CAST")
     mapFunction(value as IN1, other.value as IN2, other2.value as IN3, other3.value as IN4, other4.value as IN5)
 }
@@ -90,7 +107,7 @@ fun <IN1, IN2, IN3, IN4, IN5, IN6, OUT> LiveData<IN1>.combineWith(
     other4: LiveData<IN5>,
     other5: LiveData<IN6>,
     mapFunction: (IN1, IN2, IN3, IN4, IN5, IN6) -> OUT
-) = combineWithInt(this, other, other2, other3, other4) {
+) = combineInt(this, other, other2, other3, other4) {
     @Suppress("UNCHECKED_CAST")
     mapFunction(
         value as IN1,
@@ -117,7 +134,7 @@ fun <IN1, IN2, IN3, IN4, IN5, IN6, IN7, OUT> LiveData<IN1>.combineWith(
     other5: LiveData<IN6>,
     other6: LiveData<IN7>,
     mapFunction: (IN1, IN2, IN3, IN4, IN5, IN6, IN7) -> OUT
-) = combineWithInt(this, other, other2, other3, other4) {
+) = combineInt(this, other, other2, other3, other4) {
     @Suppress("UNCHECKED_CAST")
     mapFunction(
         value as IN1,
@@ -130,7 +147,7 @@ fun <IN1, IN2, IN3, IN4, IN5, IN6, IN7, OUT> LiveData<IN1>.combineWith(
     )
 }
 
-private inline fun <OUT> combineWithInt(
+private inline fun <OUT> combineInt(
     vararg input: LiveData<*>,
     crossinline mapFunction: () -> OUT
 ): LiveData<OUT> {
@@ -148,7 +165,7 @@ private inline fun <OUT> combineWithInt(
     }
     return result
 }
-// endregion combineWith
+// endregion combine
 
 fun <T : Any> LiveData<T?>.notNull(): LiveData<T> {
     val result = MediatorLiveData<T>()
