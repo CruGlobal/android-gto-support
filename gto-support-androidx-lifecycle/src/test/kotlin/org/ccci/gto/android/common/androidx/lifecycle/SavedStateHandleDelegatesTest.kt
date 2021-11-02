@@ -1,12 +1,13 @@
 package org.ccci.gto.android.common.androidx.lifecycle
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
 import org.junit.Rule
 import org.junit.Test
+
+private const val PROPERTY = "property"
 
 class SavedStateHandleDelegatesTest {
     @get:Rule
@@ -14,32 +15,45 @@ class SavedStateHandleDelegatesTest {
 
     private val savedState = SavedStateHandle()
     private val delegates = object {
-        var propStr: String? by savedState.delegate()
-        var propStrNotNull: String by savedState.delegate("propStr", ifNull = "default")
-        val propStrLiveData: MutableLiveData<String> by savedState.livedata("propStr")
+        var property: String? by savedState.delegate()
+        var propertyOther: String? by savedState.delegate(PROPERTY)
+        var propertyNotNull: String by savedState.delegate(PROPERTY, ifNull = "default")
+        val livedata by savedState.livedata<String>(PROPERTY)
     }
 
     @Test
-    fun testPropertyDelegate() {
-        delegates.propStr = "test"
-        assertEquals("test", savedState["propStr"])
-        assertEquals("test", delegates.propStr)
-        assertEquals("test", delegates.propStrNotNull)
-        assertEquals("test", delegates.propStrLiveData.value)
+    fun `Property Delegate`() {
+        delegates.property = "test"
+        assertEquals("test", savedState[PROPERTY])
+        assertEquals("test", delegates.property)
+        assertEquals("test", delegates.propertyOther)
+        assertEquals("test", delegates.propertyNotNull)
+        assertEquals("test", delegates.livedata.value)
     }
 
     @Test
-    fun testPropertyDelegateWhenNull() {
-        delegates.propStr = null
-        assertNull(delegates.propStr)
-        assertEquals("default", delegates.propStrNotNull)
+    fun `Property Delegate - Other Key`() {
+        delegates.propertyOther = "test"
+        assertEquals("test", savedState[PROPERTY])
+        assertEquals("test", delegates.property)
+        assertEquals("test", delegates.propertyOther)
+        assertEquals("test", delegates.propertyNotNull)
+        assertEquals("test", delegates.livedata.value)
     }
 
     @Test
-    fun testLiveDataDelegate() {
-        delegates.propStrLiveData.value = "livedata"
-        assertEquals("livedata", savedState["propStr"])
-        assertEquals("livedata", delegates.propStr)
-        assertEquals("livedata", delegates.propStrLiveData.value)
+    fun `Property Delegate - Null Value`() {
+        delegates.property = null
+        assertNull(delegates.property)
+        assertNull(delegates.propertyOther)
+        assertEquals("default", delegates.propertyNotNull)
+    }
+
+    @Test
+    fun `LiveData Delegate`() {
+        delegates.livedata.value = "livedata"
+        assertEquals("livedata", savedState[PROPERTY])
+        assertEquals("livedata", delegates.property)
+        assertEquals("livedata", delegates.livedata.value)
     }
 }
