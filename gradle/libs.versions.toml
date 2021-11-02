@@ -1,51 +1,37 @@
 [versions]
 android-gradle-plugin = "7.0.3"
 androidx-annotation = "1.2.0"
-androidx-appcompat = "1.3.1"
-androidx-arch = "2.1.0"
 androidx-collection = "1.1.0"
-androidx-concurrent = "1.1.0"
 androidx-core = "1.7.0"
-androidx-drawerlayout = "1.1.1"
 androidx-fragment = "1.3.6"
 androidx-lifecycle = "2.4.0"
-androidx-room = "2.3.0"
-androidx-sqlite = "2.1.0"
-androidx-swiperefreshlayout = "1.1.0"
-androidx-viewpager2 = "1.0.0"
-androidx-work = "2.7.0"
 checkstyle = "7.8.2"
 dagger = "2.40"
-firebase-crashlytics = "18.2.4"
 hamcrest = "2.2"
 jacoco = "0.8.7"
 jsonUnit = "2.28.0"
 kotlin = "1.5.31"
 kotlinCoroutines = "1.5.2"
-leakcanary = "2.7"
-materialComponents = "1.4.0"
 moshi = "1.12.0"
-napier = "2.1.0"
 okhttp3 = "4.9.2"
 okio = "3.0.0"
-retrofit = "2.9.0"
 scarlet = "0.1.12"
 
 [libraries]
 advancedrecyclerview = { module = "com.h6ah4i.android.widget.advrecyclerview:advrecyclerview", version = "1.0.0" }
 android-gradle = { module = "com.android.tools.build:gradle", version.ref = "android-gradle-plugin" }
 androidx-annotation = { module = "androidx.annotation:annotation", version.ref = "androidx-annotation" }
-androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "androidx-appcompat" }
-androidx-arch-core-testing = { module = "androidx.arch.core:core-testing", version.ref = "androidx-arch" }
+androidx-appcompat = { module = "androidx.appcompat:appcompat", version = "1.3.1" }
+androidx-arch-core-testing = { module = "androidx.arch.core:core-testing", version = "2.1.0" }
 androidx-collection = { module = "androidx.collection:collection", version.ref = "androidx-collection" }
 androidx-collection-ktx = { module = "androidx.collection:collection-ktx", version.ref = "androidx-collection" }
-androidx-concurrent-futures = { module = "androidx.concurrent:concurrent-futures", version.ref = "androidx-concurrent" }
+androidx-concurrent-futures = { module = "androidx.concurrent:concurrent-futures", version = "1.1.0" }
 androidx-core = { module = "androidx.core:core", version.ref = "androidx-core" }
 androidx-core-ktx = { module = "androidx.core:core-ktx", version.ref = "androidx-core" }
 androidx-cursoradapter = { module = "androidx.cursoradapter:cursoradapter", version = "1.0.0" }
 androidx-databinding-adapters = { module = "androidx.databinding:databinding-adapters", version.ref = "android-gradle-plugin" }
 androidx-databinding-runtime = { module = "androidx.databinding:databinding-runtime", version.ref = "android-gradle-plugin" }
-androidx-drawerlayout = { module = "androidx.drawerlayout:drawerlayout", version.ref = "androidx-drawerlayout" }
+androidx-drawerlayout = { module = "androidx.drawerlayout:drawerlayout", version = "1.1.1" }
 androidx-fragment = { module = "androidx.fragment:fragment", version.ref = "androidx-fragment" }
 androidx-fragment-ktx = { module = "androidx.fragment:fragment-ktx", version.ref = "androidx-fragment" }
 androidx-lifecycle-common = { module = "androidx.lifecycle:lifecycle-common", version.ref = "androidx-lifecycle" }
@@ -59,13 +45,13 @@ androidx-lifecycle-viewmodel-savedstate = { module = "androidx.lifecycle:lifecyc
 androidx-loader = { module = "androidx.loader:loader", version = "1.1.0" }
 androidx-localbroadcastmanager = { module = "androidx.localbroadcastmanager:localbroadcastmanager", version = "1.0.0" }
 androidx-recyclerview = { module = "androidx.recyclerview:recyclerview", version = "1.2.1" }
-androidx-room-common = { module = "androidx.room:room-common", version.ref = "androidx-room" }
-androidx-sqlite = { module = "androidx.sqlite:sqlite", version.ref = "androidx-sqlite" }
-androidx-swiperefreshlayout = { module = "androidx.swiperefreshlayout:swiperefreshlayout", version.ref = "androidx-swiperefreshlayout" }
+androidx-room-common = { module = "androidx.room:room-common", version = "2.3.0" }
+androidx-sqlite = { module = "androidx.sqlite:sqlite", version = "2.1.0" }
+androidx-swiperefreshlayout = { module = "androidx.swiperefreshlayout:swiperefreshlayout", version = "1.1.0" }
 androidx-test-junit = { module = "androidx.test.ext:junit", version = "1.1.3" }
 androidx-viewpager = { module = "androidx.viewpager:viewpager", version = "1.0.0" }
-androidx-viewpager2 = { module = "androidx.viewpager2:viewpager2", version.ref = "androidx-viewpager2" }
-androidx-work-runtime = { module = "androidx.work:work-runtime", version.ref = "androidx-work" }
+androidx-viewpager2 = { module = "androidx.viewpager2:viewpager2", version = "1.0.0" }
+androidx-work-runtime = { module = "androidx.work:work-runtime", version = "2.7.0" }
 dagger = { module = "com.google.dagger:dagger", version.ref = "dagger" }
 dagger-compiler = { module = "com.google.dagger:dagger-compiler", version.ref = "dagger" }
 dagger-hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "dagger" }
@@ -73,7 +59,7 @@ dagger-hilt-androidGradle = { module = "com.google.dagger:hilt-android-gradle-pl
 dagger-hilt-compiler = { module = "com.google.dagger:hilt-compiler", version.ref = "dagger" }
 eventbus = { module = "org.greenrobot:eventbus", version = "3.2.0" }
 facebookFlipper = { module = "com.facebook.flipper:flipper", version = "0.117.0" }
-firebase-crashlytics = { module = "com.google.firebase:firebase-crashlytics", version.ref = "firebase-crashlytics" }
+firebase-crashlytics = { module = "com.google.firebase:firebase-crashlytics", version = "18.2.4" }
 guava-listenablefuture = { module = "com.google.guava:listenablefuture", version = "1.0" }
 json = { module = "org.json:json", version = "20210307" }
 jsonUnit = { module = "net.javacrumbs.json-unit:json-unit", version.ref = "jsonUnit" }
@@ -85,15 +71,15 @@ kotlin-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines
 kotlin-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinCoroutines" }
 kotlin-gradle = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
 kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "kotlin" }
-leakcanary = { module = "com.squareup.leakcanary:leakcanary-android", version.ref = "leakcanary" }
+leakcanary = { module = "com.squareup.leakcanary:leakcanary-android", version = "2.7" }
 lightweightStream = { module = "com.annimon:stream", version = "1.2.2" }
 lottie = { module = "com.airbnb.android:lottie", version = "4.2.0" }
-materialComponents = { module = "com.google.android.material:material", version.ref = "materialComponents" }
+materialComponents = { module = "com.google.android.material:material", version = "1.4.0" }
 mockito = { module = "org.mockito:mockito-inline", version = "4.0.0" }
 mockito-kotlin = { module = "org.mockito.kotlin:mockito-kotlin", version = "4.0.0" }
 moshi = { module = "com.squareup.moshi:moshi", version.ref = "moshi" }
 moshi-kotlin-codegen = { module = "com.squareup.moshi:moshi-kotlin-codegen", version.ref = "moshi" }
-napier = { module = "io.github.aakira:napier", version.ref = "napier" }
+napier = { module = "io.github.aakira:napier", version = "2.1.0" }
 okhttp3 = { module = "com.squareup.okhttp3:okhttp", version.ref = "okhttp3" }
 okhttp3-mockwebserver = { module = "com.squareup.okhttp3:mockwebserver", version.ref = "okhttp3" }
 okio = { module = "com.squareup.okio:okio", version.ref = "okio" }
@@ -102,7 +88,7 @@ picasso = { module = "com.squareup.picasso:picasso", version = "2.8" }
 play-core = { module = "com.google.android.play:core", version = "1.10.2" }
 realm = { module = "io.realm:realm-android-library", version = "10.8.1" }
 realm-adapters = { module = "io.realm:android-adapters", version = "4.0.0" }
-retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
+retrofit = { module = "com.squareup.retrofit2:retrofit", version = "2.9.0" }
 robolectric = { module = "org.robolectric:robolectric", version = "4.6.1" }
 scarlet = { module = "com.tinder.scarlet:scarlet", version.ref = "scarlet" }
 scarlet-core = { module = "com.tinder.scarlet:scarlet-core", version.ref = "scarlet" }
