@@ -52,8 +52,9 @@ class TransformationsCombineWithTest : BaseLiveDataTest() {
             assertThat(allValues, contains("a, b, c"))
         }
     }
+
     @Test
-    fun verifyCombineWith2() {
+    fun `combineWith() - 2 LiveDatas`() {
         val combined = str1.combineWith(str2) { a, b -> listOfNotNull(a, b).joinToString() }
         combined.observeForever(observer)
 
@@ -75,7 +76,7 @@ class TransformationsCombineWithTest : BaseLiveDataTest() {
     }
 
     @Test
-    fun verifyCombineWith3() {
+    fun `combineWith() - 3 LiveDatas`() {
         val combined = str1.combineWith(str2, str3) { a, b, c -> listOfNotNull(a, b, c).joinToString() }
         combined.observeForever(observer)
 
@@ -103,7 +104,38 @@ class TransformationsCombineWithTest : BaseLiveDataTest() {
     }
 
     @Test
-    fun verifyCombineWith4() {
+    fun `combine() - 4 LiveDatas`() {
+        val combined = combine(str1, str2, str3, str4) { a, b, c, d -> listOfNotNull(a, b, c, d).joinToString() }
+        combined.observeForever(observer)
+
+        verify(observer, never()).onChanged(any())
+        assertNull(combined.value)
+        str1.value = "b"
+        verify(observer, never()).onChanged(any())
+        assertNull(combined.value)
+        str2.value = null
+        verify(observer, never()).onChanged(any())
+        assertNull(combined.value)
+        str3.value = null
+        verify(observer).onChanged(any())
+        assertEquals("b", combined.value)
+        str4.value = "e"
+        verify(observer, times(2)).onChanged(any())
+        assertEquals("b, e", combined.value)
+        str3.value = "d"
+        verify(observer, times(3)).onChanged(any())
+        assertEquals("b, d, e", combined.value)
+        str2.value = "c"
+        verify(observer, times(4)).onChanged(any())
+        assertEquals("b, c, d, e", combined.value)
+        argumentCaptor<String> {
+            verify(observer, times(4)).onChanged(capture())
+            assertThat(allValues, contains("b", "b, e", "b, d, e", "b, c, d, e"))
+        }
+    }
+
+    @Test
+    fun `combineWith() - 4 LiveDatas`() {
         val combined = str1.combineWith(str2, str3, str4) { a, b, c, d -> listOfNotNull(a, b, c, d).joinToString() }
         combined.observeForever(observer)
 
@@ -134,7 +166,7 @@ class TransformationsCombineWithTest : BaseLiveDataTest() {
     }
 
     @Test
-    fun verifyCombineWith5() {
+    fun `combineWith() - 5 LiveDatas`() {
         val combined =
             str1.combineWith(str2, str3, str4, str5) { a, b, c, d, e -> listOfNotNull(a, b, c, d, e).joinToString() }
         combined.observeForever(observer)
