@@ -16,11 +16,11 @@ fun <T : Any> SavedStateHandle.delegate(key: String? = null, ifNull: T) = object
     override fun setValue(thisRef: Any, property: KProperty<*>, value: T) = set(key ?: property.name, value)
 }
 
-fun <T> SavedStateHandle.livedata(key: String? = null) = ReadOnlyProperty<Any, MutableLiveData<T?>> { _, property ->
+fun <T> SavedStateHandle.livedata(key: String? = null) = ReadOnlyProperty<Any, MutableLiveData<T>> { _, property ->
     getLiveData(key ?: property.name)
 }
 
 fun <T> SavedStateHandle.livedata(key: String? = null, initialValue: T) =
-    ReadOnlyProperty<Any, MutableLiveData<T?>> { _, property ->
+    ReadOnlyProperty<Any, MutableLiveData<T>> { _, property ->
         getLiveData(key ?: property.name, initialValue)
     }

@@ -16,7 +16,7 @@ class SavedStateHandleDelegatesTest {
     private val delegates = object {
         var propStr: String? by savedState.delegate()
         var propStrNotNull: String by savedState.delegate("propStr", ifNull = "default")
-        val propStrLiveData: MutableLiveData<String?> by savedState.livedata("propStr")
+        val propStrLiveData: MutableLiveData<String> by savedState.livedata("propStr")
     }
 
     @Test
