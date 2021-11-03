@@ -98,7 +98,6 @@ sealed class Expression : Parcelable {
     @Deprecated("Since v3.7.0, This doesn't seem necessary")
     open fun toRaw(dao: AbstractDao) = buildSql(dao).let { raw(it.sql, *it.args) }
 
-    // TODO: make internal
     internal abstract fun buildSql(dao: AbstractDao): QueryComponent
 
     @Parcelize
