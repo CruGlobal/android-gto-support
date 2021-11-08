@@ -1,46 +1,56 @@
 package org.ccci.gto.android.common.androidx.fragment.app
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
 import androidx.viewbinding.ViewBinding
 
-abstract class BindingFragment<B : ViewBinding> protected constructor(@LayoutRes contentLayoutId: Int) :
+abstract class BindingFragment<B : ViewBinding> protected constructor(@LayoutRes private val contentLayoutId: Int) :
     Fragment(contentLayoutId) {
-    // region Lifecycle
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        setupDataBinding(view, savedInstanceState)
-    }
+    protected constructor() : this(0)
 
-    override fun onDestroyView() {
-        cleanupDataBinding()
-        super.onDestroyView()
-    }
-    // endregion Lifecycle
-
-    // region View & Data Binding
     private var binding: B? = null
 
-    @Suppress("UNCHECKED_CAST")
-    protected open fun resolveBinding(view: View): B? = DataBindingUtil.bind<ViewDataBinding>(view) as? B
-
-    private fun setupDataBinding(view: View, savedInstanceState: Bundle?) {
-        binding = resolveBinding(view)?.also {
-            if (it is ViewDataBinding) it.lifecycleOwner = viewLifecycleOwner
-            onBindingCreated(it, savedInstanceState)
-        }
+    // region Lifecycle
+    final override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        binding = onCreateBinding(inflater, container, savedInstanceState)
+            ?.also { if (it is ViewDataBinding && it.lifecycleOwner == null) it.lifecycleOwner = viewLifecycleOwner }
+        return binding?.root ?: super.onCreateView(inflater, container, savedInstanceState)
     }
 
-    private fun cleanupDataBinding() {
-        binding?.let { onDestroyBinding(it) }
-        binding = null
+    @Suppress("UNCHECKED_CAST")
+    protected open fun onCreateBinding(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): B? {
+        if (contentLayoutId != 0)
+            return DataBindingUtil.inflate<ViewDataBinding>(inflater, contentLayoutId, container, false) as? B
+        return null
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        binding?.let { onBindingCreated(it, savedInstanceState) }
     }
 
     open fun onBindingCreated(binding: B, savedInstanceState: Bundle?) = Unit
+
+    override fun onDestroyView() {
+        binding?.let { onDestroyBinding(it) }
+        binding = null
+        super.onDestroyView()
+    }
+
     open fun onDestroyBinding(binding: B) = Unit
-    // endregion View & Data Binding
+    // endregion Lifecycle
 }
