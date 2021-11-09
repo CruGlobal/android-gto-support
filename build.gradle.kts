@@ -32,11 +32,11 @@ allprojects {
     afterEvaluate {
         configurations.all {
             resolutionStrategy {
-                force("androidx.annotation:annotation:${libs.versions.androidx.annotation.get()}")
-                force("androidx.core:core:${libs.versions.androidx.core.get()}")
-                force("com.squareup.okio:okio:${libs.versions.okio.get()}")
-                force("org.jetbrains.kotlin:kotlin-stdlib-jdk8:${libs.versions.kotlin.get()}")
-                force("org.jetbrains.kotlinx:kotlinx-coroutines-core:${libs.versions.kotlinCoroutines.get()}")
+                force(libs.androidx.annotation)
+                force(libs.androidx.core)
+                force(libs.kotlin.coroutines)
+                force(libs.kotlin.stdlib.jdk8)
+                force(libs.okio)
 
                 dependencySubstitution {
                     // use the new condensed version of hamcrest
