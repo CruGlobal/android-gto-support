@@ -22,17 +22,10 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-      - name: Cache Gradle
-        uses: actions/cache@v2
-        with:
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
-          key: ${{ runner.os }}-gradle-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-gradle-
       - name: Run Static Analysis
-        run: ./gradlew assemble check -x test --continue --stacktrace --parallel
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: assemble check -x test --continue --stacktrace
       - name: Archive ktlint results
         if: always()
         uses: actions/upload-artifact@v2
@@ -69,7 +62,9 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven-
       - name: Run Unit Tests
-        run: ./gradlew test jacocoTestReport --continue --stacktrace --parallel
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: test jacocoTestReport --continue --stacktrace
       - name: Codecov
         uses: codecov/codecov-action@v2
         with:
@@ -90,15 +85,6 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-      - name: Cache Gradle
-        uses: actions/cache@v2
-        with:
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
-          key: ${{ runner.os }}-gradle-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-gradle-
       - name: Configure JFrog credentials
         env:
           DEPLOY_USERNAME: ${{ secrets.DEPLOY_USERNAME }}
@@ -108,4 +94,6 @@ jobs:
           echo cruGlobalMavenRepositoryUsername=$DEPLOY_USERNAME >> $HOME/.gradle/gradle.properties
           echo cruGlobalMavenRepositoryPassword=$DEPLOY_PASSWORD >> $HOME/.gradle/gradle.properties
       - name: Publish library
-        run: ./gradlew publish --parallel
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: publish
