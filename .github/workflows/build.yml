@@ -64,7 +64,7 @@ jobs:
       - name: Run Unit Tests
         uses: gradle/gradle-build-action@v2
         with:
-          arguments: test jacocoTestReport --continue --stacktrace
+          arguments: test jacocoTestReport --continue --stacktrace --no-build-cache
       - name: Codecov
         uses: codecov/codecov-action@v2
         with:
