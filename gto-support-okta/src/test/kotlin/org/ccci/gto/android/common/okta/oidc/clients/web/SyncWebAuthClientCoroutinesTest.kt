@@ -35,6 +35,7 @@ class SyncWebAuthClientCoroutinesTest {
     @get:Rule
     val activityScenario = ActivityScenarioRule(Activity::class.java)
 
+    private val signOutCalled = CountDownLatch(1)
     private val revokeTokensLatch = CountDownLatch(1)
     private val signOutOfOktaLatch = CountDownLatch(1)
     private var signOutCompleted = false
@@ -48,6 +49,7 @@ class SyncWebAuthClientCoroutinesTest {
             var cancelled = false
 
             on { signOut(any(), any()) } doAnswer {
+                signOutCalled.countDown()
                 revokeTokensLatch.await()
                 if (cancelled) return@doAnswer BaseAuth.FAILED_ALL
 
@@ -86,7 +88,7 @@ class SyncWebAuthClientCoroutinesTest {
         activityScenario.scenario.onActivity {
             runBlocking {
                 val signOut = launch(Dispatchers.IO) { client.signOutSuspending(it) }
-                do { delay(50) } while (!signOut.isActive)
+                signOutCalled.await()
                 client.cancel()
                 clearAllLatches()
                 signOut.join()
@@ -103,7 +105,7 @@ class SyncWebAuthClientCoroutinesTest {
         activityScenario.scenario.onActivity { activity ->
             runBlocking {
                 val signOut = testScope.launch(Dispatchers.IO) { client.signOutSuspending(activity) }
-                do { delay(50) } while (!signOut.isActive)
+                signOutCalled.await()
                 signOut.cancel()
                 clearAllLatches()
                 signOut.join()
@@ -119,7 +121,7 @@ class SyncWebAuthClientCoroutinesTest {
     fun `signOutSuspending() - Activity finished`() = with(activityScenario.scenario) {
         var signOut: Job? = null
         onActivity { signOut = testScope.launch(Dispatchers.IO) { client.signOutSuspending(it) } }
-        Thread.sleep(100)
+        signOutCalled.await()
         recreate()
         clearAllLatches()
         runBlocking { signOut!!.join() }
