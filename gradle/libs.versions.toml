@@ -2,7 +2,7 @@
 android-gradle-plugin = "7.0.3"
 androidx-collection = "1.1.0"
 androidx-core = "1.7.0"
-androidx-fragment = "1.3.6"
+androidx-fragment = "1.4.0"
 androidx-lifecycle = "2.4.0"
 checkstyle = "7.8.2"
 dagger = "2.40.1"
