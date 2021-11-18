@@ -88,7 +88,7 @@ play-core = { module = "com.google.android.play:core", version = "1.10.2" }
 realm = { module = "io.realm:realm-android-library", version = "10.8.1" }
 realm-adapters = { module = "io.realm:android-adapters", version = "4.0.0" }
 retrofit = { module = "com.squareup.retrofit2:retrofit", version = "2.9.0" }
-robolectric = { module = "org.robolectric:robolectric", version = "4.7" }
+robolectric = { module = "org.robolectric:robolectric", version = "4.7.1" }
 scarlet = { module = "com.tinder.scarlet:scarlet", version.ref = "scarlet" }
 scarlet-core = { module = "com.tinder.scarlet:scarlet-core", version.ref = "scarlet" }
 scarlet-messageadapter-builtin = { module = "com.tinder.scarlet:message-adapter-built-in", version.ref = "scarlet" }
