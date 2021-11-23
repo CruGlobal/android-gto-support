@@ -23,4 +23,6 @@ object ExceptionRaisingTree : Timber.Tree() {
             throw it
         }
     }
+
+    fun <R> use(block: () -> R) = plant().use { block() }
 }
