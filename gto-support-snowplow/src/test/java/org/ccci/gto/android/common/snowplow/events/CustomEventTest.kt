@@ -1,8 +1,9 @@
 package org.ccci.gto.android.common.snowplow.events
 
+import android.content.Context
+import android.net.ConnectivityManager
+import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.snowplowanalytics.snowplow.event.AbstractEvent
-import com.snowplowanalytics.snowplow.event.Event
 import com.snowplowanalytics.snowplow.internal.emitter.Emitter
 import com.snowplowanalytics.snowplow.internal.emitter.Executor
 import com.snowplowanalytics.snowplow.internal.tracker.Logger
@@ -25,6 +26,7 @@ import org.mockito.kotlin.mock
 import org.mockito.kotlin.spy
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.verifyNoInteractions
+import org.robolectric.Shadows
 import timber.log.Timber
 
 @RunWith(AndroidJUnit4::class)
@@ -36,11 +38,11 @@ abstract class CustomEventTest<E : CustomEvent<E>> {
 
     @Before
     fun setupTracker() {
+        val context = ApplicationProvider.getApplicationContext<Context>()
+        Shadows.shadowOf(context.getSystemService(ConnectivityManager::class.java)).setActiveNetworkInfo(null)
         emitter = mock()
         tree = spy(Timber.DebugTree())
-        tracker = Tracker.TrackerBuilder(emitter, "", "", mock())
-            .subject(Subject.SubjectBuilder().build())
-            .build()
+        tracker = Tracker(Tracker.TrackerBuilder(emitter, "", "", context).subject(Subject(context, null)))
         Logger.setDelegate(TimberLogger)
         Timber.plant(tree)
     }
@@ -49,7 +51,7 @@ abstract class CustomEventTest<E : CustomEvent<E>> {
     fun cleanupTracker() {
         Timber.uproot(tree)
         Logger.setDelegate(null)
-        Tracker.close()
+        tracker.close()
     }
 
     abstract fun event(): E
