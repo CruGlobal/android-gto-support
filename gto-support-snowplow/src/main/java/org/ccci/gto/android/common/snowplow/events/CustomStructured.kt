@@ -3,8 +3,17 @@ package org.ccci.gto.android.common.snowplow.events
 import com.snowplowanalytics.snowplow.event.Structured
 import com.snowplowanalytics.snowplow.internal.tracker.Tracker
 
-class CustomStructured(builder: Builder) : Structured(builder) {
-    private val attributes = builder.attributes
+class CustomStructured : Structured, CustomEvent<CustomStructured> {
+    constructor(category: String, action: String) : super(category, action) {
+        attributes = mutableMapOf()
+    }
+
+    @Deprecated("Snowplow 3.x removes the Event Builder API")
+    private constructor(builder: Builder) : super(builder) {
+        attributes = builder.attributes
+    }
+
+    override val attributes: MutableMap<String, String?>
 
     override fun beginProcessing(tracker: Tracker) {
         EventSynchronizer.lockFor(this)
@@ -20,9 +29,11 @@ class CustomStructured(builder: Builder) : Structured(builder) {
     }
 
     companion object {
+        @Deprecated("Snowplow 3.x removes the Event Builder API")
         fun builder() = Builder()
     }
 
+    @Deprecated("Snowplow 3.x removes the Event Builder API")
     class Builder : Structured.Builder<Builder>(), CustomEventBuilder<Builder> {
         internal val attributes = mutableMapOf<String, String?>()
 

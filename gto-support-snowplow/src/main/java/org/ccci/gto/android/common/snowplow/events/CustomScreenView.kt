@@ -3,8 +3,17 @@ package org.ccci.gto.android.common.snowplow.events
 import com.snowplowanalytics.snowplow.event.ScreenView
 import com.snowplowanalytics.snowplow.internal.tracker.Tracker
 
-class CustomScreenView(builder: Builder) : ScreenView(builder) {
-    private val attributes = builder.attributes
+class CustomScreenView : ScreenView, CustomEvent<CustomScreenView> {
+    constructor(name: String) : super(name) {
+        attributes = mutableMapOf()
+    }
+
+    @Deprecated("Snowplow 3.x removes the Event Builder API")
+    private constructor(builder: Builder) : super(builder) {
+        attributes = builder.attributes.toMutableMap()
+    }
+
+    override val attributes: MutableMap<String, String?>
 
     override fun beginProcessing(tracker: Tracker) {
         EventSynchronizer.lockFor(this)
@@ -20,9 +29,11 @@ class CustomScreenView(builder: Builder) : ScreenView(builder) {
     }
 
     companion object {
+        @Deprecated("Snowplow 3.x removes the Event Builder API")
         fun builder() = Builder()
     }
 
+    @Deprecated("Snowplow 3.x removes the Event Builder API")
     class Builder : ScreenView.Builder<Builder>(), CustomEventBuilder<Builder> {
         internal val attributes = mutableMapOf<String, String?>()
 
