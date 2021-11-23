@@ -28,7 +28,7 @@ import org.mockito.kotlin.verifyNoInteractions
 import timber.log.Timber
 
 @RunWith(AndroidJUnit4::class)
-abstract class CustomEventTest<E : CustomEvent<E>, B> where B : AbstractEvent.Builder<B>, B : CustomEventBuilder<B> {
+abstract class CustomEventTest<E : CustomEvent<E>> {
     private lateinit var emitter: Emitter
     private lateinit var tree: Timber.Tree
 
@@ -59,25 +59,6 @@ abstract class CustomEventTest<E : CustomEvent<E>, B> where B : AbstractEvent.Bu
         val event = event()
             .attribute("custom", "value")
             .attribute("null", null)
-
-        tracker.track(event)
-        Executor.shutdown()?.awaitTermination(10, TimeUnit.SECONDS)
-        argumentCaptor<Payload> {
-            verify(emitter).add(capture())
-            assertThat(firstValue.map, allOf(hasEntry("custom", "value"), not(hasKey("null"))))
-        }
-        verifyNoInteractions(tree)
-    }
-
-    abstract fun eventBuilder(): B
-    abstract fun B.buildEvent(): Event
-
-    @Test
-    fun testCustomAttributesBuilder() {
-        val event = eventBuilder()
-            .attribute("custom", "value")
-            .attribute("null", null)
-            .buildEvent()
 
         tracker.track(event)
         Executor.shutdown()?.awaitTermination(10, TimeUnit.SECONDS)
