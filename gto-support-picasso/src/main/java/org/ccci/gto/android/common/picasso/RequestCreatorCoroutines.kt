@@ -9,6 +9,7 @@ import com.squareup.picasso.picasso
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlinx.coroutines.CancellableContinuation
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -19,7 +20,10 @@ suspend fun RequestCreator.getBitmap(): Bitmap = withContext(Dispatchers.Main) {
     suspendCancellableCoroutine { cont ->
         val target = BitmapContinuationTarget(cont)
         into(target)
-        cont.invokeOnCancellation { GlobalScope.launch(Dispatchers.Main.immediate) { picasso?.cancelRequest(target) } }
+        cont.invokeOnCancellation {
+            @OptIn(DelicateCoroutinesApi::class)
+            GlobalScope.launch(Dispatchers.Main.immediate) { picasso?.cancelRequest(target) }
+        }
     }
 }
 
