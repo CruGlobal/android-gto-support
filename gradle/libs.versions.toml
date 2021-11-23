@@ -94,7 +94,7 @@ scarlet-core = { module = "com.tinder.scarlet:scarlet-core", version.ref = "scar
 scarlet-messageadapter-builtin = { module = "com.tinder.scarlet:message-adapter-built-in", version.ref = "scarlet" }
 scarlet-messageadapter-moshi = { module = "com.tinder.scarlet:message-adapter-moshi", version.ref = "scarlet" }
 scarlet-websocket-okhttp = { module = "com.tinder.scarlet:websocket-okhttp", version.ref = "scarlet" }
-snowplow = { module = "com.snowplowanalytics:snowplow-android-tracker", version = "2.2.1" }
+snowplow = { module = "com.snowplowanalytics:snowplow-android-tracker", version = "3.0.0" }
 timber = { module = "com.jakewharton.timber:timber", version = "5.0.1" }
 weakdelegate = { module = "com.github.Karumi:WeakDelegate", version = "1.0.1" }
 
