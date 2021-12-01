@@ -34,4 +34,9 @@ fun Context.getString(locale: Locale?, @StringRes resId: Int, vararg formatArgs:
 /**
  * replacement for BuildConfig.DEBUG to allow libraries to check final app debug mode.
  */
-fun Context.isApplicationDebuggable() = applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE != 0
+val Context.isApplicationDebuggable get() = applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE != 0
+
+@Deprecated("Since v3.10.1, use extension property instead.", ReplaceWith("isApplicationDebuggable"))
+@JvmSynthetic
+@JvmName("-isApplicationDebuggable()")
+fun Context.isApplicationDebuggable() = isApplicationDebuggable
