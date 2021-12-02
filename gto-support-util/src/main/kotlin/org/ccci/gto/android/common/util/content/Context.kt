@@ -38,5 +38,5 @@ val Context.isApplicationDebuggable get() = applicationInfo.flags and Applicatio
 
 @Deprecated("Since v3.10.1, use extension property instead.", ReplaceWith("isApplicationDebuggable"))
 @JvmSynthetic
-@JvmName("-isApplicationDebuggable()")
+@JvmName("isApplicationDebuggableDeprecated()")
 fun Context.isApplicationDebuggable() = isApplicationDebuggable
