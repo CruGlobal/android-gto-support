@@ -59,7 +59,7 @@ eventbus = { module = "org.greenrobot:eventbus", version = "3.2.0" }
 facebookFlipper = { module = "com.facebook.flipper:flipper", version = "0.123.0" }
 firebase-crashlytics = { module = "com.google.firebase:firebase-crashlytics", version = "18.2.5" }
 guava-listenablefuture = { module = "com.google.guava:listenablefuture", version = "1.0" }
-json = { module = "org.json:json", version = "20210307" }
+json = { module = "org.json:json", version = "20211205" }
 jsonUnit = { module = "net.javacrumbs.json-unit:json-unit", version.ref = "jsonUnit" }
 jsonUnit-fluent = { module = "net.javacrumbs.json-unit:json-unit-fluent", version.ref = "jsonUnit" }
 junit = { module = "junit:junit", version = "4.13.2" }
