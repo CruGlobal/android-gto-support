@@ -14,7 +14,7 @@ abstract class AbstractDataBindingAdapter<B : ViewDataBinding, VH : DataBindingV
     // region Lifecycle
     final override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = onCreateViewHolder(
         onCreateViewDataBinding(parent, viewType).also {
-            it.lifecycleOwner = lifecycleOwner
+            lifecycleOwner?.let { owner -> it.lifecycleOwner = owner }
             onViewDataBindingCreated(it, viewType)
         },
         viewType
