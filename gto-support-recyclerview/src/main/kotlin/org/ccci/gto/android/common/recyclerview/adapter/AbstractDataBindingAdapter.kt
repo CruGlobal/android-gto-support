@@ -9,12 +9,12 @@ import com.karumi.weak.weak
 abstract class AbstractDataBindingAdapter<B : ViewDataBinding, VH : DataBindingViewHolder<B>>(
     lifecycleOwner: LifecycleOwner? = null
 ) : RecyclerView.Adapter<VH>() {
-    private val lifecycleOwner by weak(lifecycleOwner)
+    protected open val lifecycleOwner by weak(lifecycleOwner)
 
     // region Lifecycle
     final override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = onCreateViewHolder(
         onCreateViewDataBinding(parent, viewType).also {
-            it.lifecycleOwner = lifecycleOwner
+            lifecycleOwner?.let { owner -> it.lifecycleOwner = owner }
             onViewDataBindingCreated(it, viewType)
         },
         viewType
