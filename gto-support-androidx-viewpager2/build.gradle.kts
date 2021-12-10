@@ -16,4 +16,6 @@ dependencies {
 
     compileOnly(libs.androidx.databinding.adapters)
     compileOnly(libs.androidx.databinding.runtime)
+
+    testImplementation(libs.androidx.arch.core.testing)
 }
