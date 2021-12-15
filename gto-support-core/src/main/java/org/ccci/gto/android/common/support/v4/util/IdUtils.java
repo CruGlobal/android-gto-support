@@ -1,44 +1,34 @@
 package org.ccci.gto.android.common.support.v4.util;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import androidx.annotation.NonNull;
-import androidx.collection.LongSparseArray;
 
+import org.ccci.gto.android.common.util.Ids;
+
+/**
+ * @deprecated Since v3.11.0, use {@link Ids} from gto-support-util instead.
+ */
+@Deprecated
 public class IdUtils {
-    // no need to use AtomicLong because it is only referenced in blocks synchronized on IDS_REVERSE
-    private static volatile long sNextId = 1;
-    private static final LongSparseArray<Object> IDS = new LongSparseArray<>();
-    private static final Map<Object, Long> IDS_REVERSE = new HashMap<>();
-
+    /**
+     * @deprecated Since v3.11.0, use {@link Ids#lookup(long)} from gto-support-util instead.
+     */
     @NonNull
-    @SuppressWarnings("unchecked")
+    @Deprecated
     public static <T> T convertId(final long id) {
-        synchronized (IDS) {
-            return (T) IDS.get(id);
-        }
+        return Ids.lookup(id);
     }
 
     /**
      * Convert an arbitrary object to a long id. The arbitrary objects are kept in an internal mapping table, so use
      * simple immutable objects only to prevent leaking memory.
      *
+     * @deprecated Since v3.11.0, use {@link Ids#generate(Object)} from gto-support-util instead.
      * @param id  arbitrary object
      * @param <T> any simple immutable class
      * @return unique id for arbitrary object
      */
+    @Deprecated
     public static <T> long convertId(@NonNull final T id) {
-        synchronized (IDS_REVERSE) {
-            Long rawId = IDS_REVERSE.get(id);
-            if (rawId == null) {
-                rawId = sNextId++;
-                synchronized (IDS) {
-                    IDS.put(rawId, id);
-                }
-                IDS_REVERSE.put(id, rawId);
-            }
-            return rawId;
-        }
+        return Ids.generate(id);
     }
 }
