@@ -4,6 +4,10 @@ import android.app.Dialog;
 
 import androidx.fragment.app.DialogFragment;
 
+/**
+ * @deprecated Since v3.11.0, this worked around a bug with functionality that has now been deprecated.
+ */
+@Deprecated
 public class AbstractDialogFragment extends DialogFragment {
 
     /* BEGIN lifecycle */
