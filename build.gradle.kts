@@ -34,6 +34,7 @@ allprojects {
             resolutionStrategy {
                 force(libs.androidx.annotation)
                 force(libs.androidx.core)
+                force(libs.androidx.sqlite)
                 force(libs.kotlin.coroutines)
                 force(libs.kotlin.stdlib.jdk8)
                 force(libs.okio)
