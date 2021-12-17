@@ -1,6 +1,7 @@
 package org.ccci.gto.android.common.androidx.fragment.app
 
 import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.pendingActions
 
 internal fun FragmentManager.backStackEntriesIterator() = object : ListIterator<FragmentManager.BackStackEntry> {
     private val manager = this@backStackEntriesIterator
@@ -18,3 +19,5 @@ val FragmentManager.backStackEntries
     get() = object : Sequence<FragmentManager.BackStackEntry> {
         override fun iterator() = backStackEntriesIterator()
     }
+
+val FragmentManager.hasPendingActions get() = pendingActions!!.isNotEmpty()

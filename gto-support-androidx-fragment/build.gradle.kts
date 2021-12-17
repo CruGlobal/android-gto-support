@@ -5,8 +5,13 @@ plugins {
 
 configureAndroidLibrary()
 
+android {
+    defaultConfig.consumerProguardFiles("proguard-consumer.pro")
+}
+
 dependencies {
     api(libs.androidx.fragment)
+    implementation(project(":gto-support-util"))
     compileOnly(libs.androidx.fragment.ktx)
 
     // DataBindingDialogFragment dependencies
