@@ -100,4 +100,4 @@ weakdelegate = { module = "com.github.Karumi:WeakDelegate", version = "1.0.1" }
 
 [plugins]
 junitJacoco = { id = "com.vanniktech.android.junit.jacoco", version = "0.16.0" }
-ktlint = { id = "org.jlleitschuh.gradle.ktlint", version = "10.2.0" }
+ktlint = { id = "org.jlleitschuh.gradle.ktlint", version = "10.2.1" }
