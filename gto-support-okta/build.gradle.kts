@@ -16,6 +16,8 @@ dependencies {
     implementation(project(":gto-support-compat"))
     implementation(project(":gto-support-util"))
 
+    implementation(libs.timber)
+
     // region Coroutines
     compileOnly(libs.kotlin.coroutines)
     // endregion Coroutines
