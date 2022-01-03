@@ -3,9 +3,16 @@ package org.ccci.gto.android.common.okta.oidc.net
 import android.net.Uri
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.okta.oidc.net.ConnectionParameters
+import com.okta.oidc.net.request.HttpRequestBuilder
+import com.okta.oidc.net.request.ProviderConfiguration
+import com.okta.oidc.util.AuthorizationException
+import java.net.InetAddress
 import okhttp3.HttpUrl
+import okhttp3.OkHttpClient
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
+import okhttp3.tls.HandshakeCertificates
+import okhttp3.tls.HeldCertificate
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.aMapWithSize
 import org.hamcrest.Matchers.allOf
@@ -14,6 +21,8 @@ import org.junit.Assert.assertEquals
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.kotlin.doReturn
+import org.mockito.kotlin.mock
 
 private const val HEADER1 = "Header-One"
 private const val HEADER2 = "Header-Two"
@@ -28,10 +37,23 @@ private val HEADERS = mapOf(HEADER1 to VALUE1, HEADER2 to VALUE2)
 
 @RunWith(AndroidJUnit4::class)
 class OkHttpOktaHttpClientTest {
-    @get:Rule
-    val server = MockWebServer()
+    private val cert = HeldCertificate.Builder()
+        .addSubjectAlternativeName(InetAddress.getByName("localhost").canonicalHostName)
+        .build()
+    private val certs = HandshakeCertificates.Builder()
+        .addTrustedCertificate(cert.certificate)
+        .heldCertificate(cert)
+        .build()
 
-    private val client = OkHttpOktaHttpClient()
+    @get:Rule
+    val server = MockWebServer().apply {
+        useHttps(certs.sslSocketFactory(), false)
+    }
+    private val okhttp = OkHttpClient.Builder()
+        .sslSocketFactory(certs.sslSocketFactory(), certs.trustManager)
+        .build()
+
+    private val client = OkHttpOktaHttpClient(okhttp)
 
     @Test
     fun verifyGetRequest() {
@@ -96,4 +118,57 @@ class OkHttpOktaHttpClientTest {
         assertEquals(0, request.bodySize)
         assertEquals("", request.body.readUtf8())
     }
+
+    // region RefreshTokenRequest
+    private fun refreshTokenRequest() = HttpRequestBuilder.newRefreshTokenRequest()
+        .tokenResponse(mock {
+            on { refreshToken } doReturn "refresh_token"
+            on { scope } doReturn "email"
+        })
+        .providerConfiguration(ProviderConfiguration().apply { token_endpoint = server.url("/token").toString() })
+        .config(mock { on { clientId } doReturn "" })
+        .createRequest()
+
+    @Test
+    fun testRefreshTokenRequest() {
+        server.enqueue(
+            MockResponse()
+                .setResponseCode(200)
+                .setBody("""{"access_token":"success"}""")
+        )
+
+        val response = refreshTokenRequest().executeRequest(client)
+        assertEquals("success", response.accessToken)
+    }
+
+    @Test
+    fun `testRefreshTokenRequest - invalid_client`() {
+        server.enqueue(
+            MockResponse()
+                .setResponseCode(401)
+                .setBody("""{"error": "invalid_client"}""")
+        )
+
+        try {
+            refreshTokenRequest().executeRequest(client)
+        } catch (e: AuthorizationException) {
+            assertEquals(AuthorizationException.TokenRequestErrors.INVALID_CLIENT, e)
+        }
+    }
+
+    @Test
+    fun `testRefreshTokenRequest - invalid_grant`() {
+        server.enqueue(
+            MockResponse()
+                .setResponseCode(400)
+                .setBody("""{"error": "invalid_grant"}""")
+        )
+
+        try {
+            refreshTokenRequest().executeRequest(client)
+        } catch (e: AuthorizationException) {
+            assertEquals(AuthorizationException.TokenRequestErrors.INVALID_GRANT, e)
+        }
+    }
+    // endregion RefreshTokenRequest
 }
