@@ -76,15 +76,18 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-      - name: Configure JFrog credentials
-        env:
-          DEPLOY_USERNAME: ${{ secrets.DEPLOY_USERNAME }}
-          DEPLOY_PASSWORD: ${{ secrets.DEPLOY_PASSWORD }}
-        run: |
-          mkdir -p ~/.gradle
-          echo cruGlobalMavenRepositoryUsername=$DEPLOY_USERNAME >> $HOME/.gradle/gradle.properties
-          echo cruGlobalMavenRepositoryPassword=$DEPLOY_PASSWORD >> $HOME/.gradle/gradle.properties
+#       - name: Configure JFrog credentials
+#         env:
+#           DEPLOY_USERNAME: ${{ secrets.DEPLOY_USERNAME }}
+#           DEPLOY_PASSWORD: ${{ secrets.DEPLOY_PASSWORD }}
+#         run: |
+#           mkdir -p ~/.gradle
+#           echo cruGlobalMavenRepositoryUsername=$DEPLOY_USERNAME >> $HOME/.gradle/gradle.properties
+#           echo cruGlobalMavenRepositoryPassword=$DEPLOY_PASSWORD >> $HOME/.gradle/gradle.properties
       - name: Publish library
         uses: gradle/gradle-build-action@v2
         with:
           arguments: publish
+        env:
+          ORG_GRADLE_PROJECT_cruGlobalMavenRepositoryUsername: ${{ secrets.DEPLOY_USERNAME }}
+          ORG_GRADLE_PROJECT_cruGlobalMavenRepositoryPassword: ${{ secrets.DEPLOY_PASSWORD }}
