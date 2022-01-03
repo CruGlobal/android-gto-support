@@ -93,6 +93,7 @@ class OktaUserProfileProvider @VisibleForTesting internal constructor(
     }
 
     private suspend fun load() {
+        if (!sessionClient.isAuthenticated) return
         try {
             if (sessionClient.tokens?.isAccessTokenExpired != false) sessionClient.refreshToken()
             val profile = sessionClient.getUserProfile()
