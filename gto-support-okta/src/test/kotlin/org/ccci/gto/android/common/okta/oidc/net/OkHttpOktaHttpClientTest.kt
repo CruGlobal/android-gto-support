@@ -121,10 +121,12 @@ class OkHttpOktaHttpClientTest {
 
     // region RefreshTokenRequest
     private fun refreshTokenRequest() = HttpRequestBuilder.newRefreshTokenRequest()
-        .tokenResponse(mock {
-            on { refreshToken } doReturn "refresh_token"
-            on { scope } doReturn "email"
-        })
+        .tokenResponse(
+            mock {
+                on { refreshToken } doReturn "refresh_token"
+                on { scope } doReturn "email"
+            }
+        )
         .providerConfiguration(ProviderConfiguration().apply { token_endpoint = server.url("/token").toString() })
         .config(mock { on { clientId } doReturn "" })
         .createRequest()

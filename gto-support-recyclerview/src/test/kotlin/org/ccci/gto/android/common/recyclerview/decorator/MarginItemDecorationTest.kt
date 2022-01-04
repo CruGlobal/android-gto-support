@@ -43,7 +43,7 @@ class MarginItemDecorationTest {
 
     @Test
     @Parameters("ltr", "rtl")
-    fun `MarginItemDecoration(margins = all)`(@Param(converter = LayoutDirectionConverter::class) dir: Int) {
+    fun `MarginItemDecoration(margins=all)`(@Param(converter = LayoutDirectionConverter::class) dir: Int) {
         MarginItemDecoration(margins = all).testDecoration(dir) {
             assertEquals(all, it.left)
             assertEquals(all, it.top)
@@ -54,7 +54,7 @@ class MarginItemDecorationTest {
 
     @Test
     @Parameters("ltr", "rtl")
-    fun `MarginItemDecoration(margins = all) - overrides`(@Param(converter = LayoutDirectionConverter::class) dir: Int) {
+    fun `MarginItemDecoration(margins=all) - overrides`(@Param(converter = LayoutDirectionConverter::class) dir: Int) {
         MarginItemDecoration(margins = all, horizontalMargins = horizontal).testDecoration(dir) {
             assertEquals(horizontal, it.left)
             assertEquals(all, it.top)
