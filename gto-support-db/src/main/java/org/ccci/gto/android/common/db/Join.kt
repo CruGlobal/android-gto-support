@@ -22,6 +22,8 @@ data class Join<S : Any, T : Any> private constructor(
         fun <S : Any, T : Any> create(target: Table<T>) = Join<S, T>(target = target)
     }
 
+    internal val allTables: Sequence<Table<*>> get() = sequenceOf(target) + base?.allTables.orEmpty()
+
     fun type(type: String?) = copy(type = type)
     fun on(on: Expression?) = copy(on = on)
     fun andOn(on: Expression) = copy(on = this.on?.and(on) ?: on)
