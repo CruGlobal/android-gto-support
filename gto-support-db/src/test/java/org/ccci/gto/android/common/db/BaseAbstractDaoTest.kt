@@ -40,13 +40,11 @@ abstract class BaseAbstractDaoTest {
     protected fun Stubber.wheneverGetPrimaryKeyWhere(obj: Any) = whenever(dao).getPrimaryKeyWhere(obj)
 
     protected class TestDao(helper: SQLiteOpenHelper) : AbstractDao(helper) {
+        val invalidatedClasses = mutableListOf<Class<*>>()
+
         init {
             registerType(Model1::class.java, Model1.TABLE_NAME, arrayOf(Model1.FIELD_NAME), null, null)
-        }
-
-        val invalidatedClasses = mutableListOf<Class<*>>()
-        override fun onInvalidateClass(clazz: Class<*>) {
-            invalidatedClasses += clazz
+            registerInvalidationCallback { invalidatedClasses += it }
         }
 
         fun invalidate(clazz: Class<*>) = invalidateClass(clazz)

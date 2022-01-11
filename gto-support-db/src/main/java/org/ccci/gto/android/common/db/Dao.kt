@@ -82,6 +82,16 @@ interface Dao {
     fun delete(clazz: Class<*>, where: Expression?)
     // endregion Read-Write
     // endregion Queries
+
+    // region Data Invalidation
+    fun interface InvalidationCallback {
+        @WorkerThread
+        fun onInvalidate(clazz: Class<*>)
+    }
+
+    fun registerInvalidationCallback(callback: InvalidationCallback)
+    fun unregisterInvalidationCallback(callback: InvalidationCallback)
+    // endregion Data Invalidation
 }
 
 inline fun <reified T : Any> Dao.find(vararg key: Any) = find(T::class.java, *key)
