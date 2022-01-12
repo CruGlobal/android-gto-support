@@ -24,7 +24,7 @@ class AbstractDaoClassInvalidationTest : BaseAbstractDaoTest() {
     @Test
     fun verifyInvalidateClassWithoutTransaction() {
         dao.invalidate(Model1::class.java)
-        assertThat(dao.invalidatedClasses, contains<Class<*>>(Model1::class.java))
+        assertThat(dao.invalidatedClasses, contains(Model1::class.java))
     }
 
     @Test
@@ -33,7 +33,7 @@ class AbstractDaoClassInvalidationTest : BaseAbstractDaoTest() {
             dao.invalidate(Model1::class.java)
             assertThat(dao.invalidatedClasses, empty())
         }
-        assertThat(dao.invalidatedClasses, contains<Class<*>>(Model1::class.java))
+        assertThat(dao.invalidatedClasses, contains(Model1::class.java))
     }
 
     @Test

@@ -29,6 +29,9 @@ data class Query<T : Any> private constructor(
         inline fun <reified T : Any> select() = select(T::class.java)
     }
 
+    @get:RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
+    val allTables get() = sequenceOf(table) + joins.flatMap { it.allTables }
+
     fun distinct(isDistinct: Boolean) = copy(isDistinct = isDistinct)
     fun join(vararg joins: Join<T, *>) = copy(joins = this.joins + joins)
     fun joins(vararg joins: Join<T, *>) = copy(joins = joins.toList())

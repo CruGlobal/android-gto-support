@@ -363,11 +363,29 @@ abstract class AbstractDao(private val helper: SQLiteOpenHelper) : Dao {
         }
     }
 
+    private val invalidationCallbacks = mutableListOf<Dao.InvalidationCallback>()
+
+    final override fun registerInvalidationCallback(callback: Dao.InvalidationCallback) =
+        synchronized(invalidationCallbacks) { invalidationCallbacks += callback }
+
+    final override fun unregisterInvalidationCallback(callback: Dao.InvalidationCallback) =
+        synchronized(invalidationCallbacks) { invalidationCallbacks -= callback }
+
+    @WorkerThread
     protected fun invalidateClass(clazz: Class<*>) {
-        currentTransaction?.invalidatedClasses?.add(clazz) ?: onInvalidateClass(clazz)
+        currentTransaction?.let {
+            it.invalidatedClasses.add(clazz)
+            return
+        }
+
+        synchronized(invalidationCallbacks) { invalidationCallbacks.toTypedArray() }.forEach { it.onInvalidate(clazz) }
     }
 
+    @Deprecated("Since v3.11.0, register an InvalidationCallback instead.")
     protected open fun onInvalidateClass(clazz: Class<*>) = Unit
+    init {
+        registerInvalidationCallback { onInvalidateClass(it) }
+    }
     // endregion Data Invalidation
 
     protected fun compileExpression(expression: Expression) = expression.buildSql(this)

@@ -70,17 +70,7 @@ class LiveDataRegistry {
 
     @MainThread
     internal fun DaoComputableLiveData<*>.registerFor(query: Query<*>) {
-        registerFor(query.table)
-        query.joins.forEach { registerFor(it) }
-    }
-
-    @MainThread
-    private fun DaoComputableLiveData<*>.registerFor(table: Table<*>) = registerFor(table.type)
-
-    @MainThread
-    private fun DaoComputableLiveData<*>.registerFor(join: Join<*, *>) {
-        join.base?.let { registerFor(it) }
-        registerFor(join.target)
+        query.allTables.forEach { registerFor(it.type) }
     }
 
     @AnyThread
