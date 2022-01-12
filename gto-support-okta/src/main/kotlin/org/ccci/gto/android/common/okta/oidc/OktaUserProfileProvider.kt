@@ -68,31 +68,37 @@ class OktaUserProfileProvider @VisibleForTesting internal constructor(
     internal val refreshActor = coroutineScope.actor<Unit>(capacity = CONFLATED) {
         val oktaUserIdChannel = sessionClient.oktaUserIdFlow().produceIn(this)
 
-        while (!channel.isClosedForSend && !channel.isClosedForReceive && !oktaUserIdChannel.isClosedForReceive) {
-            // load user info if there are active flows and user info hasn't been loaded yet or is stale
-            val hasActiveFlows = activeFlows.get() > 0
-            val refreshIfStale = refreshIfStaleFlows.get() > 0
-            val userId = if (hasActiveFlows) sessionClient.oktaUserId else null
-            val userInfo = userId?.let { oktaRepo.getPersistableUserInfo(it) }
-            if (hasActiveFlows && userId != null && (userInfo == null || (refreshIfStale && userInfo.isStale))) load()
+        try {
+            while (!channel.isClosedForSend && !channel.isClosedForReceive && !oktaUserIdChannel.isClosedForReceive) {
+                // load user info if there are active flows and user info hasn't been loaded yet or is stale
+                val hasActiveFlows = activeFlows.get() > 0
+                val refreshIfStale = refreshIfStaleFlows.get() > 0
+                val userId = if (hasActiveFlows) sessionClient.oktaUserId else null
+                val userInfo = userId?.let { oktaRepo.getPersistableUserInfo(it) }
+                if (hasActiveFlows && userId != null && (userInfo == null || (userInfo.isStale && refreshIfStale))) {
+                    loadUserProfile()
+                }
 
-            // suspend until we need to reload the profile
-            select<Unit> {
-                channel.onReceiveCatching {}
+                // suspend until we need to reload the profile
+                select<Unit> {
+                    channel.onReceiveCatching {}
 
-                // enable other monitors when there are active flows
-                if (hasActiveFlows) {
-                    oktaUserIdChannel.onReceiveCatching {}
+                    // enable other monitors when there are active flows
+                    if (hasActiveFlows) {
+                        oktaUserIdChannel.onReceiveCatching {}
 
-                    if (userId != null && refreshIfStale) {
-                        onTimeout((userInfo?.nextRefreshDelay ?: 0).coerceAtLeast(MIN_IN_MS)) {}
+                        if (userId != null && refreshIfStale) {
+                            onTimeout((userInfo?.nextRefreshDelay ?: 0).coerceAtLeast(MIN_IN_MS)) {}
+                        }
                     }
                 }
             }
+        } finally {
+            oktaUserIdChannel.cancel()
         }
     }
 
-    private suspend fun load() {
+    private suspend fun loadUserProfile() {
         if (!sessionClient.isAuthenticated) return
         try {
             if (sessionClient.tokens?.isAccessTokenExpired != false) sessionClient.refreshToken()
