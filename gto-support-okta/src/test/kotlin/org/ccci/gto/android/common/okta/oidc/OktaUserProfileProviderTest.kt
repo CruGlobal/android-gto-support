@@ -7,7 +7,8 @@ import com.okta.oidc.net.response.UserInfo
 import com.okta.oidc.storage.OktaRepository
 import com.okta.oidc.storage.OktaStorage
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.TestCoroutineScope
 import kotlinx.coroutines.test.runBlockingTest
@@ -78,7 +79,7 @@ internal class OktaUserProfileProviderTest : BaseOktaOidcTest() {
         val results = mutableListOf<UserInfo?>()
 
         // initial user info
-        val flow = launch { provider.userInfoFlow().collect { results += it } }
+        val flow = provider.userInfoFlow().onEach { results += it }.launchIn(this)
         assertEquals(1, provider.activeFlows.get())
         verify(oktaRepo).get(PersistableUserInfo.Restore(OKTA_USER_ID))
         assertEquals(1, results.size)
@@ -103,7 +104,7 @@ internal class OktaUserProfileProviderTest : BaseOktaOidcTest() {
         val results = mutableListOf<UserInfo?>()
 
         // initial user info
-        val flow = launch { provider.userInfoFlow().collect { results += it } }
+        val flow = provider.userInfoFlow().onEach { results += it }.launchIn(this)
         assertEquals(0, provider.activeFlows.get())
         verify(oktaRepo, never()).get<PersistableUserInfo>(any())
         assertEquals(1, results.size)
