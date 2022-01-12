@@ -22,6 +22,7 @@ import org.json.JSONObject
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -166,7 +167,7 @@ internal class OktaUserProfileProviderTest : BaseOktaOidcTest() {
         verify(httpClient, never()).connect(any(), any())
 
         provider.activeFlows.set(1)
-        provider.refreshActor.offer(Unit)
+        assertTrue(provider.refreshActor.trySend(Unit).isSuccess)
         testScope.runCurrent()
         verify(oktaRepo, atLeastOnce()).get(PersistableUserInfo.Restore(OKTA_USER_ID))
         verify(httpClient, never()).connect(any(), any())
