@@ -6,6 +6,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.channels.trySendBlocking
 import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.conflate
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
@@ -19,7 +20,7 @@ interface CoroutinesFlowDao : CoroutinesDao, Dao {
             registerInvalidationCallback(callback)
             send(types.first())
             awaitClose { unregisterInvalidationCallback(callback) }
-        }
+        }.conflate()
     }
 
     @AnyThread
