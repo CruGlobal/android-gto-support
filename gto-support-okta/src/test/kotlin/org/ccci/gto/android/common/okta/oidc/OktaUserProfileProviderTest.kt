@@ -11,7 +11,13 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.TestCoroutineScope
-import kotlinx.coroutines.test.runBlockingTest
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
+import kotlinx.coroutines.test.advanceTimeBy
+import kotlinx.coroutines.test.advanceUntilIdle
+import kotlinx.coroutines.test.pauseDispatcher
+import kotlinx.coroutines.test.resumeDispatcher
+import kotlinx.coroutines.test.runCurrent
+import kotlinx.coroutines.test.runTest
 import org.ccci.gto.android.common.base.TimeConstants.HOUR_IN_MS
 import org.ccci.gto.android.common.okta.oidc.clients.sessions.oktaRepo
 import org.ccci.gto.android.common.okta.oidc.net.response.CLAIM_OKTA_USER_ID
@@ -75,7 +81,7 @@ internal class OktaUserProfileProviderTest : BaseOktaOidcTest() {
 
     // region userInfoFlow()
     @Test
-    fun verifyUserInfoFlow() = runBlockingTest {
+    fun verifyUserInfoFlow() = runTest(UnconfinedTestDispatcher()) {
         val results = mutableListOf<UserInfo?>()
 
         // initial user info
@@ -99,7 +105,7 @@ internal class OktaUserProfileProviderTest : BaseOktaOidcTest() {
     }
 
     @Test
-    fun verifyUserInfoFlowChangeUser() = runBlockingTest {
+    fun verifyUserInfoFlowChangeUser() = runTest(UnconfinedTestDispatcher()) {
         tokens.stub { on { idToken } doReturn null }
         val results = mutableListOf<UserInfo?>()
 
@@ -132,7 +138,7 @@ internal class OktaUserProfileProviderTest : BaseOktaOidcTest() {
     }
 
     @Test
-    fun verifyUserInfoFlowNullOnLogout() = runBlockingTest {
+    fun verifyUserInfoFlowNullOnLogout() = runTest(UnconfinedTestDispatcher()) {
         userInfo.stub { on { userInfo } doReturn UserInfo(JSONObject(mapOf(CLAIM_OKTA_USER_ID to OKTA_USER_ID))) }
         val results = mutableListOf<UserInfo?>()
 
