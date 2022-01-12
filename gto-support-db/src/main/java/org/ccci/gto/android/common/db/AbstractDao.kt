@@ -39,6 +39,7 @@ abstract class AbstractDao(private val helper: SQLiteOpenHelper) : Dao {
     }
 
     override val backgroundExecutor: Executor get() = AsyncTask.THREAD_POOL_EXECUTOR
+    final override val services = mutableMapOf<Class<*>, Any>()
     @get:WorkerThread
     protected val readableDatabase: SQLiteDatabase get() = helper.readableDatabase
     @get:WorkerThread
