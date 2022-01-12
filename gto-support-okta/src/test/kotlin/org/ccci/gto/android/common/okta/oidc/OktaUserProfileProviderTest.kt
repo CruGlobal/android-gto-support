@@ -7,10 +7,15 @@ import com.okta.oidc.net.response.UserInfo
 import com.okta.oidc.storage.OktaRepository
 import com.okta.oidc.storage.OktaStorage
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.test.TestCoroutineScope
-import kotlinx.coroutines.test.runBlockingTest
+import kotlinx.coroutines.test.TestScope
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
+import kotlinx.coroutines.test.advanceTimeBy
+import kotlinx.coroutines.test.advanceUntilIdle
+import kotlinx.coroutines.test.runCurrent
+import kotlinx.coroutines.test.runTest
 import org.ccci.gto.android.common.base.TimeConstants.HOUR_IN_MS
 import org.ccci.gto.android.common.okta.oidc.clients.sessions.oktaRepo
 import org.ccci.gto.android.common.okta.oidc.net.response.CLAIM_OKTA_USER_ID
@@ -19,9 +24,9 @@ import org.ccci.gto.android.common.okta.oidc.net.response.oktaUserId
 import org.ccci.gto.android.common.okta.oidc.storage.ChangeAwareOktaStorage
 import org.ccci.gto.android.common.okta.oidc.storage.makeChangeAware
 import org.json.JSONObject
-import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -44,7 +49,7 @@ internal class OktaUserProfileProviderTest : BaseOktaOidcTest() {
     private lateinit var sessionClient: SessionClient
     override val storage = mock<OktaStorage>().makeChangeAware() as ChangeAwareOktaStorage
     private lateinit var oktaRepo: OktaRepository
-    private lateinit var testScope: TestCoroutineScope
+    private val testScope = TestScope()
 
     private lateinit var provider: OktaUserProfileProvider
 
@@ -60,24 +65,16 @@ internal class OktaUserProfileProviderTest : BaseOktaOidcTest() {
         oktaRepo = spy(sessionClient.oktaRepo) {
             doReturn(userInfo).whenever(it).get(PersistableUserInfo.Restore(OKTA_USER_ID))
         }
-        testScope = TestCoroutineScope()
-        testScope.pauseDispatcher()
         provider = OktaUserProfileProvider(sessionClient, oktaRepo, coroutineScope = testScope)
-    }
-
-    @After
-    fun cleanup() {
-        provider.shutdown()
-        testScope.cleanupTestCoroutines()
     }
 
     // region userInfoFlow()
     @Test
-    fun verifyUserInfoFlow() = runBlockingTest {
+    fun verifyUserInfoFlow() = runTest(UnconfinedTestDispatcher()) {
         val results = mutableListOf<UserInfo?>()
 
         // initial user info
-        val flow = launch { provider.userInfoFlow().collect { results += it } }
+        val flow = provider.userInfoFlow().onEach { results += it }.launchIn(this)
         assertEquals(1, provider.activeFlows.get())
         verify(oktaRepo).get(PersistableUserInfo.Restore(OKTA_USER_ID))
         assertEquals(1, results.size)
@@ -97,12 +94,12 @@ internal class OktaUserProfileProviderTest : BaseOktaOidcTest() {
     }
 
     @Test
-    fun verifyUserInfoFlowChangeUser() = runBlockingTest {
+    fun verifyUserInfoFlowChangeUser() = runTest(UnconfinedTestDispatcher()) {
         tokens.stub { on { idToken } doReturn null }
         val results = mutableListOf<UserInfo?>()
 
         // initial user info
-        val flow = launch { provider.userInfoFlow().collect { results += it } }
+        val flow = provider.userInfoFlow().onEach { results += it }.launchIn(this)
         assertEquals(0, provider.activeFlows.get())
         verify(oktaRepo, never()).get<PersistableUserInfo>(any())
         assertEquals(1, results.size)
@@ -130,7 +127,7 @@ internal class OktaUserProfileProviderTest : BaseOktaOidcTest() {
     }
 
     @Test
-    fun verifyUserInfoFlowNullOnLogout() = runBlockingTest {
+    fun verifyUserInfoFlowNullOnLogout() = runTest(UnconfinedTestDispatcher()) {
         userInfo.stub { on { userInfo } doReturn UserInfo(JSONObject(mapOf(CLAIM_OKTA_USER_ID to OKTA_USER_ID))) }
         val results = mutableListOf<UserInfo?>()
 
@@ -159,36 +156,40 @@ internal class OktaUserProfileProviderTest : BaseOktaOidcTest() {
 
     // region refreshActor
     @Test
-    fun verifyRefreshActorWakesUpOnNewFlow() {
+    fun verifyRefreshActorWakesUpOnNewFlow() = testScope.runTest {
         provider.activeFlows.set(0)
-        testScope.resumeDispatcher()
+        advanceUntilIdle()
         verify(oktaRepo, never()).get<PersistableUserInfo>(any())
         verify(httpClient, never()).connect(any(), any())
 
         provider.activeFlows.set(1)
-        provider.refreshActor.offer(Unit)
-        testScope.runCurrent()
+        assertTrue(provider.refreshActor.trySend(Unit).isSuccess)
+        runCurrent()
         verify(oktaRepo, atLeastOnce()).get(PersistableUserInfo.Restore(OKTA_USER_ID))
         verify(httpClient, never()).connect(any(), any())
+
+        provider.shutdown()
     }
 
     @Test
-    fun verifyRefreshActorWakesUpOnOktaUserIdChange() {
+    fun verifyRefreshActorWakesUpOnOktaUserIdChange() = testScope.runTest {
         tokens.stub { on { idToken } doReturn null }
         provider.activeFlows.set(1)
-        testScope.resumeDispatcher()
+        advanceUntilIdle()
         verify(oktaRepo, never()).get<PersistableUserInfo>(any())
         verify(httpClient, never()).connect(any(), any())
 
         tokens.stub { on { idToken } doReturn ID_TOKEN }
         storage.notifyChanged()
-        testScope.runCurrent()
+        runCurrent()
         verify(oktaRepo).get(PersistableUserInfo.Restore(OKTA_USER_ID))
         verify(httpClient, never()).connect(any(), any())
+
+        provider.shutdown()
     }
 
     @Test
-    fun verifyRefreshActorWakesUpWhenRefreshDelayHasExpired() {
+    fun verifyRefreshActorWakesUpWhenRefreshDelayHasExpired() = testScope.runTest {
         provider.activeFlows.set(1)
         provider.refreshIfStaleFlows.set(1)
         userInfo.stub {
@@ -196,22 +197,26 @@ internal class OktaUserProfileProviderTest : BaseOktaOidcTest() {
             on { nextRefreshDelay } doReturn HOUR_IN_MS
         }
 
-        testScope.runCurrent()
+        runCurrent()
         verify(oktaRepo, atLeastOnce()).get(PersistableUserInfo.Restore(OKTA_USER_ID))
         verify(httpClient, never()).connect(any(), any())
 
         clearInvocations(oktaRepo)
-        testScope.advanceTimeBy(HOUR_IN_MS - 1)
+        advanceTimeBy(HOUR_IN_MS - 1)
+        runCurrent()
         verify(oktaRepo, never()).get<PersistableUserInfo>(any())
         verify(httpClient, never()).connect(any(), any())
 
-        testScope.advanceTimeBy(1)
+        advanceTimeBy(1)
+        runCurrent()
         verify(oktaRepo).get(PersistableUserInfo.Restore(OKTA_USER_ID))
         verify(httpClient, never()).connect(any(), any())
+
+        provider.shutdown()
     }
 
     @Test
-    fun verifyRefreshActorDoesntWakesUpForRefreshDelayWhenRefreshIfStaleIsFalse() {
+    fun verifyRefreshActorDoesntWakesUpForRefreshDelayWhenRefreshIfStaleIsFalse() = testScope.runTest {
         provider.activeFlows.set(1)
         provider.refreshIfStaleFlows.set(0)
         userInfo.stub {
@@ -227,6 +232,8 @@ internal class OktaUserProfileProviderTest : BaseOktaOidcTest() {
         testScope.advanceUntilIdle()
         verify(oktaRepo, never()).get<PersistableUserInfo>(any())
         verify(httpClient, never()).connect(any(), any())
+
+        provider.shutdown()
     }
     // endregion refreshActor
 }

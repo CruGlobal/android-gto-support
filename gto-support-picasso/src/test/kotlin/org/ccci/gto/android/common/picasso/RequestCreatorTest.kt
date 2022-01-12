@@ -156,7 +156,7 @@ class RequestCreatorTest {
 
         override fun into(target: Target) {
             // into() stores a weak reference of the target
-            assertTrue(targets.offer(WeakReference(target)))
+            assertTrue(targets.trySend(WeakReference(target)).isSuccess)
         }
     }
 
