@@ -18,7 +18,7 @@ interface CoroutinesFlowDao : CoroutinesDao, Dao {
         else -> callbackFlow {
             val callback = Dao.InvalidationCallback { if (it in types) trySendBlocking(it) }
             registerInvalidationCallback(callback)
-            send(types.first())
+            send(Unit)
             awaitClose { unregisterInvalidationCallback(callback) }
         }.conflate()
     }
