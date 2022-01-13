@@ -14,6 +14,7 @@ import org.mockito.kotlin.doReturn
 import org.mockito.kotlin.never
 import org.mockito.kotlin.spy
 import org.mockito.kotlin.verify
+import org.mockito.kotlin.whenever
 
 @OptIn(ExperimentalCoroutinesApi::class, ExperimentalStdlibApi::class)
 class CoroutinesFlowDaoTest {
@@ -23,7 +24,7 @@ class CoroutinesFlowDaoTest {
 
     @Test
     fun verifyFindAsFlowMonitorsInvalidations() = runTest(UnconfinedTestDispatcher()) {
-        dao.services[CoroutineDispatcher::class.java] = coroutineContext[CoroutineDispatcher]!!
+        whenever(dao.coroutineDispatcher) doReturn coroutineContext[CoroutineDispatcher]!!
         val job = dao.findAsFlow(String::class.java).launchIn(this)
         val callback = verifyInvalidationCallback()
         verify(dao, never()).unregisterInvalidationCallback(any())
@@ -34,7 +35,7 @@ class CoroutinesFlowDaoTest {
 
     @Test
     fun verifyFindAsFlow() = runTest {
-        dao.services[CoroutineDispatcher::class.java] = coroutineContext[CoroutineDispatcher]!!
+        whenever(dao.coroutineDispatcher) doReturn coroutineContext[CoroutineDispatcher]!!
         val flow = dao.findAsFlow(String::class.java).launchIn(this)
         verify(dao, never()).find(String::class.java)
 
