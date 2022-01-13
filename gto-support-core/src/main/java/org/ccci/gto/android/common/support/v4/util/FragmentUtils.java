@@ -1,7 +1,5 @@
 package org.ccci.gto.android.common.support.v4.util;
 
-import android.view.View;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -9,22 +7,6 @@ import androidx.fragment.app.FragmentActivity;
 
 public final class FragmentUtils {
     private FragmentUtils() {}
-
-    /**
-     * @deprecated Since v3.7.0, use `findViewById` directly now that it supports a generic type.
-     */
-    @Nullable
-    @Deprecated
-    public static <T> T findView(@NonNull final Fragment fragment, @NonNull final Class<T> clazz, final int id) {
-        final View root = fragment.getView();
-        if (root != null) {
-            final View view = root.findViewById(id);
-            if (clazz.isInstance(view)) {
-                return clazz.cast(view);
-            }
-        }
-        return null;
-    }
 
     @Nullable
     public static <T> T getAncestorFragment(@NonNull final Fragment fragment, @NonNull final Class<T> clazz) {
