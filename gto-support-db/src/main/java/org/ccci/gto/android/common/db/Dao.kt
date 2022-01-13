@@ -92,8 +92,27 @@ interface Dao {
     fun registerInvalidationCallback(callback: InvalidationCallback)
     fun unregisterInvalidationCallback(callback: InvalidationCallback)
     // endregion Data Invalidation
+
+    // region Services
+    @get:RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
+    val services: MutableMap<Class<*>, Any>
+
+    @Suppress("UNCHECKED_CAST")
+    @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP, RestrictTo.Scope.SUBCLASSES)
+    fun <T : Any> getService(clazz: Class<T>) = synchronized(services) { services[clazz] } as T?
+
+    @Suppress("UNCHECKED_CAST")
+    @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP, RestrictTo.Scope.SUBCLASSES)
+    fun <T : Any> getService(clazz: Class<T>, defaultValue: () -> T) =
+        synchronized(services) { services.getOrPut(clazz, defaultValue) } as T
+    // endregion Services
 }
 
 inline fun <reified T : Any> Dao.find(vararg key: Any) = find(T::class.java, *key)
 inline fun <T : Any> Query<T>.get(dao: Dao) = dao.get(this)
 inline fun Query<*>.getCursor(dao: Dao) = dao.getCursor(this)
+
+@RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
+inline fun <reified T : Any> Dao.getService() = getService(T::class.java)
+@RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
+inline fun <reified T : Any> Dao.getService(noinline defaultValue: () -> T) = getService(T::class.java, defaultValue)

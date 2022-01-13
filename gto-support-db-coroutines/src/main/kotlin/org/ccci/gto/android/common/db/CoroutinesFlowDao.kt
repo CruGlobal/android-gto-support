@@ -1,7 +1,6 @@
 package org.ccci.gto.android.common.db
 
 import androidx.annotation.AnyThread
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.channels.trySendBlocking
@@ -25,15 +24,15 @@ interface CoroutinesFlowDao : CoroutinesDao, Dao {
 
     @AnyThread
     fun <T : Any> findAsFlow(clazz: Class<T>, vararg key: Any) =
-        invalidationFlow(listOf(clazz)).map { find(clazz, *key) }.flowOn(Dispatchers.IO)
+        invalidationFlow(listOf(clazz)).map { find(clazz, *key) }.flowOn(dispatcher)
 
     @AnyThread
     fun <T : Any> getAsFlow(query: Query<T>) =
-        invalidationFlow(query.allTables.map { it.type }.toSet()).map { get(query) }.flowOn(Dispatchers.IO)
+        invalidationFlow(query.allTables.map { it.type }.toSet()).map { get(query) }.flowOn(dispatcher)
 
     @AnyThread
     fun <T : Any> getCursorAsFlow(query: Query<T>) =
-        invalidationFlow(query.allTables.map { it.type }.toSet()).map { getCursor(query) }.flowOn(Dispatchers.IO)
+        invalidationFlow(query.allTables.map { it.type }.toSet()).map { getCursor(query) }.flowOn(dispatcher)
 }
 
 inline fun <reified T : Any> CoroutinesFlowDao.findAsFlow(vararg key: Any) = findAsFlow(T::class.java, *key)

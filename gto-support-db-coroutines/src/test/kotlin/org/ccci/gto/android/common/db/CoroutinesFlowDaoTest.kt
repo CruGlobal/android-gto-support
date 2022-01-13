@@ -1,28 +1,30 @@
 package org.ccci.gto.android.common.db
 
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
-import kotlinx.coroutines.yield
-import org.junit.Ignore
 import org.junit.Test
 import org.mockito.kotlin.any
 import org.mockito.kotlin.argumentCaptor
 import org.mockito.kotlin.clearInvocations
+import org.mockito.kotlin.doReturn
 import org.mockito.kotlin.never
 import org.mockito.kotlin.spy
 import org.mockito.kotlin.verify
 
-@OptIn(ExperimentalCoroutinesApi::class)
+@OptIn(ExperimentalCoroutinesApi::class, ExperimentalStdlibApi::class)
 class CoroutinesFlowDaoTest {
-    private val dao = spy<CoroutinesFlowDao>()
+    private val dao = spy<CoroutinesFlowDao> {
+        on { services } doReturn mutableMapOf()
+    }
 
     @Test
     fun verifyFindAsFlowMonitorsInvalidations() = runTest(UnconfinedTestDispatcher()) {
+        dao.services[CoroutineDispatcher::class.java] = coroutineContext[CoroutineDispatcher]!!
         val job = dao.findAsFlow(String::class.java).launchIn(this)
-        yield()
         val callback = verifyInvalidationCallback()
         verify(dao, never()).unregisterInvalidationCallback(any())
 
@@ -31,8 +33,8 @@ class CoroutinesFlowDaoTest {
     }
 
     @Test
-    @Ignore("Flaky due to a race between Dispatchers.IO and the runTest dispatcher")
     fun verifyFindAsFlow() = runTest {
+        dao.services[CoroutineDispatcher::class.java] = coroutineContext[CoroutineDispatcher]!!
         val flow = dao.findAsFlow(String::class.java).launchIn(this)
         verify(dao, never()).find(String::class.java)
 
