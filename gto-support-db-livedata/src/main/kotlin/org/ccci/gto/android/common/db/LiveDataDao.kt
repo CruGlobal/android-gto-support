@@ -12,7 +12,7 @@ import java.util.WeakHashMap
 
 interface LiveDataDao : Dao {
     @get:RestrictTo(RestrictTo.Scope.SUBCLASSES)
-    val liveDataRegistry: LiveDataRegistry
+    val liveDataRegistry get() = getService { LiveDataRegistry() }
 
     @MainThread
     @SuppressLint("RestrictedApi")
