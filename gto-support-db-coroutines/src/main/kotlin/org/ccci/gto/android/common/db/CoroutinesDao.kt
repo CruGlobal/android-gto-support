@@ -12,6 +12,6 @@ interface CoroutinesDao : Dao {
     @OptIn(ExperimentalCoroutinesApi::class)
     val coroutineDispatcher: CoroutineDispatcher
         get() = getService { Dispatchers.IO.limitedParallelism(COROUTINES_PARALLELISM) }
-    val coroutinesScope: CoroutineScope
+    val coroutineScope: CoroutineScope
         get() = getService { CoroutineScope(coroutineDispatcher + SupervisorJob()) }
 }
