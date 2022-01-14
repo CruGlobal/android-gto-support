@@ -9,21 +9,23 @@ import kotlinx.coroutines.yield
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import org.mockito.kotlin.doReturn
 import org.mockito.kotlin.mock
-import org.mockito.kotlin.whenever
 
 class LiveDataRegistryTest {
     @get:Rule
     val instantTaskRule = InstantTaskExecutorRule()
 
-    private val registry = LiveDataRegistry()
-    lateinit var dao: LiveDataDao
+    private lateinit var dao: LiveDataDao
+    private lateinit var registry: LiveDataRegistry
 
     @Before
     fun setup() {
-        dao = mock()
-        whenever(dao.liveDataRegistry).thenReturn(registry)
-        whenever(dao.findLiveData(Obj::class.java)).thenCallRealMethod()
+        dao = mock {
+            registry = LiveDataRegistry(it)
+            on { liveDataRegistry } doReturn registry
+            on { findLiveData(Obj::class.java) }.thenCallRealMethod()
+        }
     }
 
     @Test
