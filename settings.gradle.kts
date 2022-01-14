@@ -17,7 +17,6 @@ include("gto-support-compat")
 include("gto-support-core")
 include("gto-support-dagger")
 include("gto-support-db")
-include("gto-support-db-async")
 include("gto-support-db-coroutines")
 include("gto-support-db-livedata")
 include("gto-support-db-stream")
@@ -54,3 +53,4 @@ include("testing:gto-support-timber")
 
 // deprecated modules
 include("gto-support-api-retrofit2")
+include("gto-support-db-async")

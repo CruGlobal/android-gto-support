@@ -35,8 +35,7 @@ interface LiveDataDao : Dao {
 
 // region DaoComputableLiveData
 @SuppressLint("RestrictedApi")
-internal sealed class DaoComputableLiveData<T>(protected val dao: LiveDataDao) :
-    ComputableLiveData<T>(dao.backgroundExecutor)
+internal sealed class DaoComputableLiveData<T>(protected val dao: LiveDataDao) : ComputableLiveData<T>()
 
 private class DaoFindComputableLiveData<T : Any>(
     dao: LiveDataDao,
