@@ -5,6 +5,7 @@ import android.database.sqlite.SQLiteDatabase
 import androidx.concurrent.futures.CallbackToFutureAdapter
 import com.google.common.util.concurrent.ListenableFuture
 
+@Deprecated("Since v3.11.0, use CoroutinesAsyncDao instead.")
 interface AsyncDao : Dao {
     fun <T : Any> getAsync(query: Query<T>) = runAsync { get(query) }
 
@@ -41,4 +42,5 @@ interface AsyncDao : Dao {
 }
 
 @JvmSynthetic
+@Deprecated("Since v3.11.0, use CoroutinesAsyncDao.findAsync() instead.")
 inline fun <reified T : Any> AsyncDao.findAsync(vararg key: Any) = findAsync(T::class.java, *key)

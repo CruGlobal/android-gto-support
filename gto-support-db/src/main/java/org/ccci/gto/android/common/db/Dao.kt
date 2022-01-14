@@ -7,6 +7,7 @@ import androidx.annotation.WorkerThread
 import java.util.concurrent.Executor
 
 interface Dao {
+    @Deprecated("Since v3.11.0, the Dao no longer provides a backgroundExecutor, use coroutines instead.")
     @get:RestrictTo(RestrictTo.Scope.LIBRARY_GROUP, RestrictTo.Scope.SUBCLASSES)
     val backgroundExecutor: Executor
 

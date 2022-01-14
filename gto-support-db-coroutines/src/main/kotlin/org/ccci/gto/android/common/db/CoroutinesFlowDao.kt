@@ -24,15 +24,15 @@ interface CoroutinesFlowDao : CoroutinesDao, Dao {
 
     @AnyThread
     fun <T : Any> findAsFlow(clazz: Class<T>, vararg key: Any) =
-        invalidationFlow(listOf(clazz)).map { find(clazz, *key) }.flowOn(dispatcher)
+        invalidationFlow(listOf(clazz)).map { find(clazz, *key) }.flowOn(coroutineDispatcher)
 
     @AnyThread
     fun <T : Any> getAsFlow(query: Query<T>) =
-        invalidationFlow(query.allTables.map { it.type }.toSet()).map { get(query) }.flowOn(dispatcher)
+        invalidationFlow(query.allTables.map { it.type }.toSet()).map { get(query) }.flowOn(coroutineDispatcher)
 
     @AnyThread
     fun <T : Any> getCursorAsFlow(query: Query<T>) =
-        invalidationFlow(query.allTables.map { it.type }.toSet()).map { getCursor(query) }.flowOn(dispatcher)
+        invalidationFlow(query.allTables.map { it.type }.toSet()).map { getCursor(query) }.flowOn(coroutineDispatcher)
 }
 
 inline fun <reified T : Any> CoroutinesFlowDao.findAsFlow(vararg key: Any) = findAsFlow(T::class.java, *key)

@@ -38,6 +38,7 @@ abstract class AbstractDao(private val helper: SQLiteOpenHelper) : Dao {
         }.toTypedArray()
     }
 
+    @Deprecated("Since v3.11.0, the Dao no longer provides a backgroundExecutor, use coroutines instead.")
     override val backgroundExecutor: Executor get() = AsyncTask.THREAD_POOL_EXECUTOR
     final override val services = mutableMapOf<Class<*>, Any>()
     @get:WorkerThread
