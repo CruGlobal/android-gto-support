@@ -1,5 +1,6 @@
 package org.ccci.gto.android.common.db
 
+import androidx.annotation.RestrictTo
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -10,8 +11,10 @@ private const val COROUTINES_PARALLELISM = 4
 
 interface CoroutinesDao : Dao {
     @OptIn(ExperimentalCoroutinesApi::class)
+    @get:RestrictTo(RestrictTo.Scope.SUBCLASSES)
     val coroutineDispatcher: CoroutineDispatcher
         get() = getService { Dispatchers.IO.limitedParallelism(COROUTINES_PARALLELISM) }
+    @get:RestrictTo(RestrictTo.Scope.SUBCLASSES)
     val coroutineScope: CoroutineScope
         get() = getService { CoroutineScope(coroutineDispatcher + SupervisorJob()) }
 }
