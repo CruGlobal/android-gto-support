@@ -8,8 +8,8 @@ interface CoroutinesAsyncDao : CoroutinesDao {
     fun <T : Any> getAsync(query: Query<T>) = coroutinesScope.async { get(query) }
     fun getCursorAsync(query: Query<*>) = coroutinesScope.async { getCursor(query) }
 
-    fun insertAsync(obj: Any) = insertAsync(obj, SQLiteDatabase.CONFLICT_NONE)
-    fun insertAsync(obj: Any, conflictAlgorithm: Int) = coroutinesScope.async { insert(obj, conflictAlgorithm) }
+    fun insertAsync(obj: Any, conflictAlgorithm: Int = SQLiteDatabase.CONFLICT_NONE) =
+        coroutinesScope.async { insert(obj, conflictAlgorithm) }
 
     fun updateAsync(obj: Any) = updateAsync(obj, *getFullProjection(obj.javaClass))
     fun updateAsync(obj: Any, vararg projection: String) = coroutinesScope.async { update(obj, *projection) }
