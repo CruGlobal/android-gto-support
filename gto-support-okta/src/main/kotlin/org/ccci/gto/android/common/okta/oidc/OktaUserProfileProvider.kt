@@ -29,6 +29,7 @@ import org.ccci.gto.android.common.okta.oidc.clients.sessions.oktaRepo
 import org.ccci.gto.android.common.okta.oidc.clients.sessions.oktaUserId
 import org.ccci.gto.android.common.okta.oidc.clients.sessions.oktaUserIdFlow
 import org.ccci.gto.android.common.okta.oidc.clients.sessions.refreshToken
+import org.ccci.gto.android.common.okta.oidc.clients.sessions.tokensSafe
 import org.ccci.gto.android.common.okta.oidc.net.response.PersistableUserInfo
 import org.ccci.gto.android.common.okta.oidc.net.response.oktaUserId
 import org.ccci.gto.android.common.okta.oidc.storage.getPersistableUserInfo
@@ -101,7 +102,7 @@ class OktaUserProfileProvider @VisibleForTesting internal constructor(
     private suspend fun loadUserProfile() {
         if (!sessionClient.isAuthenticated) return
         try {
-            if (sessionClient.tokens?.isAccessTokenExpired != false) sessionClient.refreshToken()
+            if (sessionClient.tokensSafe?.isAccessTokenExpired != false) sessionClient.refreshToken()
             val profile = sessionClient.getUserProfile()
             profile.oktaUserId?.let { oktaRepo.save(PersistableUserInfo(it, profile)) }
         } catch (e: AuthorizationException) {

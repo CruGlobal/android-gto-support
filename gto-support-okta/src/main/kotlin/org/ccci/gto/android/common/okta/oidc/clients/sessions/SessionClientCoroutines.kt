@@ -42,7 +42,7 @@ suspend fun SessionClient.refreshToken(): Tokens = suspendCoroutine { cont ->
 
 internal fun SessionClient.changeFlow() = (oktaStorage as ChangeAwareOktaStorage).changeFlow()
 
-private fun SessionClient.tokensFlow(): Flow<Tokens?> = changeFlow().map { tokens }.conflate()
+private fun SessionClient.tokensFlow(): Flow<Tokens?> = changeFlow().map { tokensSafe }.conflate()
 fun SessionClient.idTokenFlow() =
     tokensFlow().map { it?.idToken }.distinctUntilChanged().map { it?.let { OktaIdToken.parseIdToken(it) } }.conflate()
 fun SessionClient.oktaUserIdFlow() = idTokenFlow().map { it?.claims?.sub }.distinctUntilChanged().conflate()
