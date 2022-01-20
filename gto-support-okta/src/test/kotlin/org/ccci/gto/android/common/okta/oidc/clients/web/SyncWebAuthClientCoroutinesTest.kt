@@ -27,6 +27,7 @@ import org.mockito.kotlin.any
 import org.mockito.kotlin.doAnswer
 import org.mockito.kotlin.doReturn
 import org.mockito.kotlin.mock
+import org.mockito.kotlin.never
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.verifyNoMoreInteractions
 
@@ -84,6 +85,21 @@ class SyncWebAuthClientCoroutinesTest {
                 verify(client).signOut(any(), any())
                 verify(client).sessionClient
                 verify(sessionClient).clear()
+                verifyNoMoreInteractions(client)
+            }
+        }
+    }
+
+    @Test(timeout = 5000)
+    fun `signOutSuspending() - Don't REMOVE_TOKENS`() {
+        activityScenario.scenario.onActivity {
+            runBlocking {
+                val signOut = async(Dispatchers.IO) { client.signOutSuspending(it, BaseAuth.SIGN_OUT_SESSION ) }
+                clearAllLatches()
+                assertEquals(BaseAuth.SUCCESS, signOut.await())
+                assertTrue(signOutCompleted)
+                verify(client).signOut(any(), any())
+                verify(sessionClient, never()).clear()
                 verifyNoMoreInteractions(client)
             }
         }
