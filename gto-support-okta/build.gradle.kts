@@ -16,6 +16,7 @@ dependencies {
     implementation(project(":gto-support-compat"))
     implementation(project(":gto-support-util"))
 
+    implementation(libs.splitties.bitflags)
     implementation(libs.timber)
 
     // region Coroutines

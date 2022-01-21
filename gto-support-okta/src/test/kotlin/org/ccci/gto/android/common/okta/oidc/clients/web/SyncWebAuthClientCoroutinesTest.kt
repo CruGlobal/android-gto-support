@@ -4,6 +4,7 @@ import android.app.Activity
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.okta.oidc.clients.BaseAuth
+import com.okta.oidc.clients.sessions.SyncSessionClient
 import com.okta.oidc.clients.web.SyncWebAuthClient
 import java.util.concurrent.CountDownLatch
 import kotlinx.coroutines.Dispatchers
@@ -24,7 +25,9 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.kotlin.any
 import org.mockito.kotlin.doAnswer
+import org.mockito.kotlin.doReturn
 import org.mockito.kotlin.mock
+import org.mockito.kotlin.never
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.verifyNoMoreInteractions
 
@@ -40,11 +43,14 @@ class SyncWebAuthClientCoroutinesTest {
     private var signOutCompleted = false
 
     private lateinit var client: SyncWebAuthClient
+    private val sessionClient = mock<SyncSessionClient>()
     private val testScope = TestCoroutineScope(Job())
 
     @Before
     fun setup() {
         client = mock {
+            on { sessionClient } doReturn sessionClient
+
             var cancelled = false
 
             on { signOut(any(), any()) } doAnswer {
@@ -77,6 +83,23 @@ class SyncWebAuthClientCoroutinesTest {
                 assertEquals(BaseAuth.SUCCESS, signOut.await())
                 assertTrue(signOutCompleted)
                 verify(client).signOut(any(), any())
+                verify(client).sessionClient
+                verify(sessionClient).clear()
+                verifyNoMoreInteractions(client)
+            }
+        }
+    }
+
+    @Test(timeout = 5000)
+    fun `signOutSuspending() - Don't REMOVE_TOKENS`() {
+        activityScenario.scenario.onActivity {
+            runBlocking {
+                val signOut = async(Dispatchers.IO) { client.signOutSuspending(it, BaseAuth.SIGN_OUT_SESSION ) }
+                clearAllLatches()
+                assertEquals(BaseAuth.SUCCESS, signOut.await())
+                assertTrue(signOutCompleted)
+                verify(client).signOut(any(), any())
+                verify(sessionClient, never()).clear()
                 verifyNoMoreInteractions(client)
             }
         }
@@ -94,6 +117,8 @@ class SyncWebAuthClientCoroutinesTest {
                 assertFalse(signOutCompleted)
                 verify(client).signOut(any(), any())
                 verify(client).cancel()
+                verify(client).sessionClient
+                verify(sessionClient).clear()
                 verifyNoMoreInteractions(client)
             }
         }
@@ -111,6 +136,8 @@ class SyncWebAuthClientCoroutinesTest {
                 assertFalse(signOutCompleted)
                 verify(client).signOut(any(), any())
                 verify(client).cancel()
+                verify(client).sessionClient
+                verify(sessionClient).clear()
                 verifyNoMoreInteractions(client)
             }
         }
@@ -127,6 +154,8 @@ class SyncWebAuthClientCoroutinesTest {
         assertFalse(signOutCompleted)
         verify(client).signOut(any(), any())
         verify(client).cancel()
+        verify(client).sessionClient
+        verify(sessionClient).clear()
         verifyNoMoreInteractions(client)
     }
 
