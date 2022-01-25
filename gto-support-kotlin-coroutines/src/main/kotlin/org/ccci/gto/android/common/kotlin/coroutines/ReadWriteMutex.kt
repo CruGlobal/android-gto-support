@@ -1,7 +1,7 @@
 package org.ccci.gto.android.common.kotlin.coroutines
 
 import androidx.annotation.VisibleForTesting
-import kotlinx.coroutines.runBlocking
+import java.util.concurrent.atomic.AtomicLong
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 
@@ -22,29 +22,31 @@ internal class ReadWriteMutexImpl : ReadWriteMutex {
     private val stateMutex = Mutex()
     private val readerOwner = Any()
     @VisibleForTesting
-    internal var readers = 0L
+    internal val readers = AtomicLong(0)
 
     override val write = Mutex()
     override val read = object : Mutex {
         override suspend fun lock(owner: Any?) {
             stateMutex.withLock {
-                check(readers < Long.MAX_VALUE) {
-                    "Attempt to lock the read mutex more than ${Long.MAX_VALUE} times concurrently"
+                while (true) {
+                    val count = readers.get()
+                    check(count < Long.MAX_VALUE) {
+                        "Attempt to lock the read mutex more than ${Long.MAX_VALUE} times concurrently"
+                    }
+                    if (count == 0L) write.lock(readerOwner)
+                    if (readers.compareAndSet(count, count + 1)) break
+                    if (count == 0L) write.unlock(readerOwner)
                 }
-                // first reader should lock the write mutex
-                if (readers == 0L) write.lock(readerOwner)
-                readers++
             }
         }
 
         override fun unlock(owner: Any?) {
-            runBlocking {
-                stateMutex.withLock {
-                    check(readers > 0L) { "Attempt to unlock the read mutex when it wasn't locked" }
-                    // release the write mutex lock when this is the last reader
-                    if (--readers == 0L) write.unlock(readerOwner)
-                }
-            }
+            var count: Long
+            do {
+                count = readers.get()
+                check(count > 0) { "Attempt to unlock the read mutex when it wasn't locked" }
+            } while (!readers.compareAndSet(count, count - 1))
+            if (count == 1L) write.unlock(readerOwner)
         }
 
         override val isLocked get() = TODO("Not supported")
