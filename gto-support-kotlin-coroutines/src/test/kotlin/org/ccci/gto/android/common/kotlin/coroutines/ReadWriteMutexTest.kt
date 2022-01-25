@@ -9,6 +9,8 @@ import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.yield
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
+import org.junit.Assert.assertThrows
+import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class ReadWriteMutexTest {
@@ -137,6 +139,31 @@ class ReadWriteMutexTest {
     @Test(expected = IllegalStateException::class)
     fun testInvalidReadUnlock() {
         mutex.read.unlock()
+    }
+
+    @Test(timeout = 10000)
+    fun `GT-1423 readUnlock causes deadlock from runBlocking usage`() = runBlocking {
+        mutex.write.lock()
+
+        launch(Dispatchers.Unconfined) {
+            expect(1)
+            mutex.read.lock()
+            assertTrue(mutex.write.isLocked)
+            assertEquals(1, (mutex as ReadWriteMutexImpl).readers)
+            expect(4)
+            mutex.read.unlock()
+            assertEquals(0, mutex.readers)
+        }
+        expect(2)
+
+        assertThrows(IllegalStateException::class.java) {
+            // this can cause a deadlock when runBlocking is being used
+            mutex.read.unlock()
+        }
+        assertEquals(0, (mutex as ReadWriteMutexImpl).readers)
+        expect(3)
+
+        mutex.write.unlock()
     }
 
     @Test
