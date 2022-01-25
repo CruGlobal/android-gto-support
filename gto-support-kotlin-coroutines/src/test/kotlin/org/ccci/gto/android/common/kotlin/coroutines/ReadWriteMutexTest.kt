@@ -173,12 +173,17 @@ class ReadWriteMutexTest {
                 val running = AtomicBoolean(true)
                 val tasks = List(16) {
                     launch(Dispatchers.IO) {
-                        do {
+                        while (running.get()) {
                             try {
                                 mutex.read.unlock()
                             } catch (_: IllegalStateException) {
                             }
-                        } while (running.get())
+                        }
+                        // try unlocking one last time after stopping the loop to avoid a race condition
+                        try {
+                            mutex.read.unlock()
+                        } catch (_: IllegalStateException) {
+                        }
                     }
                 }
                 mutex.read.lock()
