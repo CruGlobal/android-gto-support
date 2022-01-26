@@ -39,16 +39,19 @@ private class DaoFindComputableLiveData<T : Any>(
     private val clazz: Class<T>,
     private vararg val key: Any
 ) : DaoComputableLiveData<T?>(dao) {
+    @SuppressLint("RestrictedApi")
     override fun compute() = dao.find(clazz, *key)
 }
 
 private class DaoGetComputableLiveData<T : Any>(dao: LiveDataDao, private val query: Query<T>) :
     DaoComputableLiveData<List<T>>(dao) {
+    @SuppressLint("RestrictedApi")
     override fun compute() = dao.get(query)
 }
 
 private class DaoGetCursorComputableLiveData<T : Any>(dao: LiveDataDao, private val query: Query<T>) :
     DaoComputableLiveData<Cursor>(dao) {
+    @SuppressLint("RestrictedApi")
     override fun compute() = dao.getCursor(query)
 }
 // endregion DaoComputableLiveData

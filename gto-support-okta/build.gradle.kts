@@ -31,6 +31,7 @@ dependencies {
     compileOnly(libs.okhttp3)
     // endregion OkHttpOktaHttpClient
 
+    androidTestImplementation(project(":testing:gto-support-okta"))
     testImplementation(project(":testing:gto-support-okta"))
     testImplementation(libs.androidx.arch.core.testing)
     testImplementation(libs.kotlin.coroutines.test)
