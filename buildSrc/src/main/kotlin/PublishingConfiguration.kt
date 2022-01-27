@@ -1,4 +1,5 @@
 import com.android.build.gradle.BaseExtension
+import com.android.build.gradle.LibraryExtension
 import com.android.build.gradle.api.AndroidSourceDirectorySet
 import org.gradle.api.Project
 import org.gradle.api.artifacts.repositories.PasswordCredentials
@@ -15,6 +16,10 @@ import org.gradle.kotlin.dsl.register
 private const val POM_SCM_CONNECTION = "scm:git:git@github.com:CruGlobal/android-gto-support.git"
 
 fun Project.configurePublishing() {
+    extensions.configure<LibraryExtension> {
+        publishing.singleVariant("release")
+    }
+
     apply(plugin = "maven-publish")
     val sourcesJar = tasks.register<Jar>("sourcesJar") {
         with(project.extensions.getByType<BaseExtension>().sourceSets["main"]) {
