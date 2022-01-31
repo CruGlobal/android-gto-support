@@ -2,10 +2,13 @@ package org.ccci.gto.android.common.kotlin.coroutines
 
 import java.util.concurrent.atomic.AtomicBoolean
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.sync.withLock
+import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.withContext
 import kotlinx.coroutines.yield
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -13,6 +16,7 @@ import org.junit.Assert.assertThrows
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class ReadWriteMutexTest {
     private val mutex = ReadWriteMutex()
 
@@ -164,6 +168,21 @@ class ReadWriteMutexTest {
         expect(3)
 
         mutex.write.unlock()
+    }
+
+    @Test
+    fun `GT-1440 - race condition with owner between unlocking and locking the read lock`() = runTest {
+        withContext(Dispatchers.IO) {
+            repeat(2) {
+                launch {
+                    repeat(10000) {
+                        mutex.read.lock()
+                        yield()
+                        mutex.read.unlock()
+                    }
+                }
+            }
+        }
     }
 
     @Test
