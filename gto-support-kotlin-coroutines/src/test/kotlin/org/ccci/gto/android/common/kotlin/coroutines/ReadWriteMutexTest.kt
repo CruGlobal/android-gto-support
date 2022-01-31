@@ -175,7 +175,7 @@ class ReadWriteMutexTest {
         withContext(Dispatchers.IO) {
             repeat(2) {
                 launch {
-                    repeat(10000) {
+                    repeat(40000) {
                         mutex.read.lock()
                         yield()
                         mutex.read.unlock()

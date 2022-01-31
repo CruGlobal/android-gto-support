@@ -19,23 +19,22 @@ fun ReadWriteMutex(): ReadWriteMutex = ReadWriteMutexImpl()
 
 @VisibleForTesting
 internal class ReadWriteMutexImpl : ReadWriteMutex {
-    private val stateMutex = Mutex()
-    private val readerOwner = Any()
+    private val readLockMutex = Mutex()
     @VisibleForTesting
     internal val readers = AtomicLong(0)
 
     override val write = Mutex()
     override val read = object : Mutex {
         override suspend fun lock(owner: Any?) {
-            stateMutex.withLock {
+            readLockMutex.withLock {
                 while (true) {
                     val count = readers.get()
                     check(count < Long.MAX_VALUE) {
                         "Attempt to lock the read mutex more than ${Long.MAX_VALUE} times concurrently"
                     }
-                    if (count == 0L) write.lock(readerOwner)
+                    if (count == 0L) write.lock()
                     if (readers.compareAndSet(count, count + 1)) break
-                    if (count == 0L) write.unlock(readerOwner)
+                    if (count == 0L) write.unlock()
                 }
             }
         }
@@ -46,7 +45,7 @@ internal class ReadWriteMutexImpl : ReadWriteMutex {
                 count = readers.get()
                 check(count > 0) { "Attempt to unlock the read mutex when it wasn't locked" }
             } while (!readers.compareAndSet(count, count - 1))
-            if (count == 1L) write.unlock(readerOwner)
+            if (count == 1L) write.unlock()
         }
 
         override val isLocked get() = TODO("Not supported")
