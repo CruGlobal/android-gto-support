@@ -31,7 +31,23 @@ fun <IN1, IN2, OUT> LiveData<IN1>.combineWith(
  *
  * @see androidx.lifecycle.Transformations.map
  */
-@JvmName("combine")
+fun <IN1, IN2, IN3, OUT> combine(
+    source1: LiveData<IN1>,
+    source2: LiveData<IN2>,
+    source3: LiveData<IN3>,
+    mapFunction: (IN1, IN2, IN3) -> OUT
+) = combineInt(source1, source2, source3) {
+    @Suppress("UNCHECKED_CAST")
+    mapFunction(source1.value as IN1, source2.value as IN2, source3.value as IN3)
+}
+
+/**
+ * This method will combine 3 LiveData objects into a new LiveData object by running the {@param mapFunction} on the
+ * current values of all source LiveData objects.
+ *
+ * @see androidx.lifecycle.Transformations.map
+ */
+@JvmSynthetic
 fun <IN1, IN2, IN3, OUT> LiveData<IN1>.combineWith(
     other: LiveData<IN2>,
     other2: LiveData<IN3>,

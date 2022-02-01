@@ -76,6 +76,34 @@ class TransformationsCombineWithTest : BaseLiveDataTest() {
     }
 
     @Test
+    fun `combine() - 3 LiveDatas`() {
+        val combined = combine(str1, str2, str3) { a, b, c -> listOfNotNull(a, b, c).joinToString() }
+        combined.observeForever(observer)
+
+        verify(observer, never()).onChanged(any())
+        assertNull(combined.value)
+        str1.value = "b"
+        verify(observer, never()).onChanged(any())
+        assertNull(combined.value)
+        str2.value = null
+        verify(observer, never()).onChanged(any())
+        assertNull(combined.value)
+        str3.value = null
+        verify(observer).onChanged(any())
+        assertEquals("b", combined.value)
+        str3.value = "d"
+        verify(observer, times(2)).onChanged(any())
+        assertEquals("b, d", combined.value)
+        str2.value = "c"
+        verify(observer, times(3)).onChanged(any())
+        assertEquals("b, c, d", combined.value)
+        argumentCaptor<String> {
+            verify(observer, times(3)).onChanged(capture())
+            assertThat(allValues, contains("b", "b, d", "b, c, d"))
+        }
+    }
+
+    @Test
     fun `combineWith() - 3 LiveDatas`() {
         val combined = str1.combineWith(str2, str3) { a, b, c -> listOfNotNull(a, b, c).joinToString() }
         combined.observeForever(observer)
