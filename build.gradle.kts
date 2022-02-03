@@ -10,7 +10,7 @@ buildscript {
     }
 }
 plugins {
-    alias(libs.plugins.junitJacoco)
+    alias(libs.plugins.kotlin.kover)
     alias(libs.plugins.ktlint)
 }
 
@@ -84,33 +84,6 @@ allprojects {
     }
 }
 // endregion checkstyle
-
-// region jacoco
-junitJacoco {
-    jacocoVersion = libs.versions.jacoco.get()
-    includeNoLocationClasses = true
-}
-allprojects {
-    afterEvaluate {
-        tasks.withType<Test> {
-            extensions.configure<JacocoTaskExtension> {
-                excludes = listOf("jdk.internal.*")
-            }
-        }
-    }
-}
-tasks.register("jacocoTestReport") {
-    subprojects.forEach { dependsOn(it.tasks.withType<JacocoReport>()) }
-}
-allprojects {
-    if (gradle.startParameter.excludedTaskNames.contains("test")) {
-        // exclude all test type tasks when the test task is excluded
-        tasks.withType<Test>().configureEach {
-            gradle.startParameter.excludedTaskNames += name
-        }
-    }
-}
-// endregion jacoco
 
 // region ktlint
 allprojects {
