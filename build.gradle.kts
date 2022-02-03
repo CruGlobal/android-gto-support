@@ -85,6 +85,12 @@ allprojects {
 }
 // endregion checkstyle
 
+// region Kotlin Kover
+kover {
+    isDisabled = gradle.startParameter.excludedTaskNames.contains("test")
+}
+// endregion Kotlin Kover
+
 // region ktlint
 allprojects {
     apply(plugin = "org.jlleitschuh.gradle.ktlint")
