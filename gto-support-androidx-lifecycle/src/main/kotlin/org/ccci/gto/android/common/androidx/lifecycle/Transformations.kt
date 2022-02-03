@@ -183,6 +183,8 @@ private inline fun <OUT> combineInt(
 }
 // endregion combine
 
+inline fun <reified T> LiveData<*>.filterIsInstance() = map { it as? T }
+
 fun <T : Any> LiveData<T?>.notNull(): LiveData<T> {
     val result = MediatorLiveData<T>()
     result.addSource(this) { it?.let { result.value = it } }
