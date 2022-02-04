@@ -91,6 +91,5 @@ include("testing:gto-support-picasso")
 include("testing:gto-support-timber")
 
 // deprecated modules
-include("gto-support-db-async")
 include("gto-support-snowplow")
 include("testing:gto-support-okta")
