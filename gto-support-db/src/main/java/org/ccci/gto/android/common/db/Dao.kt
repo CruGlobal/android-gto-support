@@ -5,13 +5,8 @@ import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import androidx.annotation.RestrictTo
 import androidx.annotation.WorkerThread
-import java.util.concurrent.Executor
 
 interface Dao {
-    @Deprecated("Since v3.11.0, the Dao no longer provides a backgroundExecutor, use coroutines instead.")
-    @get:RestrictTo(RestrictTo.Scope.LIBRARY_GROUP, RestrictTo.Scope.SUBCLASSES)
-    val backgroundExecutor: Executor
-
     // region Table Metadata
     fun getFullProjection(clazz: Class<*>): Array<String>
     // endregion Table Metadata

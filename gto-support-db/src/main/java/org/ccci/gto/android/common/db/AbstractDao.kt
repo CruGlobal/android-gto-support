@@ -5,12 +5,10 @@ import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import android.database.sqlite.SQLiteTransactionListener
-import android.os.AsyncTask
 import androidx.annotation.WorkerThread
 import androidx.collection.SimpleArrayMap
 import java.util.Date
 import java.util.Locale
-import java.util.concurrent.Executor
 import org.ccci.gto.android.common.db.CommonTables.LastSyncTable
 import org.ccci.gto.android.common.util.ArrayUtils
 import org.ccci.gto.android.common.util.database.getLong
@@ -38,8 +36,6 @@ abstract class AbstractDao(private val helper: SQLiteOpenHelper) : Dao {
         }.toTypedArray()
     }
 
-    @Deprecated("Since v3.11.0, the Dao no longer provides a backgroundExecutor, use coroutines instead.")
-    override val backgroundExecutor: Executor get() = AsyncTask.THREAD_POOL_EXECUTOR
     final override val services = mutableMapOf<Class<*>, Any>()
     @get:WorkerThread
     protected val readableDatabase: SQLiteDatabase get() = helper.readableDatabase
