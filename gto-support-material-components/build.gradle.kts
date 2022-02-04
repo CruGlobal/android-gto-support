@@ -14,6 +14,7 @@ android {
 }
 
 dependencies {
+    implementation(project(":gto-support-base"))
     implementation(project(":gto-support-util"))
 
     api(libs.materialComponents)
