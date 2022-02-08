@@ -1,7 +1,6 @@
 package org.ccci.gto.android.common.db
 
 import androidx.annotation.AnyThread
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.channels.trySendBlocking
 import kotlinx.coroutines.flow.callbackFlow
@@ -11,7 +10,6 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 
 interface CoroutinesFlowDao : CoroutinesDao, Dao {
-    @OptIn(ExperimentalCoroutinesApi::class)
     private fun invalidationFlow(types: Collection<Class<*>>) = when {
         types.isEmpty() -> flowOf(Unit)
         else -> callbackFlow {
