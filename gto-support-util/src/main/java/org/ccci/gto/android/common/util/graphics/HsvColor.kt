@@ -5,7 +5,8 @@ import androidx.annotation.ColorInt
 import androidx.annotation.Size
 import kotlin.math.min
 
-inline class HsvColor(@Size(3) internal val hsv: FloatArray = FloatArray(3)) {
+@JvmInline
+value class HsvColor(@Size(3) internal val hsv: FloatArray = FloatArray(3)) {
     constructor(hue: Float, saturation: Float, value: Float) : this(arrayOf(hue, saturation, value).toFloatArray())
 
     val hue get() = hsv[0]

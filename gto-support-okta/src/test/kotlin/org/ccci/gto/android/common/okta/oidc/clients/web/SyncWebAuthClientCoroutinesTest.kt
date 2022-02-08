@@ -7,15 +7,12 @@ import com.okta.oidc.clients.BaseAuth
 import com.okta.oidc.clients.sessions.SyncSessionClient
 import com.okta.oidc.clients.web.SyncWebAuthClient
 import java.util.concurrent.CountDownLatch
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
-import kotlinx.coroutines.job
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.test.TestCoroutineScope
-import org.junit.After
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
+import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
@@ -44,7 +41,6 @@ class SyncWebAuthClientCoroutinesTest {
 
     private lateinit var client: SyncWebAuthClient
     private val sessionClient = mock<SyncSessionClient>()
-    private val testScope = TestCoroutineScope(Job())
 
     @Before
     fun setup() {
@@ -68,17 +64,11 @@ class SyncWebAuthClientCoroutinesTest {
         }
     }
 
-    @After
-    fun cleanup() {
-        assertEquals(0, testScope.coroutineContext.job.children.count())
-        testScope.cleanupTestCoroutines()
-    }
-
     @Test(timeout = 5000)
     fun `signOutSuspending()`() {
         activityScenario.scenario.onActivity {
-            runBlocking {
-                val signOut = async(Dispatchers.IO) { client.signOutSuspending(it) }
+            runTest {
+                val signOut = async { client.signOutSuspending(it) }
                 clearAllLatches()
                 assertEquals(BaseAuth.SUCCESS, signOut.await())
                 assertTrue(signOutCompleted)
@@ -93,8 +83,8 @@ class SyncWebAuthClientCoroutinesTest {
     @Test(timeout = 5000)
     fun `signOutSuspending() - Don't REMOVE_TOKENS`() {
         activityScenario.scenario.onActivity {
-            runBlocking {
-                val signOut = async(Dispatchers.IO) { client.signOutSuspending(it, BaseAuth.SIGN_OUT_SESSION ) }
+            runTest {
+                val signOut = async { client.signOutSuspending(it, BaseAuth.SIGN_OUT_SESSION) }
                 clearAllLatches()
                 assertEquals(BaseAuth.SUCCESS, signOut.await())
                 assertTrue(signOutCompleted)
@@ -108,8 +98,9 @@ class SyncWebAuthClientCoroutinesTest {
     @Test(timeout = 5000)
     fun `signOutSuspending() - Client cancelled`() {
         activityScenario.scenario.onActivity {
-            runBlocking {
-                val signOut = launch(Dispatchers.IO) { client.signOutSuspending(it) }
+            runTest {
+                val signOut = launch(UnconfinedTestDispatcher()) { client.signOutSuspending(it) }
+                @Suppress("BlockingMethodInNonBlockingContext")
                 signOutCalled.await()
                 client.cancel()
                 clearAllLatches()
@@ -127,8 +118,9 @@ class SyncWebAuthClientCoroutinesTest {
     @Test(timeout = 5000)
     fun `signOutSuspending() - Coroutine cancelled`() {
         activityScenario.scenario.onActivity { activity ->
-            runBlocking {
-                val signOut = testScope.launch(Dispatchers.IO) { client.signOutSuspending(activity) }
+            runTest {
+                val signOut = launch(UnconfinedTestDispatcher()) { client.signOutSuspending(activity) }
+                @Suppress("BlockingMethodInNonBlockingContext")
                 signOutCalled.await()
                 signOut.cancel()
                 clearAllLatches()
@@ -145,18 +137,21 @@ class SyncWebAuthClientCoroutinesTest {
 
     @Test(timeout = 5000)
     fun `signOutSuspending() - Activity finished`() = with(activityScenario.scenario) {
-        var signOut: Job? = null
-        onActivity { signOut = testScope.launch(Dispatchers.IO) { client.signOutSuspending(it) } }
-        signOutCalled.await()
-        recreate()
-        clearAllLatches()
-        runBlocking { signOut!!.join() }
-        assertFalse(signOutCompleted)
-        verify(client).signOut(any(), any())
-        verify(client).cancel()
-        verify(client).sessionClient
-        verify(sessionClient).clear()
-        verifyNoMoreInteractions(client)
+        runTest {
+            lateinit var signOut: Job
+            onActivity { signOut = launch(UnconfinedTestDispatcher()) { client.signOutSuspending(it) } }
+            @Suppress("BlockingMethodInNonBlockingContext")
+            signOutCalled.await()
+            recreate()
+            clearAllLatches()
+            signOut.join()
+            assertFalse(signOutCompleted)
+            verify(client).signOut(any(), any())
+            verify(client).cancel()
+            verify(client).sessionClient
+            verify(sessionClient).clear()
+            verifyNoMoreInteractions(client)
+        }
     }
 
     private fun clearAllLatches() {

@@ -24,6 +24,7 @@ fun ViewPager2.whileMaintainingVisibleCurrentItem(block: (RecyclerView.Adapter<*
     }
 }
 
+@Suppress("UNCHECKED_CAST")
 val ViewPager2.currentItemLiveData: LiveData<Int>
     get() = getTag(R.id.viewpager2_livedata_currentitem) as? LiveData<Int> ?: object : LiveData<Int>(currentItem) {
         val callbacks = object : ViewPager2.OnPageChangeCallback() {

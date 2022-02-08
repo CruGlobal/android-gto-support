@@ -5,7 +5,7 @@ import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.testing.TestLifecycleOwner
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.TestCoroutineDispatcher
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
@@ -21,7 +21,7 @@ class ConstrainedStateLifecycleOwnerTest {
     val rule = InstantTaskExecutorRule()
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    private val parentLifecycleOwner = TestLifecycleOwner(Lifecycle.State.STARTED, TestCoroutineDispatcher())
+    private val parentLifecycleOwner = TestLifecycleOwner(Lifecycle.State.STARTED, UnconfinedTestDispatcher())
     private lateinit var observer: DefaultLifecycleObserver
 
     private lateinit var lifecycleOwner: ConstrainedStateLifecycleOwner
