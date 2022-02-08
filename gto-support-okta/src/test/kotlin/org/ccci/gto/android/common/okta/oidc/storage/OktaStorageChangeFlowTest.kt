@@ -1,9 +1,9 @@
 package org.ccci.gto.android.common.okta.oidc.storage
 
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.test.runBlockingTest
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
+import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
@@ -24,7 +24,7 @@ class OktaStorageChangeFlowTest {
     }
 
     @Test
-    fun verifyChangeFlowBehavior() = runBlockingTest {
+    fun verifyChangeFlowBehavior() = runTest(UnconfinedTestDispatcher()) {
         val values = mutableListOf<Unit>()
         verify(storage, never()).addObserver(any())
 

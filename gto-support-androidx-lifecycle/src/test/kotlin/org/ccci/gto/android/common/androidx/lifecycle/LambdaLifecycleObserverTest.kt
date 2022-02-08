@@ -4,7 +4,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.testing.TestLifecycleOwner
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.TestCoroutineDispatcher
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import org.junit.Before
 import org.junit.Test
 import org.mockito.kotlin.any
@@ -15,7 +15,7 @@ import org.mockito.kotlin.verify
 
 class LambdaLifecycleObserverTest {
     @OptIn(ExperimentalCoroutinesApi::class)
-    private val lifecycleOwner = TestLifecycleOwner(coroutineDispatcher = TestCoroutineDispatcher())
+    private val lifecycleOwner = TestLifecycleOwner(coroutineDispatcher = UnconfinedTestDispatcher())
     private lateinit var lambda: (LifecycleOwner) -> Unit
 
     @Before
