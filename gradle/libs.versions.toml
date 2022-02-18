@@ -5,7 +5,7 @@ androidx-core = "1.7.0"
 androidx-fragment = "1.4.1"
 androidx-lifecycle = "2.4.1"
 checkstyle = "7.8.2"
-dagger = "2.40.5"
+dagger = "2.41"
 hamcrest = "2.2"
 jsonUnit = "2.32.0"
 kotlin = "1.6.10"
@@ -53,7 +53,6 @@ androidx-work-runtime = { module = "androidx.work:work-runtime", version = "2.7.
 dagger = { module = "com.google.dagger:dagger", version.ref = "dagger" }
 dagger-compiler = { module = "com.google.dagger:dagger-compiler", version.ref = "dagger" }
 dagger-hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "dagger" }
-dagger-hilt-androidGradle = { module = "com.google.dagger:hilt-android-gradle-plugin", version.ref = "dagger" }
 dagger-hilt-compiler = { module = "com.google.dagger:hilt-compiler", version.ref = "dagger" }
 eventbus = "org.greenrobot:eventbus:3.3.1"
 facebookFlipper = "com.facebook.flipper:flipper:0.135.0"
@@ -104,5 +103,6 @@ weakdelegate = { module = "com.github.Karumi:WeakDelegate", version = "1.0.1" }
 okhttp3-mockwebserver = ["okhttp3-mockwebserver", "okhttp3-tls"]
 
 [plugins]
+dagger-hilt = { id = "com.google.dagger.hilt.android", version.ref = "dagger" }
 kotlin-kover = { id = "org.jetbrains.kotlinx.kover", version = "0.5.0" }
 ktlint = { id = "org.jlleitschuh.gradle.ktlint", version = "10.2.1" }

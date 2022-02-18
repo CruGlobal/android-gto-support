@@ -5,9 +5,6 @@ buildscript {
         google()
         mavenCentral()
     }
-    dependencies {
-        classpath(libs.dagger.hilt.androidGradle)
-    }
 }
 plugins {
     alias(libs.plugins.kotlin.kover)
