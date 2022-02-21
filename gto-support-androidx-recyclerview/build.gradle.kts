@@ -12,4 +12,6 @@ dependencies {
     // region *DataBindingAdapter
     compileOnly(libs.androidx.databinding.runtime)
     // endregion *DataBindingAdapter
+
+    testImplementation(libs.junitParams)
 }
