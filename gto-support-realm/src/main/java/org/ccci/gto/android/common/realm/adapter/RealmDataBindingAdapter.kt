@@ -8,7 +8,7 @@ import com.karumi.weak.weak
 import io.realm.OrderedRealmCollection
 import io.realm.RealmModel
 import io.realm.RealmRecyclerViewAdapter
-import org.ccci.gto.android.common.recyclerview.adapter.DataBindingViewHolder
+import org.ccci.gto.android.common.androidx.recyclerview.adapter.DataBindingViewHolder
 
 abstract class RealmDataBindingAdapter<T : RealmModel, B : ViewDataBinding>(
     lifecycleOwner: LifecycleOwner? = null,

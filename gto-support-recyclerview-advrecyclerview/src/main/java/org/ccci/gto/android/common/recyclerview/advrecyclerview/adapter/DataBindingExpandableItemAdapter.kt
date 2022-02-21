@@ -6,7 +6,7 @@ import androidx.lifecycle.LifecycleOwner
 import com.h6ah4i.android.widget.advrecyclerview.expandable.ExpandableItemViewHolder
 import com.h6ah4i.android.widget.advrecyclerview.utils.AbstractExpandableItemAdapter
 import com.karumi.weak.weak
-import org.ccci.gto.android.common.recyclerview.adapter.DataBindingViewHolder
+import org.ccci.gto.android.common.androidx.recyclerview.adapter.DataBindingViewHolder
 
 abstract class DataBindingExpandableItemAdapter<GB : ViewDataBinding, CB : ViewDataBinding>(
     lifecycleOwner: LifecycleOwner? = null

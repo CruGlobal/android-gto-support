@@ -5,6 +5,7 @@ import androidx.databinding.ViewDataBinding
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.RecyclerView
 import com.karumi.weak.weak
+import org.ccci.gto.android.common.androidx.recyclerview.adapter.DataBindingViewHolder
 
 abstract class AbstractDataBindingAdapter<B : ViewDataBinding, VH : DataBindingViewHolder<B>>(
     lifecycleOwner: LifecycleOwner? = null

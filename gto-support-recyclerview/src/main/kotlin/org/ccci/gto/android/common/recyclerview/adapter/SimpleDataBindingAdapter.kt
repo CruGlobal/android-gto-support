@@ -2,6 +2,7 @@ package org.ccci.gto.android.common.recyclerview.adapter
 
 import androidx.databinding.ViewDataBinding
 import androidx.lifecycle.LifecycleOwner
+import org.ccci.gto.android.common.androidx.recyclerview.adapter.DataBindingViewHolder
 
 abstract class SimpleDataBindingAdapter<B : ViewDataBinding>(lifecycleOwner: LifecycleOwner? = null) :
     AbstractDataBindingAdapter<B, DataBindingViewHolder<B>>(lifecycleOwner) {
