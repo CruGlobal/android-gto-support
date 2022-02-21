@@ -27,10 +27,9 @@ class SimpleLayoutAdapter(
 
     override fun getItemCount() = repeat
     override fun getItemId(position: Int) = position.toLong()
-    override fun getItemViewType(position: Int) = layoutId
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
-        LayoutInflater.from(parent.context).inflate(viewType, parent, false)
+        LayoutInflater.from(parent.context).inflate(layoutId, parent, false)
             .also { initializeLayout(it) }
             .let { ViewHolder(it) }
     override fun onBindViewHolder(holder: ViewHolder, position: Int) = Unit
