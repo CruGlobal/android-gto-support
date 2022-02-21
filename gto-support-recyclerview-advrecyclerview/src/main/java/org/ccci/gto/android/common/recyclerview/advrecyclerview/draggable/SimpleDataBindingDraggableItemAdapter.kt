@@ -3,7 +3,7 @@ package org.ccci.gto.android.common.recyclerview.advrecyclerview.draggable
 import androidx.databinding.ViewDataBinding
 import androidx.lifecycle.LifecycleOwner
 import com.h6ah4i.android.widget.advrecyclerview.draggable.DraggableItemAdapter
-import org.ccci.gto.android.common.recyclerview.adapter.AbstractDataBindingAdapter
+import org.ccci.gto.android.common.androidx.recyclerview.adapter.AbstractDataBindingAdapter
 
 abstract class SimpleDataBindingDraggableItemAdapter<B : ViewDataBinding>(lifecycleOwner: LifecycleOwner? = null) :
     AbstractDataBindingAdapter<B, DataBindingDraggableItemViewHolder<B>>(lifecycleOwner),

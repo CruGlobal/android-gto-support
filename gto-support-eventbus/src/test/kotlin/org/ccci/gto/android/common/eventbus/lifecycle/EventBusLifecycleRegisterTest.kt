@@ -4,7 +4,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.testing.TestLifecycleOwner
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.TestCoroutineDispatcher
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import org.greenrobot.eventbus.EventBus
 import org.junit.Before
 import org.junit.Rule
@@ -19,7 +19,7 @@ class EventBusLifecycleRegisterTest {
     val instantTaskRule = InstantTaskExecutorRule()
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    private val lifecycleOwner = TestLifecycleOwner(coroutineDispatcher = TestCoroutineDispatcher())
+    private val lifecycleOwner = TestLifecycleOwner(coroutineDispatcher = UnconfinedTestDispatcher())
     private lateinit var eventBus: EventBus
     private val subscriber = Any()
 

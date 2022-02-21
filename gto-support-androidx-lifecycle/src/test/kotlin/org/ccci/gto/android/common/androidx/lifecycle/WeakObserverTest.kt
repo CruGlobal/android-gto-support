@@ -10,11 +10,11 @@ import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
-@OptIn(ExperimentalCoroutinesApi::class)
 class WeakObserverTest : BaseLiveDataTest() {
     var counter = 0
     val liveData = MutableLiveData(counter)
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     private val lifecycleOwner = TestLifecycleOwner(coroutineDispatcher = UnconfinedTestDispatcher())
 
     @Test

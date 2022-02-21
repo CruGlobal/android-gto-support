@@ -5,7 +5,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.testing.TestLifecycleOwner
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.TestCoroutineDispatcher
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import org.junit.Rule
 import org.junit.Test
 import org.mockito.kotlin.any
@@ -20,7 +20,7 @@ class LiveDataObserveOnceTest {
     val rule = InstantTaskExecutorRule()
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    private val lifecycleOwner = TestLifecycleOwner(Lifecycle.State.STARTED, TestCoroutineDispatcher())
+    private val lifecycleOwner = TestLifecycleOwner(Lifecycle.State.STARTED, UnconfinedTestDispatcher())
     private val liveData = MutableLiveData<Int>()
 
     @Test

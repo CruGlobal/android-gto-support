@@ -1,7 +1,6 @@
 package org.ccci.gto.android.common.kotlin.coroutines
 
 import android.content.SharedPreferences
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.conflate
@@ -14,7 +13,6 @@ fun SharedPreferences.getStringFlow(key: String, defValue: String?) = getFlow(ke
 fun SharedPreferences.getStringSetFlow(key: String, defValue: Set<String>?) =
     getFlow(key) { getStringSet(key, defValue) }
 
-@OptIn(ExperimentalCoroutinesApi::class)
 private fun <T> SharedPreferences.getFlow(key: String, value: () -> T) = callbackFlow {
     val listener = SharedPreferences.OnSharedPreferenceChangeListener { _, k ->
         if (k == null || k == key) trySend(value())

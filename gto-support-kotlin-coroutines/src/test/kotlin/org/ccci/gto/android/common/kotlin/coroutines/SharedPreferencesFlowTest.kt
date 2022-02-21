@@ -8,7 +8,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.test.runBlockingTest
+import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Before
@@ -29,7 +29,7 @@ class SharedPreferencesFlowTest {
     }
 
     @Test
-    fun testGetBooleanFlow() = runBlockingTest {
+    fun testGetBooleanFlow() = runTest {
         val flowOutput = Channel<Boolean>(1)
         val flow = prefs.getBooleanFlow(KEY, false)
             .onEach { flowOutput.send(it) }
