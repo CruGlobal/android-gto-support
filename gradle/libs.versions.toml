@@ -71,7 +71,7 @@ kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "
 kotlin-stdlib-jdk8 = { module = "org.jetbrains.kotlin:kotlin-stdlib-jdk8", version.ref = "kotlin" }
 leakcanary = "com.squareup.leakcanary:leakcanary-android:2.8.1"
 lightweightStream = { module = "com.annimon:stream", version = "1.2.2" }
-lottie = { module = "com.airbnb.android:lottie", version = "4.2.2" }
+lottie = { module = "com.airbnb.android:lottie", version = "5.0.1" }
 materialComponents = "com.google.android.material:material:1.5.0"
 mockito = "org.mockito:mockito-inline:4.3.1"
 mockito-kotlin = { module = "org.mockito.kotlin:mockito-kotlin", version = "4.0.0" }
