@@ -21,7 +21,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Run Static Analysis
         uses: gradle/gradle-build-action@v2
         with:
@@ -44,7 +44,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Cache Maven
         uses: actions/cache@v2
         with:
@@ -75,7 +75,7 @@ jobs:
     needs: [static, tests]
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Publish library
         uses: gradle/gradle-build-action@v2
         with:
