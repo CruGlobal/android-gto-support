@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.os.Parcelable
 
 // region Parcelables
+@Suppress("UNCHECKED_CAST")
 fun <T : Parcelable> Bundle.getParcelableArray(key: String?, clazz: Class<T>) =
     getParcelableArray(key)?.let {
         val arr = java.lang.reflect.Array.newInstance(clazz, it.size) as Array<T?>
