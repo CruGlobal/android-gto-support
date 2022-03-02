@@ -14,8 +14,8 @@ private const val KEY1 = "key1"
 private const val KEY2 = "key2"
 
 @RunWith(AndroidJUnit4::class)
-@Config(sdk = [28])
 class BundleTest {
+    // region ParcelableArray
     @Test
     fun verifyGetParcelableArray() {
         val points = arrayOf(Point(0, 0), null, Point(1, 1))
@@ -43,4 +43,5 @@ class BundleTest {
         assertArrayEquals(points, resp)
         assertNull(bundle.getTypedParcelableArray<Point>(KEY2))
     }
+    // endregion ParcelableArray
 }
