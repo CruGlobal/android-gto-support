@@ -41,16 +41,10 @@ internal fun Bundle.`-putLocale`(key: String?, locale: Locale?) = putLocale(key,
     ReplaceWith("getLocale(key, defValue)"),
     DeprecationLevel.ERROR
 )
+@JvmOverloads
 @JvmName("getLocale")
 @Suppress("FunctionName")
-fun Bundle.`-getLocale`(key: String?) = getLocale(key)
-
-@Deprecated(
-    "Since v3.11.2, use BundleKt.getLocale() ?: defValue instead",
-    ReplaceWith("getLocale(key) ?: defValue"),
-    DeprecationLevel.ERROR
-)
-fun Bundle.getLocale(key: String?, defValue: Locale?) = getLocale(key) ?: defValue
+fun Bundle.`-getLocale`(key: String?, defValue: Locale? = null) = getLocale(key, defValue)
 
 @Deprecated(
     "Since v3.11.2, use BundleKt.putLocaleArray() instead",
