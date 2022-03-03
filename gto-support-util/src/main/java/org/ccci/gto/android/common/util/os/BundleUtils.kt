@@ -27,33 +27,48 @@ inline fun <reified T : Enum<T>> Bundle.getEnum(key: String?, defValue: T? = nul
 // endregion Enums
 
 // region Locales
-fun Bundle.putLocale(key: String?, locale: Locale?) = putString(key, locale?.toLanguageTag())
+@Deprecated(
+    "Since v3.11.2, use BundleKt.putLocale() instead",
+    ReplaceWith("putLocale(key, locale)"),
+    DeprecationLevel.ERROR
+)
+@JvmName("putLocale")
+@Suppress("FunctionName")
+internal fun Bundle.`-putLocale`(key: String?, locale: Locale?) = putLocale(key, locale)
 
+@Deprecated(
+    "Since v3.11.2, use BundleKt.getLocale() instead",
+    ReplaceWith("getLocale(key, defValue)"),
+    DeprecationLevel.ERROR
+)
+@JvmName("getLocale")
+@Suppress("FunctionName")
+fun Bundle.`-getLocale`(key: String?) = getLocale(key)
+
+@Deprecated(
+    "Since v3.11.2, use BundleKt.getLocale() ?: defValue instead",
+    ReplaceWith("getLocale(key) ?: defValue"),
+    DeprecationLevel.ERROR
+)
+fun Bundle.getLocale(key: String?, defValue: Locale?) = getLocale(key) ?: defValue
+
+@Deprecated(
+    "Since v3.11.2, use BundleKt.putLocaleArray() instead",
+    ReplaceWith("putLocaleArray(key, locales, singleString)"),
+    DeprecationLevel.ERROR
+)
 @JvmOverloads
-@Contract("_, _, !null -> !null")
-fun Bundle.getLocale(key: String?, defValue: Locale? = null) =
-    getString(key)?.let { Locale.forLanguageTag(it) } ?: defValue
+@JvmName("putLocaleArray")
+@Suppress("FunctionName")
+fun Bundle.`-putLocaleArray`(key: String?, locales: Array<Locale>?, singleString: Boolean = false) =
+    putLocaleArray(key, locales, singleString)
 
-/**
- * Store an array of Locales in the provided Bundle
- *
- * @receiver The bundle to store the locale array in
- * @param key The key to store the locale array under
- * @param locales The locales being put in the bundle
- * @param singleString Flag indicating if the locale array should be stored as a single string
- */
-@JvmOverloads
-fun Bundle.putLocaleArray(key: String?, locales: Array<Locale?>?, singleString: Boolean = false) {
-    val tags = locales?.map { it?.toLanguageTag() }?.toTypedArray()
-
-    if (singleString) {
-        putString(key, tags?.joinToString(","))
-    } else {
-        putStringArray(key, tags)
-    }
-}
-
-fun Bundle.getLocaleArray(key: String?) =
-    (getStringArray(key) ?: getString(key)?.split(",")?.toTypedArray())
-        ?.map { it?.let { Locale.forLanguageTag(it) } }?.toTypedArray()
+@Deprecated(
+    "Since v3.11.2, use BundleKt.getLocaleArray() instead",
+    ReplaceWith("getLocaleArray(key)"),
+    DeprecationLevel.ERROR
+)
+@JvmName("getLocaleArray")
+@Suppress("FunctionName")
+fun Bundle.`-getLocaleArray`(key: String?) = getLocaleArray(key)
 // endregion Locales
