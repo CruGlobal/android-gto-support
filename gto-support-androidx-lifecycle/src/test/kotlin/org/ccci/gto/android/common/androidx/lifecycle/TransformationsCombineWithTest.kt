@@ -53,6 +53,29 @@ class TransformationsCombineWithTest : BaseLiveDataTest() {
         }
     }
 
+    // region combine() & combineWith()
+    @Test
+    fun `combine() - 2 LiveDatas`() {
+        val combined = combine(str1, str2) { a, b -> listOfNotNull(a, b).joinToString() }
+        combined.observeForever(observer)
+
+        verify(observer, never()).onChanged(any())
+        assertNull(combined.value)
+        str1.value = "b"
+        verify(observer, never()).onChanged(any())
+        assertNull(combined.value)
+        str2.value = null
+        verify(observer).onChanged(any())
+        assertEquals("b", combined.value)
+        str2.value = "c"
+        verify(observer, times(2)).onChanged(any())
+        assertEquals("b, c", combined.value)
+        argumentCaptor<String> {
+            verify(observer, times(2)).onChanged(capture())
+            assertThat(allValues, contains("b", "b, c"))
+        }
+    }
+
     @Test
     fun `combineWith() - 2 LiveDatas`() {
         val combined = str1.combineWith(str2) { a, b -> listOfNotNull(a, b).joinToString() }
@@ -244,4 +267,5 @@ class TransformationsCombineWithTest : BaseLiveDataTest() {
             assertThat(allValues, contains("a, b, c"))
         }
     }
+    // endregion combine() & combineWith()
 }
