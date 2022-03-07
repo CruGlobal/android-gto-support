@@ -53,6 +53,29 @@ class TransformationsCombineWithTest : BaseLiveDataTest() {
         }
     }
 
+    // region combine() & combineWith()
+    @Test
+    fun `combine() - 2 LiveDatas`() {
+        val combined = combine(str1, str2) { a, b -> listOfNotNull(a, b).joinToString() }
+        combined.observeForever(observer)
+
+        verify(observer, never()).onChanged(any())
+        assertNull(combined.value)
+        str1.value = "b"
+        verify(observer, never()).onChanged(any())
+        assertNull(combined.value)
+        str2.value = null
+        verify(observer).onChanged(any())
+        assertEquals("b", combined.value)
+        str2.value = "c"
+        verify(observer, times(2)).onChanged(any())
+        assertEquals("b, c", combined.value)
+        argumentCaptor<String> {
+            verify(observer, times(2)).onChanged(capture())
+            assertThat(allValues, contains("b", "b, c"))
+        }
+    }
+
     @Test
     fun `combineWith() - 2 LiveDatas`() {
         val combined = str1.combineWith(str2) { a, b -> listOfNotNull(a, b).joinToString() }
@@ -194,6 +217,44 @@ class TransformationsCombineWithTest : BaseLiveDataTest() {
     }
 
     @Test
+    fun `combine() - 5 LiveDatas`() {
+        val combined =
+            combine(str1, str2, str3, str4, str5) { a, b, c, d, e -> listOfNotNull(a, b, c, d, e).joinToString() }
+        combined.observeForever(observer)
+
+        verify(observer, never()).onChanged(any())
+        assertNull(combined.value)
+        str1.value = "b"
+        verify(observer, never()).onChanged(any())
+        assertNull(combined.value)
+        str2.value = null
+        verify(observer, never()).onChanged(any())
+        assertNull(combined.value)
+        str5.value = null
+        verify(observer, never()).onChanged(any())
+        assertNull(combined.value)
+        str3.value = null
+        verify(observer).onChanged(any())
+        assertEquals("b", combined.value)
+        str4.value = "e"
+        verify(observer, times(2)).onChanged(any())
+        assertEquals("b, e", combined.value)
+        str3.value = "d"
+        verify(observer, times(3)).onChanged(any())
+        assertEquals("b, d, e", combined.value)
+        str5.value = "f"
+        verify(observer, times(4)).onChanged(any())
+        assertEquals("b, d, e, f", combined.value)
+        str2.value = "c"
+        verify(observer, times(5)).onChanged(any())
+        assertEquals("b, c, d, e, f", combined.value)
+        argumentCaptor<String> {
+            verify(observer, times(5)).onChanged(capture())
+            assertThat(allValues, contains("b", "b, e", "b, d, e", "b, d, e, f", "b, c, d, e, f"))
+        }
+    }
+
+    @Test
     fun `combineWith() - 5 LiveDatas`() {
         val combined =
             str1.combineWith(str2, str3, str4, str5) { a, b, c, d, e -> listOfNotNull(a, b, c, d, e).joinToString() }
@@ -244,4 +305,5 @@ class TransformationsCombineWithTest : BaseLiveDataTest() {
             assertThat(allValues, contains("a, b, c"))
         }
     }
+    // endregion combine() & combineWith()
 }
