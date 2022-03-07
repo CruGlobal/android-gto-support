@@ -19,6 +19,9 @@ interface CoroutinesAsyncDao : CoroutinesDao {
     fun updateOrInsertAsync(obj: Any) = updateOrInsertAsync(obj, *getFullProjection(obj.javaClass))
     fun updateOrInsertAsync(obj: Any, vararg projection: String) =
         coroutineScope.async { updateOrInsert(obj, *projection) }
+
+    fun <T> transactionAsync(exclusive: Boolean = true, body: () -> T) =
+        coroutineScope.async { transaction(exclusive, body) }
 }
 
 inline fun <reified T : Any> CoroutinesAsyncDao.findAsync(vararg key: Any) = findAsync(T::class.java, *key)

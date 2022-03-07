@@ -84,6 +84,9 @@ interface Dao {
     // endregion Read-Write
     // endregion Queries
 
+    @WorkerThread
+    fun <T> transaction(exclusive: Boolean = true, body: () -> T): T
+
     // region Data Invalidation
     fun interface InvalidationCallback {
         @WorkerThread
