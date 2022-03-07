@@ -280,10 +280,8 @@ abstract class AbstractDao(private val helper: SQLiteOpenHelper) : Dao {
     ): T = db.transaction(exclusive) { closure.run() }
 
     @WorkerThread
-    fun <T> transaction(
-        exclusive: Boolean = true,
-        body: () -> T
-    ): T = writableDatabase.transaction(exclusive) { body() }
+    override fun <T> transaction(exclusive: Boolean, body: () -> T): T =
+        writableDatabase.transaction(exclusive) { body() }
 
     @WorkerThread
     protected fun <T> transaction(
