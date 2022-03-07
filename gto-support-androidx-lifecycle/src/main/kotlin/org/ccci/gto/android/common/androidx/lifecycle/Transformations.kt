@@ -16,7 +16,22 @@ import androidx.lifecycle.switchMap
  *
  * @see androidx.lifecycle.Transformations.map
  */
-@JvmName("combine")
+fun <IN1, IN2, OUT> combine(
+    source1: LiveData<IN1>,
+    source2: LiveData<IN2>,
+    mapFunction: (IN1, IN2) -> OUT
+) = combineInt(source1, source2) {
+    @Suppress("UNCHECKED_CAST")
+    mapFunction(source1.value as IN1, source2.value as IN2)
+}
+
+/**
+ * This method will combine 2 LiveData objects into a new LiveData object by running the {@param mapFunction} on the
+ * current values of both source LiveData objects.
+ *
+ * @see androidx.lifecycle.Transformations.map
+ */
+@JvmSynthetic
 fun <IN1, IN2, OUT> LiveData<IN1>.combineWith(
     other: LiveData<IN2>,
     mapFunction: (IN1, IN2) -> OUT
