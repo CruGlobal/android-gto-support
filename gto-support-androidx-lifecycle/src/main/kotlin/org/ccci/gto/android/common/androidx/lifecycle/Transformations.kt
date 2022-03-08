@@ -162,7 +162,7 @@ fun <IN1, IN2, IN3, IN4, IN5, IN6, OUT> LiveData<IN1>.combineWith(
     other4: LiveData<IN5>,
     other5: LiveData<IN6>,
     mapFunction: (IN1, IN2, IN3, IN4, IN5, IN6) -> OUT
-) = combineInt(this, other, other2, other3, other4) {
+) = combineInt(this, other, other2, other3, other4, other5) {
     @Suppress("UNCHECKED_CAST")
     mapFunction(
         value as IN1,
@@ -189,7 +189,7 @@ fun <IN1, IN2, IN3, IN4, IN5, IN6, IN7, OUT> LiveData<IN1>.combineWith(
     other5: LiveData<IN6>,
     other6: LiveData<IN7>,
     mapFunction: (IN1, IN2, IN3, IN4, IN5, IN6, IN7) -> OUT
-) = combineInt(this, other, other2, other3, other4) {
+) = combineInt(this, other, other2, other3, other4, other5, other6) {
     @Suppress("UNCHECKED_CAST")
     mapFunction(
         value as IN1,
