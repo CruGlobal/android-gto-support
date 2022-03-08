@@ -26,9 +26,3 @@ fun <T> SavedStateHandle.livedata(key: String? = null, initialValue: T) =
     ReadOnlyProperty<Any, MutableLiveData<T>> { _, property ->
         getLiveData(key ?: property.name, initialValue)
     }
-
-fun <T> SavedStateHandle.stateFlow(scope: CoroutineScope, key: String? = null) = stateFlow<T?>(scope, key, null)
-fun <T> SavedStateHandle.stateFlow(scope: CoroutineScope, key: String? = null, initialValue: T) =
-    ReadOnlyProperty<Any, MutableStateFlow<T>> { _, property ->
-        getStateFlow(scope, key ?: property.name, initialValue)
-    }

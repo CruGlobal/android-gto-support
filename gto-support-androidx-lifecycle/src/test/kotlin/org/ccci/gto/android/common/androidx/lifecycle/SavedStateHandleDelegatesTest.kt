@@ -13,6 +13,7 @@ import kotlinx.coroutines.test.setMain
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
+import org.junit.Assert.assertSame
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -32,8 +33,6 @@ class SavedStateHandleDelegatesTest {
         var propertyOther: String? by savedState.delegate(PROPERTY)
         var propertyNotNull: String by savedState.delegate(PROPERTY, ifNull = "default")
         val livedata by savedState.livedata<String>(PROPERTY)
-        val stateFlow by savedState.stateFlow<String>(scope, PROPERTY)
-        val stateFlowInitial by savedState.stateFlow(scope, PROPERTY, "initial")
     }
 
     @Before
@@ -55,8 +54,6 @@ class SavedStateHandleDelegatesTest {
         assertEquals("test", delegates.propertyOther)
         assertEquals("test", delegates.propertyNotNull)
         assertEquals("test", delegates.livedata.value)
-        assertEquals("test", delegates.stateFlow.value)
-        assertEquals("test", delegates.stateFlowInitial.value)
     }
 
     @Test
@@ -67,8 +64,6 @@ class SavedStateHandleDelegatesTest {
         assertEquals("test", delegates.propertyOther)
         assertEquals("test", delegates.propertyNotNull)
         assertEquals("test", delegates.livedata.value)
-        assertEquals("test", delegates.stateFlow.value)
-        assertEquals("test", delegates.stateFlowInitial.value)
     }
 
     @Test
@@ -77,26 +72,14 @@ class SavedStateHandleDelegatesTest {
         assertNull(delegates.property)
         assertNull(delegates.propertyOther)
         assertEquals("default", delegates.propertyNotNull)
-        assertNull(delegates.stateFlow.value)
     }
 
     @Test
     fun `LiveData Delegate`() {
+        assertSame(delegates.livedata, delegates.livedata)
         delegates.livedata.value = "livedata"
         assertEquals("livedata", savedState[PROPERTY])
         assertEquals("livedata", delegates.property)
         assertEquals("livedata", delegates.livedata.value)
-        assertEquals("livedata", delegates.stateFlow.value)
-        assertEquals("livedata", delegates.stateFlowInitial.value)
-    }
-
-    @Test
-    fun `StateFlow Delegate`() {
-        delegates.stateFlow.value = "stateFlow"
-        assertEquals("stateFlow", savedState[PROPERTY])
-        assertEquals("stateFlow", delegates.property)
-        assertEquals("stateFlow", delegates.livedata.value)
-        assertEquals("stateFlow", delegates.stateFlow.value)
-        assertEquals("stateFlow", delegates.stateFlowInitial.value)
     }
 }
