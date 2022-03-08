@@ -5,6 +5,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 
+// region observeOnce
 @MainThread
 inline fun <T> LiveData<T>.observeOnce(owner: LifecycleOwner, crossinline onChanged: (T) -> Unit) =
     observeOnceObserver(onChanged).also { observe(owner, it) }
@@ -20,3 +21,4 @@ inline fun <T> LiveData<T>.observeOnceObserver(crossinline onChanged: (T) -> Uni
         removeObserver(this)
     }
 }
+// endregion observeOnce
