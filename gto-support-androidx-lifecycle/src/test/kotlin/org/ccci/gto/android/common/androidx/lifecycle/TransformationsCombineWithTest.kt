@@ -18,6 +18,7 @@ class TransformationsCombineWithTest : BaseLiveDataTest() {
     private val str3 = MutableLiveData<String?>()
     private val str4 = MutableLiveData<String?>(null)
     private val str5 = MutableLiveData<String?>()
+    private val str6 = MutableLiveData<String?>()
 
     @Test
     fun verifySwitchCombineWith() {
@@ -289,6 +290,51 @@ class TransformationsCombineWithTest : BaseLiveDataTest() {
         argumentCaptor<String> {
             verify(observer, times(5)).onChanged(capture())
             assertThat(allValues, contains("b", "b, e", "b, d, e", "b, d, e, f", "b, c, d, e, f"))
+        }
+    }
+
+    @Test
+    fun `combineWith() - 6 LiveDatas`() {
+        val combined = str1.combineWith(str2, str3, str4, str5, str6) { a, b, c, d, e, f ->
+            listOfNotNull(a, b, c, d, e, f).joinToString()
+        }
+        combined.observeForever(observer)
+
+        verify(observer, never()).onChanged(any())
+        assertNull(combined.value)
+        str1.value = "b"
+        verify(observer, never()).onChanged(any())
+        assertNull(combined.value)
+        str2.value = null
+        verify(observer, never()).onChanged(any())
+        assertNull(combined.value)
+        str5.value = null
+        verify(observer, never()).onChanged(any())
+        assertNull(combined.value)
+        str6.value = null
+        verify(observer, never()).onChanged(any())
+        assertNull(combined.value)
+        str3.value = null
+        verify(observer).onChanged(any())
+        assertEquals("b", combined.value)
+        str4.value = "e"
+        verify(observer, times(2)).onChanged(any())
+        assertEquals("b, e", combined.value)
+        str3.value = "d"
+        verify(observer, times(3)).onChanged(any())
+        assertEquals("b, d, e", combined.value)
+        str5.value = "f"
+        verify(observer, times(4)).onChanged(any())
+        assertEquals("b, d, e, f", combined.value)
+        str2.value = "c"
+        verify(observer, times(5)).onChanged(any())
+        assertEquals("b, c, d, e, f", combined.value)
+        str6.value = "g"
+        verify(observer, times(6)).onChanged(any())
+        assertEquals("b, c, d, e, f, g", combined.value)
+        argumentCaptor<String> {
+            verify(observer, times(6)).onChanged(capture())
+            assertThat(allValues, contains("b", "b, e", "b, d, e", "b, d, e, f", "b, c, d, e, f", "b, c, d, e, f, g"))
         }
     }
 
