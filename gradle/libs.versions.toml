@@ -55,7 +55,7 @@ dagger-compiler = { module = "com.google.dagger:dagger-compiler", version.ref = 
 dagger-hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "dagger" }
 dagger-hilt-compiler = { module = "com.google.dagger:hilt-compiler", version.ref = "dagger" }
 eventbus = "org.greenrobot:eventbus:3.3.1"
-facebookFlipper = "com.facebook.flipper:flipper:0.139.0"
+facebookFlipper = "com.facebook.flipper:flipper:0.140.0"
 firebase-crashlytics = "com.google.firebase:firebase-crashlytics:18.2.9"
 guava-listenablefuture = { module = "com.google.guava:listenablefuture", version = "1.0" }
 json = "org.json:json:20220320"
