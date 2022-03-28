@@ -26,3 +26,24 @@ private class WeakCloseableObserverWrapper<T>(liveData: LiveData<T>, observer: O
         observer?.let { liveData?.removeObserver(it) }
     }
 }
+
+// region Multi-observe
+fun <IN1, IN2> ViewModel.observe(
+    source1: LiveData<IN1>,
+    source2: LiveData<IN2>,
+    observer: (IN1, IN2) -> Unit
+) = compoundLiveData(source1, source2).observe(this) {
+    @Suppress("UNCHECKED_CAST")
+    observer(source1.value as IN1, source2.value as IN2)
+}
+
+fun <IN1, IN2, IN3> ViewModel.observe(
+    source1: LiveData<IN1>,
+    source2: LiveData<IN2>,
+    source3: LiveData<IN3>,
+    observer: (IN1, IN2, IN3) -> Unit
+) = compoundLiveData(source1, source2, source3).observe(this) {
+    @Suppress("UNCHECKED_CAST")
+    observer(source1.value as IN1, source2.value as IN2, source3.value as IN3)
+}
+// endregion Multi-observe
