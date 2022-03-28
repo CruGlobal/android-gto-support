@@ -1,5 +1,6 @@
 package org.ccci.gto.android.common.androidx.lifecycle
 
+import androidx.annotation.MainThread
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
@@ -47,3 +48,7 @@ fun <IN1, IN2, IN3> ViewModel.observe(
     observer(source1.value as IN1, source2.value as IN2, source3.value as IN3)
 }
 // endregion Multi-observe
+
+@MainThread
+inline fun <T> LiveData<T>.observeOnce(viewModel: ViewModel, crossinline onChanged: (T) -> Unit) =
+    observeOnceObserver(onChanged).also { observe(viewModel, it) }
