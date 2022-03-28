@@ -4,7 +4,11 @@ import androidx.annotation.MainThread
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
+
+fun <T> LiveData<T>.copyInto(owner: LifecycleOwner, target: MutableLiveData<in T>) =
+    observe(owner) { target.value = it }
 
 // region Multi-observe
 fun <IN1, IN2> LifecycleOwner.observe(
