@@ -14,9 +14,6 @@ class WeakObserverTest : BaseLiveDataTest() {
     var counter = 0
     val liveData = MutableLiveData(counter)
 
-    @OptIn(ExperimentalCoroutinesApi::class)
-    private val lifecycleOwner = TestLifecycleOwner(coroutineDispatcher = UnconfinedTestDispatcher())
-
     @Test
     fun `remove observer manually`() {
         val obj = Any()

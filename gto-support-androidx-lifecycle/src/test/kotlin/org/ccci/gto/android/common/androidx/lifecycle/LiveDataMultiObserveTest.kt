@@ -14,8 +14,6 @@ import org.mockito.kotlin.verifyNoMoreInteractions
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class LiveDataMultiObserveTest : BaseLiveDataTest() {
-    private val lifecycleOwner = TestLifecycleOwner(Lifecycle.State.STARTED, UnconfinedTestDispatcher())
-
     private val data1 = MutableLiveData<String>()
     private val data2 = MutableLiveData<Int>()
     private val data3 = MutableLiveData<Long>()
