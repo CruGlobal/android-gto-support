@@ -1,31 +1,22 @@
 package org.ccci.gto.android.common.androidx.lifecycle
 
-import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.clear
 import org.junit.After
 import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
 import org.mockito.kotlin.any
-import org.mockito.kotlin.mock
-import org.mockito.kotlin.never
-import org.mockito.kotlin.reset
 import org.mockito.kotlin.verify
+import org.mockito.kotlin.verifyNoMoreInteractions
 
-class LiveDataViewModelObserverTest {
-    @get:Rule
-    val instantTaskRule = InstantTaskExecutorRule()
-
+class LiveDataViewModelObserverTest : BaseLiveDataTest() {
     private val liveData = MutableLiveData<Int>()
     private lateinit var viewModel: ViewModel
-    private lateinit var onChanged: (Int) -> Unit
 
     @Before
     fun setup() {
         viewModel = object : ViewModel() {}
-        onChanged = mock()
     }
 
     @After
@@ -35,25 +26,23 @@ class LiveDataViewModelObserverTest {
 
     @Test
     fun verifyLiveDataViewModelObserver() {
-        liveData.observe(viewModel, onChanged)
+        liveData.observe(viewModel, observer)
         liveData.value = 1
-        verify(onChanged).invoke(any())
+        verify(observer).onChanged(any())
 
-        reset(onChanged)
         viewModel.clear()
         liveData.value = 2
-        verify(onChanged, never()).invoke(any())
+        verifyNoMoreInteractions(observer)
     }
 
     @Test
     fun verifyLiveDataViewModelObserverCanBeRemoved() {
-        val observer = liveData.observe(viewModel, onChanged)
+        val resp = liveData.observe(viewModel, observer)
         liveData.value = 1
-        verify(onChanged).invoke(any())
+        verify(observer).onChanged(any())
 
-        reset(onChanged)
-        liveData.removeObserver(observer)
+        liveData.removeObserver(resp)
         liveData.value = 2
-        verify(onChanged, never()).invoke(any())
+        verifyNoMoreInteractions(observer)
     }
 }
