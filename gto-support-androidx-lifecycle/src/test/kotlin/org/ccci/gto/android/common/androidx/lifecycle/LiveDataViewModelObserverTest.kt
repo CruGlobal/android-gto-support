@@ -9,6 +9,9 @@ import org.junit.Before
 import org.junit.Test
 import org.mockito.kotlin.any
 import org.mockito.kotlin.argumentCaptor
+import org.mockito.kotlin.eq
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.never
 import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.verifyNoMoreInteractions
@@ -84,4 +87,36 @@ class LiveDataViewModelObserverTest : BaseLiveDataTest() {
         }
     }
     // endregion Multi-observe
+
+    // region observeOnce
+    @Test
+    fun `observeOnce() - Only Called One Time`() {
+        // observe before LiveData has data
+        val observer: (Int) -> Unit = mock()
+        liveData.observeOnce(viewModel, observer)
+        verify(observer, never()).invoke(any())
+        liveData.value = 1
+        verify(observer).invoke(eq(1))
+        liveData.value = 2
+        verifyNoMoreInteractions(observer)
+
+        // observe after LiveData has data
+        val observer2: (Int) -> Unit = mock()
+        liveData.observeOnce(viewModel, observer2)
+        verify(observer2).invoke(eq(2))
+        liveData.value = 3
+        verifyNoMoreInteractions(observer2)
+    }
+
+    @Test
+    fun `observeOnce() - Respects ViewModel clear`() {
+        val observer: (Int) -> Unit = mock()
+        liveData.observeOnce(viewModel, observer)
+
+        // Lifecycle is destroyed so observer is removed before it can be called
+        viewModel.clear()
+        liveData.value = 1
+        verify(observer, never()).invoke(any())
+    }
+    // endregion observeOnce
 }
