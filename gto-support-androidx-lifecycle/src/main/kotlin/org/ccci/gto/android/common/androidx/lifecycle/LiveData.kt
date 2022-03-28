@@ -45,7 +45,7 @@ fun <IN1, IN2, IN3> observeForever(
     observer(source1.value as IN1, source2.value as IN2, source3.value as IN3)
 }
 
-private fun compoundLiveData(vararg input: LiveData<*>): LiveData<Unit> {
+internal fun compoundLiveData(vararg input: LiveData<*>): LiveData<Unit> {
     val result = MediatorLiveData<Unit>()
     val state = object {
         val inputInitialized = BooleanArray(input.size) { false }
