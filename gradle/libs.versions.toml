@@ -1,5 +1,5 @@
 [versions]
-android-gradle-plugin = "7.1.2"
+android-gradle-plugin = "7.1.3"
 androidx-collection = "1.2.0"
 androidx-core = "1.7.0"
 androidx-fragment = "1.4.1"
