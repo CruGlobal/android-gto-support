@@ -12,3 +12,7 @@ internal val clearCompositionMethod by lazy {
 internal fun LottieAnimationView.setCompositionTask(task: LottieTask<LottieComposition>) {
     setCompositionTaskMethod?.invoke(this, task)
 }
+
+internal fun LottieAnimationView.clearComposition() {
+    clearCompositionMethod?.invoke(this)
+}

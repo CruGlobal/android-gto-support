@@ -3,10 +3,10 @@ package org.ccci.gto.android.common.lottie.databinding
 import androidx.databinding.BindingAdapter
 import com.airbnb.lottie.LottieAnimationView
 import com.airbnb.lottie.LottieDrawable
+import com.airbnb.lottie.clearComposition
 import com.airbnb.lottie.setCompositionTask
 import java.io.File
 import org.ccci.gto.android.common.lottie.R
-import org.ccci.gto.android.common.lottie.clearComposition
 import org.ccci.gto.android.common.lottie.loadLottieComposition
 
 private const val ANIMATION = "animation"
