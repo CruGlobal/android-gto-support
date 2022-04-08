@@ -11,9 +11,9 @@ import java.io.File
 import okio.buffer
 import okio.source
 
-// TODO: utilize LottieCompositionFactory.cache() to leverage the cache
 @SuppressLint("RestrictedApi")
-fun File.loadLottieComposition(cacheKey: String? = "file_$path") = LottieTask { loadLottieCompositionSync(cacheKey) }
+fun File.loadLottieComposition(cacheKey: String? = "file_$path"): LottieTask<LottieComposition> =
+    LottieCompositionFactory.fromJsonReader(JsonReader.of(source().buffer()), cacheKey)
 
 @WorkerThread
 @SuppressLint("RestrictedApi")
