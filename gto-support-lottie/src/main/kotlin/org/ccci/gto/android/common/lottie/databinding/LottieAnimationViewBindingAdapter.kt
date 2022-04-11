@@ -3,7 +3,13 @@ package org.ccci.gto.android.common.lottie.databinding
 import androidx.databinding.BindingAdapter
 import com.airbnb.lottie.LottieAnimationView
 import com.airbnb.lottie.LottieDrawable
+import com.airbnb.lottie.clearComposition
+import com.airbnb.lottie.setCompositionTask
+import java.io.File
 import org.ccci.gto.android.common.lottie.R
+import org.ccci.gto.android.common.lottie.loadLottieComposition
+
+private const val ANIMATION = "animation"
 
 @BindingAdapter("lottie_loop")
 internal fun LottieAnimationView.bindLoop(loop: Boolean?) {
@@ -21,4 +27,10 @@ internal fun LottieAnimationView.bindAutoPlay(autoPlay: Boolean) {
         pauseAnimation()
     }
     setTag(R.id.lottie_autoplay_enabled, autoPlay)
+}
+
+@BindingAdapter(ANIMATION)
+internal fun LottieAnimationView.bindAnimationFile(file: File?) = when {
+    file != null -> setCompositionTask(file.loadLottieComposition())
+    else -> clearComposition()
 }
