@@ -20,8 +20,28 @@ class TransformationsCombineWithTest : BaseLiveDataTest() {
     private val str5 = MutableLiveData<String?>()
     private val str6 = MutableLiveData<String?>()
 
+    // region switchCombine() & switchCombineWith()
     @Test
-    fun verifySwitchCombineWith() {
+    fun `switchCombine() - 2 LiveDatas`() {
+        val combined = switchCombine(str1, str2) { a, b -> MutableLiveData(listOfNotNull(a, b).joinToString()) }
+        combined.observeForever(observer)
+
+        verify(observer, never()).onChanged(any())
+        assertNull(combined.value)
+        str1.value = "b"
+        verify(observer, never()).onChanged(any())
+        assertNull(combined.value)
+        str2.value = "c"
+        verify(observer).onChanged(any())
+        assertEquals("b, c", combined.value)
+        argumentCaptor<String> {
+            verify(observer).onChanged(capture())
+            assertThat(allValues, contains("b, c"))
+        }
+    }
+
+    @Test
+    fun `switchCombineWith() - 2 LiveDatas`() {
         val combined = str1.switchCombineWith(str2) { a, b -> MutableLiveData(listOfNotNull(a, b).joinToString()) }
         combined.observeForever(observer)
 
@@ -53,6 +73,7 @@ class TransformationsCombineWithTest : BaseLiveDataTest() {
             assertThat(allValues, contains("a, b, c"))
         }
     }
+    // endregion switchCombine() & switchCombineWith()
 
     // region combine() & combineWith()
     @Test
