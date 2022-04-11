@@ -8,6 +8,7 @@ import android.widget.ImageView
 import android.widget.ImageView.ScaleType
 import androidx.annotation.DrawableRes
 import androidx.annotation.UiThread
+import androidx.annotation.VisibleForTesting
 import androidx.core.content.withStyledAttributes
 import com.squareup.picasso.Picasso
 import com.squareup.picasso.RequestCreator
@@ -53,12 +54,20 @@ interface PicassoImageView {
 
         // region Placeholder Image
         @DrawableRes
-        private var placeholderResId = INVALID_DRAWABLE_RES
-        private var placeholder: Drawable? = null
+        @VisibleForTesting
+        internal var placeholderResId = INVALID_DRAWABLE_RES
+        @VisibleForTesting
+        internal var placeholder: Drawable? = null
 
         init {
             imageView.context.withStyledAttributes(attrs, R.styleable.PicassoImageView, defStyleAttr, defStyleRes) {
                 placeholderResId = getResourceId(R.styleable.PicassoImageView_placeholder, placeholderResId)
+
+                val file = getString(R.styleable.PicassoImageView_picassoFile)
+                val uri = getString(R.styleable.PicassoImageView_picassoUri)
+                check(file == null || uri == null) { "Cannot have both app:picassoFile and app:picassoUri defined" }
+                picassoFile = file?.let { File(file) }
+                picassoUri = uri?.let { Uri.parse(uri) }
             }
         }
 
