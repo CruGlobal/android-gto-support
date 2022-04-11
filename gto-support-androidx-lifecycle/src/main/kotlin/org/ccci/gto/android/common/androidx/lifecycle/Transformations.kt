@@ -240,7 +240,22 @@ fun <T> LiveData<out Iterable<T>>.sortedWith(comparator: Comparator<in T>) = map
  *
  * @see androidx.lifecycle.Transformations.switchMap
  */
-@JvmName("switchCombine")
+fun <IN1, IN2, OUT> switchCombine(
+    source1: LiveData<IN1>,
+    source2: LiveData<IN2>,
+    mapFunction: (IN1, IN2) -> LiveData<out OUT>
+) = switchCombineWithInt(source1, source2) {
+    @Suppress("UNCHECKED_CAST")
+    mapFunction(source1.value as IN1, source2.value as IN2)
+}
+
+/**
+ * This method will combine 2 LiveData objects into a new LiveData object by running the {@param mapFunction} on the
+ * current values of both source LiveData objects.
+ * Returning either of the original LiveData objects will cause an Exception.
+ *
+ * @see androidx.lifecycle.Transformations.switchMap
+ */
 fun <IN1, IN2, OUT> LiveData<IN1>.switchCombineWith(
     other: LiveData<IN2>,
     mapFunction: (IN1, IN2) -> LiveData<out OUT>
