@@ -12,7 +12,13 @@ plugins {
 }
 
 allprojects {
-    version = "3.11.2-SNAPSHOT"
+    // configure the project version
+    if (!project.findProperty("releaseBuild")?.toString().toBoolean()) {
+        project.findProperty("versionSuffix")?.toString()
+            ?.takeIf { it.matches(Regex("\\S+")) }
+            ?.let { version = "$version-$it" }
+        version = "$version-SNAPSHOT"
+    }
 
     repositories {
         maven {
