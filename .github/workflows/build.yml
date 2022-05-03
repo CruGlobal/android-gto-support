@@ -10,6 +10,10 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+env:
+  ORG_GRADLE_PROJECT_releaseBuild: ${{ github.event_name == 'push' && contains(github.ref, 'refs/tags/') }}
+  ORG_GRADLE_PROJECT_versionSuffix: ${{ (github.event_name == 'pull_request' && format('PR{0}', github.event.pull_request.number)) || '' }}
+
 jobs:
   static:
     name: Static Analysis
@@ -63,10 +67,10 @@ jobs:
           name: unit-test-results
           path: "**/build/reports/tests/"
 
-  deploy_snapshot:
-    name: Deploy Library Snapshot
+  deploy:
+    name: Deploy Library
     runs-on: ubuntu-latest
-    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+    if: github.event_name == 'pull_request' || (github.event_name == 'push' && (github.ref == 'refs/heads/master' || contains(github.ref, 'refs/tags/')))
     needs: [static, tests]
     steps:
       - name: Checkout code
