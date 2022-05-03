@@ -31,6 +31,10 @@ data class Join<S : Any, T : Any> private constructor(
     fun <T2 : Any> join(target: Class<T2>) = join(Table.forClass(target))
     fun <T2 : Any> join(target: Table<T2>) = Join(target = target, base = this)
     inline fun <reified T2 : Any> join() = join(Table.forClass<T2>())
+    fun <T2 : Any> join(join: Join<T, T2>): Join<S, T2> {
+        require(join.base == null) { "Cannot join a join that already has a base join" }
+        return Join(base = this, target = join.target, type = join.type, on = join.on)
+    }
 
     @Transient
     @IgnoredOnParcel
