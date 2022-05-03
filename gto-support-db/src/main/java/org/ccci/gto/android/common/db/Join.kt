@@ -36,6 +36,8 @@ data class Join<S : Any, T : Any> private constructor(
         return Join(base = this, target = join.target, type = join.type, on = join.on)
     }
 
+    fun <T2 : Any> leftJoin(join: Join<T, T2>) = join(join).type("LEFT")
+
     @Transient
     @IgnoredOnParcel
     private var sqlJoin: QueryComponent? = null
