@@ -5,20 +5,25 @@ import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.channels.trySendBlocking
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.conflate
+import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 
 interface CoroutinesFlowDao : CoroutinesDao, Dao {
-    private fun invalidationFlow(types: Collection<Class<*>>) = when {
-        types.isEmpty() -> flowOf(Unit)
+    private fun invalidationFlow(types: Collection<Class<*>>, emitOnStart: Boolean = true) = when {
+        types.isEmpty() -> if (emitOnStart) flowOf(Unit) else emptyFlow()
         else -> callbackFlow {
-            val callback = Dao.InvalidationCallback { if (it in types) trySendBlocking(it) }
+            val callback = Dao.InvalidationCallback { if (it in types) trySendBlocking(Unit) }
             registerInvalidationCallback(callback)
-            send(Unit)
+            if (emitOnStart) send(Unit)
             awaitClose { unregisterInvalidationCallback(callback) }
         }.conflate()
     }
+
+    @AnyThread
+    fun invalidationFlow(vararg types: Class<*>, emitOnStart: Boolean = true) =
+        invalidationFlow(types.toSet(), emitOnStart)
 
     @AnyThread
     fun <T : Any> findAsFlow(clazz: Class<T>, vararg key: Any) =
