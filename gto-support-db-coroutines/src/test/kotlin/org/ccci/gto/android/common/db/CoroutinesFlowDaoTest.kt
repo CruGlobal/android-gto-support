@@ -4,6 +4,7 @@ import io.mockk.every
 import io.mockk.slot
 import io.mockk.spyk
 import io.mockk.verify
+import io.mockk.verifyOrder
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.launchIn
@@ -21,10 +22,16 @@ class CoroutinesFlowDaoTest {
     }
 
     @Test
-    fun verifyFindAsFlowMonitorsInvalidations() = runTest(UnconfinedTestDispatcher()) {
+    fun `findAsFlow() - Monitors Invalidations`() = runTest(UnconfinedTestDispatcher()) {
         every { dao.coroutineDispatcher } returns coroutineContext[CoroutineDispatcher]!!
         val job = dao.findAsFlow(String::class.java).launchIn(this)
-        verify { dao.registerInvalidationCallback(any()) }
+        verifyOrder {
+            dao.registerInvalidationCallback(any())
+            // Ensure we query data at least once after we register the invalidation callback to avoid a race condition.
+            // We risk not emitting fresh data if an invalidation triggers after we last fetched data but before we
+            // register the callback.
+            dao.find(String::class.java)
+        }
         verify(inverse = true) { dao.unregisterInvalidationCallback(any()) }
 
         job.cancel()
@@ -32,7 +39,7 @@ class CoroutinesFlowDaoTest {
     }
 
     @Test
-    fun verifyFindAsFlow() = runTest {
+    fun `findAsFlow()`() = runTest {
         every { dao.coroutineDispatcher } returns coroutineContext[CoroutineDispatcher]!!
         val flow = dao.findAsFlow(String::class.java).launchIn(this)
         verify(exactly = 0) { dao.find(String::class.java) }
