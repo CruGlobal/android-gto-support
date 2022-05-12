@@ -1,3 +1,10 @@
+pluginManagement {
+    repositories {
+        mavenCentral()
+        gradlePluginPortal()
+    }
+}
+
 include("gto-support-androidx-collection")
 include("gto-support-androidx-constraintlayout")
 include("gto-support-androidx-databinding")
