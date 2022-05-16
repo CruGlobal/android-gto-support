@@ -1,7 +1,6 @@
 package org.ccci.gto.android.common.snowplow.events
 
 import com.snowplowanalytics.snowplow.event.Event
-import kotlin.random.Random
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
@@ -13,18 +12,21 @@ import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.mockito.kotlin.mock
 
-class EventSynchronizerTest {
-    private val threads = 50
-    private val iterations = 50
+private const val THREADS = 50
+private const val ITERATIONS = 50
 
+private const val TIMEOUT_TEST_LOCK_TIMEOUT = 1L
+private const val TIMEOUT_TEST_DELAY = TIMEOUT_TEST_LOCK_TIMEOUT * 3
+
+class EventSynchronizerTest {
     @Test
     fun verifyMutualExclusionOfLock() = runBlocking {
         var count = 0
         val mutex = Mutex()
         coroutineScope {
-            repeat(threads) {
+            repeat(THREADS) {
                 launch(Dispatchers.IO) {
-                    repeat(iterations) {
+                    repeat(ITERATIONS) {
                         val event = mock<Event>()
                         EventSynchronizer.lockFor(event)
                         assertEquals(0, EventSynchronizer.semaphore.availablePermits())
@@ -38,19 +40,19 @@ class EventSynchronizerTest {
             }
         }
 
-        assertEquals(threads * iterations, count)
+        assertEquals(1, EventSynchronizer.semaphore.availablePermits())
+        assertEquals(THREADS * ITERATIONS, count)
     }
 
-    @Test
+    @Test(timeout = THREADS * ITERATIONS * TIMEOUT_TEST_DELAY)
     fun verifyLockTimeout() = runBlocking {
         var count = 0
-        val mutex = Mutex()
-        EventSynchronizer.lockTimeout = 2
+        EventSynchronizer.lockTimeout = TIMEOUT_TEST_LOCK_TIMEOUT
 
         coroutineScope {
-            repeat(threads) {
+            repeat(THREADS) {
                 launch(Dispatchers.IO) {
-                    repeat(iterations) {
+                    repeat(ITERATIONS) {
                         val event = mock<Event>()
                         EventSynchronizer.lockFor(event)
                         assertEquals(
@@ -58,10 +60,8 @@ class EventSynchronizerTest {
                             0,
                             EventSynchronizer.semaphore.availablePermits()
                         )
-                        assertTrue("Mutual Exclusion not maintained!", mutex.tryLock(this))
-                        mutex.unlock(this)
                         count++
-                        delay(Random.nextLong(1, 5))
+                        delay(TIMEOUT_TEST_DELAY)
                         EventSynchronizer.unlockFor(event)
                         assertTrue(
                             "There are too many permits in the semaphore",
@@ -72,6 +72,7 @@ class EventSynchronizerTest {
             }
         }
 
-        assertEquals("Not all iterations were processed", threads * iterations, count)
+        assertEquals(1, EventSynchronizer.semaphore.availablePermits())
+        assertEquals("Not all iterations were processed", THREADS * ITERATIONS, count)
     }
 }
