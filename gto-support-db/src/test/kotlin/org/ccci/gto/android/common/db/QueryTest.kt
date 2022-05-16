@@ -37,6 +37,18 @@ class QueryTest {
     }
 
     @Test
+    fun `andWhere() - existing where`() {
+        val query = Query.select<Model1>().where(FIELD.eq(true)).andWhere(FIELD.eq(false))
+        assertEquals(FIELD.eq(true).and(FIELD.eq(false)), query.where)
+    }
+
+    @Test
+    fun `andWhere() - null where`() {
+        val query = Query.select<Model1>().andWhere(FIELD.eq(true))
+        assertEquals(FIELD.eq(true), query.where)
+    }
+
+    @Test
     fun verifyEquals() {
         val q1 = Query.select<Model1>()
             .distinct(true)
