@@ -1,14 +1,14 @@
-package org.ccci.gto.android.common.support.v4.util;
+package org.ccci.gto.android.common.androidx.collection;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNull;
 
 import androidx.collection.LruCache;
 
 import org.junit.Test;
 
 import java.lang.ref.WeakReference;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNull;
 
 public class WeakLruCacheTest {
     static final String KEY1 = "KEY1";

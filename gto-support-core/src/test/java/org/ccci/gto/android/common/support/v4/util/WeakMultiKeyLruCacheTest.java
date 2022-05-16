@@ -1,21 +1,22 @@
 package org.ccci.gto.android.common.support.v4.util;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNull;
+
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import static org.ccci.gto.android.common.support.v4.util.WeakLruCacheTest.KEY1;
-import static org.ccci.gto.android.common.support.v4.util.WeakLruCacheTest.KEY2;
-import static org.ccci.gto.android.common.support.v4.util.WeakLruCacheTest.VALUE1;
-import static org.ccci.gto.android.common.support.v4.util.WeakLruCacheTest.VALUE2;
-import static org.ccci.gto.android.common.support.v4.util.WeakLruCacheTest.forceGc;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNull;
+import java.lang.ref.WeakReference;
 
 @RunWith(AndroidJUnit4.class)
 public class WeakMultiKeyLruCacheTest {
+    private static final String KEY1 = "KEY1";
+    private static final String KEY2 = "KEY2";
+    private static final String VALUE1 = "VALUE1";
+    private static final String VALUE2 = "VALUE2";
     private static final String VALUE3 = "VALUE3";
 
     @Test
@@ -70,5 +71,18 @@ public class WeakMultiKeyLruCacheTest {
         cache.remove(KEY1);
         assertEquals(0, cache.size());
         assertNull(cache.get(KEY1));
+    }
+
+    static void forceGc() {
+        Object obj = new Object();
+        WeakReference ref = new WeakReference<>(obj);
+        obj = null;
+        while (ref.get() != null) {
+            System.gc();
+            try {
+                Thread.sleep(100);
+            } catch (final InterruptedException ignored) {
+            }
+        }
     }
 }
