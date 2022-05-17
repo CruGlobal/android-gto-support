@@ -10,7 +10,7 @@ android {
 }
 
 dependencies {
-    implementation(project(":gto-support-androidx-collection"))
+    api(project(":gto-support-androidx-collection"))
     implementation(project(":gto-support-base"))
     implementation(project(":gto-support-compat"))
     implementation(project(":gto-support-util"))
