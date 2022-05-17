@@ -1,7 +1,7 @@
 package org.ccci.gto.android.common.androidx.collection
 
-import androidx.collection.ArrayMap
 import androidx.collection.LruCache
+import androidx.collection.SimpleArrayMap
 import java.lang.ref.WeakReference
 
 /**
@@ -10,7 +10,7 @@ import java.lang.ref.WeakReference
  * ensure an item is actually removed from the cache.
  */
 class WeakLruCache<K : Any, V : Any>(maxSize: Int) : LruCache<K, V>(maxSize) {
-    private val backup: MutableMap<K, WeakReference<V>> = ArrayMap()
+    private val backup = SimpleArrayMap<K, WeakReference<V>>()
 
     override fun entryRemoved(evicted: Boolean, key: K, oldValue: V, newValue: V?) {
         synchronized(backup) {
@@ -19,6 +19,20 @@ class WeakLruCache<K : Any, V : Any>(maxSize: Int) : LruCache<K, V>(maxSize) {
             } else {
                 backup.remove(key)
             }
+        }
+    }
+
+    override fun trimToSize(maxSize: Int) {
+        super.trimToSize(maxSize)
+        pruneGCedBackup()
+    }
+
+    /**
+     * This method will prune any backup entries that have been garbage collected
+     */
+    private fun pruneGCedBackup() = synchronized(backup) {
+        for (i in backup.size() - 1 downTo 0) {
+            if (backup.valueAt(i).get() == null) backup.removeAt(i)
         }
     }
 
