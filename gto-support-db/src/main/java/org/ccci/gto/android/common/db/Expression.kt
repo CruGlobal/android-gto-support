@@ -60,26 +60,26 @@ sealed class Expression : Parcelable {
     infix fun or(expression: Expression): Expression = binaryExpr(Binary.OR, expression)
     open operator fun not(): Expression = Unary(Unary.NOT, this)
 
-    fun eq(constant: Number): Expression = eq(constant(constant))
-    fun eq(constant: String): Expression = eq(constant(constant))
-    fun eq(constant: Any): Expression = eq(constant(constant))
-    fun eq(expression: Expression): Expression = Binary(Binary.EQ, this, expression)
+    infix fun eq(constant: Number): Expression = eq(constant(constant))
+    infix fun eq(constant: String): Expression = eq(constant(constant))
+    infix fun eq(constant: Any): Expression = eq(constant(constant))
+    infix fun eq(expression: Expression): Expression = Binary(Binary.EQ, this, expression)
 
-    fun lt(constant: Number): Expression = lt(constant(constant))
-    fun lt(constant: Any): Expression = lt(constant(constant))
-    fun lt(expression: Expression): Expression = Binary(Binary.LT, this, expression)
+    infix fun lt(constant: Number): Expression = lt(constant(constant))
+    infix fun lt(constant: Any): Expression = lt(constant(constant))
+    infix fun lt(expression: Expression): Expression = Binary(Binary.LT, this, expression)
 
-    fun lte(constant: Number): Expression = lte(constant(constant))
-    fun lte(constant: Any): Expression = lte(constant(constant))
-    fun lte(expression: Expression): Expression = Binary(Binary.LTE, this, expression)
+    infix fun lte(constant: Number): Expression = lte(constant(constant))
+    infix fun lte(constant: Any): Expression = lte(constant(constant))
+    infix fun lte(expression: Expression): Expression = Binary(Binary.LTE, this, expression)
 
-    fun gt(constant: Number): Expression = gt(constant(constant))
-    fun gt(constant: Any): Expression = gt(constant(constant))
-    fun gt(expression: Expression): Expression = Binary(Binary.GT, this, expression)
+    infix fun gt(constant: Number): Expression = gt(constant(constant))
+    infix fun gt(constant: Any): Expression = gt(constant(constant))
+    infix fun gt(expression: Expression): Expression = Binary(Binary.GT, this, expression)
 
-    fun gte(constant: Number): Expression = gte(constant(constant))
-    fun gte(constant: Any): Expression = gte(constant(constant))
-    fun gte(expression: Expression): Expression = Binary(Binary.GTE, this, expression)
+    infix fun gte(constant: Number): Expression = gte(constant(constant))
+    infix fun gte(constant: Any): Expression = gte(constant(constant))
+    infix fun gte(expression: Expression): Expression = Binary(Binary.GTE, this, expression)
 
     fun `in`(vararg expressions: Expression): Expression = Binary(Binary.IN, this, *expressions)
     fun notIn(vararg expressions: Expression): Expression = Binary(Binary.NOTIN, this, *expressions)
@@ -88,10 +88,10 @@ sealed class Expression : Parcelable {
     fun isNull(): Expression = Binary(Binary.IS, this, NULL)
     fun isNot(expression: Expression): Expression = Binary(Binary.ISNOT, this, expression)
 
-    fun ne(constant: Number): Expression = ne(constant(constant))
-    fun ne(constant: String): Expression = ne(constant(constant))
-    fun ne(constant: Any): Expression = ne(constant(constant))
-    fun ne(expression: Expression): Expression = Binary(Binary.NE, this, expression)
+    infix fun ne(constant: Number): Expression = ne(constant(constant))
+    infix fun ne(constant: String): Expression = ne(constant(constant))
+    infix fun ne(constant: Any): Expression = ne(constant(constant))
+    infix fun ne(expression: Expression): Expression = Binary(Binary.NE, this, expression)
 
     internal open fun binaryExpr(op: String, expression: Expression): Expression = Binary(op, this, expression)
 
