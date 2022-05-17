@@ -56,8 +56,8 @@ sealed class Expression : Parcelable {
         return this
     }
 
-    fun and(expression: Expression): Expression = binaryExpr(Binary.AND, expression)
-    fun or(expression: Expression): Expression = binaryExpr(Binary.OR, expression)
+    infix fun and(expression: Expression): Expression = binaryExpr(Binary.AND, expression)
+    infix fun or(expression: Expression): Expression = binaryExpr(Binary.OR, expression)
     open operator fun not(): Expression = Unary(Unary.NOT, this)
 
     fun eq(constant: Number): Expression = eq(constant(constant))
