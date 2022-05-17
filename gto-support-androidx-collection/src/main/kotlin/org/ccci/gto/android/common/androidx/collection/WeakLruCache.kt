@@ -13,7 +13,6 @@ class WeakLruCache<K : Any, V : Any>(maxSize: Int) : LruCache<K, V>(maxSize) {
     private val backup: MutableMap<K, WeakReference<V>> = ArrayMap()
 
     override fun entryRemoved(evicted: Boolean, key: K, oldValue: V, newValue: V?) {
-        super.entryRemoved(evicted, key, oldValue, newValue)
         synchronized(backup) {
             if (evicted) {
                 backup.put(key, WeakReference(oldValue))
@@ -23,6 +22,6 @@ class WeakLruCache<K : Any, V : Any>(maxSize: Int) : LruCache<K, V>(maxSize) {
         }
     }
 
-    override fun create(key: K): V? = synchronized(backup) { backup.remove(key) }?.get() ?: super.create(key)
+    override fun create(key: K): V? = synchronized(backup) { backup.remove(key) }?.get()
     fun removeWeak(key: K): V? = remove(key) ?: synchronized(backup) { backup.remove(key)?.get() }
 }
