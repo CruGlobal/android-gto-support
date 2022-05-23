@@ -4,9 +4,9 @@ import android.app.Activity
 import android.content.Context
 import androidx.appcompat.view.ContextThemeWrapper
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.google.android.material.R
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipDrawable
-import org.ccci.gto.android.common.material.components.R
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test

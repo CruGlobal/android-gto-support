@@ -2,7 +2,7 @@ package androidx.appcompat.widget
 
 import android.content.Context
 import android.util.AttributeSet
-import org.ccci.gto.android.common.appcompat.R
+import androidx.appcompat.R
 
 @Deprecated("Since v3.11.0, Use AppCompatButton directly")
 class AppCompatButtonImpl @JvmOverloads constructor(
