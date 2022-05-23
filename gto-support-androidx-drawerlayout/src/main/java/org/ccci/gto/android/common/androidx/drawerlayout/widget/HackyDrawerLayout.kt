@@ -4,8 +4,8 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.util.AttributeSet
 import android.view.MotionEvent
+import androidx.drawerlayout.R
 import androidx.drawerlayout.widget.DrawerLayout
-import org.ccci.gto.android.common.androidx.drawerlayout.R
 import org.ccci.gto.android.common.util.view.ViewUtils
 
 class HackyDrawerLayout @JvmOverloads constructor(
