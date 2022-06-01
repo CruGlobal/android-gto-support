@@ -4,6 +4,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import java.util.Locale
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.MatcherAssert.assertThat
+import org.junit.Assert.assertNull
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.annotation.Config
@@ -18,6 +19,7 @@ private val BENGKULU = Locale.forLanguageTag("pse")
 class LocaleUtilsFallbackTest {
     @Test
     fun verifyGetFallback() {
+        assertNull(LocaleUtils.getFallback(Locale.ENGLISH))
         assertThat(LocaleUtils.getFallback(Locale.US), equalTo(Locale.ENGLISH))
         assertThat(LocaleUtils.getFallback(BENGKULU), equalTo(MALAY))
     }
