@@ -7,12 +7,14 @@ import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.annotation.Config
+import org.robolectric.annotation.Config.NEWEST_SDK
+import org.robolectric.annotation.Config.OLDEST_SDK
 
 private val MALAY = Locale.forLanguageTag("ms")
 private val BENGKULU = Locale.forLanguageTag("pse")
 
 @RunWith(AndroidJUnit4::class)
-@Config(sdk = [21, 24])
+@Config(sdk = [OLDEST_SDK, 24, NEWEST_SDK])
 class LocaleUtilsFallbackTest {
     @Test
     fun verifyGetFallback() {
