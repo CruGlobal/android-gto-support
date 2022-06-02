@@ -40,23 +40,20 @@ object LocaleUtils {
         FIXED_FALLBACKS[locale] = fallback
     }
 
-    internal fun generateFallbacksSequence(locale: Locale): Sequence<Locale> = COMPAT.generateFallbacksSequence(locale)
+    internal fun generateFallbacksSequence(locale: Locale) = COMPAT.generateFallbacksSequence(locale)
 
     @JvmStatic
-    fun getFallback(locale: Locale) = COMPAT.generateFallbacksSequence(locale).firstOrNull()
-
-    @JvmStatic
-    fun getFallbacks(locale: Locale) =
-        (sequenceOf(locale) + COMPAT.generateFallbacksSequence(locale)).distinct().toList().toTypedArray()
+    @Deprecated("Since v3.11.2, use Locale.fallback property instead", ReplaceWith("locale.fallback"))
+    fun getFallback(locale: Locale) = locale.fallback
 
     @JvmStatic
     fun getFallbacks(vararg locales: Locale) = locales.asSequence()
-        .flatMap { sequenceOf(it) + COMPAT.generateFallbacksSequence(it) }
+        .flatMap { sequenceOf(it) + it.fallbacks }
         .distinct()
         .toList().toTypedArray()
     // endregion Language fallback methods
 
-    internal sealed interface Compat {
+    private sealed interface Compat {
         fun generateFallbacksSequence(locale: Locale): Sequence<Locale>
 
         open class Base : Compat {
