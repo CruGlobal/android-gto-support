@@ -28,4 +28,14 @@ class LocaleTest {
     fun testToLocale() {
         assertEquals(Locale.ENGLISH, "en".toLocale())
     }
+
+    @Test
+    fun verifyBuildOrNull() {
+        val builder = Locale.Builder()
+        assertNull(builder.buildOrNull())
+        builder.setLocale(Locale.ENGLISH)
+        assertEquals(Locale.ENGLISH, builder.buildOrNull())
+        builder.setLanguage(null)
+        assertNull(builder.buildOrNull())
+    }
 }

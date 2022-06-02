@@ -4,18 +4,22 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import java.util.Locale
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.MatcherAssert.assertThat
+import org.junit.Assert.assertNull
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.annotation.Config
+import org.robolectric.annotation.Config.NEWEST_SDK
+import org.robolectric.annotation.Config.OLDEST_SDK
 
 private val MALAY = Locale.forLanguageTag("ms")
 private val BENGKULU = Locale.forLanguageTag("pse")
 
 @RunWith(AndroidJUnit4::class)
-@Config(sdk = [21, 24])
+@Config(sdk = [OLDEST_SDK, 24, NEWEST_SDK])
 class LocaleUtilsFallbackTest {
     @Test
     fun verifyGetFallback() {
+        assertNull(LocaleUtils.getFallback(Locale.ENGLISH))
         assertThat(LocaleUtils.getFallback(Locale.US), equalTo(Locale.ENGLISH))
         assertThat(LocaleUtils.getFallback(BENGKULU), equalTo(MALAY))
     }
