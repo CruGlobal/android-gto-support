@@ -47,8 +47,12 @@ object LocaleUtils {
     fun getFallback(locale: Locale) = locale.fallback
 
     @JvmStatic
+    @Deprecated(
+        "Since v3.11.2, use Sequence<Locale>.includeFallbacks() instead",
+        ReplaceWith("locales.asSequence().includeFallbacks().distinct().toList().toTypedArray()")
+    )
     fun getFallbacks(vararg locales: Locale) = locales.asSequence()
-        .flatMap { sequenceOf(it) + it.fallbacks }
+        .includeFallbacks()
         .distinct()
         .toList().toTypedArray()
     // endregion Language fallback methods

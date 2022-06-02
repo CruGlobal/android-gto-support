@@ -13,6 +13,8 @@ fun Locale.getOptionalDisplayName(inLocale: Locale? = null) = when {
 val Locale.fallback get() = LocaleUtils.generateFallbacksSequence(this).firstOrNull()
 val Locale.fallbacks get() = LocaleUtils.generateFallbacksSequence(this)
 
+fun Sequence<Locale>.includeFallbacks() = flatMap { sequenceOf(it) + it.fallbacks }
+
 internal fun Locale.Builder.setLocaleSafe(locale: Locale): Locale.Builder = try {
     setLocale(locale)
 } catch (e: IllformedLocaleException) {
