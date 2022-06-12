@@ -11,7 +11,7 @@ jsonUnit = "2.35.0"
 kotlin = "1.6.21"
 kotlinCoroutines = "1.6.2"
 moshi = "1.13.0"
-okhttp3 = "4.9.3"
+okhttp3 = "4.10.0"
 scarlet = "0.1.12"
 
 [libraries]
