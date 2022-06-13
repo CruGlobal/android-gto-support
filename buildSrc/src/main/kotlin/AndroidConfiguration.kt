@@ -1,3 +1,4 @@
+import com.android.build.api.dsl.CommonExtension
 import com.android.build.gradle.BaseExtension
 import com.android.build.gradle.LibraryExtension
 import org.gradle.api.JavaVersion
@@ -51,6 +52,15 @@ private fun BaseExtension.configureCompilerOptions() {
         jvmTarget = JavaVersion.VERSION_1_8.toString()
         freeCompilerArgs += "-Xjvm-default=all"
     }
+}
+
+// TODO: provide Project using the new multiple context receivers functionality.
+//       this is prototyped in 1.6.20 and will probably reach beta in Kotlin 1.8 or 1.9
+//context(Project)
+fun CommonExtension<*, *, *, *>.configureCompose(project: Project) {
+    buildFeatures.compose = true
+    composeOptions.kotlinCompilerExtensionVersion =
+        project.libs.findVersion("androidx-compose-compiler").get().requiredVersion
 }
 
 private fun BaseExtension.configureTestOptions() {
