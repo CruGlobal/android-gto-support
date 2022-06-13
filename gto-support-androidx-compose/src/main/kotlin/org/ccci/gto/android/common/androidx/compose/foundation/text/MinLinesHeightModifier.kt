@@ -25,6 +25,9 @@ private const val EmptyTextReplacement = "HHHHHHHHHH"
 /**
  * Constraint the height of the text field so that it vertically occupies at least [minLines]
  * number of lines.
+ *
+ * This modifier can be deprecated once upstream support for minLines exists.
+ * related ticket: https://issuetracker.google.com/issues/122476634
  */
 fun Modifier.minLinesHeight(
     minLines: Int,
