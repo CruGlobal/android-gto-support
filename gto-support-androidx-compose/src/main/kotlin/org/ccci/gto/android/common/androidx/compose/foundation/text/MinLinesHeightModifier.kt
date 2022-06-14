@@ -1,6 +1,7 @@
 package org.ccci.gto.android.common.androidx.compose.foundation.text
 
 import androidx.compose.foundation.layout.heightIn
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
@@ -11,6 +12,9 @@ import androidx.compose.ui.platform.debugInspectorInfo
 import androidx.compose.ui.text.Paragraph
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.font.FontSynthesis
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.resolveDefaults
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.Density
@@ -51,12 +55,21 @@ fun Modifier.minLinesHeight(
     val resolvedStyle = remember(textStyle, layoutDirection) {
         resolveDefaults(textStyle, layoutDirection)
     }
+    val typeface by remember(fontFamilyResolver, resolvedStyle) {
+        fontFamilyResolver.resolve(
+            resolvedStyle.fontFamily,
+            resolvedStyle.fontWeight ?: FontWeight.Normal,
+            resolvedStyle.fontStyle ?: FontStyle.Normal,
+            resolvedStyle.fontSynthesis ?: FontSynthesis.All
+        )
+    }
 
     val firstLineHeight = remember(
         density,
         fontFamilyResolver,
         textStyle,
-        layoutDirection
+        layoutDirection,
+        typeface
     ) {
         computeSizeForDefaultText(
             style = resolvedStyle,
@@ -71,7 +84,8 @@ fun Modifier.minLinesHeight(
         density,
         fontFamilyResolver,
         textStyle,
-        layoutDirection
+        layoutDirection,
+        typeface
     ) {
         val twoLines = EmptyTextReplacement + "\n" + EmptyTextReplacement
         computeSizeForDefaultText(
