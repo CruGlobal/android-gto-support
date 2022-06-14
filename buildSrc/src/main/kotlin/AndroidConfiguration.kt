@@ -28,11 +28,11 @@ fun Project.configureAndroidTestingLibrary() {
 }
 
 private fun BaseExtension.configureSdk() {
-    compileSdkVersion(31)
+    compileSdkVersion(32)
 
     defaultConfig {
         minSdk = 21
-        targetSdk = 31
+        targetSdk = 32
     }
 }
 
