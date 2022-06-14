@@ -34,6 +34,7 @@ dependencies {
     androidTestImplementation(project(":testing:gto-support-okta"))
     testImplementation(project(":testing:gto-support-okta"))
     testImplementation(libs.androidx.arch.core.testing)
+    testImplementation(libs.androidx.lifecycle.livedata.core)
     testImplementation(libs.kotlin.coroutines.test)
     testImplementation(libs.bundles.okhttp3.mockwebserver)
 }
