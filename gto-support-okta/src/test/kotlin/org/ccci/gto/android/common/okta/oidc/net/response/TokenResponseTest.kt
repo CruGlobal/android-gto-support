@@ -1,7 +1,6 @@
 package org.ccci.gto.android.common.okta.oidc.net.response
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.google.gson.Gson
 import com.okta.oidc.Tokens
 import com.okta.oidc.net.response.TokenResponse
 import org.junit.Assert.assertNotNull
@@ -13,7 +12,7 @@ import org.junit.runner.RunWith
 class TokenResponseTest {
     @Test
     fun verifyRepair() {
-        val tokenResponse = Gson().fromJson("{}", TokenResponse::class.java)
+        val tokenResponse = TokenResponse.RESTORE.restore("{}")
 
         assertThrows(NumberFormatException::class.java) { Tokens(tokenResponse) }
         assertNotNull(Tokens(tokenResponse.repair()))
