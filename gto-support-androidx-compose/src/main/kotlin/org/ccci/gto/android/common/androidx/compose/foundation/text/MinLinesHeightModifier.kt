@@ -43,8 +43,8 @@ fun Modifier.minLinesHeight(
         properties["textStyle"] = textStyle
     }
 ) {
-    require(minLines > 0) { "minLines must be greater than 0" }
-    if (minLines == Int.MAX_VALUE) return@composed Modifier
+    require(minLines >= 0) { "minLines must be greater than or equal to 0" }
+    if (minLines == 0) return@composed Modifier
 
     val density = LocalDensity.current
     val fontFamilyResolver = LocalFontFamilyResolver.current
