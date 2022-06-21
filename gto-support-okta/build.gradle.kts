@@ -6,6 +6,7 @@ plugins {
 configureAndroidLibrary()
 
 android {
+    testFixtures.enable = true
     defaultConfig.consumerProguardFiles("proguard-consumer.pro")
 }
 
@@ -31,8 +32,6 @@ dependencies {
     compileOnly(libs.okhttp3)
     // endregion OkHttpOktaHttpClient
 
-    androidTestImplementation(project(":testing:gto-support-okta"))
-    testImplementation(project(":testing:gto-support-okta"))
     testImplementation(libs.androidx.arch.core.testing)
     testImplementation(libs.androidx.lifecycle.livedata.core)
     testImplementation(libs.kotlin.coroutines.test)
