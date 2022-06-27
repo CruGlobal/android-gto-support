@@ -3,7 +3,9 @@ package org.ccci.gto.android.common.androidx.collection
 import java.lang.ref.WeakReference
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotEquals
+import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
+import org.junit.Assert.assertSame
 import org.junit.Test
 
 private const val KEY1 = "KEY1"
@@ -65,6 +67,27 @@ class WeakLruCacheTest {
         assertEquals(0, cache.size())
         assertNull(cache[KEY1])
         assertNull(cache[KEY2])
+    }
+
+    @Test
+    fun verifyWeakLruCacheCreate() {
+        val cache = weakLruCache<String, CacheValue>(1, create = { CacheValue(it) })
+
+        // ensure created values are persisted via weak cache
+        val value1: CacheValue? = cache.get(KEY1)
+        assertEquals(1, cache.size())
+        var value2: CacheValue? = cache.get(KEY2)
+        assertEquals(1, cache.size())
+
+        // restore value1 from internal weak map
+        assertSame(value1, cache.get(KEY1))
+
+        // value2 is in the weak cache, allow it to be garbage collected
+        val value2Ref = WeakReference(value2)
+        assertNotNull(value2Ref.get())
+        value2 = null
+        forceGc()
+        assertNull(value2Ref.get())
     }
 }
 
