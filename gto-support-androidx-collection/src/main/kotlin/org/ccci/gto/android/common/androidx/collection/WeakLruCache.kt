@@ -1,5 +1,6 @@
 package org.ccci.gto.android.common.androidx.collection
 
+import androidx.annotation.CallSuper
 import androidx.collection.LruCache
 import androidx.collection.SimpleArrayMap
 import java.lang.ref.WeakReference
@@ -9,10 +10,13 @@ import java.lang.ref.WeakReference
  * memory. Due to the final behavior of remove you should use [WeakLruCache.removeWeak] instead of [LruCache.remove] to
  * ensure an item is actually removed from the cache.
  */
-class WeakLruCache<K : Any, V : Any>(maxSize: Int) : LruCache<K, V>(maxSize) {
+open class WeakLruCache<K : Any, V : Any>(
+    maxSize: Int,
+    private val createValue: (key: K) -> V? = { null },
+) : LruCache<K, V>(maxSize) {
     private val backup = SimpleArrayMap<K, WeakReference<V>>()
 
-    override fun entryRemoved(evicted: Boolean, key: K, oldValue: V, newValue: V?) {
+    final override fun entryRemoved(evicted: Boolean, key: K, oldValue: V, newValue: V?) {
         synchronized(backup) {
             if (evicted) {
                 backup.put(key, WeakReference(oldValue))
@@ -22,6 +26,7 @@ class WeakLruCache<K : Any, V : Any>(maxSize: Int) : LruCache<K, V>(maxSize) {
         }
     }
 
+    @CallSuper
     override fun trimToSize(maxSize: Int) {
         super.trimToSize(maxSize)
         pruneGCedBackup()
@@ -36,6 +41,20 @@ class WeakLruCache<K : Any, V : Any>(maxSize: Int) : LruCache<K, V>(maxSize) {
         }
     }
 
-    override fun create(key: K): V? = synchronized(backup) { backup.remove(key) }?.get()
-    fun removeWeak(key: K): V? = remove(key) ?: synchronized(backup) { backup.remove(key)?.get() }
+    final override fun create(key: K): V? = synchronized(backup) { backup.remove(key) }?.get() ?: createValue(key)
+    fun removeWeak(key: K): V? {
+        remove(key)?.also { return it }
+
+        val previous = synchronized(backup) { backup.remove(key) }?.get()
+        if (previous != null) entryRemoved(false, key, previous, null)
+        return previous
+    }
+}
+
+inline fun <K : Any, V : Any> weakLruCache(
+    maxSize: Int,
+    crossinline sizeOf: (key: K, value: V) -> Int = { _, _ -> 1 },
+    noinline create: (key: K) -> V? = { null },
+): WeakLruCache<K, V> = object : WeakLruCache<K, V>(maxSize, create) {
+    override fun sizeOf(key: K, value: V) = sizeOf(key, value)
 }
