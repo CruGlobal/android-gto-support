@@ -18,22 +18,44 @@ env:
   ORG_GRADLE_PROJECT_versionSuffix: ${{ (github.event_name == 'pull_request' && format('PR{0}', github.event.pull_request.number)) || '' }}
 
 jobs:
-  static:
-    name: Static Analysis
+  build:
+    name: Build Library
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-      - name: Run Static Analysis
+      - name: Build Library
         uses: gradle/gradle-build-action@v2
         with:
-          arguments: assemble check -x test --continue --stacktrace
+          arguments: assemble --scan
+
+  ktlint:
+    name: ktlint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Run ktlint
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: ktlintCheck --scan
       - name: Archive ktlint results
         if: always()
         uses: actions/upload-artifact@v3
         with:
           name: ktlint-results
           path: "**/build/reports/ktlint/"
+
+  lint:
+    name: Lint Checks
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Run Lint Checks
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: lint --scan
       - name: Archive lint results
         if: always()
         uses: actions/upload-artifact@v3
@@ -57,7 +79,7 @@ jobs:
       - name: Run Unit Tests
         uses: gradle/gradle-build-action@v2
         with:
-          arguments: test koverMergedXmlReport --continue --stacktrace
+          arguments: test koverMergedXmlReport --scan
       - name: Codecov
         uses: codecov/codecov-action@v3
         with:
@@ -78,14 +100,14 @@ jobs:
       github.event_name == 'schedule' ||
       github.event_name == 'pull_request' ||
       (github.event_name == 'push' && (github.ref == 'refs/heads/master' || contains(github.ref, 'refs/tags/')))
-    needs: [static, tests]
+    needs: [build, ktlint, lint, tests]
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
       - name: Publish library
         uses: gradle/gradle-build-action@v2
         with:
-          arguments: publish
+          arguments: publish --scan
         env:
           ORG_GRADLE_PROJECT_cruGlobalMavenRepositoryUsername: ${{ secrets.DEPLOY_USERNAME }}
           ORG_GRADLE_PROJECT_cruGlobalMavenRepositoryPassword: ${{ secrets.DEPLOY_PASSWORD }}
