@@ -18,7 +18,6 @@ dependencies {
     implementation(libs.weakdelegate)
 
     // region Composables
-    implementation(libs.androidx.compose.runtime)
     compileOnly(libs.androidx.compose.ui)
     // endregion Composables
 

@@ -61,6 +61,9 @@ fun CommonExtension<*, *, *, *>.configureCompose(project: Project) {
     buildFeatures.compose = true
     composeOptions.kotlinCompilerExtensionVersion =
         project.libs.findVersion("androidx-compose-compiler").get().requiredVersion
+
+    // the runtime dependency is required to build a library when compose is enabled
+    project.dependencies.addProvider("implementation", project.libs.findLibrary("androidx-compose-runtime").get())
 }
 
 private fun BaseExtension.configureTestOptions() {
