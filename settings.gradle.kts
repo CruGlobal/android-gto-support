@@ -5,6 +5,16 @@ pluginManagement {
     }
 }
 
+// automatically accept the scans.gradle.com TOS when running in GHA
+if (System.getenv("GITHUB_ACTIONS")?.toBoolean() == true) {
+    extensions.findByName("gradleEnterprise")?.withGroovyBuilder {
+        getProperty("buildScan").withGroovyBuilder {
+            setProperty("termsOfServiceUrl", "https://gradle.com/terms-of-service")
+            setProperty("termsOfServiceAgree", "yes")
+        }
+    }
+}
+
 include("gto-support-androidx-collection")
 include("gto-support-androidx-compose")
 include("gto-support-androidx-constraintlayout")
