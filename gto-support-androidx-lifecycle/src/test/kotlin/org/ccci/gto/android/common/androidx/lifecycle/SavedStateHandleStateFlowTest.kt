@@ -40,12 +40,12 @@ class SavedStateHandleStateFlowTest {
     }
 
     @Test
-    fun `getStateFlow() - updating value`() = runTest {
+    fun `getMutableStateFlow() - updating value`() = runTest {
         val flowScope = TestScope(StandardTestDispatcher())
         assertNull(savedStateHandle[KEY])
 
         val liveData = savedStateHandle.getLiveData<String?>(KEY)
-        val stateFlow = savedStateHandle.getStateFlow<String?>(flowScope, KEY, "initial")
+        val stateFlow = savedStateHandle.getMutableStateFlow<String?>(flowScope, KEY, "initial")
         assertEquals("initial", stateFlow.value)
 
         // update key directly
@@ -70,7 +70,7 @@ class SavedStateHandleStateFlowTest {
     }
 
     @Test
-    fun `getStateFlow() - uses MainDispatcher for syncing updates`() = runTest {
+    fun `getMutableStateFlow() - uses MainDispatcher for syncing updates`() = runTest {
         val mainDispatcher = StandardTestDispatcher()
         Dispatchers.setMain(mainDispatcher)
 
@@ -78,7 +78,7 @@ class SavedStateHandleStateFlowTest {
         assertNull(savedStateHandle[KEY])
 
         val liveData = savedStateHandle.getLiveData<String?>(KEY)
-        val stateFlow = savedStateHandle.getStateFlow<String?>(flowScope, KEY, "initial")
+        val stateFlow = savedStateHandle.getMutableStateFlow<String?>(flowScope, KEY, "initial")
         assertEquals("initial", stateFlow.value)
 
         // update key directly
@@ -106,11 +106,11 @@ class SavedStateHandleStateFlowTest {
     }
 
     @Test
-    fun `getStateFlow() - don't overwrite existing value`() = runTest {
+    fun `getMutableStateFlow() - don't overwrite existing value`() = runTest {
         val flowScope = TestScope(StandardTestDispatcher())
         savedStateHandle[KEY] = "already set"
 
-        val stateFlow = savedStateHandle.getStateFlow<String?>(flowScope, KEY, "initial")
+        val stateFlow = savedStateHandle.getMutableStateFlow<String?>(flowScope, KEY, "initial")
         assertEquals("already set", stateFlow.value)
 
         flowScope.cancel()
