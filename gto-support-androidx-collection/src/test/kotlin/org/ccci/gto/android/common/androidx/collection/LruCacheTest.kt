@@ -12,5 +12,7 @@ class LruCacheTest {
 
         assertEquals("value1", cache.getOrPut("key1") { "value2" })
         assertEquals("value2", cache.getOrPut("key2") { "value2" })
+        assertEquals("value1", cache["key1"])
+        assertEquals("value2", cache["key2"])
     }
 }
