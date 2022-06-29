@@ -12,17 +12,6 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.plus
 
 @MainThread
-@Deprecated(
-    "Since v3.12.0, use getMutableStateFlow() or the official getStateFlow in Lifecycle 2.5.0",
-    ReplaceWith("getMutableStateFlow(scope, key, initialValue)")
-)
-fun <T> SavedStateHandle.getStateFlow(
-    scope: CoroutineScope,
-    key: String,
-    initialValue: T
-): MutableStateFlow<T> = getMutableStateFlow(scope, key, initialValue)
-
-@MainThread
 fun <T> SavedStateHandle.getMutableStateFlow(
     scope: CoroutineScope,
     key: String,
