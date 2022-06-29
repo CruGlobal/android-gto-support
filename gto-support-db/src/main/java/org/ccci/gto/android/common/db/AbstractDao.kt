@@ -378,12 +378,6 @@ abstract class AbstractDao(private val helper: SQLiteOpenHelper) : Dao {
 
         synchronized(invalidationCallbacks) { invalidationCallbacks.toTypedArray() }.forEach { it.onInvalidate(clazz) }
     }
-
-    @Deprecated("Since v3.11.0, register an InvalidationCallback instead.")
-    protected open fun onInvalidateClass(clazz: Class<*>) = Unit
-    init {
-        registerInvalidationCallback { onInvalidateClass(it) }
-    }
     // endregion Data Invalidation
 
     protected fun compileExpression(expression: Expression) = expression.buildSql(this)
