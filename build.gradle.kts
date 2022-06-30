@@ -106,5 +106,14 @@ allprojects {
             reporter(ReporterType.CHECKSTYLE)
         }
     }
+
+    // HACK: workaround https://github.com/JLLeitschuh/ktlint-gradle/issues/524
+    afterEvaluate {
+        extensions.findByType<com.android.build.gradle.BaseExtension>()?.let {
+            it.sourceSets.configureEach {
+                java.srcDirs("src/$name/kotlin")
+            }
+        }
+    }
 }
 // endregion ktlint

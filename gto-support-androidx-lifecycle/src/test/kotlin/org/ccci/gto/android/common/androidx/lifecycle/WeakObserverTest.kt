@@ -2,9 +2,6 @@ package org.ccci.gto.android.common.androidx.lifecycle
 
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.testing.TestLifecycleOwner
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue

@@ -125,4 +125,3 @@ private fun computeSizeForDefaultText(
 }
 
 private fun Float.toIntPx(): Int = ceil(this).roundToInt()
-
