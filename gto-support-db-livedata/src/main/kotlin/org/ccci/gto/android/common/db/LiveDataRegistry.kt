@@ -1,7 +1,6 @@
 package org.ccci.gto.android.common.db
 
 import android.annotation.SuppressLint
-import androidx.annotation.AnyThread
 import androidx.annotation.MainThread
 import androidx.annotation.WorkerThread
 import androidx.collection.SimpleArrayMap

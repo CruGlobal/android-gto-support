@@ -5,8 +5,6 @@ import androidx.lifecycle.SavedStateHandle
 import kotlin.properties.ReadOnlyProperty
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.MutableStateFlow
 
 fun <T> SavedStateHandle.delegate(key: String? = null) = object : ReadWriteProperty<Any, T?> {
     override fun getValue(thisRef: Any, property: KProperty<*>): T? = get(key ?: property.name)
