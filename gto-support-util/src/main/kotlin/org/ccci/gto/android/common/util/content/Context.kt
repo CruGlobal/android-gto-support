@@ -27,9 +27,10 @@ fun Context.localize(vararg locales: Locale, includeExisting: Boolean = true): C
         }
     )
 }
+fun Context.localizeIfPossible(locale: Locale?) = locale?.let { localize(it) } ?: this
 
 fun Context.getString(locale: Locale?, @StringRes resId: Int, vararg formatArgs: Any?) =
-    (locale?.let { localize(locale) } ?: this).getString(resId, *formatArgs)
+    localizeIfPossible(locale).getString(resId, *formatArgs)
 
 /**
  * replacement for BuildConfig.DEBUG to allow libraries to check final app debug mode.
