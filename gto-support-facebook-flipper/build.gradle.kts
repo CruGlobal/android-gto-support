@@ -4,6 +4,9 @@ plugins {
 }
 
 configureAndroidLibrary()
+android {
+    defaultConfig.consumerProguardFiles("proguard-consumer.pro")
+}
 
 dependencies {
     implementation(libs.facebookFlipper)
