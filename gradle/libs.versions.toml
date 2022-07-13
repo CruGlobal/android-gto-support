@@ -28,6 +28,8 @@ androidx-compose-compiler = { module = "androidx.compose.compiler:compiler", ver
 androidx-compose-foundation-layout = { module = "androidx.compose.foundation:foundation-layout", version.ref = "androidx-compose" }
 androidx-compose-runtime = { module = "androidx.compose.runtime:runtime", version.ref = "androidx-compose" }
 androidx-compose-ui = { module = "androidx.compose.ui:ui", version.ref = "androidx-compose" }
+androidx-compose-ui-test = { module = "androidx.compose.ui:ui-test-junit4", version.ref = "androidx-compose" }
+androidx-compose-ui-test-manifest = { module = "androidx.compose.ui:ui-test-manifest", version.ref = "androidx-compose" }
 androidx-concurrent-futures = { module = "androidx.concurrent:concurrent-futures", version = "1.1.0" }
 androidx-constraintlayout = "androidx.constraintlayout:constraintlayout:2.1.4"
 androidx-core = { module = "androidx.core:core", version.ref = "androidx-core" }
@@ -107,6 +109,8 @@ timber = { module = "com.jakewharton.timber:timber", version = "5.0.1" }
 weakdelegate = { module = "com.github.Karumi:WeakDelegate", version = "1.0.1" }
 
 [bundles]
+androidx-compose-debug = ["androidx-compose-ui-test-manifest"]
+androidx-compose-testing = ["androidx-compose-ui-test"]
 okhttp3-mockwebserver = ["okhttp3-mockwebserver", "okhttp3-tls"]
 
 [plugins]
