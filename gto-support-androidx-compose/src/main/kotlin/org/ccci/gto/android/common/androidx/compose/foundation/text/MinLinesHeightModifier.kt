@@ -3,7 +3,6 @@ package org.ccci.gto.android.common.androidx.compose.foundation.text
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.debugInspectorInfo
 import androidx.compose.ui.text.TextStyle
 import org.ccci.gto.android.common.androidx.compose.ui.text.computeHeightForDefaultText
@@ -37,8 +36,5 @@ fun Modifier.minLinesHeight(
     val lineHeight = firstTwoLinesHeight - firstLineHeight
     val precomputedMinLinesHeight = firstLineHeight + lineHeight * (minLines - 1)
 
-    val density = LocalDensity.current
-    Modifier.heightIn(
-        min = with(density) { precomputedMinLinesHeight.toDp() }
-    )
+    Modifier.heightIn(min = precomputedMinLinesHeight)
 }
