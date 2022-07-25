@@ -94,7 +94,7 @@ object LocaleUtils {
                         // fixed fallback
                         fixed != null -> ULocale.forLanguageTag(fixed)
                         // remove extensions as the fallback if any are defined
-                        locale.extensionKeys.isNotEmpty() -> ULocale.Builder().setLocale(it).clearExtensions().build()
+                        it.extensionKeys.isNotEmpty() -> ULocale.Builder().setLocale(it).clearExtensions().build()
                         // use normal fallback behavior
                         else -> it.fallback.takeUnless { it == ULocale.ROOT }
                     }
