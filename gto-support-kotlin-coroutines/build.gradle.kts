@@ -15,4 +15,5 @@ dependencies {
     testImplementation(libs.androidx.arch.core.testing)
     testImplementation(libs.androidx.lifecycle.livedata.core)
     testImplementation(libs.kotlin.coroutines.test)
+    testImplementation(libs.turbine)
 }
