@@ -82,6 +82,8 @@ sealed class Expression : Parcelable {
     infix fun gte(expression: Expression): Expression = Binary(Binary.GTE, this, expression)
 
     fun `in`(vararg expressions: Expression): Expression = Binary(Binary.IN, this, *expressions)
+    fun oneOf(vararg expressions: Expression): Expression = Binary(Binary.IN, this, *expressions)
+    fun oneOf(literals: List<Expression>): Expression = Binary(Binary.IN, this, *literals.toTypedArray())
     fun notIn(vararg expressions: Expression): Expression = Binary(Binary.NOTIN, this, *expressions)
 
     fun `is`(expression: Expression): Expression = Binary(Binary.IS, this, expression)
