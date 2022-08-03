@@ -10,12 +10,6 @@ import kotlinx.coroutines.flow.transformLatest
 // Copied from https://github.com/Kotlin/kotlinx.coroutines/issues/1484#issuecomment-699600367
 // These methods can go away if there is ever an official combineTransformLatest provided by the coroutines library.
 
-@OptIn(ExperimentalCoroutinesApi::class, ExperimentalTypeInference::class)
-inline fun <reified T, R> combineTransformLatest(
-    vararg flows: Flow<T>,
-    @BuilderInference noinline transform: suspend FlowCollector<R>.(Array<T>) -> Unit
-): Flow<R> = combine(*flows) { it }.transformLatest(transform)
-
 @OptIn(ExperimentalTypeInference::class)
 fun <T1, T2, R> combineTransformLatest(
     flow: Flow<T1>,
@@ -28,3 +22,17 @@ fun <T1, T2, R> combineTransformLatest(
         args[1] as T2
     )
 }
+
+@JvmSynthetic
+@JvmName("flowCombineTransformLatest")
+@OptIn(ExperimentalTypeInference::class)
+fun <T1, T2, R> Flow<T1>.combineTransformLatest(
+    flow2: Flow<T2>,
+    @BuilderInference transform: suspend FlowCollector<R>.(T1, T2) -> Unit
+): Flow<R> = combineTransformLatest(this, flow2, transform)
+
+@OptIn(ExperimentalCoroutinesApi::class, ExperimentalTypeInference::class)
+inline fun <reified T, R> combineTransformLatest(
+    vararg flows: Flow<T>,
+    @BuilderInference noinline transform: suspend FlowCollector<R>.(Array<T>) -> Unit
+): Flow<R> = combine(*flows) { it }.transformLatest(transform)
