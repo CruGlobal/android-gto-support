@@ -17,6 +17,7 @@ if (System.getenv("GITHUB_ACTIONS")?.toBoolean() == true) {
 
 include("gto-support-androidx-collection")
 include("gto-support-androidx-compose")
+include("gto-support-androidx-compose-material3")
 include("gto-support-androidx-constraintlayout")
 include("gto-support-androidx-databinding")
 include("gto-support-androidx-drawerlayout")
