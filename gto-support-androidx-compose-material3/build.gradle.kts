@@ -9,8 +9,9 @@ android {
 }
 
 dependencies {
-    implementation(libs.androidx.compose.foundation.layout)
-    implementation(libs.androidx.compose.ui)
+    api(libs.androidx.compose.material3)
+
+    implementation(project(":gto-support-androidx-compose"))
 
     // region Linkify support
     implementation(libs.androidx.core)
