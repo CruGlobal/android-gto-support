@@ -5,6 +5,10 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 
+/**
+ * @deprecated Since v3.10.0, all methods have been deprecated.
+ */
+@Deprecated
 public class TextViewCompat {
     /**
      * @deprecated Since v3.10.0, use
