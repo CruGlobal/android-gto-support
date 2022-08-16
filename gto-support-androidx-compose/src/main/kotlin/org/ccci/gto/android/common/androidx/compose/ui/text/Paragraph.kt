@@ -16,10 +16,8 @@ import androidx.compose.ui.text.resolveDefaults
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.IntSize
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
-import kotlin.math.ceil
-import kotlin.math.roundToInt
 
 private const val EmptyTextReplacement = "HHHHHHHHHH"
 
@@ -38,17 +36,8 @@ fun computeHeightForDefaultText(
     val fontFamilyResolver = LocalFontFamilyResolver.current
     val layoutDirection = LocalLayoutDirection.current
 
-    val resolvedStyle = remember(textStyle, layoutDirection) {
-        resolveDefaults(textStyle, layoutDirection)
-    }
-    val typeface by remember(fontFamilyResolver, resolvedStyle) {
-        fontFamilyResolver.resolve(
-            resolvedStyle.fontFamily,
-            resolvedStyle.fontWeight ?: FontWeight.Normal,
-            resolvedStyle.fontStyle ?: FontStyle.Normal,
-            resolvedStyle.fontSynthesis ?: FontSynthesis.All
-        )
-    }
+    val resolvedStyle = resolveStyle(textStyle, layoutDirection)
+    val typeface by rememberTypeface(resolvedStyle, fontFamilyResolver)
 
     return remember(density, fontFamilyResolver, textStyle, layoutDirection, typeface) {
         computeHeightForDefaultText(resolvedStyle, density, fontFamilyResolver, lines)
@@ -63,35 +52,67 @@ private fun computeHeightForDefaultText(
 ): Dp {
     require(lines >= 1) { "Invalid number of lines: $lines" }
 
-    return with(density) {
-        computeSizeForDefaultText(
-            style, density, fontFamilyResolver,
-            text = Array(lines) { EmptyTextReplacement }.joinToString("\n"),
-            maxLines = lines
-        ).height.toDp()
-    }
-}
-
-private fun computeSizeForDefaultText(
-    style: TextStyle,
-    density: Density,
-    fontFamilyResolver: FontFamily.Resolver,
-    text: String = EmptyTextReplacement,
-    maxLines: Int = 1
-): IntSize {
-    require(maxLines >= 1) { "Invalid number of lines: $maxLines" }
-
     val paragraph = Paragraph(
-        text = text,
+        text = Array(lines) { EmptyTextReplacement }.joinToString("\n"),
         style = style,
-        spanStyles = listOf(),
-        maxLines = maxLines,
+        maxLines = lines,
         ellipsis = false,
         density = density,
         fontFamilyResolver = fontFamilyResolver,
         constraints = Constraints()
     )
-    return IntSize(paragraph.minIntrinsicWidth.toIntPx(), paragraph.height.toIntPx())
+    return with(density) { paragraph.height.toDp() }
 }
 
-private fun Float.toIntPx(): Int = ceil(this).roundToInt()
+@Composable
+fun computeWidthForSingleLineOfText(
+    text: String,
+    style: TextStyle
+): Dp {
+    val density = LocalDensity.current
+    val fontFamilyResolver = LocalFontFamilyResolver.current
+    val layoutDirection = LocalLayoutDirection.current
+
+    val resolvedStyle = resolveStyle(style, layoutDirection)
+    val typeface by rememberTypeface(resolvedStyle, fontFamilyResolver)
+
+    return remember(density, fontFamilyResolver, style, layoutDirection, typeface) {
+        computeWidthForSingleLineOfText(text, resolvedStyle, fontFamilyResolver, density)
+    }
+}
+
+private fun computeWidthForSingleLineOfText(
+    text: String,
+    style: TextStyle,
+    fontFamilyResolver: FontFamily.Resolver,
+    density: Density
+) = with(density) {
+    Paragraph(
+        text = text,
+        style = style,
+        maxLines = 1,
+        ellipsis = false,
+        density = density,
+        fontFamilyResolver = fontFamilyResolver,
+        constraints = Constraints()
+    ).maxIntrinsicWidth.toDp()
+}
+
+@Composable
+private fun resolveStyle(
+    style: TextStyle,
+    layoutDirection: LayoutDirection
+) = remember(style, layoutDirection) { resolveDefaults(style, layoutDirection) }
+
+@Composable
+private fun rememberTypeface(
+    style: TextStyle,
+    fontFamilyResolver: FontFamily.Resolver
+) = remember(style, fontFamilyResolver) {
+    fontFamilyResolver.resolve(
+        style.fontFamily,
+        style.fontWeight ?: FontWeight.Normal,
+        style.fontStyle ?: FontStyle.Normal,
+        style.fontSynthesis ?: FontSynthesis.All
+    )
+}

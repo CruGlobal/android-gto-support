@@ -25,4 +25,14 @@ class ParagraphTest {
             assertEquals(49.dp, computeHeightForDefaultText(textStyle, 2))
         }
     }
+
+    @Test
+    fun `computeWidthForSingleLineOfText()`() {
+        composeTestRule.setContent {
+            assertEquals(0.dp, computeWidthForSingleLineOfText("", textStyle))
+            assertEquals(1.dp, computeWidthForSingleLineOfText("a", textStyle))
+            assertEquals(6.dp, computeWidthForSingleLineOfText("abcdef", textStyle))
+            assertEquals(10.dp, computeWidthForSingleLineOfText("abcde fasd", textStyle))
+        }
+    }
 }
