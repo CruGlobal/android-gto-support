@@ -4,8 +4,10 @@ import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
@@ -27,13 +29,9 @@ fun ClickableText(
     onClick: (Int) -> Unit
 ) {
     // logic copied from the compose-foundation ClickableText
-    val layoutResult = remember { mutableStateOf<TextLayoutResult?>(null) }
+    var layoutResult by remember { mutableStateOf<TextLayoutResult?>(null) }
     val pressIndicator = Modifier.pointerInput(onClick) {
-        detectTapGestures { pos ->
-            layoutResult.value?.let { layoutResult ->
-                onClick(layoutResult.getOffsetForPosition(pos))
-            }
-        }
+        detectTapGestures { layoutResult?.getOffsetForPosition(it)?.let { onClick(it) } }
     }
 
     Text(
@@ -43,7 +41,7 @@ fun ClickableText(
         overflow = overflow,
         maxLines = maxLines,
         onTextLayout = {
-            layoutResult.value = it
+            layoutResult = it
             onTextLayout(it)
         },
         style = style,
