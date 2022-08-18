@@ -14,6 +14,7 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextOverflow
 
 // NOTE: this is hopefully temporary until a ClickableText composable is added to Material3
@@ -22,6 +23,7 @@ fun ClickableText(
     text: AnnotatedString,
     modifier: Modifier = Modifier,
     color: Color = Color.Unspecified,
+    fontFamily: FontFamily? = null,
     overflow: TextOverflow = TextOverflow.Clip,
     maxLines: Int = Int.MAX_VALUE,
     onTextLayout: (TextLayoutResult) -> Unit = {},
@@ -38,6 +40,7 @@ fun ClickableText(
         text = text,
         modifier = modifier.then(pressIndicator),
         color = color,
+        fontFamily = fontFamily,
         overflow = overflow,
         maxLines = maxLines,
         onTextLayout = {
