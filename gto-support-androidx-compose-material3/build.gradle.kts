@@ -16,4 +16,8 @@ dependencies {
     // region Linkify support
     implementation(libs.androidx.core)
     // endregion Linkify support
+
+    // region pagerTabIndicatorOffsetModifier
+    compileOnly(libs.accompanist.pager)
+    // endregion pagerTabIndicatorOffsetModifier
 }
