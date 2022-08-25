@@ -20,6 +20,7 @@ fun Project.configureAndroidLibrary() {
         configureTestOptions()
     }
 
+    configureKotlinKover()
     configurePublishing()
 }
 

@@ -91,8 +91,12 @@ allprojects {
 // endregion checkstyle
 
 // region Kotlin Kover
-kover {
-    isDisabled = gradle.startParameter.excludedTaskNames.contains("test")
+koverMerged {
+    enable()
+
+    filters {
+        projects { excludes += listOf("testing") }
+    }
 }
 // endregion Kotlin Kover
 
