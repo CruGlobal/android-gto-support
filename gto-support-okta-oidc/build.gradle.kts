@@ -6,6 +6,8 @@ plugins {
 configureAndroidLibrary()
 
 android {
+    namespace = "org.ccci.gto.android.common.okta.oidc"
+
     testFixtures.enable = true
     defaultConfig.consumerProguardFiles("proguard-consumer.pro")
 }
