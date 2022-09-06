@@ -18,6 +18,8 @@ dependencies {
 
     implementation(project(":gto-support-util"))
 
+    implementation(libs.androidx.security.crypto)
+
     // region CredentialBootstrap
     compileOnly(libs.okta.auth.foundation.bootstrap)
     // endregion CredentialBootstrap
