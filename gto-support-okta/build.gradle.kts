@@ -22,4 +22,5 @@ dependencies {
     testFixturesApi(testFixtures(project(":gto-support-okta-oidc")))
 
     testImplementation(libs.kotlin.coroutines.test)
+    testImplementation(libs.turbine)
 }
