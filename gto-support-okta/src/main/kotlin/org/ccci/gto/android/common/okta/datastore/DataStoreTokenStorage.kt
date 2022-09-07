@@ -5,8 +5,13 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.dataStore
 import com.okta.authfoundation.credential.TokenStorage
 import kotlinx.coroutines.flow.first
+import org.ccci.gto.android.common.okta.authfoundation.credential.ChangeAwareTokenStorage
+import org.ccci.gto.android.common.okta.authfoundation.credential.DefaultTokenStorageObserverRegistry
+import org.ccci.gto.android.common.okta.authfoundation.credential.TokenStorageObserverRegistry
 
-class DataStoreTokenStorage(private val dataStore: DataStore<List<TokenStorage.Entry>>) : TokenStorage {
+class DataStoreTokenStorage(private val dataStore: DataStore<List<TokenStorage.Entry>>) :
+    ChangeAwareTokenStorage,
+    TokenStorageObserverRegistry by DefaultTokenStorageObserverRegistry() {
     constructor(context: Context) : this(context.defaultTokenStorage)
 
     companion object {
@@ -25,10 +30,12 @@ class DataStoreTokenStorage(private val dataStore: DataStore<List<TokenStorage.E
             require(entries.none { it.identifier == id }) { "Error adding a new Credential to TokenStorage" }
             entries + TokenStorage.Entry(id, null, emptyMap())
         }
+        notifyChanged(id)
     }
 
     override suspend fun remove(id: String) {
         dataStore.updateData { entries -> entries.filter { it.identifier != id } }
+        notifyChanged(id)
     }
 
     override suspend fun replace(updatedEntry: TokenStorage.Entry) {
@@ -38,5 +45,6 @@ class DataStoreTokenStorage(private val dataStore: DataStore<List<TokenStorage.E
                 else it
             }
         }
+        notifyChanged(updatedEntry.identifier)
     }
 }
