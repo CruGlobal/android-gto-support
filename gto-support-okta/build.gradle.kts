@@ -1,6 +1,7 @@
 plugins {
     id("com.android.library")
     kotlin("android")
+    alias(libs.plugins.kotlin.serialization)
 }
 
 configureAndroidLibrary()
@@ -20,6 +21,11 @@ dependencies {
     // region CredentialBootstrap
     compileOnly(libs.okta.auth.foundation.bootstrap)
     // endregion CredentialBootstrap
+
+    // region DataStoreTokenStorage
+    compileOnly(libs.androidx.datastore)
+    testImplementation(libs.androidx.datastore)
+    // endregion DataStoreTokenStorage
 
     // import legacy okta-oidc module. this transitive dependency will be removed over the next several releases of gto-support
     // v3.14.0 - api dependency

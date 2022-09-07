@@ -40,6 +40,7 @@ androidx-core-ktx = { module = "androidx.core:core-ktx", version.ref = "androidx
 androidx-cursoradapter = { module = "androidx.cursoradapter:cursoradapter", version = "1.0.0" }
 androidx-databinding-adapters = { module = "androidx.databinding:databinding-adapters", version.ref = "android-gradle-plugin" }
 androidx-databinding-runtime = { module = "androidx.databinding:databinding-runtime", version.ref = "android-gradle-plugin" }
+androidx-datastore = "androidx.datastore:datastore:1.0.0"
 androidx-drawerlayout = { module = "androidx.drawerlayout:drawerlayout", version = "1.1.1" }
 androidx-fragment = { module = "androidx.fragment:fragment", version.ref = "androidx-fragment" }
 androidx-fragment-ktx = { module = "androidx.fragment:fragment-ktx", version.ref = "androidx-fragment" }
@@ -123,4 +124,5 @@ okhttp3-mockwebserver = ["okhttp3-mockwebserver", "okhttp3-tls"]
 [plugins]
 dagger-hilt = { id = "com.google.dagger.hilt.android", version.ref = "dagger" }
 kotlin-kover = { id = "org.jetbrains.kotlinx.kover", version = "0.6.0" }
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 ktlint = { id = "org.jlleitschuh.gradle.ktlint", version = "11.0.0" }
