@@ -5,4 +5,5 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 
+fun Credential.isAuthenticatedFlow() = getTokenFlow().map { it != null }.distinctUntilChanged()
 fun Credential.idTokenFlow(): Flow<Any?> = getTokenFlow().map { idToken() }.distinctUntilChanged()
