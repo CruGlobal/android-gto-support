@@ -16,6 +16,7 @@ android {
 dependencies {
     api(libs.okta.auth.foundation)
 
+    implementation(project(":gto-support-base"))
     implementation(project(":gto-support-util"))
 
     implementation(libs.androidx.security.crypto)
