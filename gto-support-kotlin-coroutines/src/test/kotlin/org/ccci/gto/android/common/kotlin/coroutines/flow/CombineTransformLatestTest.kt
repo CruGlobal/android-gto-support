@@ -4,6 +4,8 @@ import app.cash.turbine.test
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Test
@@ -11,7 +13,7 @@ import org.junit.Test
 @OptIn(ExperimentalCoroutinesApi::class)
 class CombineTransformLatestTest {
     @Test
-    fun testCombineTransformLatest() = runTest(dispatchTimeoutMs = 1000) {
+    fun testCombineTransformLatest() = runTest(dispatchTimeoutMs = 1_000) {
         val flow1 = MutableStateFlow(0)
         val flow2 = MutableStateFlow(0)
 
@@ -20,7 +22,7 @@ class CombineTransformLatestTest {
                 emit(it1 + it2 + it)
                 delay(1)
             }
-        }.test {
+        }.flowOn(StandardTestDispatcher(testScheduler)).test {
             assertEquals(0, awaitItem())
             assertEquals(1, awaitItem())
 
@@ -42,7 +44,6 @@ class CombineTransformLatestTest {
             // new emission restarts transform
             flow2.value = 30
             assertEquals(130, awaitItem())
-            cancel()
         }
     }
 }

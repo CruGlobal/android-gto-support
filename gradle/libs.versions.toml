@@ -111,7 +111,7 @@ scarlet-websocket-okhttp = { module = "com.tinder.scarlet:websocket-okhttp", ver
 snowplow = "com.snowplowanalytics:snowplow-android-tracker:4.0.0"
 splitties-bitflags = "com.louiscad.splitties:splitties-bitflags:3.0.0"
 timber = { module = "com.jakewharton.timber:timber", version = "5.0.1" }
-turbine = "app.cash.turbine:turbine:0.9.0"
+turbine = "app.cash.turbine:turbine:0.10.0"
 weakdelegate = { module = "com.github.Karumi:WeakDelegate", version = "1.0.1" }
 
 # HACK: dependencies used to trigger renovate upgrades
