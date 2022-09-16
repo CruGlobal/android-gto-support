@@ -1,6 +1,0 @@
-<manifest package="org.ccci.gto.android.common.okta.test"
-    xmlns:android="http://schemas.android.com/apk/res/android">
-    <application>
-        <activity android:name="android.app.Activity" />
-    </application>
-</manifest>

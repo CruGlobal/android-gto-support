@@ -1,4 +1,4 @@
-// @Deprecated("since v3.11.2, use testFixtures(gto-support-okta) instead")
+// @Deprecated("since v3.11.2, use testFixtures(gto-support-okta-oidc) instead")
 plugins {
     id("com.android.library")
     kotlin("android")
@@ -7,6 +7,5 @@ plugins {
 configureAndroidTestingLibrary()
 
 dependencies {
-    api(testFixtures(project(":gto-support-okta")))
-    api(libs.okta)
+    api(testFixtures(project(":gto-support-okta-oidc")))
 }
