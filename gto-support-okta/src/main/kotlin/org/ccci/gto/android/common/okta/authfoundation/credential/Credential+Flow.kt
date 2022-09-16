@@ -23,7 +23,7 @@ import org.ccci.gto.android.common.base.TimeConstants
 import org.ccci.gto.android.common.okta.authfoundation.claims.claims
 
 fun Credential.isAuthenticatedFlow() = getTokenFlow().map { it != null }.distinctUntilChanged()
-fun Credential.idTokenFlow(): Flow<Any?> = getTokenFlow().map { idToken() }.distinctUntilChanged()
+fun Credential.idTokenFlow() = getTokenFlow().map { idToken() }.distinctUntilChanged()
 fun Credential.tagsFlow() = getTokenFlow().map { tags }.distinctUntilChanged()
 
 // region userInfoFlow()
