@@ -17,6 +17,16 @@ private const val KEY2 = "key2"
 @Config(sdk = [Config.OLDEST_SDK, Build.VERSION_CODES.S_V2/*, Build.VERSION_CODES.TIRAMISU*/, Config.NEWEST_SDK])
 class IntentCompatTest {
     @Test
+    fun testGetParcelableExtraCompat() {
+        val intent = Intent()
+        intent.putExtra(KEY1, intent)
+
+        assertNotNull(intent.getParcelableExtraCompat(KEY1, Intent::class.java))
+        assertNull(intent.getParcelableExtraCompat(KEY1, String::class.java))
+        assertNull(intent.getParcelableExtraCompat(KEY2, Intent::class.java))
+    }
+
+    @Test
     fun testGetSerializableExtraCompat() {
         val intent = Intent()
         intent.putExtra(KEY1, A())
