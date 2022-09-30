@@ -14,7 +14,7 @@ private const val KEY1 = "key1"
 private const val KEY2 = "key2"
 
 @RunWith(AndroidJUnit4::class)
-@Config(sdk = [Config.OLDEST_SDK, Build.VERSION_CODES.S_V2/*, Build.VERSION_CODES.TIRAMISU*/, Config.NEWEST_SDK])
+@Config(sdk = [Config.OLDEST_SDK, Build.VERSION_CODES.S_V2, Build.VERSION_CODES.TIRAMISU, Config.NEWEST_SDK])
 class IntentCompatTest {
     @Test
     fun testGetParcelableExtraCompat() {
