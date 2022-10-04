@@ -93,10 +93,6 @@ allprojects {
 // region Kotlin Kover
 koverMerged {
     enable()
-
-    filters {
-        projects { excludes += listOf("testing") }
-    }
 }
 // endregion Kotlin Kover
 
