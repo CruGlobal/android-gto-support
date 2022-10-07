@@ -25,6 +25,7 @@ import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.hasEntry
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
@@ -89,7 +90,10 @@ class CredentialFlowTest {
 
         credential.userInfoFlow().test {
             val cached = awaitItem()
-            assertNotNull(cached)
+            assertNotNull(
+                "userInfoFlow() should emit any cached data while triggering a background load of getUserInfo()",
+                cached
+            )
             assertTrue(cached!!.deserializeClaim("cached", Boolean.serializer())!!)
 
             val response = awaitItem()
@@ -106,11 +110,29 @@ class CredentialFlowTest {
     fun `userInfoFlow() - no cache`() = runTest {
         credential.userInfoFlow().test {
             val response = awaitItem()
-            assertNotNull(response)
+            assertNotNull(
+                "userInfoFlow() should wait for getUserInfo() to complete if there is no cached data",
+                response
+            )
             assertEquals(1, response!!.deserializeClaim("response", Int.serializer()))
             coVerify(exactly = 1) { credential.getUserInfo() }
             coVerify(exactly = 1) { credential.storeToken(tags = any(), token = any()) }
             assertThat(tags, hasEntry(OIDC_USER_INFO, """{"response":1}"""))
+            confirmVerified(credential)
+        }
+    }
+
+    @Test
+    fun `userInfoFlow() - no cache & getUserInfo() fails`() = runTest {
+        coEvery { credential.getUserInfo() } coAnswers { OidcClientResult.Error(Exception()) }
+
+        credential.userInfoFlow().test {
+            assertNull(
+                "userInfoFlow() should emit null if there is no cached data and getUserInfo() fails",
+                awaitItem()
+            )
+            coVerify { credential.getUserInfo() }
+            coVerify(exactly = 0) { credential.storeToken(tags = any(), token = any()) }
             confirmVerified(credential)
         }
     }

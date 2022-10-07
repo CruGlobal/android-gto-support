@@ -9,6 +9,8 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.dropWhile
 import kotlinx.coroutines.flow.emitAll
@@ -38,13 +40,15 @@ fun Credential.userInfoFlow() = flowOf(this).userInfoFlow()
 fun Flow<Credential>.userInfoFlow() = transformLatest { cred ->
     coroutineScope {
         // coroutine that will periodically refresh the UserInfo from the API
+        val loadAttempted = MutableStateFlow(false)
         launch {
             while (true) {
                 if (
-                    cred.tags[OIDC_USER_INFO] == null ||
+                    cred.tags.cachedUserInfo == null ||
                     cred.tags.nextRefreshTime < System.currentTimeMillis()
                 ) {
                     cred.loadUserInfo()
+                    loadAttempted.value = true
                 }
 
                 delay((cred.tags.nextRefreshTime - System.currentTimeMillis()).coerceAtLeast(TimeConstants.MIN_IN_MS))
@@ -52,15 +56,17 @@ fun Flow<Credential>.userInfoFlow() = transformLatest { cred ->
         }
 
         // emit UserInfo from the Credential tags
+        val cachedInfoFlow = cred.tagsFlow()
+            .map { it.cachedUserInfo }
+            .distinctUntilChanged()
         emitAll(
-            cred.tagsFlow()
-                .distinctUntilChanged()
-                .map { it.cachedUserInfo }
-                .dropWhile { it == null }
+            combine(cachedInfoFlow, loadAttempted) { data, loaded -> Pair(data, loaded) }
+                .dropWhile { (data, loaded) -> data == null && !loaded }
+                .map { (data) -> data }
                 .onCompletion { if (it == null) emit(null) }
         )
     }
-}
+}.distinctUntilChanged()
 
 private val Map<String, String>.cachedUserInfo get() = this[OIDC_USER_INFO]?.let {
     OidcUserInfo(
