@@ -87,15 +87,6 @@ public final class CursorUtils {
         return defValue;
     }
 
-    /**
-     * @deprecated Since v3.6.2, use {@link CursorKt#getJSONArrayOrNull(Cursor, String)} instead.
-     */
-    @Nullable
-    @Deprecated
-    public static JSONArray getJSONArray(@NonNull final Cursor c, @NonNull final String field) {
-        return CursorKt.getJSONArrayOrNull(c, field);
-    }
-
     @Nullable
     public static JSONArray getJSONArray(@NonNull final Cursor c, @NonNull final String field,
                                          @Nullable final JSONArray defValue) {
