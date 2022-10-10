@@ -4,9 +4,10 @@ plugins {
     kotlin("kapt")
 }
 
-configureAndroidLibrary()
-
 android {
+    namespace = "org.ccci.gto.android.common.picasso"
+    baseConfiguration(project)
+
     defaultConfig.consumerProguardFiles("proguard-consumer-requestcreator.pro")
 
     buildFeatures.dataBinding = true

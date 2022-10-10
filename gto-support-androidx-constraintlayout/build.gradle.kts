@@ -4,9 +4,9 @@ plugins {
     kotlin("kapt")
 }
 
-configureAndroidLibrary()
-
 android {
+    namespace = "org.ccci.gto.android.common.androidx.constraintlayout"
+    baseConfiguration(project)
     buildFeatures.dataBinding = true
     dataBinding.addDefaultAdapters = false
 }

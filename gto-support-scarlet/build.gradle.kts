@@ -3,8 +3,9 @@ plugins {
     kotlin("android")
 }
 
-configureAndroidLibrary()
 android {
+    namespace = "org.ccci.gto.android.common.scarlet"
+    baseConfiguration(project)
     defaultConfig.consumerProguardFiles("proguard-consumer.pro")
 }
 
