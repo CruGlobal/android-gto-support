@@ -8,25 +8,30 @@ import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.findByType
 import org.jetbrains.kotlin.gradle.dsl.KotlinJvmOptions
 
-private const val GROUP = "org.ccci.gto.android"
-private const val GROUP_TESTING = "org.ccci.gto.android.testing"
-
 fun Project.configureAndroidLibrary() {
-    group = GROUP
     extensions.configure<LibraryExtension> {
-        configureSdk()
-        configureProguardRules()
-        configureCompilerOptions()
-        configureTestOptions()
+        baseConfiguration(project)
     }
-
-    configureKotlinKover()
-    configurePublishing()
 }
 
 fun Project.configureAndroidTestingLibrary() {
-    configureAndroidLibrary()
-    group = GROUP_TESTING
+    extensions.configure<LibraryExtension> {
+        baseConfiguration(project)
+    }
+    overridePublishingGroupForTestFixtureProject()
+}
+
+// TODO: provide Project using the new multiple context receivers functionality.
+//       this is prototyped in 1.6.20 and will probably reach beta in Kotlin 1.8 or 1.9
+//context(Project)
+fun LibraryExtension.baseConfiguration(project: Project) {
+    configureSdk()
+    configureProguardRules(project)
+    configureCompilerOptions()
+    configureTestOptions()
+
+    project.configureKotlinKover()
+    project.configurePublishing()
 }
 
 private fun BaseExtension.configureSdk() {
@@ -38,10 +43,8 @@ private fun BaseExtension.configureSdk() {
     }
 }
 
-private fun Project.configureProguardRules() {
-    extensions.configure<BaseExtension> {
-        defaultConfig.consumerProguardFiles(rootProject.file("proguard-consumer-jetbrains.pro"))
-    }
+private fun BaseExtension.configureProguardRules(project: Project) {
+    defaultConfig.consumerProguardFiles(project.rootProject.file("proguard-consumer-jetbrains.pro"))
 }
 
 private fun BaseExtension.configureCompilerOptions() {

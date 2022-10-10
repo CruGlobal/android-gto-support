@@ -3,10 +3,9 @@ plugins {
     kotlin("android")
 }
 
-configureAndroidLibrary()
-
 android {
     namespace = "org.ccci.gto.android.common.okta.oidc"
+    baseConfiguration(project)
 
     testFixtures.enable = true
     defaultConfig.consumerProguardFiles("proguard-consumer.pro")

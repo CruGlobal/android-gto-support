@@ -13,9 +13,13 @@ import org.gradle.kotlin.dsl.get
 import org.gradle.kotlin.dsl.getByType
 import org.gradle.kotlin.dsl.register
 
+private const val GROUP = "org.ccci.gto.android"
+private const val GROUP_TESTING = "org.ccci.gto.android.testing"
 private const val POM_SCM_CONNECTION = "scm:git:git@github.com:CruGlobal/android-gto-support.git"
 
 fun Project.configurePublishing() {
+    project.group = GROUP
+
     extensions.configure<LibraryExtension> {
         publishing.singleVariant("release")
     }
@@ -60,4 +64,8 @@ fun Project.configurePublishing() {
             }
         }
     }
+}
+
+fun Project.overridePublishingGroupForTestFixtureProject() {
+    group = GROUP_TESTING
 }
