@@ -8,6 +8,11 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * @deprecated Since v3.14.0, instead of broadcasting state changes utilize observable data holders instead.
+ * e.g. {@link androidx.lifecycle.LiveData} or coroutines {@link kotlinx.coroutines.flow.Flow}
+ */
+@Deprecated
 public final class IntersectingStringsBroadcastReceiver extends ForwardingBroadcastReceiver {
     public static final String EXTRA_VALUES = IntersectingStringsBroadcastReceiver.class.getName() + ".EXTRA_VALUES";
 
