@@ -12,16 +12,24 @@ private val COMPAT = when {
     else -> BaseBundleCompatMethods()
 }
 
+@JvmName("getParcelable")
+fun <T> Bundle.getParcelableCompat(key: String?, clazz: Class<T>) = COMPAT.getParcelable(this, key, clazz)
 @JvmName("getParcelableArray")
-fun <T : Parcelable> Bundle.getParcelableArrayCompat(key: String?, clazz: Class<T>) =
-    COMPAT.getParcelableArray(this, key, clazz)
+fun <T> Bundle.getParcelableArrayCompat(key: String?, clazz: Class<T>) = COMPAT.getParcelableArray(this, key, clazz)
 
 private sealed interface BundleCompatMethods {
-    fun <T : Parcelable> getParcelableArray(bundle: Bundle, key: String?, clazz: Class<T>): Array<T?>?
+    fun <T> getParcelable(bundle: Bundle, key: String?, clazz: Class<T>): T?
+    fun <T> getParcelableArray(bundle: Bundle, key: String?, clazz: Class<T>): Array<T?>?
 }
 
 private open class BaseBundleCompatMethods : BundleCompatMethods {
-    override fun <T : Parcelable> getParcelableArray(bundle: Bundle, key: String?, clazz: Class<T>): Array<T?>? {
+    override fun <T> getParcelable(bundle: Bundle, key: String?, clazz: Class<T>): T? {
+        @Suppress("DEPRECATION")
+        val raw = bundle.getParcelable<Parcelable>(key)
+        return if (clazz.isInstance(raw)) clazz.cast(raw) else null
+    }
+
+    override fun <T> getParcelableArray(bundle: Bundle, key: String?, clazz: Class<T>): Array<T?>? {
         @Suppress("DEPRECATION")
         val raw = bundle.getParcelableArray(key) ?: return null
         @Suppress("UNCHECKED_CAST")
@@ -33,6 +41,7 @@ private open class BaseBundleCompatMethods : BundleCompatMethods {
 
 @TargetApi(Build.VERSION_CODES.TIRAMISU)
 private class TiramisuBundleCompatMethods : BaseBundleCompatMethods() {
-    override fun <T : Parcelable> getParcelableArray(bundle: Bundle, key: String?, clazz: Class<T>): Array<T?>? =
+    override fun <T> getParcelable(bundle: Bundle, key: String?, clazz: Class<T>) = bundle.getParcelable(key, clazz)
+    override fun <T> getParcelableArray(bundle: Bundle, key: String?, clazz: Class<T>): Array<T?>? =
         bundle.getParcelableArray(key, clazz)
 }

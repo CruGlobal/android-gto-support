@@ -6,8 +6,9 @@ plugins {
 configureAndroidLibrary()
 
 dependencies {
-    implementation(project(":gto-support-androidx-collection"))
     api(project(":gto-support-core"))
+    implementation(project(":gto-support-androidx-collection"))
+    implementation(project(":gto-support-compat"))
 
     compileOnly(libs.androidx.swiperefreshlayout)
 }

@@ -17,8 +17,21 @@ private const val KEY1 = "key1"
 private const val KEY2 = "key2"
 
 @RunWith(AndroidJUnit4::class)
-@Config(sdk = [OLDEST_SDK, Build.VERSION_CODES.S_V2/*, Build.VERSION_CODES.TIRAMISU*/, NEWEST_SDK])
+@Config(sdk = [OLDEST_SDK, Build.VERSION_CODES.S_V2, Build.VERSION_CODES.TIRAMISU, NEWEST_SDK])
 class BundleCompatTest {
+    @Test
+    fun verifyGetParcelable() {
+        val point = Point(0, 0)
+        val bundle = Bundle().apply {
+            putParcelable(KEY1, point)
+            putParcelable(KEY2, null)
+        }
+
+        val resp = bundle.getParcelableCompat(KEY1, Point::class.java)!!
+        assertEquals(point.javaClass, resp.javaClass)
+        assertNull(bundle.getParcelableCompat(KEY2, Point::class.java))
+    }
+
     @Test
     fun verifyGetParcelableArray() {
         val points = arrayOf(Point(0, 0), null, Point(1, 1))
