@@ -4,10 +4,9 @@ plugins {
     alias(libs.plugins.kotlin.serialization)
 }
 
-configureAndroidLibrary()
-
 android {
     namespace = "org.ccci.gto.android.common.okta"
+    baseConfiguration(project)
 
     testFixtures.enable = true
     defaultConfig.consumerProguardFiles("src/main/proguard-consumer.pro")
