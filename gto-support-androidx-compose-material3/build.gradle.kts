@@ -3,8 +3,9 @@ plugins {
     kotlin("android")
 }
 
-configureAndroidLibrary()
 android {
+    namespace = "org.ccci.gto.android.common.androidx.compose.material3"
+    baseConfiguration(project)
     configureCompose(project)
 }
 

@@ -3,7 +3,10 @@ plugins {
     kotlin("android")
 }
 
-configureAndroidLibrary()
+android {
+    namespace = "org.ccci.gto.android.common.realm"
+    baseConfiguration(project)
+}
 
 dependencies {
     api(libs.realm)
