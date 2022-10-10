@@ -94,15 +94,6 @@ public final class CursorUtils {
         return json != null ? json : defValue;
     }
 
-    /**
-     * @deprecated Since v3.6.2, use {@link CursorKt#getJSONObjectOrNull(Cursor, String)} instead.
-     */
-    @Nullable
-    @Deprecated
-    public static JSONObject getJSONObject(@NonNull final Cursor c, @NonNull final String field) {
-        return CursorKt.getJSONObjectOrNull(c, field);
-    }
-
     @Nullable
     public static JSONObject getJSONObject(@NonNull final Cursor c, @NonNull final String field,
                                            @Nullable final JSONObject defValue) {
