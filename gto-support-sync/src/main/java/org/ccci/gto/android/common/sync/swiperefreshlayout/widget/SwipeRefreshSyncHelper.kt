@@ -5,6 +5,7 @@ import androidx.annotation.UiThread
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import org.ccci.gto.android.common.androidx.collection.LongSparseBooleanArray
 import org.ccci.gto.android.common.androidx.collection.mutableKeyIterator
+import org.ccci.gto.android.common.compat.os.getParcelableCompat
 import org.ccci.gto.android.common.sync.SyncRegistry.isSyncRunning
 import org.ccci.gto.android.common.sync.SyncTask
 
@@ -26,7 +27,7 @@ class SwipeRefreshSyncHelper {
 
     // region Lifecycle
     fun onRestoreInstanceState(state: Bundle?) {
-        state?.getParcelable<LongSparseBooleanArray>(EXTRA_ACTIVE_SYNCS)
+        state?.getParcelableCompat(EXTRA_ACTIVE_SYNCS, LongSparseBooleanArray::class.java)
             ?.let { activeSyncIds.putAll(it) }
     }
 
