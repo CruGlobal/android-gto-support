@@ -5,13 +5,14 @@ import androidx.annotation.RequiresApi
 import androidx.room.TypeConverter
 import java.time.Instant
 
-@RequiresApi(Build.VERSION_CODES.O)
 object Java8TimeConverters {
     @JvmStatic
     @TypeConverter
+    @RequiresApi(Build.VERSION_CODES.O)
     internal fun Long?.toInstant() = this?.let { Instant.ofEpochMilli(it) }
 
     @JvmStatic
     @TypeConverter
+    @RequiresApi(Build.VERSION_CODES.O)
     internal fun Instant?.toLong() = this?.toEpochMilli()
 }
