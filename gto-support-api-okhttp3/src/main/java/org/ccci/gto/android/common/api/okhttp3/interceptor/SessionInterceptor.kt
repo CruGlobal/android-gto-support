@@ -3,6 +3,7 @@ package org.ccci.gto.android.common.api.okhttp3.interceptor
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.annotation.CallSuper
+import androidx.annotation.VisibleForTesting
 import java.io.IOException
 import okhttp3.Interceptor
 import okhttp3.Interceptor.Chain
@@ -20,9 +21,13 @@ abstract class SessionInterceptor<S : Session> @JvmOverloads protected construct
     prefFile: String? = null
 ) : Interceptor {
     protected val context: Context = context.applicationContext
-    protected val prefs by lazy {
-        this.context.getSharedPreferences(prefFile ?: javaClass.simpleName, Context.MODE_PRIVATE)
-    }
+
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    internal val prefFileName = prefFile?.also { require(it.isNotEmpty()) { "prefFile cannot be an empty string" } }
+        ?: generateSequence<Class<*>>(javaClass) { it.superclass }
+            .mapNotNull { it.simpleName.takeUnless { it.isEmpty() } }
+            .first()
+    protected val prefs by lazy { this.context.getSharedPreferences(prefFileName, Context.MODE_PRIVATE) }
 
     protected val lockSession = Any()
 
