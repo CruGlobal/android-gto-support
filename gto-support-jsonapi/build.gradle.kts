@@ -7,6 +7,9 @@ android {
     namespace = "org.ccci.gto.android.common.jsonapi"
     baseConfiguration(project)
 
+    compileOptions {
+        isCoreLibraryDesugaringEnabled = true
+    }
     defaultConfig.consumerProguardFiles("proguard-consumer.pro")
 }
 

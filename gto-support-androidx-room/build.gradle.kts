@@ -6,6 +6,10 @@ plugins {
 android {
     namespace = "org.ccci.gto.android.common.androidx.room"
     baseConfiguration(project)
+
+    compileOptions {
+        isCoreLibraryDesugaringEnabled = true
+    }
 }
 
 dependencies {
