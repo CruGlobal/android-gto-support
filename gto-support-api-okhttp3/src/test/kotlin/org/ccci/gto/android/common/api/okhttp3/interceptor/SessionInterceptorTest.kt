@@ -17,6 +17,7 @@ import okhttp3.Response
 import org.ccci.gto.android.common.api.Session
 import org.ccci.gto.android.common.api.okhttp3.EstablishSessionApiException
 import org.ccci.gto.android.common.api.okhttp3.InvalidSessionApiException
+import org.junit.Assert.assertEquals
 import org.junit.Assert.assertThrows
 import org.junit.Test
 
@@ -33,6 +34,39 @@ class SessionInterceptorTest {
         excludeRecords { isValid }
     }
     private val invalidSession = spyk(MockSession(null))
+
+    // region prefFileName
+    @Test
+    fun verifyPrefFileName() {
+        val interceptor = object : SessionInterceptor<MockSession>(context, prefFile = "test") {
+            override fun loadSession(prefs: SharedPreferences) = null
+            override fun attachSession(request: Request, session: MockSession) = request
+        }
+        assertEquals("test", interceptor.prefFileName)
+    }
+
+    @Test(expected = IllegalArgumentException::class)
+    fun `verifyPrefFileName - invalid name`() {
+        object : SessionInterceptor<MockSession>(context, prefFile = "") {
+            override fun loadSession(prefs: SharedPreferences) = null
+            override fun attachSession(request: Request, session: MockSession) = request
+        }
+    }
+
+    @Test
+    fun `verifyPrefFileName - default value`() {
+        assertEquals("MockSessionInterceptor", MockSessionInterceptor(context).prefFileName)
+    }
+
+    @Test
+    fun `verifyPrefFileName - default value - anonymous class`() {
+        val interceptor = object : SessionInterceptor<MockSession>(context) {
+            override fun loadSession(prefs: SharedPreferences) = null
+            override fun attachSession(request: Request, session: MockSession) = request
+        }
+        assertEquals("SessionInterceptor", interceptor.prefFileName)
+    }
+    // endregion prefFileName
 
     @Test
     fun `Existing session is valid`() {
