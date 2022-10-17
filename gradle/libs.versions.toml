@@ -15,7 +15,7 @@ kotlin = "1.7.20"
 kotlinCoroutines = "1.6.4"
 moshi = "1.14.0"
 okhttp3 = "4.10.0"
-okta = "1.1.0"
+okta = "1.1.1"
 scarlet = "0.1.12"
 
 [libraries]
