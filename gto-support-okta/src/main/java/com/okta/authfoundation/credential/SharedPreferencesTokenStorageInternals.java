@@ -14,7 +14,11 @@ import com.okta.authfoundation.client.OidcClient;
 public class SharedPreferencesTokenStorageInternals {
     @RequiresApi(Build.VERSION_CODES.M)
     @SuppressWarnings("KotlinInternalInJava")
-    public static SharedPreferencesTokenStorage create(@NonNull final OidcClient client, @NonNull final Context context, @NonNull KeyGenParameterSpec keyGenParameterSpec) {
+    public static SharedPreferencesTokenStorage create(
+            @NonNull final OidcClient client,
+            @NonNull final Context context,
+            @NonNull KeyGenParameterSpec keyGenParameterSpec
+    ) {
         return new SharedPreferencesTokenStorage(
                 client.getConfiguration().getJson(),
                 client.getConfiguration().getIoDispatcher(),
