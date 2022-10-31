@@ -27,9 +27,6 @@ allprojects {
         }
         google()
         mavenCentral()
-        jcenter {
-            content { includeModule("io.realm", "android-adapters") }
-        }
     }
 
     afterEvaluate {
