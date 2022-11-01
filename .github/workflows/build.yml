@@ -21,10 +21,21 @@ env:
 jobs:
   build:
     name: Build Library
-    runs-on: ubuntu-latest
+    runs-on: macos-11
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+      - name: Cache Konan
+        uses: actions/cache@v3
+        with:
+          path: ~/.konan
+          key: ${{ runner.os }}-konan-${{ github.sha }}
+          restore-keys: ${{ runner.os }}-konan-
+      - name: Setup Java JDK
+        uses: actions/setup-java@v3.6.0
+        with:
+          distribution: 'adopt'
+          java-version: '11'
       - name: Build Library
         uses: gradle/gradle-build-action@v2
         with:
@@ -36,6 +47,12 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+      - name: Cache Konan
+        uses: actions/cache@v3
+        with:
+          path: ~/.konan
+          key: ${{ runner.os }}-konan-${{ github.sha }}
+          restore-keys: ${{ runner.os }}-konan-
       - name: Run Checkstyle
         uses: gradle/gradle-build-action@v2
         with:
@@ -53,6 +70,12 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+      - name: Cache Konan
+        uses: actions/cache@v3
+        with:
+          path: ~/.konan
+          key: ${{ runner.os }}-konan-${{ github.sha }}
+          restore-keys: ${{ runner.os }}-konan-
       - name: Run ktlint
         uses: gradle/gradle-build-action@v2
         with:
@@ -70,6 +93,12 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+      - name: Cache Konan
+        uses: actions/cache@v3
+        with:
+          path: ~/.konan
+          key: ${{ runner.os }}-konan-${{ github.sha }}
+          restore-keys: ${{ runner.os }}-konan-
       - name: Run Lint Checks
         uses: gradle/gradle-build-action@v2
         with:
@@ -81,12 +110,18 @@ jobs:
           name: lint-results
           path: "**/build/reports/lint-results*.*"
 
-  tests:
-    name: Unit Tests
+  android_tests:
+    name: Android Unit Tests
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+      - name: Cache Konan
+        uses: actions/cache@v3
+        with:
+          path: ~/.konan
+          key: ${{ runner.os }}-konan-${{ github.sha }}
+          restore-keys: ${{ runner.os }}-konan-
       - name: Cache Maven
         uses: actions/cache@v3
         with:
@@ -108,21 +143,83 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v3
         with:
-          name: unit-test-results
+          name: android-unit-test-results
+          path: "**/build/reports/tests/"
+      - name: Archive kover results
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: android-kover-results
+          path: "**/build/reports/kover/"
+
+  ios_tests:
+    name: iOS Unit Tests
+    runs-on: macos-11
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Cache Konan
+        uses: actions/cache@v3
+        with:
+          path: ~/.konan
+          key: ${{ runner.os }}-konan-${{ github.sha }}
+          restore-keys: ${{ runner.os }}-konan-
+      - name: Setup Java JDK
+        uses: actions/setup-java@v3.6.0
+        with:
+          distribution: 'adopt'
+          java-version: '11'
+      - name: Run iOS Unit Tests
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: iosX64Test iosX64BackgroundTest --scan
+
+  js_tests:
+    name: JS Unit Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Cache Konan
+        uses: actions/cache@v3
+        with:
+          path: ~/.konan
+          key: ${{ runner.os }}-konan-${{ github.sha }}
+          restore-keys: ${{ runner.os }}-konan-
+      - name: Run JS Unit Tests
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: jsIrTest jsLegacyTest --scan
+      - name: Archive test results
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: js-unit-test-results
           path: "**/build/reports/tests/"
 
   deploy:
     name: Deploy Library
-    runs-on: ubuntu-latest
+    runs-on: macos-11
     if: >-
       github.event_name == 'workflow_dispatch' ||
       github.event_name == 'schedule' ||
       github.event_name == 'pull_request' ||
       (github.event_name == 'push' && (github.ref == 'refs/heads/master' || contains(github.ref, 'refs/tags/')))
-    needs: [build, checkstyle, ktlint, lint, tests]
+    needs: [build, checkstyle, ktlint, lint, android_tests, ios_tests, js_tests]
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+      - name: Cache Konan
+        uses: actions/cache@v3
+        with:
+          path: ~/.konan
+          key: ${{ runner.os }}-konan-${{ github.sha }}
+          restore-keys: ${{ runner.os }}-konan-
+      - name: Setup Java JDK
+        uses: actions/setup-java@v3.6.0
+        with:
+          distribution: 'adopt'
+          java-version: '11'
       - name: Publish library
         uses: gradle/gradle-build-action@v2
         with:
