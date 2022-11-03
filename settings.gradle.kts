@@ -15,6 +15,7 @@ if (System.getenv("GITHUB_ACTIONS")?.toBoolean() == true) {
     }
 }
 
+include("gto-support-androidx-annotation")
 include("gto-support-androidx-collection")
 include("gto-support-androidx-compose")
 include("gto-support-androidx-compose-material3")
