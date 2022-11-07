@@ -23,6 +23,21 @@ fun <T1, T2, R> combineTransformLatest(
     )
 }
 
+@OptIn(ExperimentalTypeInference::class)
+fun <T1, T2, T3, R> combineTransformLatest(
+    flow: Flow<T1>,
+    flow2: Flow<T2>,
+    flow3: Flow<T3>,
+    @BuilderInference transform: suspend FlowCollector<R>.(T1, T2, T3) -> Unit
+): Flow<R> = combineTransformLatest(flow, flow2, flow3) { args ->
+    @Suppress("UNCHECKED_CAST")
+    transform(
+        args[0] as T1,
+        args[1] as T2,
+        args[2] as T3,
+    )
+}
+
 @JvmSynthetic
 @JvmName("flowCombineTransformLatest")
 @OptIn(ExperimentalTypeInference::class)
