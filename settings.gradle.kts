@@ -5,6 +5,24 @@ pluginManagement {
     }
 }
 
+dependencyResolutionManagement {
+    repositories {
+        maven {
+            setUrl("https://jitpack.io")
+            content { includeGroupByRegex("com\\.github\\..*") }
+        }
+        maven {
+            // This repository contains pre-release versions of the Compose Compiler
+            url = uri("https://androidx.dev/storage/compose-compiler/repository/")
+            content {
+                includeGroup("androidx.compose.compiler")
+            }
+        }
+        google()
+        mavenCentral()
+    }
+}
+
 // automatically accept the scans.gradle.com TOS when running in GHA
 if (System.getenv("GITHUB_ACTIONS")?.toBoolean() == true) {
     extensions.findByName("gradleEnterprise")?.withGroovyBuilder {

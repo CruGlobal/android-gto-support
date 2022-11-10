@@ -20,15 +20,6 @@ allprojects {
         version = "$version-SNAPSHOT"
     }
 
-    repositories {
-        maven {
-            setUrl("https://jitpack.io")
-            content { includeGroupByRegex("com\\.github\\..*") }
-        }
-        google()
-        mavenCentral()
-    }
-
     afterEvaluate {
         configurations.all {
             resolutionStrategy {
