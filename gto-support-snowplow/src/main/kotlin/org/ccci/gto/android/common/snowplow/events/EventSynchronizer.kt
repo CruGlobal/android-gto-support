@@ -6,6 +6,7 @@ import java.util.concurrent.Semaphore
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicReference
 
+@Deprecated("Since v3.14.0, We no longer use snowplow for any analytics")
 internal object EventSynchronizer {
     @VisibleForTesting
     internal val semaphore = Semaphore(1, true)
