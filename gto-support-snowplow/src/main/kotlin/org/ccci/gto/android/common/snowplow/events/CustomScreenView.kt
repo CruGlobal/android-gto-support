@@ -3,6 +3,7 @@ package org.ccci.gto.android.common.snowplow.events
 import com.snowplowanalytics.snowplow.event.ScreenView
 import com.snowplowanalytics.snowplow.internal.tracker.Tracker
 
+@Deprecated("Since v3.14.0, We no longer use snowplow for any analytics")
 class CustomScreenView(name: String) : ScreenView(name), CustomEvent<CustomScreenView> {
     override val attributes = mutableMapOf<String, String?>()
 
