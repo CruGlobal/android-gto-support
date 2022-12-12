@@ -11,6 +11,4 @@ dependencies {
     api(project(":gto-support-androidx-recyclerview"))
 
     api(libs.androidx.recyclerview)
-
-    testImplementation(libs.junitParams)
 }
