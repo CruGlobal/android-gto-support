@@ -3,7 +3,10 @@ plugins {
     kotlin("android")
 }
 
-configureAndroidLibrary()
+android {
+    namespace = "org.ccci.gto.android.common.leakcanary"
+    baseConfiguration(project)
+}
 
 dependencies {
     implementation(libs.leakcanary)
