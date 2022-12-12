@@ -3,7 +3,10 @@ plugins {
     kotlin("android")
 }
 
-configureAndroidLibrary()
+android {
+    namespace = "org.ccci.gto.android.common.androidx.work"
+    baseConfiguration(project)
+}
 
 dependencies {
     api(libs.androidx.work.runtime)
