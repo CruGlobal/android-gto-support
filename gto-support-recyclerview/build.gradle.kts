@@ -13,7 +13,6 @@ dependencies {
     api(project(":gto-support-androidx-recyclerview"))
 
     api(libs.androidx.recyclerview)
-    implementation(libs.weakdelegate)
 
     // region *DataBindingAdapter
     compileOnly(libs.androidx.databinding.runtime)
