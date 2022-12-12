@@ -12,9 +12,5 @@ dependencies {
 
     api(libs.androidx.recyclerview)
 
-    // region *DataBindingAdapter
-    compileOnly(libs.androidx.databinding.runtime)
-    // endregion *DataBindingAdapter
-
     testImplementation(libs.junitParams)
 }
