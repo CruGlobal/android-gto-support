@@ -34,7 +34,7 @@ jobs:
       - name: Setup Java JDK
         uses: actions/setup-java@v3.8.0
         with:
-          distribution: 'adopt'
+          distribution: 'temurin'
           java-version: '11'
       - name: Build Library
         uses: gradle/gradle-build-action@v2
@@ -167,7 +167,7 @@ jobs:
       - name: Setup Java JDK
         uses: actions/setup-java@v3.8.0
         with:
-          distribution: 'adopt'
+          distribution: 'temurin'
           java-version: '11'
       - name: Run iOS Unit Tests
         uses: gradle/gradle-build-action@v2
@@ -218,7 +218,7 @@ jobs:
       - name: Setup Java JDK
         uses: actions/setup-java@v3.8.0
         with:
-          distribution: 'adopt'
+          distribution: 'temurin'
           java-version: '11'
       - name: Publish library
         uses: gradle/gradle-build-action@v2
