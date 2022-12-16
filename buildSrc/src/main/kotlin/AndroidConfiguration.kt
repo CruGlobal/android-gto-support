@@ -4,16 +4,8 @@ import com.android.build.gradle.LibraryExtension
 import org.gradle.api.JavaVersion
 import org.gradle.api.Project
 import org.gradle.api.plugins.ExtensionAware
-import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.findByType
 import org.jetbrains.kotlin.gradle.dsl.KotlinJvmOptions
-
-fun Project.configureAndroidTestingLibrary() {
-    extensions.configure<LibraryExtension> {
-        baseConfiguration(project)
-    }
-    overridePublishingGroupForTestFixtureProject()
-}
 
 // TODO: provide Project using the new multiple context receivers functionality.
 //       this is prototyped in 1.6.20 and will probably reach beta in Kotlin 1.8 or 1.9

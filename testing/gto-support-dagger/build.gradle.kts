@@ -1,11 +1,8 @@
 plugins {
-    id("com.android.library")
+    id("gto-support.android-testing-conventions")
     alias(libs.plugins.dagger.hilt)
-    kotlin("android")
     kotlin("kapt")
 }
-
-configureAndroidTestingLibrary()
 
 dependencies {
     implementation(libs.dagger)
