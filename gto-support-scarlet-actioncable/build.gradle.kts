@@ -1,10 +1,7 @@
 plugins {
-    id("com.android.library")
-    kotlin("android")
+    id("gto-support.android-conventions")
     kotlin("kapt")
 }
-
-configureAndroidLibrary()
 
 dependencies {
     implementation(project(":gto-support-moshi"))

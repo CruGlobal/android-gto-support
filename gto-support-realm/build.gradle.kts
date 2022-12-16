@@ -1,11 +1,9 @@
 plugins {
-    id("com.android.library")
-    kotlin("android")
+    id("gto-support.android-conventions")
 }
 
 android {
     namespace = "org.ccci.gto.android.common.realm"
-    baseConfiguration(project)
 }
 
 dependencies {

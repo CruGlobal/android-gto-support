@@ -1,12 +1,10 @@
 plugins {
-    id("com.android.library")
-    kotlin("android")
+    id("gto-support.android-conventions")
     kotlin("kapt")
 }
 
 android {
     namespace = "org.ccci.gto.android.common.androidx.constraintlayout"
-    baseConfiguration(project)
     buildFeatures.dataBinding = true
     dataBinding.addDefaultAdapters = false
 }
