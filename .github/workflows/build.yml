@@ -3,19 +3,23 @@ name: Build GTO-Support
 on:
   push:
     branches: [master]
-    tags: ['v[0-9]+*']
   pull_request:
     branches: [master]
   schedule:
     - cron: '0 0 1 * *'
   workflow_dispatch:
+    inputs:
+      triggerRelease:
+        description: 'Release Build'
+        required: false
+        type: boolean
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 env:
-  ORG_GRADLE_PROJECT_releaseBuild: ${{ github.event_name == 'push' && contains(github.ref, 'refs/tags/') }}
+  ORG_GRADLE_PROJECT_releaseBuild: ${{ github.event_name == 'workflow_dispatch' && inputs.triggerRelease && github.ref == 'refs/heads/master' }}
   ORG_GRADLE_PROJECT_versionSuffix: ${{ (github.event_name == 'pull_request' && format('PR{0}', github.event.pull_request.number)) || '' }}
 
 jobs:
@@ -197,6 +201,55 @@ jobs:
           name: js-unit-test-results
           path: "**/build/reports/tests/"
 
+  check_version:
+    name: Check Version is Unreleased
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+      tag: ${{ steps.tag_name.outputs.tag }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Find Version
+        id: version
+        run: grep version gradle.properties >> $GITHUB_OUTPUT
+      - name: Generate Tag Name
+        id: tag_name
+        run: echo tag=$TAG_NAME >> $GITHUB_OUTPUT
+        env:
+          TAG_NAME: v${{ steps.current_version.outputs.version }}
+      - name: Check if version was already released
+        run: "! git ls-remote -t --exit-code origin $TAG_NAME"
+        env:
+          TAG_NAME: ${{ steps.tag_name.outputs.tag }}
+
+  tag_release:
+    name: Tag Release & Bump Version
+    runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_dispatch' && inputs.triggerRelease && github.ref == 'refs/heads/master'
+    needs: [ build, checkstyle, ktlint, lint, android_tests, ios_tests, js_tests, check_version ]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Create Tag
+        uses: actions-ecosystem/action-push-tag@v1
+        with:
+          tag: ${{ needs.check_version.outputs.tag }}
+      - name: Generate next version
+        id: bump_version
+        uses: actions-ecosystem/action-bump-semver@v1
+        with:
+          current_version: ${{ needs.check_version.outputs.version }}
+          level: patch
+      - name: Update version for new development
+        run: sed -i "s/version=${{ needs.check_version.outputs.version }}/version=${{ steps.bump_version.outputs.new_version }}/" gradle.properties
+      - name: Create Version Bump Pull Request
+        uses: peter-evans/create-pull-request@v4
+        with:
+          branch: "versionBump/${{ steps.bump_version.outputs.new_version }}"
+          title: "Bump version after release"
+          commit-message: "Bump version to ${{steps.bump_version.outputs.new_version}}"
+
   deploy:
     name: Deploy Library
     runs-on: macos-11
@@ -204,8 +257,8 @@ jobs:
       github.event_name == 'workflow_dispatch' ||
       github.event_name == 'schedule' ||
       github.event_name == 'pull_request' ||
-      (github.event_name == 'push' && (github.ref == 'refs/heads/master' || contains(github.ref, 'refs/tags/')))
-    needs: [build, checkstyle, ktlint, lint, android_tests, ios_tests, js_tests]
+      (github.event_name == 'push' && github.ref == 'refs/heads/master')
+    needs: [ build, checkstyle, ktlint, lint, android_tests, ios_tests, js_tests, check_version ]
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
