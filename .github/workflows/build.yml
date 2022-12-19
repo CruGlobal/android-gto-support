@@ -217,7 +217,7 @@ jobs:
         id: tag_name
         run: echo tag=$TAG_NAME >> $GITHUB_OUTPUT
         env:
-          TAG_NAME: v${{ steps.current_version.outputs.version }}
+          TAG_NAME: v${{ steps.version.outputs.version }}
       - name: Check if version was already released
         run: "! git ls-remote -t --exit-code origin $TAG_NAME"
         env:
