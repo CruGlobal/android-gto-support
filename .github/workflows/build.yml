@@ -232,9 +232,15 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
       - name: Create Tag
-        uses: actions-ecosystem/action-push-tag@v1
-        with:
-          tag: ${{ needs.check_version.outputs.tag }}
+        env:
+          TAG_NAME: ${{ needs.check_version.outputs.tag }}
+        run: |
+          git tag $TAG_NAME
+          git push origin $TAG_NAME
+# TODO: actions-ecosystem/action-push-tag@v1 is not currently functional, see: https://github.com/actions-ecosystem/action-push-tag/issues/10
+#        uses: actions-ecosystem/action-push-tag@v1
+#        with:
+#          tag: ${{ needs.check_version.outputs.tag }}
       - name: Generate next version
         id: bump_version
         uses: actions-ecosystem/action-bump-semver@v1
