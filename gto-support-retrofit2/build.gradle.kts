@@ -1,12 +1,7 @@
 plugins {
-    id("com.android.library")
-    kotlin("android")
+    id("gto-support.android-conventions")
 }
-
-configureAndroidLibrary()
 
 dependencies {
     api(libs.retrofit)
-//
-//    implementation(project(":gto-support-compat"))
 }

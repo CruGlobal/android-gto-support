@@ -1,12 +1,10 @@
 plugins {
-    id("com.android.library")
-    kotlin("android")
+    id("gto-support.android-conventions")
     kotlin("kapt")
 }
 
 android {
     namespace = "org.ccci.gto.android.common.picasso"
-    baseConfiguration(project)
 
     defaultConfig.consumerProguardFiles("proguard-consumer-requestcreator.pro")
 

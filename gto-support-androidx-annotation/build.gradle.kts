@@ -1,18 +1,13 @@
 plugins {
-    kotlin("multiplatform")
-    id("com.android.library")
+    id("gto-support.multiplatform-conventions")
     alias(libs.plugins.kotlin.kover)
 }
 
 android {
     namespace = "org.ccci.gto.support.androidx.annotation"
-    baseConfiguration(project)
 }
 
 kotlin {
-    baseConfiguration()
-    configureTargets(project)
-
     sourceSets {
         val androidMain by getting {
             dependencies {

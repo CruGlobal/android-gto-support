@@ -16,7 +16,7 @@ import org.gradle.kotlin.dsl.register
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 
 private const val GROUP = "org.ccci.gto.android"
-private const val GROUP_TESTING = "org.ccci.gto.android.testing"
+internal const val GROUP_TESTING = "org.ccci.gto.android.testing"
 
 fun Project.configurePublishing() {
     apply(plugin = "maven-publish")
@@ -62,8 +62,4 @@ fun Project.configurePublishing() {
             }
         }
     }
-}
-
-fun Project.overridePublishingGroupForTestFixtureProject() {
-    group = GROUP_TESTING
 }

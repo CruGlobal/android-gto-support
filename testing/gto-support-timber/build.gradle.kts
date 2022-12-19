@@ -1,9 +1,6 @@
 plugins {
-    id("com.android.library")
-    kotlin("android")
+    id("gto-support.android-testing-conventions")
 }
-
-configureAndroidTestingLibrary()
 
 dependencies {
     api(libs.timber)

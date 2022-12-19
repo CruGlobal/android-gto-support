@@ -1,11 +1,9 @@
 plugins {
-    id("com.android.library")
-    kotlin("android")
+    id("gto-support.android-conventions")
 }
 
 android {
     namespace = "org.ccci.gto.android.common.androidx.room"
-    baseConfiguration(project)
 
     compileOptions.isCoreLibraryDesugaringEnabled = true
     testFixtures.enable = true
