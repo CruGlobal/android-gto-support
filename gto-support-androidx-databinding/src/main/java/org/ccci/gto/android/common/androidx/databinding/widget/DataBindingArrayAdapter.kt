@@ -14,7 +14,7 @@ import androidx.lifecycle.Observer
 abstract class DataBindingArrayAdapter<B : ViewDataBinding, T>(
     context: Context,
     @LayoutRes private val layout: Int,
-    private val lifecycleOwner: LifecycleOwner? = null
+    private val lifecycleOwner: LifecycleOwner? = null,
 ) : ArrayAdapter<T>(context, layout), Observer<Collection<T>> {
     final override fun getView(position: Int, convertView: View?, parent: ViewGroup) =
         (convertView?.getBinding() ?: inflateBinding(parent))

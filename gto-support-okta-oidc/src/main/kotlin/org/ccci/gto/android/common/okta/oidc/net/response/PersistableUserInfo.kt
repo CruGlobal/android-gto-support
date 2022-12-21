@@ -12,7 +12,7 @@ private const val CLAIM_RETRIEVED_AT = "retrieved_at"
 internal class PersistableUserInfo(
     private val oktaUserId: String,
     val userInfo: UserInfo,
-    private val retrievedAt: Long = System.currentTimeMillis()
+    private val retrievedAt: Long = System.currentTimeMillis(),
 ) : Persistable {
     private constructor(oktaUserId: String, raw: JSONObject) :
         this(oktaUserId, UserInfo(raw), raw.optLong(CLAIM_RETRIEVED_AT, System.currentTimeMillis()))

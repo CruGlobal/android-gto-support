@@ -19,7 +19,7 @@ import androidx.lifecycle.switchMap
 fun <IN1, IN2, OUT> combine(
     source1: LiveData<IN1>,
     source2: LiveData<IN2>,
-    mapFunction: (IN1, IN2) -> OUT
+    mapFunction: (IN1, IN2) -> OUT,
 ) = combineInt(source1, source2) {
     @Suppress("UNCHECKED_CAST")
     mapFunction(source1.value as IN1, source2.value as IN2)
@@ -34,7 +34,7 @@ fun <IN1, IN2, OUT> combine(
 @JvmSynthetic
 fun <IN1, IN2, OUT> LiveData<IN1>.combineWith(
     other: LiveData<IN2>,
-    mapFunction: (IN1, IN2) -> OUT
+    mapFunction: (IN1, IN2) -> OUT,
 ) = combineInt(this, other) {
     @Suppress("UNCHECKED_CAST")
     mapFunction(value as IN1, other.value as IN2)
@@ -50,7 +50,7 @@ fun <IN1, IN2, IN3, OUT> combine(
     source1: LiveData<IN1>,
     source2: LiveData<IN2>,
     source3: LiveData<IN3>,
-    mapFunction: (IN1, IN2, IN3) -> OUT
+    mapFunction: (IN1, IN2, IN3) -> OUT,
 ) = combineInt(source1, source2, source3) {
     @Suppress("UNCHECKED_CAST")
     mapFunction(source1.value as IN1, source2.value as IN2, source3.value as IN3)
@@ -66,7 +66,7 @@ fun <IN1, IN2, IN3, OUT> combine(
 fun <IN1, IN2, IN3, OUT> LiveData<IN1>.combineWith(
     other: LiveData<IN2>,
     other2: LiveData<IN3>,
-    mapFunction: (IN1, IN2, IN3) -> OUT
+    mapFunction: (IN1, IN2, IN3) -> OUT,
 ) = combineInt(this, other, other2) {
     @Suppress("UNCHECKED_CAST")
     mapFunction(value as IN1, other.value as IN2, other2.value as IN3)
@@ -83,7 +83,7 @@ fun <IN1, IN2, IN3, IN4, OUT> combine(
     source2: LiveData<IN2>,
     source3: LiveData<IN3>,
     source4: LiveData<IN4>,
-    mapFunction: (IN1, IN2, IN3, IN4) -> OUT
+    mapFunction: (IN1, IN2, IN3, IN4) -> OUT,
 ) = combineInt(source1, source2, source3, source4) {
     @Suppress("UNCHECKED_CAST")
     mapFunction(source1.value as IN1, source2.value as IN2, source3.value as IN3, source4.value as IN4)
@@ -100,7 +100,7 @@ fun <IN1, IN2, IN3, IN4, OUT> LiveData<IN1>.combineWith(
     other: LiveData<IN2>,
     other2: LiveData<IN3>,
     other3: LiveData<IN4>,
-    mapFunction: (IN1, IN2, IN3, IN4) -> OUT
+    mapFunction: (IN1, IN2, IN3, IN4) -> OUT,
 ) = combineInt(this, other, other2, other3) {
     @Suppress("UNCHECKED_CAST")
     mapFunction(value as IN1, other.value as IN2, other2.value as IN3, other3.value as IN4)
@@ -118,7 +118,7 @@ fun <IN1, IN2, IN3, IN4, IN5, OUT> combine(
     source3: LiveData<IN3>,
     source4: LiveData<IN4>,
     source5: LiveData<IN5>,
-    mapFunction: (IN1, IN2, IN3, IN4, IN5) -> OUT
+    mapFunction: (IN1, IN2, IN3, IN4, IN5) -> OUT,
 ) = combineInt(source1, source2, source3, source4, source5) {
     @Suppress("UNCHECKED_CAST")
     mapFunction(
@@ -142,7 +142,7 @@ fun <IN1, IN2, IN3, IN4, IN5, OUT> LiveData<IN1>.combineWith(
     other2: LiveData<IN3>,
     other3: LiveData<IN4>,
     other4: LiveData<IN5>,
-    mapFunction: (IN1, IN2, IN3, IN4, IN5) -> OUT
+    mapFunction: (IN1, IN2, IN3, IN4, IN5) -> OUT,
 ) = combineInt(this, other, other2, other3, other4) {
     @Suppress("UNCHECKED_CAST")
     mapFunction(value as IN1, other.value as IN2, other2.value as IN3, other3.value as IN4, other4.value as IN5)
@@ -161,7 +161,7 @@ fun <IN1, IN2, IN3, IN4, IN5, IN6, OUT> LiveData<IN1>.combineWith(
     other3: LiveData<IN4>,
     other4: LiveData<IN5>,
     other5: LiveData<IN6>,
-    mapFunction: (IN1, IN2, IN3, IN4, IN5, IN6) -> OUT
+    mapFunction: (IN1, IN2, IN3, IN4, IN5, IN6) -> OUT,
 ) = combineInt(this, other, other2, other3, other4, other5) {
     @Suppress("UNCHECKED_CAST")
     mapFunction(
@@ -188,7 +188,7 @@ fun <IN1, IN2, IN3, IN4, IN5, IN6, IN7, OUT> LiveData<IN1>.combineWith(
     other4: LiveData<IN5>,
     other5: LiveData<IN6>,
     other6: LiveData<IN7>,
-    mapFunction: (IN1, IN2, IN3, IN4, IN5, IN6, IN7) -> OUT
+    mapFunction: (IN1, IN2, IN3, IN4, IN5, IN6, IN7) -> OUT,
 ) = combineInt(this, other, other2, other3, other4, other5, other6) {
     @Suppress("UNCHECKED_CAST")
     mapFunction(
@@ -204,7 +204,7 @@ fun <IN1, IN2, IN3, IN4, IN5, IN6, IN7, OUT> LiveData<IN1>.combineWith(
 
 private inline fun <OUT> combineInt(
     vararg input: LiveData<*>,
-    crossinline mapFunction: () -> OUT
+    crossinline mapFunction: () -> OUT,
 ): LiveData<OUT> {
     val result = MediatorLiveData<OUT>()
     val state = object {
@@ -243,7 +243,7 @@ fun <T> LiveData<out Iterable<T>>.sortedWith(comparator: Comparator<in T>) = map
 fun <IN1, IN2, OUT> switchCombine(
     source1: LiveData<IN1>,
     source2: LiveData<IN2>,
-    mapFunction: (IN1, IN2) -> LiveData<out OUT>
+    mapFunction: (IN1, IN2) -> LiveData<out OUT>,
 ) = switchCombineWithInt(source1, source2) {
     @Suppress("UNCHECKED_CAST")
     mapFunction(source1.value as IN1, source2.value as IN2)
@@ -258,7 +258,7 @@ fun <IN1, IN2, OUT> switchCombine(
  */
 fun <IN1, IN2, OUT> LiveData<IN1>.switchCombineWith(
     other: LiveData<IN2>,
-    mapFunction: (IN1, IN2) -> LiveData<out OUT>
+    mapFunction: (IN1, IN2) -> LiveData<out OUT>,
 ) = switchCombineWithInt(this, other) {
     @Suppress("UNCHECKED_CAST")
     mapFunction(value as IN1, other.value as IN2)
@@ -275,7 +275,7 @@ fun <IN1, IN2, OUT> LiveData<IN1>.switchCombineWith(
 fun <IN1, IN2, IN3, OUT> LiveData<IN1>.switchCombineWith(
     other: LiveData<IN2>,
     other2: LiveData<IN3>,
-    mapFunction: (IN1, IN2, IN3) -> LiveData<out OUT>
+    mapFunction: (IN1, IN2, IN3) -> LiveData<out OUT>,
 ) = switchCombineWithInt(this, other, other2) {
     @Suppress("UNCHECKED_CAST")
     mapFunction(value as IN1, other.value as IN2, other2.value as IN3)
@@ -293,7 +293,7 @@ fun <IN1, IN2, IN3, IN4, OUT> LiveData<IN1>.switchCombineWith(
     other: LiveData<IN2>,
     other2: LiveData<IN3>,
     other3: LiveData<IN4>,
-    mapFunction: (IN1, IN2, IN3, IN4) -> LiveData<out OUT>
+    mapFunction: (IN1, IN2, IN3, IN4) -> LiveData<out OUT>,
 ) = switchCombineWithInt(this, other, other2, other3) {
     @Suppress("UNCHECKED_CAST")
     mapFunction(value as IN1, other.value as IN2, other2.value as IN3, other3.value as IN4)
@@ -301,7 +301,7 @@ fun <IN1, IN2, IN3, IN4, OUT> LiveData<IN1>.switchCombineWith(
 
 private inline fun <OUT> switchCombineWithInt(
     vararg input: LiveData<*>,
-    crossinline mapFunction: () -> LiveData<out OUT>
+    crossinline mapFunction: () -> LiveData<out OUT>,
 ): LiveData<OUT> {
     val result = MediatorLiveData<OUT>()
     val state = object {
@@ -337,7 +337,7 @@ inline fun <T, R> LiveData<out Iterable<T>>.switchFold(crossinline operation: (a
 
 inline fun <T, R> LiveData<out Iterable<T>>.switchFold(
     acc: LiveData<R>,
-    crossinline operation: (acc: LiveData<R>, T) -> LiveData<R>
+    crossinline operation: (acc: LiveData<R>, T) -> LiveData<R>,
 ) = switchMap { it.fold(acc, operation) }
 
 /**

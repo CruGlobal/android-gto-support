@@ -13,5 +13,5 @@ import com.okta.authfoundation.credential.TokenStorage
 fun SharedPreferencesTokenStorage(
     client: OidcClient,
     context: Context,
-    keyGenParameterSpec: KeyGenParameterSpec = MasterKeys.AES256_GCM_SPEC
+    keyGenParameterSpec: KeyGenParameterSpec = MasterKeys.AES256_GCM_SPEC,
 ): TokenStorage = SharedPreferencesTokenStorageInternals.create(client, context, keyGenParameterSpec)

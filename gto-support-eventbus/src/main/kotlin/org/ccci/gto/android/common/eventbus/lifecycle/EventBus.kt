@@ -9,7 +9,7 @@ import org.greenrobot.eventbus.EventBus
 fun EventBus.register(
     lifecycleOwner: LifecycleOwner,
     subscriber: Any,
-    atLeast: Lifecycle.State = Lifecycle.State.STARTED
+    atLeast: Lifecycle.State = Lifecycle.State.STARTED,
 ) {
     when (atLeast) {
         Lifecycle.State.STARTED -> {

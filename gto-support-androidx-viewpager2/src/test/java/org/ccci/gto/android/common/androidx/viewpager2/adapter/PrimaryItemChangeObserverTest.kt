@@ -154,7 +154,7 @@ class PrimaryItemChangeObserverTest {
     private fun verifyUpdatePrimaryItem(
         primaryId: Long?,
         previousPrimaryId: Long? = null,
-        mode: VerificationMode = times(1)
+        mode: VerificationMode = times(1),
     ) = verify(adapter.updatesMock, mode).invoke(
         if (primaryId != null) argThat { id == primaryId } else isNull(),
         if (previousPrimaryId != null) argThat { id == previousPrimaryId } else isNull(),

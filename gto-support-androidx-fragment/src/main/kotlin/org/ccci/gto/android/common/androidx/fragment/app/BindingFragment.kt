@@ -20,7 +20,7 @@ abstract class BindingFragment<B : ViewBinding> protected constructor(@LayoutRes
     final override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View? {
         binding = onCreateBinding(inflater, container, savedInstanceState)
             ?.also { if (it is ViewDataBinding && it.lifecycleOwner == null) it.lifecycleOwner = viewLifecycleOwner }
@@ -30,7 +30,7 @@ abstract class BindingFragment<B : ViewBinding> protected constructor(@LayoutRes
     protected open fun onCreateBinding(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): B? = when {
         contentLayoutId != 0 ->
             @Suppress("UNCHECKED_CAST")

@@ -15,10 +15,7 @@ fun String.addUriAnnotations(@LinkifyMask mask: Int, linkStyle: SpanStyle?) = An
     addUrlSpans(spannable, spans, linkStyle)
 }.toAnnotatedString()
 
-fun AnnotatedString.addUriAnnotations(
-    @LinkifyMask mask: Int,
-    linkStyle: SpanStyle?
-): AnnotatedString {
+fun AnnotatedString.addUriAnnotations(@LinkifyMask mask: Int, linkStyle: SpanStyle?): AnnotatedString {
     val (spannable, spans) = getUrlSpans(this, mask)
     return when {
         spans.isEmpty() -> this
@@ -42,7 +39,7 @@ private fun getUrlSpans(string: CharSequence, @LinkifyMask mask: Int): Pair<Span
 private fun AnnotatedString.Builder.addUrlSpans(
     spannable: SpannableString,
     spans: Array<URLSpan>,
-    linkStyle: SpanStyle?
+    linkStyle: SpanStyle?,
 ) {
     spans.forEach {
         val spanStart = spannable.getSpanStart(it)

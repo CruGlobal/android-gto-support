@@ -37,7 +37,7 @@ internal sealed class DaoComputableLiveData<T>(protected val dao: LiveDataDao) :
 private class DaoFindComputableLiveData<T : Any>(
     dao: LiveDataDao,
     private val clazz: Class<T>,
-    private vararg val key: Any
+    private vararg val key: Any,
 ) : DaoComputableLiveData<T?>(dao) {
     @SuppressLint("RestrictedApi")
     override fun compute() = dao.find(clazz, *key)

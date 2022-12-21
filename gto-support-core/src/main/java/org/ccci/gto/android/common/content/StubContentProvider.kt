@@ -13,7 +13,7 @@ class StubContentProvider : ContentProvider() {
         projection: Array<String>?,
         selection: String?,
         selectionArgs: Array<String>?,
-        sortOrder: String?
+        sortOrder: String?,
     ): Cursor? = null
 
     override fun insert(uri: Uri, values: ContentValues?): Uri? = null

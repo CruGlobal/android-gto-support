@@ -12,5 +12,5 @@ fun Modifier.padding(
     start: Dp = horizontal,
     top: Dp = vertical,
     end: Dp = horizontal,
-    bottom: Dp = vertical
+    bottom: Dp = vertical,
 ) = padding(start = start, top = top, end = end, bottom = bottom)

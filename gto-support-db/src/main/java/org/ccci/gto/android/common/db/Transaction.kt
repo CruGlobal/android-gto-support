@@ -18,7 +18,7 @@ private val POOL = SynchronizedPool<Transaction>(10)
  */
 internal class Transaction private constructor(
     private var db: SQLiteDatabase?,
-    internal var transactionListener: SQLiteTransactionListener? = null
+    internal var transactionListener: SQLiteTransactionListener? = null,
 ) : Closeable {
     private var state = STATE_INIT
 

@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 class SimpleLayoutAdapter(
     @LayoutRes private val layoutId: Int,
     repeat: Int = 1,
-    private val initializeLayout: (View) -> Unit = {}
+    private val initializeLayout: (View) -> Unit = {},
 ) : RecyclerView.Adapter<SimpleLayoutAdapter.ViewHolder>() {
     init {
         setHasStableIds(true)

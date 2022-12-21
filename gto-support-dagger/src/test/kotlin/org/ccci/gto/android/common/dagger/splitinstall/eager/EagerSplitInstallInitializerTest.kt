@@ -107,6 +107,6 @@ class EagerSplitInstallInitializerTest {
 
     private fun createState(
         modules: List<String> = emptyList(),
-        status: Int = SplitInstallSessionStatus.INSTALLED
+        status: Int = SplitInstallSessionStatus.INSTALLED,
     ) = SplitInstallSessionState.create(0, status, 0, 0L, 0L, modules, emptyList())
 }

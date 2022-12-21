@@ -15,7 +15,7 @@ class MarginItemDecoration(
     @Px private val rightMargin: Int = horizontalMargins,
     @Px private val bottomMargin: Int = verticalMargins,
     @Px private val startMargin: Int? = null,
-    @Px private val endMargin: Int? = null
+    @Px private val endMargin: Int? = null,
 ) : RecyclerView.ItemDecoration() {
     override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
         outRect.top = topMargin

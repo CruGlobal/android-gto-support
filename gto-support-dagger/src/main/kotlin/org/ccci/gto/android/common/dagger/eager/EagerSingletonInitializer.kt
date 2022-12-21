@@ -26,7 +26,7 @@ class EagerSingletonInitializer @Inject constructor(
     @EagerSingleton(on = IMMEDIATE, threadMode = ASYNC) immediateAsync: Lazy<Set<Any>>,
     @EagerSingleton(on = ACTIVITY_CREATED, threadMode = MAIN) activityMain: Lazy<Set<Any>>,
     @EagerSingleton(on = ACTIVITY_CREATED, threadMode = MAIN_ASYNC) activityMainAsync: Lazy<Set<Any>>,
-    @EagerSingleton(on = ACTIVITY_CREATED, threadMode = ASYNC) activityAsync: Lazy<Set<Any>>
+    @EagerSingleton(on = ACTIVITY_CREATED, threadMode = ASYNC) activityAsync: Lazy<Set<Any>>,
 ) : Application.ActivityLifecycleCallbacks, CoroutineScope {
     @VisibleForTesting
     internal val job = SupervisorJob()

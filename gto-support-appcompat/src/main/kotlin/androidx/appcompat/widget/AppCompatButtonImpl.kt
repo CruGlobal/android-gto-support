@@ -8,5 +8,5 @@ import androidx.appcompat.R
 class AppCompatButtonImpl @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
-    defStyleAttr: Int = R.attr.buttonStyle
+    defStyleAttr: Int = R.attr.buttonStyle,
 ) : AppCompatButton(context, attrs, defStyleAttr)

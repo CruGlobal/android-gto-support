@@ -11,9 +11,8 @@ import androidx.viewbinding.ViewBinding
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import org.ccci.gto.android.common.base.Constants.INVALID_LAYOUT_RES
 
-abstract class BindingBottomSheetDialogFragment<B : ViewBinding>(
-    @LayoutRes private val contentLayoutId: Int
-) : BottomSheetDialogFragment() {
+abstract class BindingBottomSheetDialogFragment<B : ViewBinding>(@LayoutRes private val contentLayoutId: Int) :
+    BottomSheetDialogFragment() {
     constructor() : this(INVALID_LAYOUT_RES)
 
     private var binding: B? = null
@@ -22,7 +21,7 @@ abstract class BindingBottomSheetDialogFragment<B : ViewBinding>(
     final override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View? {
         binding = onCreateBinding(inflater, container, savedInstanceState)?.also {
             if (it is ViewDataBinding && it.lifecycleOwner == null) it.lifecycleOwner = viewLifecycleOwner
@@ -33,7 +32,7 @@ abstract class BindingBottomSheetDialogFragment<B : ViewBinding>(
     protected open fun onCreateBinding(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): B? = when {
         contentLayoutId != INVALID_LAYOUT_RES ->
             @Suppress("UNCHECKED_CAST")

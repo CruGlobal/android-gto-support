@@ -10,7 +10,7 @@ import kotlinx.parcelize.Parcelize
 @SuppressLint("SupportAnnotationUsage")
 data class Table<T : Any> internal constructor(
     @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP) val type: Class<T>,
-    private val alias: String? = null
+    private val alias: String? = null,
 ) : Parcelable {
     companion object {
         @JvmStatic

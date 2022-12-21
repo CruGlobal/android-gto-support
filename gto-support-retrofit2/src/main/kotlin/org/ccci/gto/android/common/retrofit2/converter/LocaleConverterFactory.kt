@@ -9,7 +9,7 @@ object LocaleConverterFactory : Converter.Factory() {
     override fun stringConverter(
         type: Type,
         annotations: Array<Annotation>,
-        retrofit: Retrofit
+        retrofit: Retrofit,
     ): Converter<*, String>? = when (type) {
         Locale::class.java -> LocaleStringConverter
         else -> null

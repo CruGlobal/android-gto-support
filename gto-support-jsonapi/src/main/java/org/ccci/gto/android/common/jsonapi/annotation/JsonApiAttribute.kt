@@ -18,5 +18,5 @@ annotation class JsonApiAttribute(
     /**
      * Should this attribute be deserialized by the [JsonApiConverter]
      */
-    val deserialize: Boolean = true
+    val deserialize: Boolean = true,
 )

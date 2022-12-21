@@ -53,7 +53,7 @@ abstract class AbstractDao(private val helper: SQLiteOpenHelper) : Dao {
         table: String,
         projection: Array<String>? = null,
         mapper: Mapper<T>? = null,
-        pkWhere: Expression? = null
+        pkWhere: Expression? = null,
     ) = registerType(T::class.java, table, projection, mapper, pkWhere)
 
     protected fun <T : Any> registerType(
@@ -61,7 +61,7 @@ abstract class AbstractDao(private val helper: SQLiteOpenHelper) : Dao {
         table: String,
         projection: Array<String>? = null,
         mapper: Mapper<T>? = null,
-        pkWhere: Expression? = null
+        pkWhere: Expression? = null,
     ) {
         tableTypes.put(clazz, TableType(table, projection, mapper, pkWhere))
     }
@@ -201,7 +201,7 @@ abstract class AbstractDao(private val helper: SQLiteOpenHelper) : Dao {
         obj: T,
         where: Expression?,
         conflictAlgorithm: Int,
-        vararg projection: String
+        vararg projection: String,
     ): Int {
         val type = obj.javaClass
         return update(type, getMapper(type).toContentValues(obj, projection), where, conflictAlgorithm)
@@ -223,7 +223,7 @@ abstract class AbstractDao(private val helper: SQLiteOpenHelper) : Dao {
         type: Class<*>,
         values: ContentValues,
         where: Expression?,
-        conflictAlgorithm: Int = SQLiteDatabase.CONFLICT_NONE
+        conflictAlgorithm: Int = SQLiteDatabase.CONFLICT_NONE,
     ): Int {
         val table = tableName(type)
         val w = where?.buildSql(this)
@@ -278,7 +278,7 @@ abstract class AbstractDao(private val helper: SQLiteOpenHelper) : Dao {
     protected fun <T, X : Throwable?> inTransaction(
         db: SQLiteDatabase,
         exclusive: Boolean = true,
-        closure: Closure<T, X>
+        closure: Closure<T, X>,
     ): T = db.transaction(exclusive) { closure.run() }
 
     @WorkerThread
@@ -289,13 +289,13 @@ abstract class AbstractDao(private val helper: SQLiteOpenHelper) : Dao {
     protected fun <T> transaction(
         exclusive: Boolean = true,
         readOnly: Boolean = false,
-        body: (SQLiteDatabase) -> T
+        body: (SQLiteDatabase) -> T,
     ): T = (if (readOnly) readableDatabase else writableDatabase).transaction(exclusive, body)
 
     @WorkerThread
     private inline fun <T> SQLiteDatabase.transaction(
         exclusive: Boolean = true,
-        body: (SQLiteDatabase) -> T
+        body: (SQLiteDatabase) -> T,
     ): T = with(newTransaction(this)) {
         try {
             beginTransaction(exclusive)
@@ -342,7 +342,7 @@ abstract class AbstractDao(private val helper: SQLiteOpenHelper) : Dao {
     private var currentTransaction by threadLocal<Transaction>()
 
     private inner class InvalidationListener(
-        private val transaction: Transaction
+        private val transaction: Transaction,
     ) : SQLiteTransactionListener, Transaction.Listener {
         private var commited = false
 

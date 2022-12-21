@@ -6,7 +6,7 @@ import timber.log.Timber
 
 class CrashlyticsTree @JvmOverloads constructor(
     private val logLevel: Int,
-    private val exceptionLogLevel: Int = logLevel
+    private val exceptionLogLevel: Int = logLevel,
 ) : Timber.Tree() {
     constructor() : this(Log.INFO, Log.ERROR)
 

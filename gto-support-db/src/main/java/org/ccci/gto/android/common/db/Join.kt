@@ -12,7 +12,7 @@ data class Join<S : Any, T : Any> private constructor(
     @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP) val target: Table<T>,
     @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP) val base: Join<S, *>? = null,
     private val type: String? = null,
-    private val on: Expression? = null
+    private val on: Expression? = null,
 ) : Parcelable {
     companion object {
         @JvmField

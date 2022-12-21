@@ -10,7 +10,7 @@ abstract class WalSQLiteOpenHelper @JvmOverloads constructor(
     name: String?,
     factory: CursorFactory?,
     version: Int,
-    errorHandler: DatabaseErrorHandler? = null
+    errorHandler: DatabaseErrorHandler? = null,
 ) : SQLiteOpenHelper(context, name, factory, version, errorHandler) {
     init {
         setWriteAheadLoggingEnabled(true)

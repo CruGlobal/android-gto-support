@@ -11,7 +11,7 @@ import java.io.File
 class SQLiteOpenHelperDatabaseConnectionProvider @JvmOverloads constructor(
     context: Context,
     private val fallback: SqliteDatabaseConnectionProvider = DefaultSqliteDatabaseConnectionProvider(),
-    vararg dbs: SQLiteOpenHelper
+    vararg dbs: SQLiteOpenHelper,
 ) : SqliteDatabaseConnectionProvider {
     private val dbs = dbs.associateBy { context.getDatabasePath(it.databaseName) }
 

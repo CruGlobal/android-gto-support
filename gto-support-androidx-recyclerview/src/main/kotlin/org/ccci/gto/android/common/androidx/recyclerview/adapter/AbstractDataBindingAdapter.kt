@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.karumi.weak.weak
 
 abstract class AbstractDataBindingAdapter<B : ViewDataBinding, VH : DataBindingViewHolder<B>>(
-    lifecycleOwner: LifecycleOwner? = null
+    lifecycleOwner: LifecycleOwner? = null,
 ) : RecyclerView.Adapter<VH>() {
     protected open val lifecycleOwner by weak(lifecycleOwner)
 

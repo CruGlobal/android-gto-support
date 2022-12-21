@@ -19,7 +19,7 @@ data class Query<T : Any> private constructor(
     internal val groupBy: List<Expression.Field> = emptyList(),
     private val having: Expression? = null,
     private val limit: Int? = null,
-    private val offset: Int? = null
+    private val offset: Int? = null,
 ) {
     companion object {
         @JvmStatic

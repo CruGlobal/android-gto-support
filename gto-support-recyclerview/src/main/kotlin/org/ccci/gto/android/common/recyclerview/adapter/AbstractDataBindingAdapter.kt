@@ -7,5 +7,5 @@ import org.ccci.gto.android.common.androidx.recyclerview.adapter.DataBindingView
 
 @Deprecated("Since v3.11.2, use AbstractDataBindingAdapter from gto-support-androidx-recyclerview instead.")
 abstract class AbstractDataBindingAdapter<B : ViewDataBinding, VH : DataBindingViewHolder<B>>(
-    lifecycleOwner: LifecycleOwner? = null
+    lifecycleOwner: LifecycleOwner? = null,
 ) : AbstractDataBindingAdapter<B, VH>(lifecycleOwner)

@@ -16,7 +16,7 @@ object JSONObjectConverterFactory : Converter.Factory() {
         type: Type,
         parameterAnnotations: Array<Annotation>,
         methodAnnotations: Array<Annotation>,
-        retrofit: Retrofit
+        retrofit: Retrofit,
     ): Converter<*, RequestBody>? = when (type) {
         JSONObject::class.java, JSONArray::class.java -> JSONObjectRequestBodyConverter
         else -> null

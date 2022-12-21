@@ -11,7 +11,7 @@ import org.ccci.gto.android.common.util.view.ViewUtils
 class HackyDrawerLayout @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
-    defStyleAttr: Int = R.attr.drawerLayoutStyle
+    defStyleAttr: Int = R.attr.drawerLayoutStyle,
 ) : DrawerLayout(context, attrs, defStyleAttr) {
     @SuppressLint("ClickableViewAccessibility")
     override fun onTouchEvent(ev: MotionEvent) = try {
