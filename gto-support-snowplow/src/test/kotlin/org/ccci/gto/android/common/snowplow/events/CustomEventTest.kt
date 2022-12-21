@@ -11,7 +11,6 @@ import com.snowplowanalytics.snowplow.internal.tracker.Subject
 import com.snowplowanalytics.snowplow.internal.tracker.Tracker
 import com.snowplowanalytics.snowplow.payload.Payload
 import java.util.concurrent.TimeUnit
-import org.ccci.gto.android.common.snowplow.utils.TimberLogger
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.allOf
 import org.hamcrest.Matchers.hasEntry
@@ -43,7 +42,6 @@ abstract class CustomEventTest<E : CustomEvent<E>> {
         emitter = mock()
         tree = spy(Timber.DebugTree())
         tracker = Tracker(Tracker.TrackerBuilder(emitter, "", "", context).subject(Subject(context, null)))
-        Logger.setDelegate(TimberLogger)
         Timber.plant(tree)
     }
 
