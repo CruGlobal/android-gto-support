@@ -80,3 +80,9 @@ koverMerged {
     enable()
 }
 // endregion Kotlin Kover
+
+// region Kotlinter
+tasks.register("lintKotlin")
+tasks.register("formatKotlin")
+configureKotlinter()
+// endregion Kotlinter
