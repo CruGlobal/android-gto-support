@@ -1,4 +1,3 @@
-@file:JvmName("LayerDrawableUtils")
 package org.ccci.gto.android.common.drawable
 
 import android.graphics.drawable.Drawable
