@@ -1,6 +1,7 @@
 plugins {
     kotlin("multiplatform")
     id("com.android.library")
+    id("org.jmailen.kotlinter")
 }
 
 android {
@@ -11,3 +12,5 @@ kotlin {
     baseConfiguration()
     configureTargets(project)
 }
+
+configureKotlinter()

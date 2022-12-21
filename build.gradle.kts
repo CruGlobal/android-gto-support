@@ -1,5 +1,3 @@
-import org.jlleitschuh.gradle.ktlint.reporter.ReporterType
-
 buildscript {
     repositories {
         google()
@@ -8,7 +6,6 @@ buildscript {
 }
 plugins {
     alias(libs.plugins.kotlin.kover)
-    alias(libs.plugins.ktlint)
 }
 
 allprojects {
@@ -83,25 +80,3 @@ koverMerged {
     enable()
 }
 // endregion Kotlin Kover
-
-// region ktlint
-allprojects {
-    apply(plugin = "org.jlleitschuh.gradle.ktlint")
-    ktlint {
-        android.set(true)
-        reporters {
-            reporter(ReporterType.PLAIN_GROUP_BY_FILE)
-            reporter(ReporterType.CHECKSTYLE)
-        }
-    }
-
-    // HACK: workaround https://github.com/JLLeitschuh/ktlint-gradle/issues/524
-    afterEvaluate {
-        extensions.findByType<com.android.build.gradle.BaseExtension>()?.let {
-            it.sourceSets.configureEach {
-                java.srcDirs("src/$name/kotlin")
-            }
-        }
-    }
-}
-// endregion ktlint
