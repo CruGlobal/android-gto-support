@@ -3,6 +3,7 @@ package org.ccci.gto.android.common.api
 import android.content.SharedPreferences
 import java.util.Locale
 
+@Deprecated("Since v4.0.0, We should no longer be using The Key for authentication")
 class TheKeySession private constructor(
     prefs: SharedPreferences?,
     id: String?,
