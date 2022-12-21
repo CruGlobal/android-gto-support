@@ -18,9 +18,5 @@ import org.ccci.gto.android.common.compat.os.getParcelableArrayCompat
 fun <T : Parcelable> Bundle.getParcelableArray(key: String?, clazz: Class<T>) = getParcelableArrayCompat(key, clazz)
 
 inline fun <reified T : Parcelable> Bundle.getTypedParcelableArray(key: String?) =
-    getParcelableArray(key)?.let { it: Array<Parcelable?> ->
-        val arr = arrayOfNulls<T>(it.size)
-        System.arraycopy(it, 0, arr, 0, it.size)
-        arr
-    }
+    getParcelableArrayCompat(key, T::class.java)
 // endregion Parcelables
