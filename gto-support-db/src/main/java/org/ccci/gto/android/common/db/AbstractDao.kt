@@ -240,8 +240,10 @@ abstract class AbstractDao(private val helper: SQLiteOpenHelper) : Dao {
     @Suppress("IMPLICIT_CAST_TO_ANY")
     final override fun updateOrInsert(obj: Any, conflictAlgorithm: Int, vararg projection: String) {
         transaction { _ ->
-            if (refresh(obj) != null) update(obj, conflictAlgorithm, *projection)
-            else insert(obj, conflictAlgorithm)
+            when {
+                refresh(obj) != null -> update(obj, conflictAlgorithm, *projection)
+                else -> insert(obj, conflictAlgorithm)
+            }
         }
     }
 

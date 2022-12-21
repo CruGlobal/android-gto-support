@@ -22,11 +22,12 @@ internal class Transaction private constructor(
 ) : Closeable {
     private var state = STATE_INIT
 
-    @JvmOverloads
     fun beginTransaction(exclusive: Boolean = true): Transaction {
         if (state < STATE_OPEN) {
-            if (exclusive) db!!.beginTransactionWithListener(transactionListener)
-            else db!!.beginTransactionWithListenerNonExclusive(transactionListener)
+            when {
+                exclusive -> db!!.beginTransactionWithListener(transactionListener)
+                else -> db!!.beginTransactionWithListenerNonExclusive(transactionListener)
+            }
             state = STATE_OPEN
         }
         return this

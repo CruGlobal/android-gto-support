@@ -1,4 +1,5 @@
 @file:SuppressLint("RestrictedApi")
+
 package org.ccci.gto.android.common.okta.oidc.storage
 
 import android.annotation.SuppressLint

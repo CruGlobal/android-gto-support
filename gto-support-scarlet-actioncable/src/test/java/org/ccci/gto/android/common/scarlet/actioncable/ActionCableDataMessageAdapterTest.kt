@@ -92,7 +92,8 @@ class ActionCableDataMessageAdapterTest : BaseActionCableMessageAdapterTest() {
     fun verifyToMessageSimpleAsJsonFails() {
         whenever(dataMessageAdapter.toMessage(any())).thenAnswer { Message.Text("encoded") }
         val adapter = factory.create(
-            CharSequence::class.java, arrayOf(actionCableAnnotation, dataAsJson)
+            CharSequence::class.java,
+            arrayOf(actionCableAnnotation, dataAsJson)
         ) as MessageAdapter<CharSequence>
 
         try {
