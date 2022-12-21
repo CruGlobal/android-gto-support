@@ -30,15 +30,15 @@ abstract class BindingBottomSheetDialogFragment<B : ViewBinding>(
         return binding?.root ?: super.onCreateView(inflater, container, savedInstanceState)
     }
 
-    @Suppress("UNCHECKED_CAST")
     protected open fun onCreateBinding(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): B? {
-        if (contentLayoutId != INVALID_LAYOUT_RES)
-            return DataBindingUtil.inflate<ViewDataBinding>(inflater, contentLayoutId, container, false) as? B
-        return null
+    ): B? = when {
+        contentLayoutId != INVALID_LAYOUT_RES ->
+            @Suppress("UNCHECKED_CAST")
+            DataBindingUtil.inflate<ViewDataBinding>(inflater, contentLayoutId, container, false) as? B
+        else -> null
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

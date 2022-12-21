@@ -27,15 +27,15 @@ abstract class BindingFragment<B : ViewBinding> protected constructor(@LayoutRes
         return binding?.root ?: super.onCreateView(inflater, container, savedInstanceState)
     }
 
-    @Suppress("UNCHECKED_CAST")
     protected open fun onCreateBinding(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): B? {
-        if (contentLayoutId != 0)
-            return DataBindingUtil.inflate<ViewDataBinding>(inflater, contentLayoutId, container, false) as? B
-        return null
+    ): B? = when {
+        contentLayoutId != 0 ->
+            @Suppress("UNCHECKED_CAST")
+            DataBindingUtil.inflate<ViewDataBinding>(inflater, contentLayoutId, container, false) as? B
+        else -> null
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
