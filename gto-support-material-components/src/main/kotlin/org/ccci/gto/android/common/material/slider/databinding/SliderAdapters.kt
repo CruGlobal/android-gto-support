@@ -1,4 +1,5 @@
 @file:InverseBindingMethods(InverseBindingMethod(type = Slider::class, attribute = "value"))
+
 package org.ccci.gto.android.common.material.slider.databinding
 
 import androidx.databinding.BindingAdapter

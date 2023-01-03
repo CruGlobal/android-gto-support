@@ -27,7 +27,7 @@ private const val EmptyTextReplacement = "HHHHHHHHHH"
 @Composable
 fun computeHeightForDefaultText(
     textStyle: TextStyle,
-    lines: Int = 1
+    lines: Int = 1,
 ): Dp {
     require(lines >= 0) { "Invalid number of lines: $lines" }
     if (lines == 0) return 0.dp
@@ -48,7 +48,7 @@ private fun computeHeightForDefaultText(
     style: TextStyle,
     density: Density,
     fontFamilyResolver: FontFamily.Resolver,
-    lines: Int = 1
+    lines: Int = 1,
 ): Dp {
     require(lines >= 1) { "Invalid number of lines: $lines" }
 
@@ -65,10 +65,7 @@ private fun computeHeightForDefaultText(
 }
 
 @Composable
-fun computeWidthForSingleLineOfText(
-    text: String,
-    style: TextStyle
-): Dp {
+fun computeWidthForSingleLineOfText(text: String, style: TextStyle): Dp {
     val density = LocalDensity.current
     val fontFamilyResolver = LocalFontFamilyResolver.current
     val layoutDirection = LocalLayoutDirection.current
@@ -85,7 +82,7 @@ private fun computeWidthForSingleLineOfText(
     text: String,
     style: TextStyle,
     fontFamilyResolver: FontFamily.Resolver,
-    density: Density
+    density: Density,
 ) = with(density) {
     Paragraph(
         text = text,
@@ -99,15 +96,13 @@ private fun computeWidthForSingleLineOfText(
 }
 
 @Composable
-private fun resolveStyle(
-    style: TextStyle,
-    layoutDirection: LayoutDirection
-) = remember(style, layoutDirection) { resolveDefaults(style, layoutDirection) }
+private fun resolveStyle(style: TextStyle, layoutDirection: LayoutDirection) =
+    remember(style, layoutDirection) { resolveDefaults(style, layoutDirection) }
 
 @Composable
 private fun rememberTypeface(
     style: TextStyle,
-    fontFamilyResolver: FontFamily.Resolver
+    fontFamilyResolver: FontFamily.Resolver,
 ) = remember(style, fontFamilyResolver) {
     fontFamilyResolver.resolve(
         style.fontFamily,

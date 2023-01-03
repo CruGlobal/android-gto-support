@@ -25,7 +25,7 @@ interface PicassoImageView {
         attrs: AttributeSet? = null,
         defStyleAttr: Int = 0,
         defStyleRes: Int = 0,
-        picasso: Picasso? = null
+        picasso: Picasso? = null,
     ) {
         private val picasso by lazy { picasso ?: Picasso.get() }
 

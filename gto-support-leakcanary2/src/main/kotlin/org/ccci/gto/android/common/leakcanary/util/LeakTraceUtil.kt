@@ -13,7 +13,10 @@ fun LeakTrace.asFakeException(): Exception {
             .reversed()
             .map {
                 StackTraceElement(
-                    it.originObject.className, it.referenceName, "${it.originObject.classSimpleName}.java", 42
+                    it.originObject.className,
+                    it.referenceName,
+                    "${it.originObject.classSimpleName}.java",
+                    -1
                 )
             }
             .toTypedArray()

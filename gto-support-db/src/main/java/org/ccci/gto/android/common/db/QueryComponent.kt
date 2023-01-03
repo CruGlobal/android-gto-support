@@ -21,7 +21,7 @@ operator fun QueryComponent?.plus(sql: String) = when {
 
 internal fun <T> Iterable<T>.joinToQueryComponent(
     separator: String? = null,
-    transform: ((T) -> QueryComponent)
+    transform: (T) -> QueryComponent,
 ): QueryComponent {
     var output = QueryComponent()
     forEachIndexed { i, it ->

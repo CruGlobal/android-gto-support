@@ -102,7 +102,7 @@ sealed class Expression : Parcelable {
     @Parcelize
     data class Field internal constructor(
         private val table: Table<*>? = null,
-        private val name: String
+        private val name: String,
     ) : Expression() {
         @JvmOverloads
         fun count(isDistinct: Boolean = false) = Aggregate(Aggregate.COUNT, isDistinct, this)
@@ -125,7 +125,7 @@ sealed class Expression : Parcelable {
     data class Literal internal constructor(
         private val strValue: String? = null,
         private val numValue: Number? = null,
-        private val isConstant: Boolean
+        private val isConstant: Boolean,
     ) : Expression() {
         internal constructor(value: Number, constant: Boolean) : this(null, value, constant)
         internal constructor(value: String, constant: Boolean) : this(value, null, constant)
@@ -262,7 +262,7 @@ sealed class Expression : Parcelable {
     data class Aggregate internal constructor(
         private val op: String,
         private val isDistinct: Boolean,
-        private val expr: Field
+        private val expr: Field,
     ) : Expression() {
         companion object {
             internal const val COUNT = "COUNT"

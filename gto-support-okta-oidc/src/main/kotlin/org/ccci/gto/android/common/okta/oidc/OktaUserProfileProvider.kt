@@ -39,7 +39,7 @@ import org.ccci.gto.android.common.okta.oidc.storage.getPersistableUserInfo
 class OktaUserProfileProvider @VisibleForTesting internal constructor(
     private val sessionClient: SessionClient,
     private val oktaRepo: OktaRepository = sessionClient.oktaRepo,
-    coroutineScope: CoroutineScope
+    coroutineScope: CoroutineScope,
 ) {
     constructor(sessionClient: SessionClient) : this(sessionClient, coroutineScope = CoroutineScope(Dispatchers.IO))
 

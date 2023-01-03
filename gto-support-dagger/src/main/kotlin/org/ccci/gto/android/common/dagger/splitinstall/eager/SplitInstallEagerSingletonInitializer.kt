@@ -14,7 +14,7 @@ import org.ccci.gto.android.common.dagger.splitinstall.SplitInstallComponent
 class SplitInstallEagerSingletonInitializer @Inject constructor(
     private val baseInitializer: EagerSingletonInitializer,
     private val splitInstallManager: SplitInstallManager,
-    splitInstallComponents: Map<String, @JvmSuppressWildcards FirstNonNullCachingProvider<SplitInstallComponent>>
+    splitInstallComponents: Map<String, @JvmSuppressWildcards FirstNonNullCachingProvider<SplitInstallComponent>>,
 ) : SplitInstallStateUpdatedListener {
     private var components = splitInstallComponents.takeUnless { it.isEmpty() }?.toMutableMap()
 

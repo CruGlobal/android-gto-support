@@ -10,7 +10,7 @@ private const val PREF_ID = "id"
 open class Session protected constructor(
     prefs: SharedPreferences? = null,
     id: String? = null,
-    private val baseAttrName: String = PREF_SESSION_BASE_NAME
+    private val baseAttrName: String = PREF_SESSION_BASE_NAME,
 ) {
     companion object {
         const val PREF_SESSION_BASE_NAME = "session"
@@ -22,13 +22,13 @@ open class Session protected constructor(
     @JvmOverloads
     constructor(
         id: String?,
-        baseAttrName: String = PREF_SESSION_BASE_NAME
+        baseAttrName: String = PREF_SESSION_BASE_NAME,
     ) : this(prefs = null, id = id, baseAttrName = baseAttrName)
 
     @JvmOverloads
     constructor(
         prefs: SharedPreferences,
-        baseAttrName: String = PREF_SESSION_BASE_NAME
+        baseAttrName: String = PREF_SESSION_BASE_NAME,
     ) : this(prefs = prefs, id = null, baseAttrName = baseAttrName)
 
     protected fun prefAttrName(type: String) = "$baseAttrName.$type"

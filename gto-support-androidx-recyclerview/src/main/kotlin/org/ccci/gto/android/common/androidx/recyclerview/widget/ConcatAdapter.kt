@@ -8,5 +8,5 @@ import org.ccci.gto.android.common.androidx.recyclerview.adapter.SimpleLayoutAda
 fun ConcatAdapter.addLayout(
     @LayoutRes layoutId: Int,
     repeat: Int = 1,
-    initializeLayout: (View) -> Unit = {}
+    initializeLayout: (View) -> Unit = {},
 ) = SimpleLayoutAdapter(layoutId, repeat, initializeLayout).also { addAdapter(it) }

@@ -18,7 +18,7 @@ private const val DEFAULT_RETURN_INVALID_SESSION_RESPONSES = false
 abstract class SessionInterceptor<S : Session> @JvmOverloads protected constructor(
     context: Context,
     private val returnInvalidSessionResponses: Boolean = DEFAULT_RETURN_INVALID_SESSION_RESPONSES,
-    prefFile: String? = null
+    prefFile: String? = null,
 ) : Interceptor {
     protected val context: Context = context.applicationContext
 

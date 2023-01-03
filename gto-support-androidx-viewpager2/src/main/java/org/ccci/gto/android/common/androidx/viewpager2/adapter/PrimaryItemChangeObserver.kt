@@ -7,7 +7,7 @@ import androidx.viewpager2.widget.ViewPager2
 
 abstract class PrimaryItemChangeObserver<VH : RecyclerView.ViewHolder>(
     private val recyclerView: RecyclerView,
-    private val adapter: RecyclerView.Adapter<VH>
+    private val adapter: RecyclerView.Adapter<VH>,
 ) {
     private val viewPager = recyclerView.inferViewPager()
     @VisibleForTesting
@@ -73,10 +73,7 @@ private fun RecyclerView.inferViewPager() =
 
 fun <VH : RecyclerView.ViewHolder> RecyclerView.Adapter<VH>.onUpdatePrimaryItem(
     recyclerView: RecyclerView,
-    block: (primaryItem: VH?, previousItem: VH?) -> Unit
+    block: (primaryItem: VH?, previousItem: VH?) -> Unit,
 ) = object : PrimaryItemChangeObserver<VH>(recyclerView, this) {
-    override fun onUpdatePrimaryItem(
-        primaryItem: VH?,
-        previousItem: VH?
-    ) = block(primaryItem, previousItem)
+    override fun onUpdatePrimaryItem(primaryItem: VH?, previousItem: VH?) = block(primaryItem, previousItem)
 }.also { it.register() }

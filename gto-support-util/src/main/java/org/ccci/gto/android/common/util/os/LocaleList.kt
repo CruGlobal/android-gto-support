@@ -1,4 +1,5 @@
 @file:TargetApi(Build.VERSION_CODES.N)
+
 package org.ccci.gto.android.common.util.os
 
 import android.annotation.TargetApi

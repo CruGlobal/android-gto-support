@@ -28,7 +28,7 @@ fun ClickableText(
     maxLines: Int = Int.MAX_VALUE,
     onTextLayout: (TextLayoutResult) -> Unit = {},
     style: TextStyle = LocalTextStyle.current,
-    onClick: (Int) -> Unit
+    onClick: (Int) -> Unit,
 ) {
     // logic copied from the compose-foundation ClickableText
     var layoutResult by remember { mutableStateOf<TextLayoutResult?>(null) }

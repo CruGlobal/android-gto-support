@@ -60,7 +60,7 @@ class ViewPager2HeightWrapContentTest {
 
     private fun triggerMeasure(
         width: Int = makeMeasureSpec(2000, View.MeasureSpec.EXACTLY),
-        height: Int = makeMeasureSpec(5000, View.MeasureSpec.EXACTLY)
+        height: Int = makeMeasureSpec(5000, View.MeasureSpec.EXACTLY),
     ) = framelayout.measure(width, height)
 
     class WrapContentChildren(private vararg val heights: Int) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {

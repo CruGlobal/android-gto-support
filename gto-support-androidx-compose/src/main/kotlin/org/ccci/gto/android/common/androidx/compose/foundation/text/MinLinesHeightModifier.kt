@@ -16,10 +16,7 @@ import org.ccci.gto.android.common.androidx.compose.ui.text.computeHeightForDefa
  * This modifier can be deprecated once upstream support for minLines exists.
  * related ticket: https://issuetracker.google.com/issues/122476634
  */
-fun Modifier.minLinesHeight(
-    minLines: Int,
-    textStyle: TextStyle
-) = composed(
+fun Modifier.minLinesHeight(minLines: Int, textStyle: TextStyle) = composed(
     inspectorInfo = debugInspectorInfo {
         name = "minLinesHeight"
         properties["minLines"] = minLines

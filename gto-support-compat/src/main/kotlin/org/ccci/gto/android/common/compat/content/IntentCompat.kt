@@ -1,4 +1,5 @@
 @file:JvmName("IntentCompat")
+
 package org.ccci.gto.android.common.compat.content
 
 import android.annotation.TargetApi

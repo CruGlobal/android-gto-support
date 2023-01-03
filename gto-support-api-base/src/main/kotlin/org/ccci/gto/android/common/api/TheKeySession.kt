@@ -7,7 +7,7 @@ class TheKeySession private constructor(
     prefs: SharedPreferences?,
     id: String?,
     guid: String?,
-    baseAttrName: String
+    baseAttrName: String,
 ) : Session(prefs = prefs, id = id, baseAttrName = guid.sanitizeGuid(".") + baseAttrName) {
     private val guid = guid?.sanitizeGuid()
 
@@ -15,14 +15,14 @@ class TheKeySession private constructor(
     constructor(
         id: String?,
         guid: String?,
-        baseAttrName: String = PREF_SESSION_BASE_NAME
+        baseAttrName: String = PREF_SESSION_BASE_NAME,
     ) : this(prefs = null, id = id, guid = guid, baseAttrName = baseAttrName)
 
     @JvmOverloads
     constructor(
         prefs: SharedPreferences,
         guid: String?,
-        baseAttrName: String = PREF_SESSION_BASE_NAME
+        baseAttrName: String = PREF_SESSION_BASE_NAME,
     ) : this(prefs = prefs, id = null, guid = guid, baseAttrName = baseAttrName)
 
     override val isValid get() = super.isValid && guid != null

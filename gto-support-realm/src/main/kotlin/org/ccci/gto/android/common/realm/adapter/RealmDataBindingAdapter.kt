@@ -12,7 +12,7 @@ import org.ccci.gto.android.common.androidx.recyclerview.adapter.DataBindingView
 
 abstract class RealmDataBindingAdapter<T : RealmModel, B : ViewDataBinding>(
     lifecycleOwner: LifecycleOwner? = null,
-    data: OrderedRealmCollection<T>? = null
+    data: OrderedRealmCollection<T>? = null,
 ) : RealmRecyclerViewAdapter<T, DataBindingViewHolder<B>>(data, true), Observer<OrderedRealmCollection<T>?> {
     private val lifecycleOwner by weak(lifecycleOwner)
 

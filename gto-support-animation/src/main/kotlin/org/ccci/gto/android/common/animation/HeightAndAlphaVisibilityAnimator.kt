@@ -91,7 +91,7 @@ class HeightAndAlphaVisibilityAnimator private constructor(private val view: Vie
         fun of(
             view: View,
             isVisible: Boolean = view.visibility != View.GONE,
-            onInit: (HeightAndAlphaVisibilityAnimator.() -> Unit)? = null
+            onInit: (HeightAndAlphaVisibilityAnimator.() -> Unit)? = null,
         ) = view.getTag(R.id.gto_height_alpha_animator) as? HeightAndAlphaVisibilityAnimator
             ?: HeightAndAlphaVisibilityAnimator(view, isVisible).also { onInit?.invoke(it) }
 

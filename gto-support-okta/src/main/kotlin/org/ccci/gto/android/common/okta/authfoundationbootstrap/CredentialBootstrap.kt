@@ -13,7 +13,7 @@ import org.ccci.gto.android.common.okta.authfoundation.credential.changeFlow
 @OptIn(ExperimentalCoroutinesApi::class)
 fun CredentialBootstrap.defaultCredentialFlow(
     storage: TokenStorage =
-        checkNotNull(credentialDataSource.storage) { "Unable to access TokenStorage from the CredentialDataSource" }
+        checkNotNull(credentialDataSource.storage) { "Unable to access TokenStorage from the CredentialDataSource" },
 ): Flow<Credential> {
     check(storage is ChangeAwareTokenStorage) { "credentialDataSource is not using a ChangeAwareTokenStorage" }
     return storage.changeFlow().mapLatest { defaultCredential() }

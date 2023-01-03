@@ -41,8 +41,7 @@ class DataStoreTokenStorage(private val dataStore: DataStore<List<TokenStorage.E
     override suspend fun replace(updatedEntry: TokenStorage.Entry) {
         dataStore.updateData { entries ->
             entries.map {
-                if (it.identifier == updatedEntry.identifier) updatedEntry
-                else it
+                if (it.identifier == updatedEntry.identifier) updatedEntry else it
             }
         }
         notifyChanged(updatedEntry.identifier)
