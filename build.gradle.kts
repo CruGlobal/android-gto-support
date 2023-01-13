@@ -21,6 +21,7 @@ allprojects {
         configurations.all {
             resolutionStrategy {
                 force(libs.androidx.annotation)
+                force(libs.androidx.appcompat)
                 force(libs.androidx.core)
                 force(libs.androidx.lifecycle.livedata.core)
                 force(libs.androidx.sqlite)
