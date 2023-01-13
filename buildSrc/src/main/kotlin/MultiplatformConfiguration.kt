@@ -66,5 +66,5 @@ fun KotlinMultiplatformExtension.configureIosTargets() {
 }
 
 fun KotlinMultiplatformExtension.configureJsTargets() {
-    js(BOTH) { nodejs() }
+    js { nodejs() }
 }
