@@ -2,6 +2,7 @@ package org.ccci.gto.android.common.db
 
 import android.database.sqlite.SQLiteDatabase
 import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 
 interface CoroutinesAsyncDao : CoroutinesDao {
     fun <T : Any> findAsync(clazz: Class<T>, vararg key: Any) = coroutineScope.async { find(clazz, *key) }
@@ -20,7 +21,7 @@ interface CoroutinesAsyncDao : CoroutinesDao {
     fun updateOrInsertAsync(obj: Any, vararg projection: String) =
         coroutineScope.async { updateOrInsert(obj, *projection) }
 
-    fun deleteAsync(obj: Any) = coroutineScope.async { delete(obj) }
+    fun deleteAsync(obj: Any) = coroutineScope.launch { delete(obj) }
 
     fun <T> transactionAsync(exclusive: Boolean = true, body: () -> T) =
         coroutineScope.async { transaction(exclusive, body) }
