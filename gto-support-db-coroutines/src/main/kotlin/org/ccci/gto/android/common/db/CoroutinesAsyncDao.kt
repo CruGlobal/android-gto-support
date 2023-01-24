@@ -20,6 +20,8 @@ interface CoroutinesAsyncDao : CoroutinesDao {
     fun updateOrInsertAsync(obj: Any, vararg projection: String) =
         coroutineScope.async { updateOrInsert(obj, *projection) }
 
+    fun deleteAsync(obj: Any) = coroutineScope.async { delete(obj) }
+
     fun <T> transactionAsync(exclusive: Boolean = true, body: () -> T) =
         coroutineScope.async { transaction(exclusive, body) }
 }
