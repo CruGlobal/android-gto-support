@@ -91,7 +91,7 @@ kotlin-stdlib-jdk8 = { module = "org.jetbrains.kotlin:kotlin-stdlib-jdk8", versi
 kotlinter = { module = "org.jmailen.gradle:kotlinter-gradle", version.ref = "kotlinter" }
 leakcanary = "com.squareup.leakcanary:leakcanary-android:2.10"
 lightweightStream = { module = "com.annimon:stream", version = "1.2.2" }
-lottie = "com.airbnb.android:lottie:5.2.0"
+lottie = "com.airbnb.android:lottie:6.0.0"
 materialComponents = "com.google.android.material:material:1.8.0"
 mockito = "org.mockito:mockito-inline:5.1.1"
 mockito-kotlin = "org.mockito.kotlin:mockito-kotlin:4.1.0"
