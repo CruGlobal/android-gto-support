@@ -14,4 +14,6 @@ fun SharedPreferencesTokenStorage(
     client: OidcClient,
     context: Context,
     keyGenParameterSpec: KeyGenParameterSpec = MasterKeys.AES256_GCM_SPEC,
+    verify: Boolean = false,
 ): TokenStorage = SharedPreferencesTokenStorageInternals.create(client, context, keyGenParameterSpec)
+    .also { if (verify) SharedPreferencesTokenStorageInternals.getSharedPreferences(it) }
