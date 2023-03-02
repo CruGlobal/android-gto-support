@@ -15,11 +15,16 @@ import io.mockk.just
 import io.mockk.mockk
 import io.mockk.mockkStatic
 import io.mockk.verifyAll
+import java.lang.Thread.sleep
+import java.util.Date
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -39,6 +44,10 @@ class AccessTokenManagerTest {
         every { Validate.sdkInitialized() } just Runs
 
         accessTokenManager = AccessTokenManager.getInstance()
+        // HACK: AccessTokenManager is a singleton and doesn't get re-initialized on each test.
+        //       To work around this we clear the access token state before each test
+        accessTokenManager.currentAccessToken = null
+        executePendingBroadcasts()
     }
 
     // region currentAccessTokenFlow()
@@ -84,6 +93,33 @@ class AccessTokenManagerTest {
         }
     }
     // endregion currentAccessTokenFlow()
+
+    // region isAuthenticatedFlow()
+    @Test
+    fun `isAuthenticatedFlow()`() = runTest {
+        accessTokenManager.isAuthenticatedFlow().test {
+            assertFalse(awaitItem())
+            accessTokenManager.currentAccessToken = AccessToken(
+                "2",
+                "2",
+                "2",
+                null,
+                null,
+                null,
+                null,
+                expirationTime = Date(System.currentTimeMillis() + 300),
+                lastRefreshTime = null,
+                dataAccessExpirationTime = null
+            )
+            executePendingBroadcasts()
+            assertTrue(awaitItem())
+
+            sleep(300)
+            advanceUntilIdle()
+            assertFalse(awaitItem())
+        }
+    }
+    // endregion isAuthenticatedFlow()
 
     private fun executePendingBroadcasts() = shadowOf(Looper.getMainLooper()).idle()
 }
