@@ -4,4 +4,4 @@ package org.ccci.gto.support.androidx.annotation
 @OptionalExpectation
 @Target(AnnotationTarget.CONSTRUCTOR, AnnotationTarget.PROPERTY_GETTER)
 expect annotation class RestrictTo(vararg val value: RestrictToScope)
-expect enum class RestrictToScope { TESTS, SUBCLASSES }
+expect enum class RestrictToScope { LIBRARY_GROUP, TESTS, SUBCLASSES }
