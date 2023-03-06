@@ -38,7 +38,7 @@ public class SharedPreferencesTokenStorageInternals {
     @Nullable
     @RequiresApi(Build.VERSION_CODES.M)
     public static SharedPreferences getSharedPreferences(SharedPreferencesTokenStorage storage) throws Throwable {
-        Method method = ClassKt.getDeclaredMethodOrNull(SharedPreferencesTokenStorage.class, "getSharedPreferences()");
+        Method method = ClassKt.getDeclaredMethodOrNull(SharedPreferencesTokenStorage.class, "getSharedPreferences");
         if (method != null) {
             try {
                 return (SharedPreferences) method.invoke(storage);
