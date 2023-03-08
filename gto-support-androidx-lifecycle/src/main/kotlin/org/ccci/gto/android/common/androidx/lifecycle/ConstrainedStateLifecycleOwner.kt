@@ -15,6 +15,7 @@ class ConstrainedStateLifecycleOwner(
     ) : this(parent.lifecycle, maxState)
 
     private val registry = LifecycleRegistry(this)
+    override val lifecycle = registry
 
     var maxState = maxState
         set(value) {
@@ -27,8 +28,6 @@ class ConstrainedStateLifecycleOwner(
         parent.addObserver(observer)
         lifecycle.onDestroy { parent.removeObserver(observer) }
     }
-
-    override fun getLifecycle(): Lifecycle = registry
 
     private fun reconcileState() {
         registry.currentState = minOf(parent.currentState, maxState)
