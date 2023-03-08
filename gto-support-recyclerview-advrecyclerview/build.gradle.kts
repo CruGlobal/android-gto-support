@@ -2,6 +2,8 @@ plugins {
     id("gto-support.android-conventions")
 }
 
+android.namespace = "org.ccci.gto.android.common.recyclerview.advrecyclerview"
+
 dependencies {
     api(libs.advancedrecyclerview)
     api(libs.androidx.recyclerview)

@@ -3,6 +3,7 @@ plugins {
 }
 
 android {
+    namespace = "org.ccci.gto.android.common.androidx.fragment"
     defaultConfig.consumerProguardFiles("proguard-consumer.pro")
 }
 

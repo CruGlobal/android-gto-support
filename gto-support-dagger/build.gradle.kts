@@ -3,6 +3,8 @@ plugins {
     kotlin("kapt")
 }
 
+android.namespace = "org.ccci.gto.android.common.dagger"
+
 dependencies {
     implementation(libs.dagger)
 

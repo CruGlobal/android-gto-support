@@ -3,6 +3,7 @@ plugins {
 }
 
 android {
+    namespace = "org.ccci.gto.android.common.facebook.flipper"
     defaultConfig.consumerProguardFiles("proguard-consumer.pro")
 }
 
