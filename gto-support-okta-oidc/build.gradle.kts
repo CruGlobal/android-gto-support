@@ -23,16 +23,11 @@ dependencies {
     compileOnly(libs.kotlin.coroutines)
     // endregion Coroutines
 
-    // region LiveData
-    compileOnly(libs.androidx.lifecycle.livedata.ktx)
-    // endregion LiveData
-
     // region OkHttpOktaHttpClient
     compileOnly(libs.okhttp3)
     // endregion OkHttpOktaHttpClient
 
     testImplementation(libs.androidx.arch.core.testing)
-    testImplementation(libs.androidx.lifecycle.livedata.core)
     testImplementation(libs.kotlin.coroutines.test)
     testImplementation(libs.bundles.okhttp3.mockwebserver)
 }
