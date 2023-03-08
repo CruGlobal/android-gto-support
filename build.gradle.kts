@@ -26,7 +26,6 @@ allprojects {
                 force(libs.androidx.lifecycle.livedata.core)
                 force(libs.androidx.sqlite)
                 force(libs.kotlin.coroutines)
-                force(libs.kotlin.stdlib.jdk8)
                 force(libs.okio)
 
                 dependencySubstitution {
