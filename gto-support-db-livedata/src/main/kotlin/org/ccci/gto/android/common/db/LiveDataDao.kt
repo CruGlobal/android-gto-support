@@ -52,7 +52,7 @@ private class DaoGetComputableLiveData<T : Any>(dao: LiveDataDao, private val qu
     override fun compute() = dao.get(query)
 }
 
-private class DaoGetCursorComputableLiveData<T : Any>(dao: LiveDataDao, private val query: Query<T>) :
+private class DaoGetCursorComputableLiveData(dao: LiveDataDao, private val query: Query<*>) :
     DaoComputableLiveData<Cursor>(dao) {
     @SuppressLint("RestrictedApi")
     override fun compute() = dao.getCursor(query)
