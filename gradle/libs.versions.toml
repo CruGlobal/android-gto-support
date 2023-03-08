@@ -41,7 +41,6 @@ androidx-compose-ui-test-manifest = { module = "androidx.compose.ui:ui-test-mani
 androidx-constraintlayout = "androidx.constraintlayout:constraintlayout:2.1.4"
 androidx-core = { module = "androidx.core:core", version.ref = "androidx-core" }
 androidx-core-ktx = { module = "androidx.core:core-ktx", version.ref = "androidx-core" }
-androidx-cursoradapter = { module = "androidx.cursoradapter:cursoradapter", version = "1.0.0" }
 androidx-databinding-adapters = { module = "androidx.databinding:databinding-adapters", version.ref = "android-gradle-plugin" }
 androidx-databinding-runtime = { module = "androidx.databinding:databinding-runtime", version.ref = "android-gradle-plugin" }
 androidx-datastore = "androidx.datastore:datastore:1.0.0"
