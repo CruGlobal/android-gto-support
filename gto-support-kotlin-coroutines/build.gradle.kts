@@ -2,6 +2,8 @@ plugins {
     id("gto-support.android-conventions")
 }
 
+android.namespace = "org.ccci.gto.android.common.kotlin.coroutines"
+
 dependencies {
     api(libs.kotlin.coroutines)
 

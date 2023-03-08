@@ -2,6 +2,8 @@ plugins {
     id("gto-support.android-conventions")
 }
 
+android.namespace = "org.ccci.gto.android.common.eventbus"
+
 dependencies {
     implementation(project(":gto-support-androidx-lifecycle"))
     implementation(project(":gto-support-core"))

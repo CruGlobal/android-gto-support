@@ -3,6 +3,8 @@ plugins {
     kotlin("kapt")
 }
 
+android.namespace = "org.ccci.gto.android.common.scarlet.actioncable"
+
 dependencies {
     implementation(project(":gto-support-moshi"))
     implementation(project(":gto-support-scarlet"))

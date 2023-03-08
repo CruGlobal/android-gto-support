@@ -3,6 +3,7 @@ plugins {
 }
 
 android {
+    namespace = "org.ccci.gto.android.common.viewpager"
     defaultConfig.consumerProguardFiles("proguard-consumer.pro")
 }
 

@@ -3,6 +3,7 @@ plugins {
 }
 
 android {
+    namespace = "org.ccci.gto.android.common.recyclerview"
     defaultConfig.consumerProguardFiles("proguard-consumer.pro")
 }
 

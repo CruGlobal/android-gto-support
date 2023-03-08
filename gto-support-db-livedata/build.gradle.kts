@@ -2,6 +2,8 @@ plugins {
     id("gto-support.android-conventions")
 }
 
+android.namespace = "org.ccci.gto.android.common.db.livedata"
+
 dependencies {
     api(project(":gto-support-db"))
     implementation(project(":gto-support-androidx-lifecycle"))

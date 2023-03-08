@@ -4,6 +4,7 @@ plugins {
 }
 
 android {
+    namespace = "org.ccci.gto.android.common.material.components"
     defaultConfig.consumerProguardFile("proguard-consumer-tablayout.pro")
 
     buildFeatures.dataBinding = true

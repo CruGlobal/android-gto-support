@@ -3,6 +3,8 @@ plugins {
     kotlin("plugin.parcelize")
 }
 
+android.namespace = "org.ccci.gto.android.common.db"
+
 dependencies {
     implementation(project(":gto-support-compat"))
     implementation(project(":gto-support-core"))

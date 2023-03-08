@@ -4,6 +4,7 @@ plugins {
 }
 
 android {
+    namespace = "org.ccci.gto.android.common.androidx.viewpager2"
     buildFeatures.dataBinding = true
     dataBinding.addDefaultAdapters = false
 }
