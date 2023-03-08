@@ -115,7 +115,6 @@ scarlet-core = { module = "com.tinder.scarlet:scarlet-core", version.ref = "scar
 scarlet-messageadapter-builtin = { module = "com.tinder.scarlet:message-adapter-built-in", version.ref = "scarlet" }
 scarlet-messageadapter-moshi = { module = "com.tinder.scarlet:message-adapter-moshi", version.ref = "scarlet" }
 scarlet-websocket-okhttp = { module = "com.tinder.scarlet:websocket-okhttp", version.ref = "scarlet" }
-snowplow = "com.snowplowanalytics:snowplow-android-tracker:4.0.0"
 splitties-bitflags = "com.louiscad.splitties:splitties-bitflags:3.0.0"
 timber = { module = "com.jakewharton.timber:timber", version = "5.0.1" }
 turbine = "app.cash.turbine:turbine:0.12.1"
