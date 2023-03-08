@@ -6,6 +6,7 @@ import androidx.annotation.MainThread
 import androidx.annotation.RestrictTo
 import androidx.lifecycle.ComputableLiveData
 import androidx.lifecycle.LiveData
+import org.ccci.gto.android.common.androidx.lifecycle.notNull
 
 interface LiveDataDao : Dao {
     @get:RestrictTo(RestrictTo.Scope.SUBCLASSES)
@@ -22,12 +23,14 @@ interface LiveDataDao : Dao {
     fun <T : Any> getLiveData(query: Query<T>): LiveData<List<T>> = DaoGetComputableLiveData(this, query)
         .also { with(liveDataRegistry) { it.registerFor(query) } }
         .liveData
+        .notNull()
 
     @MainThread
     @SuppressLint("RestrictedApi")
     fun <T : Any> getCursorLiveData(query: Query<T>): LiveData<Cursor> = DaoGetCursorComputableLiveData(this, query)
         .also { with(liveDataRegistry) { it.registerFor(query) } }
         .liveData
+        .notNull()
 }
 
 // region DaoComputableLiveData

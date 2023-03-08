@@ -79,10 +79,11 @@ internal class FragmentDialogLifecycleOwner : LifecycleOwner {
 
     internal val isInitialized = lifecycleRegistry != null
 
-    override fun getLifecycle(): Lifecycle {
-        initialize()
-        return lifecycleRegistry!!
-    }
+    override val lifecycle: Lifecycle
+        get() {
+            initialize()
+            return lifecycleRegistry!!
+        }
 
     fun handleLifecycleEvent(event: Lifecycle.Event) = lifecycleRegistry!!.handleLifecycleEvent(event)
 }

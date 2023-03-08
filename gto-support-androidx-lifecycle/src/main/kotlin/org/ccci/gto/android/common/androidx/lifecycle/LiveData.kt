@@ -77,8 +77,8 @@ inline fun <T> LiveData<T>.observeOnce(crossinline onChanged: (T) -> Unit) =
 
 @JvmSynthetic
 inline fun <T> LiveData<T>.observeOnceObserver(crossinline onChanged: (T) -> Unit) = object : Observer<T> {
-    override fun onChanged(t: T) {
-        onChanged.invoke(t)
+    override fun onChanged(value: T) {
+        onChanged.invoke(value)
         removeObserver(this)
     }
 }

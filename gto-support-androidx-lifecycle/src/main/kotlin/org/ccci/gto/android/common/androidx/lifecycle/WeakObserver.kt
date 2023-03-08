@@ -17,10 +17,10 @@ private class WeakObserver<O : Any, T>(liveData: LiveData<T>, obj: O, private va
     private val liveData by weak(liveData)
     private val obj by WeakReferenceDelegate(obj)
 
-    override fun onChanged(t: T) {
+    override fun onChanged(value: T) {
         when (val obj = obj) {
             null -> liveData?.removeObserver(this)
-            else -> obj.observer(t)
+            else -> obj.observer(value)
         }
     }
 }

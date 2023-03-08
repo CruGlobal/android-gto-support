@@ -5,7 +5,6 @@ package org.ccci.gto.android.common.androidx.lifecycle
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.isInitialized
 import androidx.lifecycle.map
 import androidx.lifecycle.switchMap
 

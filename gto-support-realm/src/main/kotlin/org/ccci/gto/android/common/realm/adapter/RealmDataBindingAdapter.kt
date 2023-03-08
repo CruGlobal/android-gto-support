@@ -17,7 +17,7 @@ abstract class RealmDataBindingAdapter<T : RealmModel, B : ViewDataBinding>(
     private val lifecycleOwner by weak(lifecycleOwner)
 
     // region Lifecycle
-    override fun onChanged(t: OrderedRealmCollection<T>?) = updateData(t)
+    override fun onChanged(value: OrderedRealmCollection<T>?) = updateData(value)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = DataBindingViewHolder(
         onCreateViewDataBinding(parent, viewType)

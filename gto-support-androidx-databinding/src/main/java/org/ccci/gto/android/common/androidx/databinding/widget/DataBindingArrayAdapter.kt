@@ -32,8 +32,8 @@ abstract class DataBindingArrayAdapter<B : ViewDataBinding, T>(
     protected abstract fun onBindingCreated(binding: B)
     protected abstract fun onBind(binding: B, position: Int)
 
-    override fun onChanged(t: Collection<T>?) {
+    override fun onChanged(value: Collection<T>) {
         clear()
-        if (t != null) addAll(t)
+        addAll(value)
     }
 }

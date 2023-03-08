@@ -4,6 +4,7 @@ plugins {
 
 dependencies {
     api(project(":gto-support-db"))
+    implementation(project(":gto-support-androidx-lifecycle"))
 
     implementation(libs.androidx.collection)
     api(libs.androidx.lifecycle.livedata)
