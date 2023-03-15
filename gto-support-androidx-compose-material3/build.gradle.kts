@@ -19,4 +19,8 @@ dependencies {
     // region pagerTabIndicatorOffsetModifier
     compileOnly(libs.accompanist.pager)
     // endregion pagerTabIndicatorOffsetModifier
+
+    // region PullRefreshIndicator
+    compileOnly(libs.androidx.compose.material)
+    // endregion PullRefreshIndicator
 }
