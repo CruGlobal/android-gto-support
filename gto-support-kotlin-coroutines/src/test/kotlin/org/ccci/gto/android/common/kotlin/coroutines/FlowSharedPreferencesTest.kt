@@ -5,9 +5,12 @@ import android.content.SharedPreferences
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import app.cash.turbine.test
+import io.mockk.every
+import io.mockk.spyk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
+import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Before
@@ -47,6 +50,20 @@ class FlowSharedPreferencesTest {
             awaitItem()
             prefs.edit().putBoolean(KEY, false).apply()
             assertFalse("Toggled this pref to false", awaitItem())
+        }
+    }
+
+    @Test
+    fun `getStringFlow() - Don't lose preference change while starting`() = runTest {
+        val prefsSpy = spyk(prefs)
+        every { prefsSpy.getString(KEY, "default") } answers {
+            val value = callOriginal()
+            if (value == "default") prefs.edit().putString(KEY, "set").apply()
+            value
+        }
+        prefsSpy.getStringFlow(KEY, "default").test {
+            runCurrent()
+            assertEquals("set", expectMostRecentItem())
         }
     }
 }
