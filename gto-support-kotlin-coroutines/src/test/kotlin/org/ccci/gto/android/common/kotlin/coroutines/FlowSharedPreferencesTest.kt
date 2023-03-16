@@ -4,10 +4,9 @@ import android.content.Context
 import android.content.SharedPreferences
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import app.cash.turbine.test
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
@@ -30,27 +29,24 @@ class FlowSharedPreferencesTest {
 
     @Test
     fun testGetBooleanFlow() = runTest {
-        val flowOutput = Channel<Boolean>(1)
-        val flow = prefs.getBooleanFlow(KEY, false)
-            .onEach { flowOutput.send(it) }
-            .launchIn(this)
+        prefs.getBooleanFlow(KEY, false).test {
+            assertFalse("Initially not set", awaitItem())
 
-        assertFalse("Initially not set", flowOutput.receive())
+            prefs.edit().putBoolean(KEY, true).apply()
+            assertTrue("Toggled this pref to true", awaitItem())
 
-        prefs.edit().putBoolean(KEY, true).apply()
-        assertTrue("Toggled this pref to true", flowOutput.receive())
+            // Different key update shouldn't trigger flow
+            prefs.edit().putBoolean(OTHER_KEY, false).apply()
+            runCurrent()
+            expectNoEvents()
 
-        prefs.edit().putBoolean(OTHER_KEY, false).apply()
-        assertTrue("Different key update shouldn't trigger flow", flowOutput.isEmpty)
+            prefs.edit().clear().apply()
+            assertFalse("Preferences cleared", awaitItem())
 
-        prefs.edit().clear().apply()
-        assertFalse("Preferences cleared", flowOutput.receive())
-
-        prefs.edit().putBoolean(KEY, true).apply()
-        flowOutput.receive()
-        prefs.edit().putBoolean(KEY, false).apply()
-        assertFalse("Toggled this pref to false", flowOutput.receive())
-
-        flow.cancel()
+            prefs.edit().putBoolean(KEY, true).apply()
+            awaitItem()
+            prefs.edit().putBoolean(KEY, false).apply()
+            assertFalse("Toggled this pref to false", awaitItem())
+        }
     }
 }
