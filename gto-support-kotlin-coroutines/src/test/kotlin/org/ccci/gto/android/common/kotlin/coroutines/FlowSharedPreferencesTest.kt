@@ -20,7 +20,7 @@ private const val OTHER_KEY = "other"
 
 @RunWith(AndroidJUnit4::class)
 @OptIn(ExperimentalCoroutinesApi::class)
-class SharedPreferencesFlowTest {
+class FlowSharedPreferencesTest {
     private lateinit var prefs: SharedPreferences
 
     @Before
