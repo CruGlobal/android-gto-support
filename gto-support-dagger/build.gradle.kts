@@ -18,13 +18,13 @@ dependencies {
 
     // region Split Install module
     compileOnly(libs.dagger.hilt.android)
-    compileOnly(libs.play.core)
+    compileOnly(libs.play.featuredelivery)
+    testImplementation(libs.play.featuredelivery)
     // endregion Split Install module
 
     kapt(libs.dagger.compiler)
 
     testImplementation(libs.dagger.hilt.android)
     testImplementation(libs.kotlin.coroutines.test)
-    testImplementation(libs.play.core)
     kaptTest(libs.dagger.compiler)
 }
