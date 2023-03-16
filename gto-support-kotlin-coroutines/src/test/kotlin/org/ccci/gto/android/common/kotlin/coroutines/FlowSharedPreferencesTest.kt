@@ -12,6 +12,7 @@ import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
+import org.junit.Assert.assertSame
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
@@ -29,6 +30,25 @@ class FlowSharedPreferencesTest {
     fun setup() {
         prefs = ApplicationProvider.getApplicationContext<Context>().getSharedPreferences("test", Context.MODE_PRIVATE)
     }
+
+    // region getChangeFlow()
+    @Test
+    fun `getChangeFlow() - emit initial key`() = runTest {
+        val initial = String()
+        prefs.getChangeFlow(initial).test {
+            runCurrent()
+            assertSame(initial, awaitItem())
+        }
+    }
+
+    @Test
+    fun `getChangeFlow() - don't emit initial key`() = runTest {
+        prefs.getChangeFlow().test {
+            runCurrent()
+            expectNoEvents()
+        }
+    }
+    // endregion getChangeFlow()
 
     @Test
     fun testGetBooleanFlow() = runTest {
