@@ -21,6 +21,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.produceIn
+import kotlinx.coroutines.selects.onTimeout
 import kotlinx.coroutines.selects.select
 import org.ccci.gto.android.common.base.TimeConstants.MIN_IN_MS
 import org.ccci.gto.android.common.okta.oidc.clients.sessions.changeFlow
@@ -81,7 +82,7 @@ class OktaUserProfileProvider @VisibleForTesting internal constructor(
                 }
 
                 // suspend until we need to reload the profile
-                select<Unit> {
+                select {
                     channel.onReceiveCatching {}
 
                     // enable other monitors when there are active flows
