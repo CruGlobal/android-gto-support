@@ -36,7 +36,7 @@ jobs:
           key: ${{ runner.os }}-konan-${{ github.sha }}
           restore-keys: ${{ runner.os }}-konan-
       - name: Setup Java JDK
-        uses: actions/setup-java@v3.10.0
+        uses: actions/setup-java@v3.11.0
         with:
           distribution: 'temurin'
           java-version: '11'
@@ -169,7 +169,7 @@ jobs:
           key: ${{ runner.os }}-konan-${{ github.sha }}
           restore-keys: ${{ runner.os }}-konan-
       - name: Setup Java JDK
-        uses: actions/setup-java@v3.10.0
+        uses: actions/setup-java@v3.11.0
         with:
           distribution: 'temurin'
           java-version: '11'
@@ -275,7 +275,7 @@ jobs:
           key: ${{ runner.os }}-konan-${{ github.sha }}
           restore-keys: ${{ runner.os }}-konan-
       - name: Setup Java JDK
-        uses: actions/setup-java@v3.10.0
+        uses: actions/setup-java@v3.11.0
         with:
           distribution: 'temurin'
           java-version: '11'
