@@ -24,7 +24,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
 
 public class JsonApiConverterTest {
     private static final float DELTA = 0.000001f;
@@ -200,7 +199,10 @@ public class JsonApiConverterTest {
         source.attrArrayLong = new long[] {21, 22};
         source.attrArrayString = new String[] {null, "str1", "str2"};
 
-        final String json = converter.toJson(JsonApiObject.single(source));
+        final String json = converter.toJson(
+                JsonApiObject.single(source),
+                JsonApiConverter.Options.builder().serializeNullAttributes(ModelAttributes.TYPE).build()
+        );
         final JsonApiObject<ModelAttributes> output = converter.fromJson(json, ModelAttributes.class);
         assertThat(output.isSingle(), is(true));
         final ModelAttributes target = output.getDataSingle();
@@ -228,29 +230,6 @@ public class JsonApiConverterTest {
     }
 
     @Test
-    public void verifyFromJsonDoubleToInteger() throws Exception {
-        final String raw = "{'data':{'id':5,'type':'attrs','attributes':{'attrIntegerBoxed':2.0}}}";
-
-        final JsonApiConverter converter = new JsonApiConverter.Builder().addClasses(ModelAttributes.class).build();
-        final JsonApiObject<ModelAttributes> output = converter.fromJson(raw, ModelAttributes.class);
-        assertTrue(output.isSingle());
-        final ModelAttributes target = output.getDataSingle();
-        assertEquals((Integer) 2, target.attrIntegerBoxed);
-    }
-
-    @Test
-    public void verifyFromJsonNullAttribute() throws Exception {
-        final String raw = "{'data':{'id':5,'type':'attrs','attributes':{'attrStr1':null}}}";
-
-        final JsonApiConverter converter = new JsonApiConverter.Builder().addClasses(ModelAttributes.class).build();
-        final JsonApiObject<ModelAttributes> output = converter.fromJson(raw, ModelAttributes.class);
-        assertThat(output.isSingle(), is(true));
-        final ModelAttributes target = output.getDataSingle();
-        assertThat(target, is(not(nullValue())));
-        assertThat(target.attrStr1, is(nullValue()));
-    }
-
-    @Test
     public void verifyFromJsonMetaNull() throws Exception {
         final JsonApiConverter converter = new JsonApiConverter.Builder().build();
 
@@ -272,7 +251,6 @@ public class JsonApiConverterTest {
     }
 
     // region Serialize flags
-
     @Test
     public void verifyToJsonSerializeFlags() throws Exception {
         final JsonApiConverter converter = new JsonApiConverter.Builder().addClasses(ModelAttributes.class).build();
@@ -298,7 +276,6 @@ public class JsonApiConverterTest {
         assertEquals("serialize", target.attrSerializeOnly);
         assertEquals("b", target.attrDeserializeOnly);
     }
-
     // endregion Serialize flags
 
     public static final class ModelNoType {}

@@ -1,12 +1,17 @@
 package org.ccci.gto.android.common.jsonapi.model;
 
+import androidx.annotation.Nullable;
+
 import org.ccci.gto.android.common.jsonapi.annotation.JsonApiId;
 import org.ccci.gto.android.common.jsonapi.annotation.JsonApiIgnore;
 import org.ccci.gto.android.common.jsonapi.annotation.JsonApiPostCreate;
 
-import androidx.annotation.Nullable;
-
 public abstract class ModelBase {
+    public ModelBase() {}
+    public ModelBase(@Nullable Integer id) {
+        mId = id;
+    }
+
     @Nullable
     @JsonApiId
     public Integer mId;
