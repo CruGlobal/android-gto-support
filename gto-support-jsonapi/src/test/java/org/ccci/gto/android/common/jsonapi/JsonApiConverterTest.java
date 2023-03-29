@@ -272,7 +272,6 @@ public class JsonApiConverterTest {
     }
 
     // region Serialize flags
-
     @Test
     public void verifyToJsonSerializeFlags() throws Exception {
         final JsonApiConverter converter = new JsonApiConverter.Builder().addClasses(ModelAttributes.class).build();
@@ -298,7 +297,6 @@ public class JsonApiConverterTest {
         assertEquals("serialize", target.attrSerializeOnly);
         assertEquals("b", target.attrDeserializeOnly);
     }
-
     // endregion Serialize flags
 
     public static final class ModelNoType {}
