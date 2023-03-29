@@ -876,7 +876,7 @@ public final class JsonApiConverter {
         } else if (type.isAssignableFrom(Long.class)) {
             return json.getLong(name);
         } else if (type.isAssignableFrom(String.class)) {
-            return json.getString(name);
+            return json.optString(name);
         }
 
         // default to null
