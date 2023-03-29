@@ -200,7 +200,10 @@ public class JsonApiConverterTest {
         source.attrArrayLong = new long[] {21, 22};
         source.attrArrayString = new String[] {null, "str1", "str2"};
 
-        final String json = converter.toJson(JsonApiObject.single(source));
+        final String json = converter.toJson(
+                JsonApiObject.single(source),
+                JsonApiConverter.Options.builder().serializeNullAttributes(ModelAttributes.TYPE).build()
+        );
         final JsonApiObject<ModelAttributes> output = converter.fromJson(json, ModelAttributes.class);
         assertThat(output.isSingle(), is(true));
         final ModelAttributes target = output.getDataSingle();

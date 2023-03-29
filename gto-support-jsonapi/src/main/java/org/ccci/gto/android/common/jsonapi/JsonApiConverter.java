@@ -821,6 +821,11 @@ public final class JsonApiConverter {
     @Nullable
     private Object convertFromJSONObject(@NonNull final JSONObject json, @NonNull final String name,
                                          @NonNull FieldInfo info) throws JSONException {
+        // short-circuit if the attribute doesn't exist
+        if (!json.has(name)) {
+            throw new JSONException("No value for " + name);
+        }
+
         // utilize configured TypeConverters first
         final Class<?> type = info.getType();
         for (final TypeConverter<?> converter : mConverters) {
