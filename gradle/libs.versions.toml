@@ -72,7 +72,7 @@ dagger-hilt-android = { module = "com.google.dagger:hilt-android", version.ref =
 dagger-hilt-compiler = { module = "com.google.dagger:hilt-compiler", version.ref = "dagger" }
 eventbus = "org.greenrobot:eventbus:3.3.1"
 facebook-login = "com.facebook.android:facebook-login:16.0.1"
-facebookFlipper = "com.facebook.flipper:flipper:0.187.1"
+facebookFlipper = "com.facebook.flipper:flipper:0.188.0"
 firebase-crashlytics = "com.google.firebase:firebase-crashlytics:18.3.6"
 fluidsonic-locale = "io.fluidsonic.locale:fluid-locale:0.12.0"
 json = "org.json:json:20230227"
