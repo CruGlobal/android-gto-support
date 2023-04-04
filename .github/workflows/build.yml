@@ -250,7 +250,7 @@ jobs:
       - name: Update version for new development
         run: sed -i "s/version=${{ needs.check_version.outputs.version }}/version=${{ steps.bump_version.outputs.new_version }}/" gradle.properties
       - name: Create Version Bump Pull Request
-        uses: peter-evans/create-pull-request@v4
+        uses: peter-evans/create-pull-request@v5
         with:
           branch: "versionBump/${{ steps.bump_version.outputs.new_version }}"
           title: "Bump version after release"
