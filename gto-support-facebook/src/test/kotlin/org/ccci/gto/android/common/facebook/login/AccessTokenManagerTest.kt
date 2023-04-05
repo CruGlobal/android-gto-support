@@ -7,6 +7,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import app.cash.turbine.test
 import com.facebook.AccessToken
 import com.facebook.AccessTokenManager
+import com.facebook.FacebookException
 import com.facebook.FacebookSdk
 import com.facebook.internal.Validate
 import io.mockk.Runs
@@ -17,6 +18,7 @@ import io.mockk.mockkStatic
 import io.mockk.verifyAll
 import java.lang.Thread.sleep
 import java.util.Date
+import kotlin.test.assertFailsWith
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.advanceUntilIdle
@@ -120,6 +122,41 @@ class AccessTokenManagerTest {
         }
     }
     // endregion isAuthenticatedFlow()
+
+    // region refreshCurrentAccessToken()
+    @Test
+    fun `refreshCurrentAccessToken()`() = runTest {
+        val accessTokenManager: AccessTokenManager = mockk {
+            every { refreshCurrentAccessToken(any()) } answers {
+                firstArg<AccessToken.AccessTokenRefreshCallback>().OnTokenRefreshed(token1,)
+            }
+        }
+
+        assertEquals(token1, accessTokenManager.refreshCurrentAccessToken())
+    }
+
+    @Test
+    fun `refreshCurrentAccessToken() - Failed with FacebookException`() = runTest {
+        val accessTokenManager: AccessTokenManager = mockk {
+            every { refreshCurrentAccessToken(any()) } answers {
+                firstArg<AccessToken.AccessTokenRefreshCallback>().OnTokenRefreshFailed(FacebookException())
+            }
+        }
+
+        assertFailsWith<FacebookException> { accessTokenManager.refreshCurrentAccessToken() }
+    }
+
+    @Test
+    fun `refreshCurrentAccessToken() - Failed without FacebookException`() = runTest {
+        val accessTokenManager: AccessTokenManager = mockk {
+            every { refreshCurrentAccessToken(any()) } answers {
+                firstArg<AccessToken.AccessTokenRefreshCallback>().OnTokenRefreshFailed(null)
+            }
+        }
+
+        assertNull(accessTokenManager.refreshCurrentAccessToken())
+    }
+    // endregion refreshCurrentAccessToken()
 
     private fun executePendingBroadcasts() = shadowOf(Looper.getMainLooper()).idle()
 }

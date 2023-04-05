@@ -3,6 +3,10 @@ package org.ccci.gto.android.common.facebook.login
 import com.facebook.AccessToken
 import com.facebook.AccessTokenManager
 import com.facebook.AccessTokenTracker
+import com.facebook.FacebookException
+import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
+import kotlin.coroutines.suspendCoroutine
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.channels.trySendBlocking
@@ -33,3 +37,16 @@ fun AccessTokenManager.isAuthenticatedFlow() = currentAccessTokenFlow()
         emit(false)
     }
     .distinctUntilChanged()
+
+suspend fun AccessTokenManager.refreshCurrentAccessToken() = suspendCoroutine { cont ->
+    refreshCurrentAccessToken(
+        object : AccessToken.AccessTokenRefreshCallback {
+            override fun OnTokenRefreshed(accessToken: AccessToken?) = cont.resume(accessToken)
+
+            override fun OnTokenRefreshFailed(exception: FacebookException?) = when (exception) {
+                null -> cont.resume(null)
+                else -> cont.resumeWithException(exception)
+            }
+        },
+    )
+}
