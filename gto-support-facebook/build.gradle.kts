@@ -12,6 +12,7 @@ dependencies {
     testImplementation(libs.facebook.login)
     // endregion facebook-login
 
+    testImplementation(kotlin("test"))
     testImplementation(libs.kotlin.coroutines.test)
     testImplementation(libs.turbine)
 }
