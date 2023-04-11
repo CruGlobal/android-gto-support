@@ -92,7 +92,7 @@ lottie = "com.airbnb.android:lottie:6.0.0"
 materialComponents = "com.google.android.material:material:1.8.0"
 mockito = "org.mockito:mockito-inline:5.2.0"
 mockito-kotlin = "org.mockito.kotlin:mockito-kotlin:4.1.0"
-mockk = "io.mockk:mockk:1.13.4"
+mockk = "io.mockk:mockk:1.13.5"
 moshi = { module = "com.squareup.moshi:moshi", version.ref = "moshi" }
 moshi-kotlin-codegen = { module = "com.squareup.moshi:moshi-kotlin-codegen", version.ref = "moshi" }
 napier = "io.github.aakira:napier:2.6.1"
