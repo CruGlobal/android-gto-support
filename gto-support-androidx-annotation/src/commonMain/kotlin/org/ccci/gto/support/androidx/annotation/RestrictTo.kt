@@ -13,4 +13,4 @@ package org.ccci.gto.support.androidx.annotation
     AnnotationTarget.FILE,
 )
 expect annotation class RestrictTo(vararg val value: RestrictToScope)
-expect enum class RestrictToScope { LIBRARY_GROUP, TESTS, SUBCLASSES }
+expect enum class RestrictToScope { LIBRARY, LIBRARY_GROUP, TESTS, SUBCLASSES }
