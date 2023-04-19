@@ -34,7 +34,6 @@ import java.util.Set;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.collection.ArrayMap;
 
 import static java.util.Collections.singletonMap;
 import static org.ccci.gto.android.common.jsonapi.model.JsonApiError.JSON_ERROR_DETAIL;
@@ -1194,8 +1193,7 @@ public final class JsonApiConverter {
             }
 
             // default the map to our current fields, then merge in fields from the provided options.
-            final Map<String, Fields> fields = new ArrayMap<>();
-            fields.putAll(mFields);
+            final Map<String, Fields> fields = new HashMap<>(mFields);
             for (final String key : options.mFields.keySet()) {
                 fields.put(key, options.mFields.get(key).merge(fields.get(key)));
             }
@@ -1234,7 +1232,7 @@ public final class JsonApiConverter {
         public static final class Builder {
             private List<String> mIncludes = null;
             private boolean mIncludeObjectsWithNoId = false;
-            private final Map<String, Set<String>> mFields = new ArrayMap<>();
+            private final Map<String, Set<String>> mFields = new HashMap<>();
             private final Map<String, Boolean> mSerializeNullAttributes = new HashMap<>();
 
             @NonNull
@@ -1289,7 +1287,7 @@ public final class JsonApiConverter {
             @NonNull
             public Options build() {
                 // build out the Fields data structure
-                final Map<String, Fields> fields = new ArrayMap<>();
+                final Map<String, Fields> fields = new HashMap<>();
                 for (final String type : mFields.keySet()) {
                     final Set<String> values = mFields.get(type);
                     fields.put(type, new Fields(values));
