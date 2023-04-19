@@ -1,4 +1,4 @@
-package org.ccci.gto.android.common.util;
+package org.ccci.gto.android.common.jsonapi.util;
 
 import androidx.annotation.Nullable;
 
@@ -6,10 +6,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 
-/**
- * @deprecated Since v4.0.1, This was only being used by jsonapi, so we made it internal to that project.
- */
-@Deprecated
 public class CollectionUtils {
     @Nullable
     @SuppressWarnings("unchecked")

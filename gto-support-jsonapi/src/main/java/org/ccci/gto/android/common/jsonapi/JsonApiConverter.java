@@ -52,7 +52,7 @@ import static org.ccci.gto.android.common.jsonapi.model.JsonApiObject.JSON_DATA_
 import static org.ccci.gto.android.common.jsonapi.model.JsonApiObject.JSON_ERRORS;
 import static org.ccci.gto.android.common.jsonapi.model.JsonApiObject.JSON_INCLUDED;
 import static org.ccci.gto.android.common.jsonapi.model.JsonApiObject.JSON_META;
-import static org.ccci.gto.android.common.util.CollectionUtils.newCollection;
+import static org.ccci.gto.android.common.jsonapi.util.CollectionUtils.newCollection;
 import static org.ccci.gto.android.common.util.NumberUtils.toInteger;
 
 public final class JsonApiConverter {
