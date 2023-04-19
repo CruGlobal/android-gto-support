@@ -514,18 +514,12 @@ public final class JsonApiConverter {
                                                              @NonNull final Class<T> collectionType,
                                                              final boolean placeholder,
                                                              @NonNull final Map<ObjKey, ObjValue> objects) {
-        // create new collection
         final T resources = newCollection(collectionType);
-        if (resources == null) {
-            throw new IllegalArgumentException("Invalid Collection Type: " + collectionType);
-        }
-
         if (json != null) {
             for (int i = 0; i < json.length(); i++) {
                 resources.add(resourceFromJson(json.optJSONObject(i), type, placeholder, objects));
             }
         }
-
         return resources;
     }
 
@@ -898,14 +892,9 @@ public final class JsonApiConverter {
             @NonNull final JSONArray json, @NonNull final Class<T> collectionType, @NonNull final Class<?> elementType)
             throws JSONException {
         final T collection = newCollection(collectionType);
-        if (collection == null) {
-            throw new IllegalArgumentException("Invalid Collection Type: " + collectionType);
-        }
-
         for (int i = 0; i < json.length(); i++) {
             collection.add(convertFromJSONArray(json, i, elementType));
         }
-
         return collection;
     }
 
