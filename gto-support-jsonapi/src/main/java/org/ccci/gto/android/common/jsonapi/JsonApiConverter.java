@@ -34,8 +34,6 @@ import java.util.Set;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.collection.ArrayMap;
-import androidx.collection.SimpleArrayMap;
 
 import static java.util.Collections.singletonMap;
 import static org.ccci.gto.android.common.jsonapi.model.JsonApiError.JSON_ERROR_DETAIL;
@@ -52,8 +50,8 @@ import static org.ccci.gto.android.common.jsonapi.model.JsonApiObject.JSON_DATA_
 import static org.ccci.gto.android.common.jsonapi.model.JsonApiObject.JSON_ERRORS;
 import static org.ccci.gto.android.common.jsonapi.model.JsonApiObject.JSON_INCLUDED;
 import static org.ccci.gto.android.common.jsonapi.model.JsonApiObject.JSON_META;
-import static org.ccci.gto.android.common.util.CollectionUtils.newCollection;
-import static org.ccci.gto.android.common.util.NumberUtils.toInteger;
+import static org.ccci.gto.android.common.jsonapi.util.CollectionUtils.newCollection;
+import static org.ccci.gto.android.common.jsonapi.util.NumberUtils.toInteger;
 
 public final class JsonApiConverter {
     public static final class Builder {
@@ -322,7 +320,7 @@ public final class JsonApiConverter {
     private JsonApiError errorFromJson(@Nullable final JSONObject json) {
         if (json != null) {
             final JsonApiError error = new JsonApiError();
-            error.setStatus(toInteger(json.optString(JSON_ERROR_STATUS, null), null));
+            error.setStatus(toInteger(json.optString(JSON_ERROR_STATUS, null)));
             error.setTitle(json.optString(JSON_ERROR_TITLE, null));
             error.setDetail(json.optString(JSON_ERROR_DETAIL, null));
             error.setSource(errorSourceFromJson(json.optJSONObject(JSON_ERROR_SOURCE)));
@@ -514,18 +512,12 @@ public final class JsonApiConverter {
                                                              @NonNull final Class<T> collectionType,
                                                              final boolean placeholder,
                                                              @NonNull final Map<ObjKey, ObjValue> objects) {
-        // create new collection
         final T resources = newCollection(collectionType);
-        if (resources == null) {
-            throw new IllegalArgumentException("Invalid Collection Type: " + collectionType);
-        }
-
         if (json != null) {
             for (int i = 0; i < json.length(); i++) {
                 resources.add(resourceFromJson(json.optJSONObject(i), type, placeholder, objects));
             }
         }
-
         return resources;
     }
 
@@ -898,14 +890,9 @@ public final class JsonApiConverter {
             @NonNull final JSONArray json, @NonNull final Class<T> collectionType, @NonNull final Class<?> elementType)
             throws JSONException {
         final T collection = newCollection(collectionType);
-        if (collection == null) {
-            throw new IllegalArgumentException("Invalid Collection Type: " + collectionType);
-        }
-
         for (int i = 0; i < json.length(); i++) {
             collection.add(convertFromJSONArray(json, i, elementType));
         }
-
         return collection;
     }
 
@@ -1188,11 +1175,11 @@ public final class JsonApiConverter {
         @NonNull
         private final Map<String, Fields> mFields;
         @NonNull
-        final SimpleArrayMap<String, Boolean> mSerializeNullAttributes;
+        final Map<String, Boolean> mSerializeNullAttributes;
 
         Options(@NonNull final Includes includes, final boolean includeObjectsWithNoId,
                 @NonNull final Map<String, Fields> fields,
-                @NonNull final SimpleArrayMap<String, Boolean> serializeNullAttributes) {
+                @NonNull final Map<String, Boolean> serializeNullAttributes) {
             mIncludes = includes;
             mIncludeObjectsWithNoId = includeObjectsWithNoId;
             mFields = fields;
@@ -1206,14 +1193,13 @@ public final class JsonApiConverter {
             }
 
             // default the map to our current fields, then merge in fields from the provided options.
-            final Map<String, Fields> fields = new ArrayMap<>();
-            fields.putAll(mFields);
+            final Map<String, Fields> fields = new HashMap<>(mFields);
             for (final String key : options.mFields.keySet()) {
                 fields.put(key, options.mFields.get(key).merge(fields.get(key)));
             }
 
             // Merge serializeNullAttributes, preferring the options being merged in
-            final SimpleArrayMap<String, Boolean> serializeNullAttributes = new SimpleArrayMap<>();
+            final Map<String, Boolean> serializeNullAttributes = new HashMap<>();
             serializeNullAttributes.putAll(mSerializeNullAttributes);
             serializeNullAttributes.putAll(options.mSerializeNullAttributes);
 
@@ -1246,8 +1232,8 @@ public final class JsonApiConverter {
         public static final class Builder {
             private List<String> mIncludes = null;
             private boolean mIncludeObjectsWithNoId = false;
-            private final Map<String, Set<String>> mFields = new ArrayMap<>();
-            private final SimpleArrayMap<String, Boolean> mSerializeNullAttributes = new SimpleArrayMap<>();
+            private final Map<String, Set<String>> mFields = new HashMap<>();
+            private final Map<String, Boolean> mSerializeNullAttributes = new HashMap<>();
 
             @NonNull
             public Builder includeAll() {
@@ -1301,14 +1287,14 @@ public final class JsonApiConverter {
             @NonNull
             public Options build() {
                 // build out the Fields data structure
-                final Map<String, Fields> fields = new ArrayMap<>();
+                final Map<String, Fields> fields = new HashMap<>();
                 for (final String type : mFields.keySet()) {
                     final Set<String> values = mFields.get(type);
                     fields.put(type, new Fields(values));
                 }
 
                 return new Options(new Includes(mIncludes), mIncludeObjectsWithNoId, fields,
-                                   new SimpleArrayMap<>(mSerializeNullAttributes));
+                        new HashMap<>(mSerializeNullAttributes));
             }
         }
     }
