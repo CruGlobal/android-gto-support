@@ -35,7 +35,6 @@ import java.util.Set;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.collection.ArrayMap;
-import androidx.collection.SimpleArrayMap;
 
 import static java.util.Collections.singletonMap;
 import static org.ccci.gto.android.common.jsonapi.model.JsonApiError.JSON_ERROR_DETAIL;
@@ -1177,11 +1176,11 @@ public final class JsonApiConverter {
         @NonNull
         private final Map<String, Fields> mFields;
         @NonNull
-        final SimpleArrayMap<String, Boolean> mSerializeNullAttributes;
+        final Map<String, Boolean> mSerializeNullAttributes;
 
         Options(@NonNull final Includes includes, final boolean includeObjectsWithNoId,
                 @NonNull final Map<String, Fields> fields,
-                @NonNull final SimpleArrayMap<String, Boolean> serializeNullAttributes) {
+                @NonNull final Map<String, Boolean> serializeNullAttributes) {
             mIncludes = includes;
             mIncludeObjectsWithNoId = includeObjectsWithNoId;
             mFields = fields;
@@ -1202,7 +1201,7 @@ public final class JsonApiConverter {
             }
 
             // Merge serializeNullAttributes, preferring the options being merged in
-            final SimpleArrayMap<String, Boolean> serializeNullAttributes = new SimpleArrayMap<>();
+            final Map<String, Boolean> serializeNullAttributes = new HashMap<>();
             serializeNullAttributes.putAll(mSerializeNullAttributes);
             serializeNullAttributes.putAll(options.mSerializeNullAttributes);
 
@@ -1236,7 +1235,7 @@ public final class JsonApiConverter {
             private List<String> mIncludes = null;
             private boolean mIncludeObjectsWithNoId = false;
             private final Map<String, Set<String>> mFields = new ArrayMap<>();
-            private final SimpleArrayMap<String, Boolean> mSerializeNullAttributes = new SimpleArrayMap<>();
+            private final Map<String, Boolean> mSerializeNullAttributes = new HashMap<>();
 
             @NonNull
             public Builder includeAll() {
@@ -1297,7 +1296,7 @@ public final class JsonApiConverter {
                 }
 
                 return new Options(new Includes(mIncludes), mIncludeObjectsWithNoId, fields,
-                                   new SimpleArrayMap<>(mSerializeNullAttributes));
+                        new HashMap<>(mSerializeNullAttributes));
             }
         }
     }
