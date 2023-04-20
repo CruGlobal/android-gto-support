@@ -193,7 +193,7 @@ jobs:
       - name: Run JS Unit Tests
         uses: gradle/gradle-build-action@v2
         with:
-          arguments: jsTest --scan
+          arguments: jsBrowserTest jsNodeTest --scan
       - name: Archive test results
         if: always()
         uses: actions/upload-artifact@v3
