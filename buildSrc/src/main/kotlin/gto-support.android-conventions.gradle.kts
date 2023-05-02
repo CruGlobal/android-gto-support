@@ -8,4 +8,8 @@ android {
     baseConfiguration(project)
 }
 
+kotlin {
+    configureJvmToolchain(project)
+}
+
 configureKotlinter()

@@ -13,7 +13,7 @@ import org.jetbrains.kotlin.gradle.dsl.KotlinJvmOptions
 internal fun LibraryExtension.baseConfiguration(project: Project) {
     configureSdk()
     configureProguardRules(project)
-    configureCompilerOptions()
+    configureCompilerOptions(project)
     configureTestOptions()
 
     project.configureKotlinKover()
@@ -33,13 +33,14 @@ private fun BaseExtension.configureProguardRules(project: Project) {
     defaultConfig.consumerProguardFiles(project.rootProject.file("proguard-consumer-jetbrains.pro"))
 }
 
-private fun BaseExtension.configureCompilerOptions() {
+private fun BaseExtension.configureCompilerOptions(project: Project) {
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        // HACK: workaround a kotlin.jvmToolchain bug
+        //       see: https://issuetracker.google.com/issues/260059413
+        sourceCompatibility = JavaVersion.toVersion(project.libs.findVersion("jvm").get().requiredVersion)
+        targetCompatibility = JavaVersion.toVersion(project.libs.findVersion("jvm").get().requiredVersion)
     }
     (this as ExtensionAware).extensions.findByType<KotlinJvmOptions>()?.apply {
-        jvmTarget = JavaVersion.VERSION_1_8.toString()
         freeCompilerArgs += "-Xjvm-default=all"
     }
 }
