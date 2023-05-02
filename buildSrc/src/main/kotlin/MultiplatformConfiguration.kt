@@ -8,7 +8,7 @@ import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSet
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTargetWithTests
 import org.jetbrains.kotlin.gradle.plugin.mpp.TestExecutable
 
-fun KotlinMultiplatformExtension.baseConfiguration() {
+internal fun KotlinMultiplatformExtension.baseConfiguration() {
     (this as ExtensionAware).extensions.configure<NamedDomainObjectContainer<KotlinSourceSet>>("sourceSets") {
         named("commonTest") {
             dependencies {

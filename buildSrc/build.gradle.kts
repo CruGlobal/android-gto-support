@@ -18,6 +18,10 @@ dependencies {
     implementation(libs.kotlinter)
 }
 
+kotlin.jvmToolchain {
+    languageVersion.set(libs.versions.jvm.map { JavaLanguageVersion.of(it) })
+}
+
 // region Kotlinter
 tasks.register<LintTask>("lintKotlinDslBuildScripts") {
     source(file("build.gradle.kts"))

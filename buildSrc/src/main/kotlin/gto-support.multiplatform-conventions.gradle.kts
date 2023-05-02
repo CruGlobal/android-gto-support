@@ -10,6 +10,7 @@ android {
 
 kotlin {
     baseConfiguration()
+    configureJvmToolchain(project)
     configureTargets(project)
 }
 
