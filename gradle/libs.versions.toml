@@ -90,7 +90,7 @@ kotlinter = { module = "org.jmailen.gradle:kotlinter-gradle", version.ref = "kot
 leakcanary = "com.squareup.leakcanary:leakcanary-android:2.10"
 lightweightStream = { module = "com.annimon:stream", version = "1.2.2" }
 lottie = "com.airbnb.android:lottie:6.0.0"
-materialComponents = "com.google.android.material:material:1.8.0"
+materialComponents = "com.google.android.material:material:1.9.0"
 mockito = "org.mockito:mockito-inline:5.2.0"
 mockito-kotlin = "org.mockito.kotlin:mockito-kotlin:4.1.0"
 mockk = "io.mockk:mockk:1.13.5"
