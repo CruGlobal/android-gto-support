@@ -1,18 +1,12 @@
 plugins {
-    id("gto-support.android-conventions")
-}
-
-android {
-    namespace = "org.ccci.gto.android.common.jsonapi"
-
-    compileOptions {
-        isCoreLibraryDesugaringEnabled = true
-    }
-    defaultConfig.consumerProguardFiles("proguard-consumer.pro")
+    id("gto-support.java-conventions")
 }
 
 dependencies {
-    testImplementation(libs.json)
+    implementation(libs.androidx.annotation)
+    implementation(libs.json)
+
+    testImplementation(libs.junit)
     testImplementation(libs.jsonUnit)
     testImplementation(libs.jsonUnit.fluent)
 }
