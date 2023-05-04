@@ -36,7 +36,7 @@ androidx-collection-ktx = { module = "androidx.collection:collection-ktx", versi
 androidx-compose-foundation-layout = { module = "androidx.compose.foundation:foundation-layout", version.ref = "androidx-compose" }
 androidx-compose-material = "androidx.compose.material:material:1.4.3"
 androidx-compose-material3 = "androidx.compose.material3:material3:1.0.1"
-androidx-compose-runtime = "androidx.compose.runtime:runtime:1.4.2"
+androidx-compose-runtime = "androidx.compose.runtime:runtime:1.4.3"
 androidx-compose-ui = { module = "androidx.compose.ui:ui", version.ref = "androidx-compose-ui" }
 androidx-compose-ui-test = { module = "androidx.compose.ui:ui-test-junit4", version.ref = "androidx-compose-ui" }
 androidx-compose-ui-test-manifest = { module = "androidx.compose.ui:ui-test-manifest", version.ref = "androidx-compose-ui" }
