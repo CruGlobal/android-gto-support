@@ -15,5 +15,6 @@ kotlin {
     configureTargets(project)
 }
 
+configureKotlinKover()
 configureKotlinter()
 configurePublishing()

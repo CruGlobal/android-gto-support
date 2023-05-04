@@ -15,8 +15,6 @@ internal fun LibraryExtension.baseConfiguration(project: Project) {
     configureProguardRules(project)
     configureCompilerOptions(project)
     configureTestOptions()
-
-    project.configureKotlinKover()
 }
 
 private fun BaseExtension.configureSdk() {

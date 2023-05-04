@@ -13,5 +13,6 @@ kotlin {
     configureJvmToolchain(project)
 }
 
+configureKotlinKover()
 configureKotlinter()
 configurePublishing()
