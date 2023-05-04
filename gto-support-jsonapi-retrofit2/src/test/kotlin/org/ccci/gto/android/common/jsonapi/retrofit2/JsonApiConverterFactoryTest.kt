@@ -34,7 +34,7 @@ class JsonApiConverterFactoryTest {
     private var service = Retrofit.Builder()
         .baseUrl(server.url("/"))
         .addConverterFactory(
-            JsonApiConverterFactory.create(
+            JsonApiConverterFactory(
                 ModelSimple::class.java,
                 ModelParent::class.java,
                 ModelChild::class.java,
