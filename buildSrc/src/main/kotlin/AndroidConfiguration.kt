@@ -17,7 +17,6 @@ internal fun LibraryExtension.baseConfiguration(project: Project) {
     configureTestOptions()
 
     project.configureKotlinKover()
-    project.configurePublishing()
 }
 
 private fun BaseExtension.configureSdk() {
