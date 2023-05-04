@@ -259,11 +259,11 @@ jobs:
   deploy:
     name: Deploy Library
     runs-on: macos-11
-    if: >-
-      github.event_name == 'workflow_dispatch' ||
-      github.event_name == 'schedule' ||
-      github.event_name == 'pull_request' ||
-      (github.event_name == 'push' && github.ref == 'refs/heads/master')
+    if: |
+      (github.event_name == 'push' && github.ref == 'refs/heads/master') ||
+      (github.event_name == 'pull_request' && contains(github.event.pull_request.labels.*.name, 'Publish PR SNAPSHOT')) ||
+      (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/master') ||
+      github.event_name == 'schedule'
     needs: [ build, checkstyle, ktlint, lint, android_tests, ios_tests, js_tests, check_version ]
     steps:
       - name: Checkout code
