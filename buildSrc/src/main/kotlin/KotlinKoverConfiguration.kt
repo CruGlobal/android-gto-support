@@ -1,5 +1,5 @@
 import org.gradle.api.Project
 
-fun Project.configureKotlinKover() {
+internal fun Project.configureKotlinKover() {
     plugins.apply("org.jetbrains.kotlinx.kover")
 }

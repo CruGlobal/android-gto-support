@@ -1,18 +1,13 @@
+import org.gradle.kotlin.dsl.kotlin
+
 plugins {
-    kotlin("multiplatform")
-    id("com.android.library")
+    kotlin("jvm")
     id("maven-publish")
     id("org.jmailen.kotlinter")
 }
 
-android {
-    baseConfiguration(project)
-}
-
 kotlin {
-    baseConfiguration()
     configureJvmToolchain(project)
-    configureTargets(project)
 }
 
 configureKotlinKover()
