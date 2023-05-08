@@ -11,6 +11,8 @@ android {
 
 dependencies {
     implementation(libs.androidx.room.common)
+    implementation(libs.androidx.room.ktx)
+    implementation(libs.androidx.room.runtime)
 
     testFixturesApi(libs.androidx.room.runtime)
     testFixturesApi(libs.junit)
