@@ -10,7 +10,6 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.advanceTimeBy
 import kotlinx.coroutines.test.advanceUntilIdle
@@ -48,7 +47,6 @@ internal class OktaUserProfileProviderTest : BaseOktaOidcTest() {
     private lateinit var sessionClient: SessionClient
     override val storage = mock<OktaStorage>().makeChangeAware() as ChangeAwareOktaStorage
     private lateinit var oktaRepo: OktaRepository
-    private val testScope = TestScope()
 
     private lateinit var provider: OktaUserProfileProvider
 

@@ -30,4 +30,5 @@ dependencies {
     testImplementation(libs.androidx.arch.core.testing)
     testImplementation(libs.kotlin.coroutines.test)
     testImplementation(libs.bundles.okhttp3.mockwebserver)
+    testImplementation(libs.turbine)
 }
