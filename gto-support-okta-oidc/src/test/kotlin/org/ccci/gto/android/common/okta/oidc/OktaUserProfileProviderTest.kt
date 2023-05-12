@@ -26,7 +26,6 @@ import org.ccci.gto.android.common.okta.oidc.storage.makeChangeAware
 import org.json.JSONObject
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
-import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -163,7 +162,7 @@ internal class OktaUserProfileProviderTest : BaseOktaOidcTest() {
         verify(httpClient, never()).connect(any(), any())
 
         provider.activeFlows.set(1)
-        assertTrue(provider.refreshActor.trySend(Unit).isSuccess)
+        provider.refreshActor.send(Unit)
         runCurrent()
         verify(oktaRepo, atLeastOnce()).get(PersistableUserInfo.Restore(OKTA_USER_ID))
         verify(httpClient, never()).connect(any(), any())
@@ -175,6 +174,7 @@ internal class OktaUserProfileProviderTest : BaseOktaOidcTest() {
     fun verifyRefreshActorWakesUpOnOktaUserIdChange() = testScope.runTest {
         tokens.stub { on { idToken } doReturn null }
         provider.activeFlows.set(1)
+        provider.refreshActor.send(Unit)
         advanceUntilIdle()
         verify(oktaRepo, never()).get<PersistableUserInfo>(any())
         verify(httpClient, never()).connect(any(), any())
@@ -196,6 +196,7 @@ internal class OktaUserProfileProviderTest : BaseOktaOidcTest() {
             on { isStale } doReturn false
             on { nextRefreshDelay } doReturn HOUR_IN_MS
         }
+        provider.refreshActor.send(Unit)
 
         runCurrent()
         verify(oktaRepo, atLeastOnce()).get(PersistableUserInfo.Restore(OKTA_USER_ID))
@@ -223,6 +224,7 @@ internal class OktaUserProfileProviderTest : BaseOktaOidcTest() {
             on { isStale } doReturn true
             on { nextRefreshDelay } doReturn -1
         }
+        provider.refreshActor.send(Unit)
 
         testScope.runCurrent()
         verify(oktaRepo, atLeastOnce()).get(PersistableUserInfo.Restore(OKTA_USER_ID))
