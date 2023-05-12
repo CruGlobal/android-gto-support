@@ -6,6 +6,8 @@ import com.okta.oidc.clients.sessions.SessionClient
 import com.okta.oidc.net.response.UserInfo
 import com.okta.oidc.storage.OktaRepository
 import com.okta.oidc.storage.OktaStorage
+import io.mockk.every
+import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -44,18 +46,17 @@ import org.mockito.kotlin.whenever
 @RunWith(AndroidJUnit4::class)
 @OptIn(ExperimentalCoroutinesApi::class)
 internal class OktaUserProfileProviderTest : BaseOktaOidcTest() {
-    private lateinit var sessionClient: SessionClient
+    private val tokens: Tokens = mockk { every { idToken } returns ID_TOKEN }
+    private lateinit var userInfo: PersistableUserInfo
+
     override val storage = mock<OktaStorage>().makeChangeAware() as ChangeAwareOktaStorage
     private lateinit var oktaRepo: OktaRepository
+    private lateinit var sessionClient: SessionClient
 
     private lateinit var provider: OktaUserProfileProvider
 
-    private lateinit var tokens: Tokens
-    private lateinit var userInfo: PersistableUserInfo
-
     @Before
     fun setup() {
-        tokens = mock { on { idToken } doReturn ID_TOKEN }
         userInfo = mock()
 
         sessionClient = spy(webAuthClient.sessionClient) { doReturn(tokens).whenever(it).tokens }
@@ -92,7 +93,7 @@ internal class OktaUserProfileProviderTest : BaseOktaOidcTest() {
 
     @Test
     fun verifyUserInfoFlowChangeUser() = runTest(UnconfinedTestDispatcher()) {
-        tokens.stub { on { idToken } doReturn null }
+        every { tokens.idToken } returns null
         val results = mutableListOf<UserInfo?>()
 
         // initial user info
@@ -111,7 +112,7 @@ internal class OktaUserProfileProviderTest : BaseOktaOidcTest() {
         assertEquals(0, results.size)
 
         // update user id
-        tokens.stub { on { idToken } doReturn ID_TOKEN }
+        every { tokens.idToken } returns ID_TOKEN
         storage.notifyChanged()
         assertEquals(1, provider.activeFlows.get())
         verify(oktaRepo).get(PersistableUserInfo.Restore(OKTA_USER_ID))
@@ -138,7 +139,7 @@ internal class OktaUserProfileProviderTest : BaseOktaOidcTest() {
         // user is logged out
         reset(oktaRepo)
         results.clear()
-        tokens.stub { on { idToken } doReturn null }
+        every { tokens.idToken } returns null
         storage.notifyChanged()
         assertEquals(0, provider.activeFlows.get())
         verify(oktaRepo, never()).get<PersistableUserInfo>(any())
@@ -170,14 +171,14 @@ internal class OktaUserProfileProviderTest : BaseOktaOidcTest() {
 
     @Test
     fun verifyRefreshActorWakesUpOnOktaUserIdChange() = testScope.runTest {
-        tokens.stub { on { idToken } doReturn null }
+        every { tokens.idToken } returns null
         provider.activeFlows.set(1)
         provider.refreshActor.send(Unit)
         advanceUntilIdle()
         verify(oktaRepo, never()).get<PersistableUserInfo>(any())
         verify(httpClient, never()).connect(any(), any())
 
-        tokens.stub { on { idToken } doReturn ID_TOKEN }
+        every { tokens.idToken } returns ID_TOKEN
         storage.notifyChanged()
         runCurrent()
         verify(oktaRepo).get(PersistableUserInfo.Restore(OKTA_USER_ID))
