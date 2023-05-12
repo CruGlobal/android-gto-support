@@ -8,9 +8,9 @@ import com.okta.oidc.storage.OktaRepository
 import com.okta.oidc.util.AuthorizationException
 import java.util.concurrent.atomic.AtomicInteger
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.ObsoleteCoroutinesApi
 import kotlinx.coroutines.channels.Channel.Factory.CONFLATED
 import kotlinx.coroutines.channels.actor
@@ -36,7 +36,7 @@ import org.ccci.gto.android.common.okta.oidc.net.response.oktaUserId
 import org.ccci.gto.android.common.okta.oidc.storage.getPersistableUserInfo
 
 @SuppressLint("RestrictedApi")
-@OptIn(ExperimentalCoroutinesApi::class, FlowPreview::class, ObsoleteCoroutinesApi::class)
+@OptIn(DelicateCoroutinesApi::class, ExperimentalCoroutinesApi::class, ObsoleteCoroutinesApi::class)
 class OktaUserProfileProvider @VisibleForTesting internal constructor(
     private val sessionClient: SessionClient,
     private val oktaRepo: OktaRepository = sessionClient.oktaRepo,
