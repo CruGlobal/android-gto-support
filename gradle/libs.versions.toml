@@ -88,7 +88,7 @@ kotlin-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-te
 kotlin-gradle = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
 kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "kotlin" }
 kotlinter = { module = "org.jmailen.gradle:kotlinter-gradle", version.ref = "kotlinter" }
-leakcanary = "com.squareup.leakcanary:leakcanary-android:2.10"
+leakcanary = "com.squareup.leakcanary:leakcanary-android:2.11"
 lightweightStream = { module = "com.annimon:stream", version = "1.2.2" }
 lottie = "com.airbnb.android:lottie:6.0.0"
 materialComponents = "com.google.android.material:material:1.9.0"
