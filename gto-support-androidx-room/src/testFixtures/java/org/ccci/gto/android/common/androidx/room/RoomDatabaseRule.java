@@ -13,6 +13,7 @@ import org.junit.runner.Description;
 import java.util.concurrent.Executor;
 
 import kotlinx.coroutines.CoroutineDispatcher;
+import kotlinx.coroutines.CoroutineScope;
 import kotlinx.coroutines.ExecutorsKt;
 
 // TODO: convert this to Kotlin once Android Test Fixtures support Kotlin
@@ -20,22 +21,41 @@ import kotlinx.coroutines.ExecutorsKt;
 //       https://issuetracker.google.com/issues/259523353
 public class RoomDatabaseRule<T extends RoomDatabase> extends TestWatcher {
     public RoomDatabaseRule(@NonNull Class<T> dbClass) {
-        this(dbClass, (Executor) null);
+        this(dbClass, (Executor) null, null);
     }
 
     public RoomDatabaseRule(@NonNull Class<T> dbClass, @Nullable CoroutineDispatcher queryDispatcher) {
-        this(dbClass, queryDispatcher != null ? ExecutorsKt.asExecutor(queryDispatcher) : null);
+        this(dbClass, queryDispatcher, null);
     }
 
     public RoomDatabaseRule(@NonNull Class<T> dbClass, @Nullable Executor queryExecutor) {
+        this(dbClass, queryExecutor, null);
+    }
+
+    public RoomDatabaseRule(
+            @NonNull Class<T> dbClass,
+            @Nullable CoroutineDispatcher queryDispatcher,
+            @Nullable CoroutineScope coroutineScope
+    ) {
+        this(dbClass, queryDispatcher != null ? ExecutorsKt.asExecutor(queryDispatcher) : null, coroutineScope);
+    }
+
+    public RoomDatabaseRule(
+            @NonNull Class<T> dbClass,
+            @Nullable Executor queryExecutor,
+            @Nullable CoroutineScope coroutineScope
+    ) {
         mDbClass = dbClass;
         mQueryExecutor = queryExecutor;
+        mCoroutineScope = coroutineScope;
     }
 
     @NonNull
     private final Class<T> mDbClass;
     @Nullable
     private final Executor mQueryExecutor;
+    @Nullable
+    private final CoroutineScope mCoroutineScope;
 
     @Nullable
     private T mDb;
@@ -53,6 +73,9 @@ public class RoomDatabaseRule<T extends RoomDatabase> extends TestWatcher {
                 .setQueryExecutor(mQueryExecutor != null ? mQueryExecutor : ArchTaskExecutor.getIOThreadExecutor())
                 .setTransactionExecutor(ArchTaskExecutor.getIOThreadExecutor())
                 .build();
+        if (mCoroutineScope != null) {
+            TestRoomDatabaseCoroutines.setCoroutineScope(mDb, mCoroutineScope);
+        }
     }
 
     @Override
