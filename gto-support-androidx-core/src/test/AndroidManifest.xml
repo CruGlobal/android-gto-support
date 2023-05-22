@@ -1,0 +1,7 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <application android:localeConfig="@xml/locales_config">
+        <meta-data
+            android:name="org.ccci.gto.support.common.androidx.core.LocaleConfig"
+            android:resource="@xml/locales_config" />
+    </application>
+</manifest>
