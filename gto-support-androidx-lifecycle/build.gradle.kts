@@ -5,6 +5,7 @@ plugins {
 android {
     namespace = "org.ccci.gto.android.common.androidx.lifecycle"
     configureCompose(project)
+    testFixtures.enable = true
 }
 
 dependencies {
@@ -26,6 +27,8 @@ dependencies {
     // region SavedStateHandle
     compileOnly(libs.androidx.lifecycle.viewmodel.savedstate)
     // endregion SavedStateHandle
+
+    testFixturesApi(libs.androidx.lifecycle.viewmodel)
 
     testImplementation(libs.androidx.arch.core.testing)
     testImplementation(libs.androidx.core.ktx)
