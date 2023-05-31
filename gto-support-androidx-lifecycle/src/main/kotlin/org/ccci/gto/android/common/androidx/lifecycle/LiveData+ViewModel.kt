@@ -4,18 +4,12 @@ import androidx.annotation.MainThread
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.setTagIfAbsent
 import com.karumi.weak.weak
 import java.io.Closeable
-import java.util.concurrent.atomic.AtomicInteger
 
-private val OBSERVER_INDEX = AtomicInteger(0)
 fun <O, T : O> LiveData<T>.observe(viewModel: ViewModel, observer: Observer<O>): Observer<O> {
     observeForever(observer)
-    viewModel.setTagIfAbsent(
-        "LiveDataObserver-${OBSERVER_INDEX.getAndIncrement()}",
-        WeakCloseableObserverWrapper(this, observer)
-    )
+    viewModel.addCloseable(WeakCloseableObserverWrapper(this, observer))
     return observer
 }
 
