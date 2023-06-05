@@ -5,6 +5,11 @@ import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
 
+inline fun Cursor.forEach(block: (Cursor) -> Unit) {
+    moveToPosition(-1)
+    while (moveToNext()) block(this)
+}
+
 // region JSONArray
 /**
  * @receiver The Cursor we are fetching the value from
