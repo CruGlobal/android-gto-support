@@ -3,7 +3,10 @@ plugins {
     kotlin("kapt")
 }
 
-android.namespace = "org.ccci.gto.android.common.scarlet.actioncable"
+android {
+    namespace = "org.ccci.gto.android.common.scarlet.actioncable"
+    defaultConfig.consumerProguardFiles("proguard-consumer.pro")
+}
 
 dependencies {
     implementation(project(":gto-support-moshi"))
