@@ -131,6 +131,6 @@ okhttp3-mockwebserver = ["okhttp3-mockwebserver", "okhttp3-tls"]
 
 [plugins]
 dagger-hilt = { id = "com.google.dagger.hilt.android", version.ref = "dagger" }
-kotlin-kover = { id = "org.jetbrains.kotlinx.kover", version = "0.6.1" }
+kotlin-kover = { id = "org.jetbrains.kotlinx.kover", version = "0.7.2" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 kotlinter = { id = "org.jmailen.kotlinter", version.ref = "kotlinter" }
