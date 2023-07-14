@@ -12,6 +12,8 @@ dependencies {
 
     implementation(project(":gto-support-androidx-compose"))
 
+    testImplementation(libs.kotlin.coroutines.test)
+
     // region Linkify support
     implementation(libs.androidx.core)
     // endregion Linkify support
