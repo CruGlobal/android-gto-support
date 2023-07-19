@@ -1,8 +1,5 @@
-buildscript {
-    repositories {
-        google()
-        mavenCentral()
-    }
+plugins {
+    id("build-logic")
 }
 
 allprojects {
