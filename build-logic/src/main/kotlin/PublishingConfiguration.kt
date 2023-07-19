@@ -80,3 +80,5 @@ internal fun Project.configurePublishing() {
 private val Project.isAndroidLibrary get() = extensions.findByType<LibraryExtension>() != null
 private val Project.isJava get() = extensions.findByType<JavaPluginExtension>() != null
 private val Project.isMultiplatform get() = extensions.findByType<KotlinMultiplatformExtension>() != null
+
+private val Project.isSnapshotVersion get() = version.toString().endsWith("-SNAPSHOT")

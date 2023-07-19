@@ -21,7 +21,7 @@ internal fun KotlinMultiplatformExtension.baseConfiguration() {
 // TODO: provide Project using the new multiple context receivers functionality.
 //       this is prototyped in 1.6.20 and will probably reach beta in Kotlin 1.8 or 1.9
 // context(Project)
-fun KotlinMultiplatformExtension.configureTargets(project: Project) {
+internal fun KotlinMultiplatformExtension.configureTargets(project: Project) {
     configureAndroidTargets(project)
     configureIosTargets()
     configureJsTargets()
@@ -30,7 +30,7 @@ fun KotlinMultiplatformExtension.configureTargets(project: Project) {
 // TODO: provide Project using the new multiple context receivers functionality.
 //       this is prototyped in 1.6.20 and will probably reach beta in Kotlin 1.8 or 1.9
 // context(Project)
-fun KotlinMultiplatformExtension.configureAndroidTargets(project: Project) {
+private fun KotlinMultiplatformExtension.configureAndroidTargets(project: Project) {
     androidTarget {
         publishAllLibraryVariants()
     }
@@ -47,7 +47,7 @@ fun KotlinMultiplatformExtension.configureAndroidTargets(project: Project) {
     }
 }
 
-fun KotlinMultiplatformExtension.configureIosTargets() {
+private fun KotlinMultiplatformExtension.configureIosTargets() {
     ios {
         // enable running ios tests on a background thread as well
         // configuration copied from: https://github.com/square/okio/pull/929
@@ -65,7 +65,7 @@ fun KotlinMultiplatformExtension.configureIosTargets() {
     }
 }
 
-fun KotlinMultiplatformExtension.configureJsTargets() {
+private fun KotlinMultiplatformExtension.configureJsTargets() {
     js {
         binaries.library()
         browser {

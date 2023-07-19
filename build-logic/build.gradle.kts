@@ -2,7 +2,19 @@ import org.jmailen.gradle.kotlinter.tasks.LintTask
 
 plugins {
     `kotlin-dsl`
+    `java-gradle-plugin`
     alias(libs.plugins.kotlinter)
+}
+
+kotlin.jvmToolchain {
+    languageVersion.set(JavaLanguageVersion.of(17))
+}
+
+gradlePlugin {
+    plugins.register("build-logic") {
+        id = "build-logic"
+        implementationClass = "org.ccci.gto.android.common.gradle.BuildLogicPlugin"
+    }
 }
 
 repositories {
@@ -17,10 +29,6 @@ dependencies {
     implementation(libs.kotlin.gradle)
     implementation(libs.kotlin.kover.gradlePlugin)
     implementation(libs.kotlinter)
-}
-
-kotlin.jvmToolchain {
-    languageVersion.set(libs.versions.jvm.map { JavaLanguageVersion.of(it) })
 }
 
 // region Kotlinter

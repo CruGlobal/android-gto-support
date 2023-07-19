@@ -1,7 +1,8 @@
 pluginManagement {
     repositories {
-        mavenCentral()
+        google()
         gradlePluginPortal()
+        mavenCentral()
     }
 }
 
@@ -36,6 +37,8 @@ if (System.getenv("GITHUB_ACTIONS")?.toBoolean() == true) {
         }
     }
 }
+
+includeBuild("build-logic")
 
 include("gto-support-androidx-annotation")
 include("gto-support-androidx-collection")
