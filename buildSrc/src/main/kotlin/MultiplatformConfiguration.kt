@@ -31,7 +31,7 @@ fun KotlinMultiplatformExtension.configureTargets(project: Project) {
 //       this is prototyped in 1.6.20 and will probably reach beta in Kotlin 1.8 or 1.9
 // context(Project)
 fun KotlinMultiplatformExtension.configureAndroidTargets(project: Project) {
-    android {
+    androidTarget {
         publishAllLibraryVariants()
     }
 
