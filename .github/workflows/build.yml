@@ -237,7 +237,7 @@ jobs:
         uses: actions/checkout@v3
       - name: Find Version
         id: version
-        run: grep version gradle.properties >> $GITHUB_OUTPUT
+        run: grep ^version= gradle.properties >> $GITHUB_OUTPUT
       - name: Generate Tag Name
         id: tag_name
         run: echo tag=$TAG_NAME >> $GITHUB_OUTPUT
