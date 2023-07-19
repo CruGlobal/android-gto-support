@@ -2,6 +2,7 @@ plugins {
     kotlin("multiplatform")
     id("com.android.library")
     id("maven-publish")
+    id("org.jetbrains.kotlinx.kover")
     id("org.jmailen.kotlinter")
 }
 
@@ -15,6 +16,11 @@ kotlin {
     configureTargets(project)
 }
 
-configureKotlinKover()
+koverReport {
+    defaults {
+        mergeWith("debug")
+    }
+}
+
 configureKotlinter()
 configurePublishing()

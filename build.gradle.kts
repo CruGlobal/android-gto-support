@@ -4,9 +4,6 @@ buildscript {
         mavenCentral()
     }
 }
-plugins {
-    alias(libs.plugins.kotlin.kover)
-}
 
 allprojects {
     // configure the project version
@@ -74,12 +71,6 @@ allprojects {
     }
 }
 // endregion checkstyle
-
-// region Kotlin Kover
-koverMerged {
-    enable()
-}
-// endregion Kotlin Kover
 
 // region Kotlinter
 tasks.register("lintKotlin")

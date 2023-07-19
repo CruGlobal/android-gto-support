@@ -1,6 +1,5 @@
 plugins {
     id("gto-support.multiplatform-conventions")
-    alias(libs.plugins.kotlin.kover)
 }
 
 android {
