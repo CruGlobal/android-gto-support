@@ -26,7 +26,7 @@ dependencies {
     implementation(libs.android.gradle)
     implementation(libs.kotlin.gradle)
     implementation(libs.kotlin.kover.gradlePlugin)
-    implementation(libs.kotlinter)
+    implementation(libs.ktlint.gradle)
 }
 
 ktlint {

@@ -1,5 +1,6 @@
 plugins {
     id("build-logic")
+    alias(libs.plugins.ktlint)
 }
 
 allprojects {
@@ -69,8 +70,4 @@ allprojects {
 }
 // endregion checkstyle
 
-// region Kotlinter
-tasks.register("lintKotlin")
-tasks.register("formatKotlin")
-configureKotlinter()
-// endregion Kotlinter
+configureKtlint()

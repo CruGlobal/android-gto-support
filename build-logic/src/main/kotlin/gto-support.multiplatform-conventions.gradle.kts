@@ -3,7 +3,7 @@ plugins {
     id("com.android.library")
     id("maven-publish")
     id("org.jetbrains.kotlinx.kover")
-    id("org.jmailen.kotlinter")
+    id("org.jlleitschuh.gradle.ktlint")
 }
 
 android {
@@ -22,5 +22,5 @@ koverReport {
     }
 }
 
-configureKotlinter()
+configureKtlint()
 configurePublishing()
