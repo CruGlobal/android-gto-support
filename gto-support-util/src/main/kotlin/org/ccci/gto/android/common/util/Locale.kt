@@ -1,5 +1,7 @@
 package org.ccci.gto.android.common.util
 
+import android.os.Build
+import androidx.annotation.DeprecatedSinceApi
 import java.util.IllformedLocaleException
 import java.util.Locale
 
@@ -15,6 +17,7 @@ val Locale.fallbacks get() = LocaleUtils.generateFallbacksSequence(this)
 
 fun Sequence<Locale>.includeFallbacks() = flatMap { sequenceOf(it) + it.fallbacks }
 
+@DeprecatedSinceApi(Build.VERSION_CODES.M)
 internal fun Locale.Builder.setLocaleSafe(locale: Locale): Locale.Builder = try {
     setLocale(locale)
 } catch (e: IllformedLocaleException) {
@@ -23,7 +26,7 @@ internal fun Locale.Builder.setLocaleSafe(locale: Locale): Locale.Builder = try 
              variant: LNum". To workaround this bug we manually set the locale components on the builder,
              skipping any invalid components
        see: https://gist.github.com/frett/034b8eba09cf815cbcd60f83b3f52eb4
-    */
+     */
     clear()
     try {
         setLanguage(locale.language)

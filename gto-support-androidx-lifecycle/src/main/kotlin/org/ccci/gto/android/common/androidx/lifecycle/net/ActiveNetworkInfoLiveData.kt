@@ -11,8 +11,9 @@ import android.net.NetworkInfo
 import androidx.annotation.RequiresPermission
 import androidx.lifecycle.LiveData
 
+@Suppress("ktlint:standard:annotation")
 @SuppressLint("MissingPermission")
-internal class ActiveNetworkInfoLiveData @RequiresPermission(ACCESS_NETWORK_STATE) constructor( // ktlint-disable annotation
+internal class ActiveNetworkInfoLiveData @RequiresPermission(ACCESS_NETWORK_STATE) constructor(
     private val context: Context
 ) : LiveData<NetworkInfo?>() {
     private val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
