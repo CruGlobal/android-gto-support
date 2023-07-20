@@ -9,6 +9,7 @@
         event = CHECKED_BUTTON_ATTR
     )
 )
+
 package org.ccci.gto.android.common.material.button.databinding
 
 import androidx.databinding.BindingAdapter
