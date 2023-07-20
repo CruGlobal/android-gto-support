@@ -1,9 +1,7 @@
-import org.jmailen.gradle.kotlinter.tasks.LintTask
-
 plugins {
     `kotlin-dsl`
     `java-gradle-plugin`
-    alias(libs.plugins.kotlinter)
+    alias(libs.plugins.ktlint)
 }
 
 kotlin.jvmToolchain {
@@ -28,12 +26,13 @@ dependencies {
     implementation(libs.android.gradle)
     implementation(libs.kotlin.gradle)
     implementation(libs.kotlin.kover.gradlePlugin)
-    implementation(libs.kotlinter)
+    implementation(libs.ktlint.gradle)
 }
 
-// region Kotlinter
-tasks.register<LintTask>("lintKotlinDslBuildScripts") {
-    source(file("build.gradle.kts"))
-    source(file("settings.gradle.kts"))
-}.also { tasks.named("lintKotlin") { dependsOn(it) } }
-// endregion Kotlinter
+ktlint {
+    version.set(libs.versions.ktlint)
+
+    filter {
+        exclude { it.file.path.startsWith("${buildDir.path}/") }
+    }
+}
