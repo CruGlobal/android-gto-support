@@ -12,6 +12,7 @@ dependencies {
 
     implementation(libs.timber)
 
+    testImplementation(kotlin("test"))
     testImplementation(libs.json)
     testImplementation(libs.jsonUnit)
 }
