@@ -1,6 +1,8 @@
 package org.ccci.gto.android.common.util.content
 
+import android.app.Activity
 import android.content.Context
+import android.content.ContextWrapper
 import android.content.pm.ApplicationInfo
 import android.content.res.Configuration
 import android.os.Build
@@ -28,6 +30,24 @@ fun Context.localize(vararg locales: Locale, includeExisting: Boolean = true): C
     )
 }
 fun Context.localizeIfPossible(locale: Locale?) = locale?.let { localize(it) } ?: this
+
+// region findActivity()
+fun Context.findActivityOrNull(): Activity? = findActivityOrNull<Activity>()
+@JvmName("findActivityOrNullInline")
+inline fun <reified T : Activity> Context.findActivityOrNull(): T? {
+    var context = this
+    while (context is ContextWrapper) {
+        if (context is T) return context
+        context = context.baseContext
+    }
+    return null
+}
+
+fun Context.findActivity(): Activity = findActivity<Activity>()
+@JvmName("findActivityInline")
+inline fun <reified T : Activity> Context.findActivity(): T =
+    findActivityOrNull<T>() ?: error("Context doesn't extend from a ${T::class.simpleName}")
+// endregion findActivity()
 
 fun Context.getString(locale: Locale?, @StringRes resId: Int, vararg formatArgs: Any?) =
     localizeIfPossible(locale).getString(resId, *formatArgs)

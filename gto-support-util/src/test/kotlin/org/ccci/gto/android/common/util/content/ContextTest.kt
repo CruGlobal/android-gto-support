@@ -1,11 +1,15 @@
 package org.ccci.gto.android.common.util.content
 
 import android.app.Activity
+import android.app.AliasActivity
 import android.content.Context
 import android.os.Build
 import android.os.LocaleList
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import java.util.Locale
+import kotlin.test.assertFailsWith
+import kotlin.test.assertNotNull
+import kotlin.test.assertNull
 import org.ccci.gto.android.common.util.os.toTypedArray
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.arrayContaining
@@ -28,6 +32,50 @@ class ContextTest {
     fun setup() {
         context = Robolectric.buildActivity(Activity::class.java).get()
     }
+
+    // region findActivity()
+    @Test
+    fun `findActivity()`() {
+        val activity = context.findActivity()
+        assertNotNull(activity)
+        assertFailsWith<IllegalStateException> {
+            context.applicationContext.findActivity()
+        }
+    }
+
+    @Test
+    fun `findActivity() - reified inline`() {
+        assertNotNull(context.findActivity<Activity>())
+        assertFailsWith<IllegalStateException> {
+            context.applicationContext.findActivity<Activity>()
+        }
+        assertFailsWith<IllegalStateException> {
+            context.findActivity<AliasActivity>()
+        }
+
+        val context2 = Robolectric.buildActivity(AliasActivity::class.java).get()
+        assertNotNull(context2.findActivity<AliasActivity>())
+    }
+
+    @Test
+    fun `findActivityOrNull()`() {
+        val activity = context.findActivityOrNull()
+        val activity2 = context.applicationContext.findActivityOrNull()
+        assertNotNull(activity)
+        assertNull(activity2)
+    }
+
+    @Test
+    fun `findActivityOrNull() - reified inline`() {
+        assertNotNull(context.findActivityOrNull<Activity>())
+        assertNull(context.applicationContext.findActivityOrNull<Activity>())
+        assertNull(context.findActivityOrNull<AliasActivity>())
+
+        val context2 = Robolectric.buildActivity(AliasActivity::class.java).get()
+        assertNotNull(context2.findActivityOrNull<Activity>())
+        assertNotNull(context2.findActivityOrNull<AliasActivity>())
+    }
+    // endregion findActivity()
 
     @Test
     @Config(sdk = [OLDEST_SDK, 23])
