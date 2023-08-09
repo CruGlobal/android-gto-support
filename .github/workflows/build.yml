@@ -25,7 +25,7 @@ env:
 jobs:
   build:
     name: Build Library
-    runs-on: macos-11
+    runs-on: macos-13
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -178,7 +178,7 @@ jobs:
 
   ios_tests:
     name: iOS Unit Tests
-    runs-on: macos-11
+    runs-on: macos-13
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -283,7 +283,7 @@ jobs:
 
   deploy:
     name: Deploy Library
-    runs-on: macos-11
+    runs-on: macos-13
     if: |
       (github.event_name == 'push' && github.ref == 'refs/heads/master') ||
       (github.event_name == 'pull_request' && contains(github.event.pull_request.labels.*.name, 'Publish PR SNAPSHOT')) ||
