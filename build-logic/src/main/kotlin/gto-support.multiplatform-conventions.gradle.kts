@@ -6,10 +6,6 @@ plugins {
     id("org.jlleitschuh.gradle.ktlint")
 }
 
-android {
-    baseConfiguration(project)
-}
-
 kotlin {
     baseConfiguration()
     configureJvmToolchain(project)
