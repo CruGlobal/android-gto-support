@@ -36,6 +36,8 @@ private fun KotlinMultiplatformExtension.configureAndroidTargets(project: Projec
     }
 
     project.extensions.configure<LibraryExtension> {
+        baseConfiguration(project)
+
         sourceSets {
             named("main") { setRoot("src/androidMain") }
             named("androidTest") { setRoot("src/androidAndroidTest") }
