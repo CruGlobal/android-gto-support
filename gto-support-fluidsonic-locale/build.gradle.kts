@@ -1,5 +1,5 @@
 plugins {
-    id("gto-support.multiplatform-conventions")
+    id("gto-support.multiplatform-android-conventions")
 }
 
 android {
@@ -7,6 +7,9 @@ android {
 }
 
 kotlin {
+    configureIosTarget()
+    configureJsTarget()
+
     sourceSets {
         val commonMain by getting {
             dependencies {
