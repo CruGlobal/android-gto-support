@@ -125,7 +125,7 @@ class JsonApiConverterFactoryTest {
 
     internal interface Service {
         @POST("/")
-        fun post(@Body model: JsonApiObject<ModelSimple?>?): Call<JsonApiObject<ModelSimple>>
+        fun post(@Body model: JsonApiObject<ModelSimple>?): Call<JsonApiObject<ModelSimple>>
 
         @POST("/")
         fun post(@Body model: ModelSimple?): Call<ModelSimple>

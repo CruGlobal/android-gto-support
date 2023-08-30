@@ -29,13 +29,13 @@ class JsonApiMessageAdapterFactory(private val jsonApi: JsonApiConverter) : Mess
             }
         }
 
-    private inner class JsonApiObjectMessageAdapter<T> internal constructor(private val dataType: Class<T>) :
+    private inner class JsonApiObjectMessageAdapter<T : Any>(private val dataType: Class<T>) :
         MessageAdapter<JsonApiObject<T>> {
         override fun fromMessage(message: Message) = jsonApi.fromJson(message.stringValue, dataType)
         override fun toMessage(data: JsonApiObject<T>) = Message.Text(jsonApi.toJson(data))
     }
 
-    private inner class ObjectMessageAdapter<T> internal constructor(dataType: Class<T>) : MessageAdapter<T> {
+    private inner class ObjectMessageAdapter<T : Any>(dataType: Class<T>) : MessageAdapter<T> {
         private val wrappedAdapter = JsonApiObjectMessageAdapter(dataType)
         override fun fromMessage(message: Message) = wrappedAdapter.fromMessage(message).apply {
             require(isSingle || data.size == 1) { "Cannot deserialize multiple objects to a single POJO" }
