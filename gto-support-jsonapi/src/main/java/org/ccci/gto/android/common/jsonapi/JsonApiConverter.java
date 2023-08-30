@@ -209,8 +209,8 @@ public final class JsonApiConverter {
             final JSONArray dataArray = jsonObject.optJSONArray(JSON_DATA);
             if (dataArray != null) {
                 output = JsonApiObject.of();
-                //noinspection unchecked
-                output.setData(resourcesFromJson(dataArray, type, Collection.class, false, objects));
+                //noinspection unchecked,rawtypes
+                output.setData(new ArrayList<>(resourcesFromJson(dataArray, type, Collection.class, false, objects)));
             }
             // {data: null} or {data: {}}
             else {

@@ -95,7 +95,7 @@ class JsonApiConverterFactory(private val converter: JsonApiConverter) : Convert
         }
     }
 
-    private inner class JsonApiObjectResponseBodyConverter<T>(
+    private inner class JsonApiObjectResponseBodyConverter<T : Any>(
         private val type: Class<T>,
     ) : Converter<ResponseBody, JsonApiObject<T>> {
         override fun convert(value: ResponseBody) = try {
@@ -110,7 +110,7 @@ class JsonApiConverterFactory(private val converter: JsonApiConverter) : Convert
         override fun convert(value: Any?) = wrappedConverter.convert(JsonApiObject.single(value))
     }
 
-    private inner class ObjectResponseBodyConverter<T>(type: Class<T>) : Converter<ResponseBody, T?> {
+    private inner class ObjectResponseBodyConverter<T : Any>(type: Class<T>) : Converter<ResponseBody, T?> {
         private val wrappedConverter = JsonApiObjectResponseBodyConverter(type)
         override fun convert(value: ResponseBody) = wrappedConverter.convert(value).dataSingle
     }
