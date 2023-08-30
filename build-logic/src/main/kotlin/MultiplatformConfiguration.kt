@@ -58,3 +58,7 @@ fun KotlinMultiplatformExtension.configureJsTarget() {
         nodejs()
     }
 }
+
+fun KotlinMultiplatformExtension.configureJvmTarget() {
+    jvm()
+}

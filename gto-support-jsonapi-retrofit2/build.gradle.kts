@@ -1,15 +1,36 @@
 plugins {
-    id("gto-support.java-conventions")
+    id("gto-support.multiplatform-android-conventions")
 }
 
-dependencies {
-    api(project(":gto-support-jsonapi"))
+android {
+    namespace = "org.ccci.gto.android.common.jsonapi.retrofit2"
+}
 
-    api(libs.retrofit)
-    implementation(libs.androidx.annotation)
-    implementation(libs.json)
+kotlin {
+    configureJvmTarget()
 
-    testImplementation(libs.jsonUnit)
-    testImplementation(libs.jsonUnit.fluent)
-    testImplementation(libs.okhttp3.mockwebserver)
+    sourceSets {
+        val commonMain by getting {
+            dependencies {
+                api(project(":gto-support-jsonapi"))
+
+                api(libs.retrofit)
+                implementation(libs.androidx.annotation)
+            }
+        }
+        val commonTest by getting {
+            dependencies {
+                implementation(libs.json)
+                implementation(libs.jsonUnit)
+                implementation(libs.jsonUnit.fluent)
+                implementation(libs.okhttp3.mockwebserver)
+            }
+        }
+
+        val jvmMain by getting {
+            dependencies {
+                implementation(libs.json)
+            }
+        }
+    }
 }
