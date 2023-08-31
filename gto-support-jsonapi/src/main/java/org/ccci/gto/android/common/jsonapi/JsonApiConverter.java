@@ -7,6 +7,7 @@ import org.ccci.gto.android.common.jsonapi.annotation.JsonApiPlaceholder;
 import org.ccci.gto.android.common.jsonapi.annotation.JsonApiPostCreate;
 import org.ccci.gto.android.common.jsonapi.annotation.JsonApiType;
 import org.ccci.gto.android.common.jsonapi.converter.TypeConverter;
+import org.ccci.gto.android.common.jsonapi.internal.util.ReflectionUtils;
 import org.ccci.gto.android.common.jsonapi.model.JsonApiError;
 import org.ccci.gto.android.common.jsonapi.model.JsonApiObject;
 import org.ccci.gto.android.common.jsonapi.util.Includes;
@@ -1023,10 +1024,10 @@ public final class JsonApiConverter {
             // resolve the collection type if we haven't resolved it already
             if (!mCollectionTypeResolved) {
                 final Type type = mField.getGenericType();
-                if (Collection.class.isAssignableFrom(JsonApiUtils.getRawType(type))) {
+                if (Collection.class.isAssignableFrom(ReflectionUtils.getRawType(type))) {
                     if (type instanceof ParameterizedType) {
                         mCollectionType =
-                                JsonApiUtils.getRawType(((ParameterizedType) type).getActualTypeArguments()[0]);
+                                ReflectionUtils.getRawType(((ParameterizedType) type).getActualTypeArguments()[0]);
                     }
                 }
                 mCollectionTypeResolved = true;
