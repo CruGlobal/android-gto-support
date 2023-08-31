@@ -26,7 +26,7 @@ public class JsonApiConverterJSONObjectTest {
         final String json = converter.toJson(JsonApiObject.single(obj));
         assertThatJson(json).node("data").isObject();
         assertThat(json, jsonPartEquals("data.type", ModelJSONObject.TYPE));
-        assertThat(json, jsonPartEquals("data.id", obj.mId));
+        assertThat(json, jsonPartEquals("data.id", obj.id));
         assertThat(json, jsonNodeAbsent("data.attributes.object"));
         assertThat(json, jsonNodeAbsent("data.attributes.array"));
     }
@@ -41,7 +41,7 @@ public class JsonApiConverterJSONObjectTest {
         final String json = converter.toJson(JsonApiObject.single(obj));
         assertThatJson(json).node("data").isObject();
         assertThat(json, jsonPartEquals("data.type", ModelJSONObject.TYPE));
-        assertThat(json, jsonPartEquals("data.id", obj.mId));
+        assertThat(json, jsonPartEquals("data.id", obj.id));
         assertThatJson(json).node("data.attributes.object").isObject();
         assertThatJson(json).node("data.attributes.object").isEqualTo("{}");
         assertThatJson(json).node("data.attributes.array").isArray().ofLength(0);
@@ -60,7 +60,7 @@ public class JsonApiConverterJSONObjectTest {
         final String json = converter.toJson(JsonApiObject.single(obj));
         assertThatJson(json).node("data").isObject();
         assertThat(json, jsonPartEquals("data.type", ModelJSONObject.TYPE));
-        assertThat(json, jsonPartEquals("data.id", obj.mId));
+        assertThat(json, jsonPartEquals("data.id", obj.id));
         assertThatJson(json).node("data.attributes.object").isObject();
         assertThatJson(json).node("data.attributes.object").isEqualTo(rawJsonObject);
         assertThatJson(json).node("data.attributes.array").isArray();
@@ -75,7 +75,7 @@ public class JsonApiConverterJSONObjectTest {
         final String json = converter.toJson(JsonApiObject.single(in));
         final ModelJSONObject out = converter.fromJson(json, ModelJSONObject.class).getDataSingle();
         assertThat(out, not(nullValue()));
-        assertThat(out.mId, is(in.mId));
+        assertThat(out.id, is(in.id));
         assertThat(out.object, nullValue());
         assertThat(out.array, nullValue());
     }
@@ -90,7 +90,7 @@ public class JsonApiConverterJSONObjectTest {
         final String json = converter.toJson(JsonApiObject.single(in));
         final ModelJSONObject out = converter.fromJson(json, ModelJSONObject.class).getDataSingle();
         assertThat(out, not(nullValue()));
-        assertThat(out.mId, is(in.mId));
+        assertThat(out.id, is(in.id));
         assertThat(out.object, not(nullValue()));
         assertThat(out.object.length(), is(0));
         assertThat(out.array, not(nullValue()));
@@ -110,7 +110,7 @@ public class JsonApiConverterJSONObjectTest {
         final String json = converter.toJson(JsonApiObject.single(in));
         final ModelJSONObject out = converter.fromJson(json, ModelJSONObject.class).getDataSingle();
         assertThat(out, not(nullValue()));
-        assertThat(out.mId, is(in.mId));
+        assertThat(out.id, is(in.id));
         assertThat(out.array, not(nullValue()));
         assertThat(out.array.length(), is(3));
         assertThat(out.array.getInt(0), is(1));
@@ -129,7 +129,7 @@ public class JsonApiConverterJSONObjectTest {
         public ModelJSONObject() {}
 
         public ModelJSONObject(final int id) {
-            mId = id;
+            super(id);
         }
 
         @Nullable

@@ -90,10 +90,10 @@ public class JsonApiConverterSparseFieldsetTest {
     private ModelParent createObj() {
         final ModelParent parent = new ModelParent("Padre", 65);
         parent.favorite = new ModelChild("Daniel", 34);
-        parent.favorite.mId = 11;
+        parent.favorite.id = 11;
         parent.children.add(parent.favorite);
         final ModelChild child2 = new ModelChild("Hey You", 15);
-        child2.mId = 20;
+        child2.id = 20;
         parent.children.add(child2);
         return parent;
     }
