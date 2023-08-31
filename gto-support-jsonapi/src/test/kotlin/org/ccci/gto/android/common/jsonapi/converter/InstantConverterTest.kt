@@ -2,10 +2,10 @@ package org.ccci.gto.android.common.jsonapi.converter
 
 import java.time.Instant
 import java.util.Date
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertFalse
-import org.junit.Assert.assertTrue
-import org.junit.Test
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 
 private const val ISO_EPOCH = "1970-01-01T00:00:00Z"
 
