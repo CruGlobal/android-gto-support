@@ -68,11 +68,7 @@ class JsonApiConverterErrorsTest {
         val obj = converter.fromJson(json, ModelSimple::class.java)
         assertTrue(obj.hasErrors)
         assertEquals(1, obj.errors.size)
-        val error1 = obj.errors[0]
-        assertEquals(error.detail, error1.detail)
-        assertEquals(error.status, error1.status)
-        assertEquals(error.source?.pointer, error1.source?.pointer)
-        assertThatJson(error1.rawMeta.toString()).isEqualTo(error.rawMeta.toString())
+        assertEquals(error, obj.errors[0])
     }
 
     @Test
@@ -81,25 +77,35 @@ class JsonApiConverterErrorsTest {
         val obj = converter.fromJson(ERROR_JSONAPI_MULTIPLE1, ModelSimple::class.java)
         assertTrue(obj.hasErrors)
         assertEquals(3, obj.errors.size)
-        val error1 = obj.errors[0]
-        assertEquals(403, error1.status)
-        assertEquals("Editing secret powers is not authorized on Sundays.", error1.detail)
-        assertEquals("/data/attributes/secretPowers", error1.source!!.pointer)
-        val error3 = obj.errors[2]
-        assertEquals(500, error3.status)
-        assertEquals("The backend responded with an error", error3.title)
-        assertEquals("Reputation service not responding after three requests.", error3.detail)
-        assertEquals("/data/attributes/reputation", error3.source!!.pointer)
+        assertEquals(
+            JsonApiError(
+                status = 403,
+                detail = "Editing secret powers is not authorized on Sundays.",
+                source = JsonApiError.Source(
+                    pointer = "/data/attributes/secretPowers",
+                ),
+            ),
+            obj.errors[0],
+        )
+        assertEquals(
+            JsonApiError(
+                status = 500,
+                title = "The backend responded with an error",
+                detail = "Reputation service not responding after three requests.",
+                source = JsonApiError.Source(
+                    pointer = "/data/attributes/reputation",
+                ),
+            ),
+            obj.errors[2],
+        )
     }
 
-    private fun simpleError(): JsonApiError {
-        val error = JsonApiError()
-        error.status = 200
-        error.detail = "Detail human readable message."
-        val source = JsonApiError.Source()
-        source.pointer = "/data/attributes/title"
-        error.source = source
-        error.rawMeta = JSONObject(META_SIMPLE)
-        return error
-    }
+    private fun simpleError() = JsonApiError(
+        status = 200,
+        detail = "Detail human readable message.",
+        source = JsonApiError.Source(
+            pointer = "/data/attributes/title",
+        ),
+        rawMeta = JSONObject(META_SIMPLE),
+    )
 }
