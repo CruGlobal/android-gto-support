@@ -33,7 +33,7 @@ public class JsonApiConverterAttributeCollectionsTest {
         final String json = mConverter.toJson(JsonApiObject.single(obj));
         assertThatJson(json).node("data").isObject();
         assertThat(json, jsonPartEquals("data.type", ModelCollectionAttribute.TYPE));
-        assertThat(json, jsonPartEquals("data.id", obj.mId));
+        assertThat(json, jsonPartEquals("data.id", obj.id));
         assertThat(json, jsonNodeAbsent("data.attributes.stringSet"));
         assertThat(json, jsonNodeAbsent("data.attributes.integerList"));
     }
@@ -46,7 +46,7 @@ public class JsonApiConverterAttributeCollectionsTest {
         final String json = mConverter.toJson(JsonApiObject.single(obj));
         assertThatJson(json).node("data").isObject();
         assertThat(json, jsonPartEquals("data.type", ModelCollectionAttribute.TYPE));
-        assertThat(json, jsonPartEquals("data.id", obj.mId));
+        assertThat(json, jsonPartEquals("data.id", obj.id));
         assertThatJson(json).node("data.attributes.stringSet").isArray().ofLength(0);
         assertThatJson(json).node("data.attributes.integerList").isArray().ofLength(0);
     }
@@ -59,7 +59,7 @@ public class JsonApiConverterAttributeCollectionsTest {
         final String json = mConverter.toJson(JsonApiObject.single(obj));
         assertThatJson(json).node("data").isObject();
         assertThat(json, jsonPartEquals("data.type", ModelCollectionAttribute.TYPE));
-        assertThat(json, jsonPartEquals("data.id", obj.mId));
+        assertThat(json, jsonPartEquals("data.id", obj.id));
         assertThatJson(json).node("data.attributes.integerList").isArray().ofLength(3)
                 .thatContains(1)
                 .thatContains(2)
@@ -76,7 +76,7 @@ public class JsonApiConverterAttributeCollectionsTest {
         final String json = mConverter.toJson(JsonApiObject.single(in));
         final ModelCollectionAttribute out = mConverter.fromJson(json, ModelCollectionAttribute.class).getDataSingle();
         assertThat(out, not(nullValue()));
-        assertThat(out.mId, is(in.mId));
+        assertThat(out.id, is(in.id));
         assertThat(out.integerList, nullValue());
         assertThat(out.stringSet, nullValue());
     }
@@ -89,7 +89,7 @@ public class JsonApiConverterAttributeCollectionsTest {
         final String json = mConverter.toJson(JsonApiObject.single(in));
         final ModelCollectionAttribute out = mConverter.fromJson(json, ModelCollectionAttribute.class).getDataSingle();
         assertThat(out, not(nullValue()));
-        assertThat(out.mId, is(in.mId));
+        assertThat(out.id, is(in.id));
         assertThat(out.stringSet, not(nullValue()));
         assertThat(out.stringSet.size(), is(0));
         assertThat(out.integerList, not(nullValue()));
@@ -105,7 +105,7 @@ public class JsonApiConverterAttributeCollectionsTest {
         final String json = mConverter.toJson(JsonApiObject.single(in));
         final ModelCollectionAttribute out = mConverter.fromJson(json, ModelCollectionAttribute.class).getDataSingle();
         assertThat(out, not(nullValue()));
-        assertThat(out.mId, is(in.mId));
+        assertThat(out.id, is(in.id));
         assertThat(out.stringSet, not(nullValue()));
         assertThat(out.stringSet.size(), is(3));
         assertThat(out.stringSet, containsInAnyOrder("c", "b", "a"));
@@ -121,7 +121,7 @@ public class JsonApiConverterAttributeCollectionsTest {
         public ModelCollectionAttribute() {}
 
         public ModelCollectionAttribute(final int id) {
-            mId = id;
+            super(id);
         }
 
         @Nullable

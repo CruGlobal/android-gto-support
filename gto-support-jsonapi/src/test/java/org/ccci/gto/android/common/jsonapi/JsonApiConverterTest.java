@@ -56,15 +56,15 @@ public class JsonApiConverterTest {
         final String json = converter.toJson(JsonApiObject.single(obj0));
         assertThatJson(json).node("data").isObject();
         assertThat(json, jsonPartEquals("data.type", ModelSimple.TYPE));
-        assertThat(json, jsonPartEquals("data.id", obj0.mId));
+        assertThat(json, jsonPartEquals("data.id", obj0.id));
 
         final ModelSimple obj1 = new ModelSimple(42);
         final String json2 = converter.toJson(JsonApiObject.of(obj0, obj1));
         assertThatJson(json2).node("data").isArray();
         assertThat(json2, jsonPartEquals("data[0].type", ModelSimple.TYPE));
-        assertThat(json2, jsonPartEquals("data[0].id", obj0.mId));
+        assertThat(json2, jsonPartEquals("data[0].id", obj0.id));
         assertThat(json2, jsonPartEquals("data[1].type", ModelSimple.TYPE));
-        assertThat(json2, jsonPartEquals("data[1].id", obj1.mId));
+        assertThat(json2, jsonPartEquals("data[1].id", obj1.id));
     }
 
     @Test
@@ -150,7 +150,7 @@ public class JsonApiConverterTest {
                 converter.fromJson(converter.toJson(JsonApiObject.single(source)), ModelSimple.class);
         assertThat(output.isSingle(), is(true));
         assertThat(output.getDataSingle(), is(not(nullValue())));
-        assertThat(output.getDataSingle().mId, is(99));
+        assertThat(output.getDataSingle().id, is(99));
     }
 
     @Test
@@ -163,7 +163,7 @@ public class JsonApiConverterTest {
                     converter.fromJson("{data:{type:'" + type + "',id:79}}", ModelSimple.class);
             final ModelSimple obj = output.getDataSingle();
             assertNotNull(obj);
-            assertThat(obj.mId, is(79));
+            assertThat(obj.id, is(79));
         }
 
         // invalid types
@@ -179,7 +179,7 @@ public class JsonApiConverterTest {
         final JsonApiConverter converter = new JsonApiConverter.Builder().addClasses(ModelAttributes.class).build();
 
         final ModelAttributes source = new ModelAttributes();
-        source.mId = 19;
+        source.id = 19;
         source.transientAttr = "tneisnart";
         source.attrStr1 = "1rtSrtta";
         source.attrFloat = 3.4f;
@@ -207,7 +207,7 @@ public class JsonApiConverterTest {
         assertThat(output.isSingle(), is(true));
         final ModelAttributes target = output.getDataSingle();
         assertThat(target, is(not(nullValue())));
-        assertThat(target.mId, is(source.mId));
+        assertThat(target.id, is(source.id));
         assertThat(target.transientAttr, is("transient"));
         assertThat(target.finalAttr, is("final"));
         assertThat(target.attrStr1, is(source.attrStr1));

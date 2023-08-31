@@ -59,8 +59,8 @@ public class JsonApiConverterPostCreateTest {
                 converter.fromJson(converter.toJson(JsonApiObject.single(source)), ModelSimple.class);
         assertThat(output.isSingle(), is(true));
         assertThat(output.getDataSingle(), is(not(nullValue())));
-        assertThat(output.getDataSingle().mId, is(99));
-        assertTrue(output.getDataSingle().mPostCreateCalled);
+        assertThat(output.getDataSingle().id, is(99));
+        assertTrue(output.getDataSingle().postCreateCalled);
     }
 
     @Test
@@ -73,7 +73,7 @@ public class JsonApiConverterPostCreateTest {
                 converter.fromJson(converter.toJson(JsonApiObject.single(source)), ModelDuplicatePostCreate.class);
         assertThat(output.isSingle(), is(true));
         assertThat(output.getDataSingle(), is(not(nullValue())));
-        assertTrue(output.getDataSingle().mPostCreateCalled);
+        assertTrue(output.getDataSingle().postCreateCalled);
         assertTrue(output.getDataSingle().mPrivatePostCreateCalled);
     }
 

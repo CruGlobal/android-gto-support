@@ -33,12 +33,12 @@ public class JsonApiConverterRelatedTest {
                 new JsonApiConverter.Builder().addClasses(ModelParent.class, ModelChild.class).build();
 
         final ModelParent parent = new ModelParent();
-        parent.mId = 1;
+        parent.id = 1;
         parent.favorite = new ModelChild("Daniel");
-        parent.favorite.mId = 11;
+        parent.favorite.id = 11;
         parent.children.add(parent.favorite);
         final ModelChild child2 = new ModelChild("Hey You");
-        child2.mId = 20;
+        child2.id = 20;
         parent.children.add(child2);
         final ModelChild child3 = new ModelChild("Child with no name");
         parent.children.add(child3);
@@ -50,7 +50,7 @@ public class JsonApiConverterRelatedTest {
         assertThat(json, jsonNodeAbsent("data.attributes.favorite"));
         assertThat(json, jsonNodeAbsent("data.attributes.children"));
         assertThat(json, jsonPartEquals("data.relationships.favorite.data.type", ModelChild.TYPE));
-        assertThat(json, jsonPartEquals("data.relationships.favorite.data.id", parent.favorite.mId));
+        assertThat(json, jsonPartEquals("data.relationships.favorite.data.id", parent.favorite.id));
         assertThat(json, jsonNodeAbsent("data.relationships.favorite.data.attributes"));
         assertThatJson(json).node("data.relationships.children.data").isArray().ofLength(2);
         assertThatJson(json).node("data.relationships.orphans.data").isArray().ofLength(2);
@@ -67,12 +67,12 @@ public class JsonApiConverterRelatedTest {
                 new JsonApiConverter.Builder().addClasses(ModelParent.class, ModelChild.class).build();
 
         final ModelParent parent = new ModelParent();
-        parent.mId = 1;
+        parent.id = 1;
         parent.favorite = new ModelChild("Daniel");
-        parent.favorite.mId = 11;
+        parent.favorite.id = 11;
         parent.children.add(parent.favorite);
         final ModelChild child2 = new ModelChild("Kid");
-        child2.mId = 20;
+        child2.id = 20;
         parent.children.add(child2);
         parent.orphans = new ModelChild[] {parent.favorite, child2};
 
@@ -81,9 +81,9 @@ public class JsonApiConverterRelatedTest {
         assertThat(output.isSingle(), is(true));
         final ModelParent target = output.getDataSingle();
         assertThat(target, is(not(nullValue())));
-        assertThat(target.mId, is(parent.mId));
+        assertThat(target.id, is(parent.id));
         assertThat(target.favorite, is(not(nullValue())));
-        assertThat(target.favorite.mId, is(parent.favorite.mId));
+        assertThat(target.favorite.id, is(parent.favorite.id));
         assertThat(target.favorite.name, is(parent.favorite.name));
         assertThat(target.children.size(), is(2));
         assertThat(target.children.get(0), is(sameInstance(target.favorite)));
@@ -100,7 +100,7 @@ public class JsonApiConverterRelatedTest {
         final JsonApiObject<ModelParent> output = converter.fromJson(raw, ModelParent.class);
         assertThat(output.isSingle(), is(true));
         final ModelParent target = output.getDataSingle();
-        assertThat(target.mId, is(1));
+        assertThat(target.id, is(1));
         assertThat(target.favorite, is(nullValue()));
     }
 
@@ -110,12 +110,12 @@ public class JsonApiConverterRelatedTest {
                 new JsonApiConverter.Builder().addClasses(ModelParent.class, ModelChild.class).build();
 
         final ModelParent parent = new ModelParent();
-        parent.mId = 1;
+        parent.id = 1;
         parent.favorite = new ModelChild("Daniel");
-        parent.favorite.mId = 11;
+        parent.favorite.id = 11;
         parent.children.add(parent.favorite);
         final ModelChild child2 = new ModelChild("Hey You");
-        child2.mId = 20;
+        child2.id = 20;
         parent.children.add(child2);
 
         final String json = converter.toJson(JsonApiObject.single(parent), include());
@@ -124,7 +124,7 @@ public class JsonApiConverterRelatedTest {
         assertThat(json, jsonNodeAbsent("data.attributes.favorite"));
         assertThat(json, jsonNodeAbsent("data.attributes.children"));
         assertThat(json, jsonPartEquals("data.relationships.favorite.data.type", ModelChild.TYPE));
-        assertThat(json, jsonPartEquals("data.relationships.favorite.data.id", parent.favorite.mId));
+        assertThat(json, jsonPartEquals("data.relationships.favorite.data.id", parent.favorite.id));
         assertThat(json, jsonNodeAbsent("data.relationships.favorite.data.attributes"));
         assertThatJson(json).node("data.relationships.children.data").isArray().ofLength(2);
         assertThat(json, jsonNodeAbsent("included"));
@@ -136,12 +136,12 @@ public class JsonApiConverterRelatedTest {
                 new JsonApiConverter.Builder().addClasses(ModelParent.class, ModelChild.class).build();
 
         final ModelParent parent = new ModelParent();
-        parent.mId = 1;
+        parent.id = 1;
         parent.favorite = new ModelChild("Daniel");
-        parent.favorite.mId = 11;
+        parent.favorite.id = 11;
         parent.children.add(parent.favorite);
         final ModelChild child2 = new ModelChild("Hey You");
-        child2.mId = 20;
+        child2.id = 20;
         parent.children.add(child2);
 
         final String json = converter.toJson(JsonApiObject.single(parent), include("favorite"));
@@ -150,7 +150,7 @@ public class JsonApiConverterRelatedTest {
         assertThat(json, jsonNodeAbsent("data.attributes.favorite"));
         assertThat(json, jsonNodeAbsent("data.attributes.children"));
         assertThat(json, jsonPartEquals("data.relationships.favorite.data.type", ModelChild.TYPE));
-        assertThat(json, jsonPartEquals("data.relationships.favorite.data.id", parent.favorite.mId));
+        assertThat(json, jsonPartEquals("data.relationships.favorite.data.id", parent.favorite.id));
         assertThat(json, jsonNodeAbsent("data.relationships.favorite.data.attributes"));
         assertThatJson(json).node("data.relationships.children.data").isArray().ofLength(2);
         assertThatJson(json).node("included").isArray().ofLength(1);
@@ -166,12 +166,12 @@ public class JsonApiConverterRelatedTest {
                 new JsonApiConverter.Builder().addClasses(ModelParent.class, ModelChild.class).build();
 
         final ModelParent parent = new ModelParent();
-        parent.mId = 1;
+        parent.id = 1;
         parent.favorite = new ModelChild("Daniel");
-        parent.favorite.mId = 11;
+        parent.favorite.id = 11;
         parent.children.add(parent.favorite);
         final ModelChild child2 = new ModelChild("Hey You");
-        child2.mId = 20;
+        child2.id = 20;
         parent.children.add(child2);
 
         final JsonApiObject<ModelParent> output = converter
@@ -179,18 +179,18 @@ public class JsonApiConverterRelatedTest {
         assertThat(output.isSingle(), is(true));
         final ModelParent target = output.getDataSingle();
         assertThat(target, is(not(nullValue())));
-        assertThat(target.mId, is(parent.mId));
+        assertThat(target.id, is(parent.id));
         assertThat(target.placeholder, is(false));
         assertThat(target.favorite, is(not(nullValue())));
         assertThat(target.favorite.placeholder, is(false));
-        assertThat(target.favorite.mId, is(parent.favorite.mId));
+        assertThat(target.favorite.id, is(parent.favorite.id));
         assertThat(target.favorite.name, is(parent.favorite.name));
         assertThat(target.children.size(), is(2));
         assertThat(target.children.get(0).placeholder, is(false));
-        assertThat(target.children.get(0).mPostCreateCalled, is(true));
+        assertThat(target.children.get(0).postCreateCalled, is(true));
         assertThat(target.children.get(0), is(sameInstance(target.favorite)));
         assertThat(target.children.get(1).placeholder, is(true));
-        assertThat(target.children.get(1).mPostCreateCalled, is(false));
+        assertThat(target.children.get(1).postCreateCalled, is(false));
     }
 
     @Test
@@ -199,7 +199,7 @@ public class JsonApiConverterRelatedTest {
                 new JsonApiConverter.Builder().addClasses(ModelParent.class, ModelChild.class).build();
 
         final ModelParent parent = new ModelParent();
-        parent.mId = 1;
+        parent.id = 1;
         parent.favorite = new ModelChild("Daniel");
         parent.children.add(parent.favorite);
 
