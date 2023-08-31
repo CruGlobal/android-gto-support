@@ -7,7 +7,7 @@ import okhttp3.MediaType
 import okhttp3.RequestBody
 import okhttp3.ResponseBody
 import org.ccci.gto.android.common.jsonapi.JsonApiConverter
-import org.ccci.gto.android.common.jsonapi.JsonApiUtils
+import org.ccci.gto.android.common.jsonapi.internal.util.ReflectionUtils
 import org.ccci.gto.android.common.jsonapi.model.JsonApiObject
 import org.ccci.gto.android.common.jsonapi.retrofit2.annotation.JsonApiInclude
 import org.ccci.gto.android.common.jsonapi.retrofit2.model.JsonApiRetrofitObject
@@ -46,7 +46,7 @@ class JsonApiConverterFactory(private val converter: JsonApiConverter) : Convert
         methodAnnotations: Array<Annotation>,
         retrofit: Retrofit,
     ): Converter<*, RequestBody>? {
-        val rawType = JsonApiUtils.getRawType(type)
+        val rawType = ReflectionUtils.getRawType(type)
         val include = parameterAnnotations.filterIsInstance<JsonApiInclude>().firstOrNull()
         return when {
             JsonApiObject::class.java.isAssignableFrom(rawType) -> {
@@ -64,11 +64,11 @@ class JsonApiConverterFactory(private val converter: JsonApiConverter) : Convert
         annotations: Array<Annotation>,
         retrofit: Retrofit,
     ): Converter<ResponseBody, *>? {
-        val rawType = JsonApiUtils.getRawType(type)
+        val rawType = ReflectionUtils.getRawType(type)
         return when {
             JsonApiObject::class.java.isAssignableFrom(rawType) -> {
                 require(type is ParameterizedType) { "JsonApiObject needs to be parameterized" }
-                return JsonApiObjectResponseBodyConverter(JsonApiUtils.getRawType(type.actualTypeArguments[0]))
+                return JsonApiObjectResponseBodyConverter(ReflectionUtils.getRawType(type.actualTypeArguments[0]))
             }
             Collection::class.java.isAssignableFrom(rawType) -> null // TODO
             converter.supports(rawType) -> ObjectResponseBodyConverter(rawType)
