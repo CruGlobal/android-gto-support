@@ -3,9 +3,9 @@ package org.ccci.gto.android.common.jsonapi
 import kotlin.test.Test
 import net.javacrumbs.jsonunit.JsonMatchers.jsonEquals
 import net.javacrumbs.jsonunit.fluent.JsonFluentAssert.assertThatJson
-import org.ccci.gto.android.common.jsonapi.annotation.JsonApiType
 import org.ccci.gto.android.common.jsonapi.model.JsonApiObject
-import org.ccci.gto.android.common.jsonapi.model.ModelBase
+import org.ccci.gto.android.common.jsonapi.model.ModelChild
+import org.ccci.gto.android.common.jsonapi.model.ModelParent
 import org.hamcrest.Matchers.containsInAnyOrder
 
 class JsonApiConverterSparseFieldsetTest {
@@ -90,29 +90,5 @@ class JsonApiConverterSparseFieldsetTest {
         assertThatJson(json).node("included").isArray.ofLength(1)
         assertThatJson(json).node("included")
             .matches(containsInAnyOrder(jsonEquals<Any>("{type:'child',id:11,attributes:{name:'Daniel'}}")))
-    }
-
-    @JsonApiType(ModelParent.TYPE)
-    class ModelParent(
-        var name: String? = null,
-        var age: Long = 0,
-        var children: List<ModelChild> = emptyList(),
-        var favorite: ModelChild? = null, // everyone has a favorite child
-        id: Int? = null,
-    ) : ModelBase(id) {
-        companion object {
-            const val TYPE = "parent"
-        }
-    }
-
-    @JsonApiType(ModelChild.TYPE)
-    class ModelChild(
-        var name: String? = null,
-        var age: Long = 0,
-        id: Int? = null,
-    ) : ModelBase(id) {
-        companion object {
-            const val TYPE = "child"
-        }
     }
 }
