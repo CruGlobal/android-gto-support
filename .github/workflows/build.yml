@@ -130,7 +130,7 @@ jobs:
           path: "**/build/reports/lint-results*.*"
 
   android_tests:
-    name: Android Unit Tests
+    name: Android & Java Unit Tests
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -156,7 +156,7 @@ jobs:
       - name: Run Unit Tests
         uses: gradle/gradle-build-action@v2
         with:
-          arguments: test koverXmlReport --scan
+          arguments: test jvmTest koverXmlReport --scan
       - name: Codecov
         uses: codecov/codecov-action@v3
         with:
