@@ -28,7 +28,7 @@ jobs:
     runs-on: macos-13
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Setup Java JDK
         uses: actions/setup-java@v3
         with:
@@ -50,7 +50,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Setup Java JDK
         uses: actions/setup-java@v3
         with:
@@ -78,7 +78,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Setup Java JDK
         uses: actions/setup-java@v3
         with:
@@ -106,7 +106,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Setup Java JDK
         uses: actions/setup-java@v3
         with:
@@ -134,7 +134,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Setup Java JDK
         uses: actions/setup-java@v3
         with:
@@ -181,7 +181,7 @@ jobs:
     runs-on: macos-13
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Setup Java JDK
         uses: actions/setup-java@v3
         with:
@@ -203,7 +203,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Setup Java JDK
         uses: actions/setup-java@v3
         with:
@@ -234,7 +234,7 @@ jobs:
       tag: ${{ steps.tag_name.outputs.tag }}
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Find Version
         id: version
         run: grep ^version= gradle.properties >> $GITHUB_OUTPUT
@@ -255,7 +255,7 @@ jobs:
     needs: [ build, checkstyle, ktlint, lint, android_tests, ios_tests, js_tests, check_version ]
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Create Tag
         env:
           TAG_NAME: ${{ needs.check_version.outputs.tag }}
@@ -292,7 +292,7 @@ jobs:
     needs: [ build, checkstyle, ktlint, lint, android_tests, ios_tests, js_tests, check_version ]
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Setup Java JDK
         uses: actions/setup-java@v3
         with:
