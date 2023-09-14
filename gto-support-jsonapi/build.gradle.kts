@@ -1,13 +1,25 @@
 plugins {
-    id("gto-support.java-conventions")
+    id("gto-support.multiplatform-android-conventions")
 }
 
-dependencies {
-    implementation(libs.androidx.annotation)
-    implementation(libs.json)
+android {
+    namespace = "org.ccci.gto.android.common.jsonapi"
+}
 
-    testImplementation(kotlin("test"))
-    testImplementation(libs.junit)
-    testImplementation(libs.jsonUnit)
-    testImplementation(libs.jsonUnit.fluent)
+kotlin {
+    configureJvmTarget()
+
+    sourceSets {
+        val commonMain by getting {
+            dependencies {
+                api(project(":gto-support-jsonapi-core"))
+            }
+        }
+
+        val jvmMain by getting {
+            dependencies {
+                api(libs.json)
+            }
+        }
+    }
 }
