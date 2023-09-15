@@ -4,6 +4,10 @@ plugins {
 
 android {
     namespace = "org.ccci.gto.android.common.jsonapi.retrofit2"
+
+    defaultConfig {
+        consumerProguardFile("src/jvmMain/resources/META-INF/proguard/jsonapi-retrofit2.pro")
+    }
 }
 
 kotlin {
