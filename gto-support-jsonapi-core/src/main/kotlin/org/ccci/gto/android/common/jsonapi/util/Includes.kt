@@ -43,4 +43,6 @@ class Includes private constructor(include: Collection<String>?, private val bas
         null -> this
         else -> Includes(this, relationship)
     }
+
+    val queryParameterValue get() = include.joinToString(",")
 }

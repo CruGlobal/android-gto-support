@@ -1,10 +1,13 @@
 package org.ccci.gto.android.common.jsonapi.retrofit2
 
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import org.ccci.gto.android.common.jsonapi.retrofit2.JsonApiParams.Companion.PARAM_INCLUDE
+import org.ccci.gto.android.common.jsonapi.util.Includes
 import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.aMapWithSize
 import org.hamcrest.Matchers.hasEntry
-import org.junit.Test
 
 class JsonApiParamsTest {
     @Test
@@ -59,6 +62,14 @@ class JsonApiParamsTest {
         )
         params.clearIncludes()
         assertThat(params, aMapWithSize(0))
+    }
+
+    @Test
+    fun verifyIncludes() {
+        val values = setOf("a", "a.b", "c", "d")
+
+        val params = JsonApiParams().includes(Includes(values))
+        assertEquals(values, params[PARAM_INCLUDE]!!.split(",").toSet())
     }
 
     @Test
