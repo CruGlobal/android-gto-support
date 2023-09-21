@@ -7,6 +7,7 @@ import org.ccci.gto.android.common.jsonapi.annotation.JsonApiPlaceholder;
 import org.ccci.gto.android.common.jsonapi.annotation.JsonApiPostCreate;
 import org.ccci.gto.android.common.jsonapi.annotation.JsonApiType;
 import org.ccci.gto.android.common.jsonapi.converter.TypeConverter;
+import org.ccci.gto.android.common.jsonapi.internal.util.ObjKey;
 import org.ccci.gto.android.common.jsonapi.internal.util.ReflectionUtils;
 import org.ccci.gto.android.common.jsonapi.model.JsonApiError;
 import org.ccci.gto.android.common.jsonapi.model.JsonApiObject;
@@ -403,7 +404,7 @@ public final class JsonApiConverter {
                     final JSONObject relatedObj =
                             resourceToJson(field.mField.get(resource), options, include.descendant(attrName), related,
                                            anonymousRelated);
-                    final ObjKey key = ObjKey.create(relatedObj);
+                    final ObjKey key = relatedObj != null ? ObjKey.create(relatedObj) : null;
                     if (key != null) {
                         final JSONObject reference =
                                 new JSONObject(relatedObj, new String[] {JSON_DATA_TYPE, JSON_DATA_ID});
@@ -427,7 +428,7 @@ public final class JsonApiConverter {
                             final JSONObject relatedObj =
                                     resourceToJson(obj, options, include.descendant(attrName), related,
                                                    anonymousRelated);
-                            final ObjKey key = ObjKey.create(relatedObj);
+                            final ObjKey key = relatedObj != null ? ObjKey.create(relatedObj) : null;
                             if (key != null) {
                                 objs.put(new JSONObject(relatedObj, new String[] {JSON_DATA_TYPE, JSON_DATA_ID}));
 
@@ -452,7 +453,7 @@ public final class JsonApiConverter {
                             final JSONObject relatedObj =
                                     resourceToJson(obj, options, include.descendant(attrName), related,
                                                    anonymousRelated);
-                            final ObjKey key = ObjKey.create(relatedObj);
+                            final ObjKey key = relatedObj != null ? ObjKey.create(relatedObj) : null;
                             if (key != null) {
                                 objs.put(new JSONObject(relatedObj, new String[] {JSON_DATA_TYPE, JSON_DATA_ID}));
 
@@ -1113,49 +1114,6 @@ public final class JsonApiConverter {
                 return true;
             }
             return false;
-        }
-    }
-
-    static final class ObjKey {
-        @NonNull
-        final String mType;
-        @NonNull
-        final String mId;
-
-        ObjKey(@NonNull final String type, @NonNull final String id) {
-            mType = type;
-            mId = id;
-        }
-
-        @Nullable
-        static ObjKey create(@Nullable final JSONObject json) {
-            if (json != null) {
-                final String type = !json.isNull(JSON_DATA_TYPE) ? json.optString(JSON_DATA_TYPE, null) : null;
-                final String id = !json.isNull(JSON_DATA_ID) ? json.optString(JSON_DATA_ID, null) : null;
-                if (type != null && id != null) {
-                    return new ObjKey(type, id);
-                }
-            }
-
-            return null;
-        }
-
-        @Override
-        public boolean equals(final Object o) {
-            if (this == o) {
-                return true;
-            }
-            if (!(o instanceof ObjKey)) {
-                return false;
-            }
-
-            final ObjKey that = (ObjKey) o;
-            return mType.equals(that.mType) && mId.equals(that.mId);
-        }
-
-        @Override
-        public int hashCode() {
-            return Arrays.hashCode(new Object[] {mType, mId});
         }
     }
 
