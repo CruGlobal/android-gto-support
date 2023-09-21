@@ -149,14 +149,24 @@ public final class JsonApiConverter {
                 if (resource == null) {
                     json.put(JSON_DATA, JSONObject.NULL);
                 } else {
-                    json.put(JSON_DATA, resourceToJson(resource, options, includes, related, anonymousRelated, false));
+                    final JSONObject data =
+                            resourceToJson(resource, options, includes, related, anonymousRelated, false);
+                    json.put(JSON_DATA, data);
+                    if (data != null) {
+                        related.remove(ObjKey.create(data));
+                    }
                 }
             } else {
-                final JSONArray dataArr = new JSONArray();
+                final List<JSONObject> dataArr = new ArrayList<>();
                 for (final Object resource : obj.getData()) {
-                    dataArr.put(resourceToJson(resource, options, includes, related, anonymousRelated, false));
+                    dataArr.add(resourceToJson(resource, options, includes, related, anonymousRelated, false));
                 }
-                json.put(JSON_DATA, dataArr);
+                for (final JSONObject data : dataArr) {
+                    if (data != null) {
+                        related.remove(ObjKey.create(data));
+                    }
+                }
+                json.put(JSON_DATA, new JSONArray(dataArr));
             }
 
             // include related objects if there are any

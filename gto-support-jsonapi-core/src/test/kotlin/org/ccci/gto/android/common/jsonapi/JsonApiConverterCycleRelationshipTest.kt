@@ -45,6 +45,42 @@ class JsonApiConverterCycleRelationshipTest {
         assertThatJson(json).node("included[0].relationships.cycle.data.id").isEqualTo(obj.cycle?.cycle?.id)
     }
 
+    @Test
+    fun `toJson(cycleObj) - Include relationships - depth 2`() {
+        val converter = JsonApiConverter.Builder()
+            .addClasses(ModelCycle::class.java)
+            .build()
+        val options = Options.builder().include("cycle.cycle").build()
+
+        val json = converter.toJson(JsonApiObject.single(obj), options)
+        assertThatJson(json).node("data").isObject()
+        assertThatJson(json).node("data.id").isEqualTo(obj.id)
+        assertThatJson(json).node("data.type").isEqualTo(ModelCycle.JSONAPI_TYPE)
+        assertThatJson(json).node("data.relationships.cycle.data.id").isEqualTo(obj.cycle?.id)
+        assertThatJson(json).node("included").isArray.ofLength(1)
+        assertThatJson(json).node("included[0].id").isEqualTo(obj.cycle?.id)
+        assertThatJson(json).node("included[0].type").isEqualTo(ModelCycle.JSONAPI_TYPE)
+        assertThatJson(json).node("included[0].relationships.cycle.data.id").isEqualTo(obj.cycle?.cycle?.id)
+    }
+
+    @Test
+    fun `toJson(cycleObj) - Include relationships - reference other data - depth 2`() {
+        val converter = JsonApiConverter.Builder()
+            .addClasses(ModelCycle::class.java)
+            .build()
+        val options = Options.builder().include("cycle.cycle").build()
+
+        val json = converter.toJson(JsonApiObject.of(obj, obj.cycle!!), options)
+        assertThatJson(json).node("data").isArray.ofLength(2)
+        assertThatJson(json).node("data[0].id").isEqualTo(obj.id)
+        assertThatJson(json).node("data[0].type").isEqualTo(ModelCycle.JSONAPI_TYPE)
+        assertThatJson(json).node("data[0].relationships.cycle.data.id").isEqualTo(obj.cycle?.id)
+        assertThatJson(json).node("data[1].id").isEqualTo(obj.cycle?.id)
+        assertThatJson(json).node("data[1].type").isEqualTo(ModelCycle.JSONAPI_TYPE)
+        assertThatJson(json).node("data[1].relationships.cycle.data.id").isEqualTo(obj.cycle?.cycle?.id)
+        assertThatJson(json).node("included").isAbsent
+    }
+
     @JsonApiType(ModelCycle.JSONAPI_TYPE)
     class ModelCycle(
         id: Int,
