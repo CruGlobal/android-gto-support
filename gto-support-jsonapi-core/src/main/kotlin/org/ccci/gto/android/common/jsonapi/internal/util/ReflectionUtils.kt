@@ -1,6 +1,5 @@
 package org.ccci.gto.android.common.jsonapi.internal.util
 
-import androidx.annotation.RestrictTo
 import java.lang.reflect.Array
 import java.lang.reflect.GenericArrayType
 import java.lang.reflect.ParameterizedType
@@ -8,8 +7,7 @@ import java.lang.reflect.Type
 import java.lang.reflect.TypeVariable
 import java.lang.reflect.WildcardType
 
-@RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
-object ReflectionUtils {
+internal object ReflectionUtils {
     // logic copied from retrofit2.Utils.getRawType and converted to Kotlin
     @JvmStatic
     fun getRawType(type: Type?): Class<*> = when (type) {
