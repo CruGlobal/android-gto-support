@@ -92,7 +92,7 @@ class JsonApiConverterFactory(private val converter: JsonApiConverter) : Convert
         private val options = JsonApiConverter.Options.builder()
             .apply {
                 when {
-                    include == null -> include()
+                    include == null -> Unit
                     include.all -> includeAll()
                     else -> include(*include.value)
                 }

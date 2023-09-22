@@ -1,9 +1,12 @@
 package org.ccci.gto.android.common.jsonapi.util
 
+import androidx.annotation.VisibleForTesting
+import java.util.NavigableSet
 import java.util.TreeSet
 
 class Includes private constructor(
-    private val include: TreeSet<String> = TreeSet(),
+    @get:VisibleForTesting
+    internal val include: NavigableSet<String> = TreeSet(),
     private val base: String = "",
 ) {
     constructor(vararg include: String) : this(TreeSet(include.toList()))

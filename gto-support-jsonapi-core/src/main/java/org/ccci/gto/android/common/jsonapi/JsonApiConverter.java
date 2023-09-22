@@ -1214,7 +1214,7 @@ public final class JsonApiConverter {
         }
 
         public static final class Builder {
-            private List<String> mIncludes = null;
+            private Includes mIncludes = new Includes();
             private boolean mIncludeObjectsWithNoId = false;
             private final Map<String, Set<String>> mFields = new HashMap<>();
             private final Map<String, Boolean> mSerializeNullAttributes = new HashMap<>();
@@ -1226,12 +1226,24 @@ public final class JsonApiConverter {
             }
 
             @NonNull
-            public Builder include(@NonNull final String... include) {
-                if (mIncludes == null) {
-                    mIncludes = new ArrayList<>();
+            public Builder include(@NonNull final String... includes) {
+                if (mIncludes != null) {
+                    mIncludes = Includes.merge(mIncludes, new Includes(includes));
                 }
+                return this;
+            }
 
-                Collections.addAll(mIncludes, include);
+            public Builder include(@NonNull final Includes... includes) {
+                if (mIncludes != null) {
+                    for (Includes i : includes) {
+                        mIncludes = Includes.merge(mIncludes, i);
+                    }
+                }
+                return this;
+            }
+
+            public Builder clearIncludes() {
+                mIncludes = new Includes();
                 return this;
             }
 
@@ -1277,8 +1289,7 @@ public final class JsonApiConverter {
                     fields.put(type, new Fields(values));
                 }
 
-                return new Options(mIncludes != null ? new Includes(mIncludes) : null, mIncludeObjectsWithNoId, fields,
-                        new HashMap<>(mSerializeNullAttributes));
+                return new Options(mIncludes, mIncludeObjectsWithNoId, fields, new HashMap<>(mSerializeNullAttributes));
             }
         }
     }

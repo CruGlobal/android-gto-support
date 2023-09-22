@@ -21,6 +21,7 @@ class JsonApiConverterNullAttributesTest {
         val json = converter.toJson(
             JsonApiObject.single(parent),
             JsonApiConverter.Options.builder()
+                .includeAll()
                 .serializeNullAttributes(ModelChild.TYPE)
                 .build(),
         )
