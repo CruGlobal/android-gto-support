@@ -2,26 +2,23 @@ package org.ccci.gto.android.common.jsonapi.util
 
 import java.util.TreeSet
 
-class Includes private constructor(include: Collection<String>?, private val base: String = "") {
-    constructor(vararg include: String) : this(include.toList())
-    constructor(include: Collection<String>?) : this(include, "")
-    private constructor(base: Includes, descendant: String) : this(base.include, base.base + descendant + ".")
+class Includes private constructor(
+    private val include: TreeSet<String> = TreeSet(),
+    private val base: String = "",
+) {
+    constructor(vararg include: String) : this(TreeSet(include.toList()))
+    constructor(include: Collection<String>) : this(TreeSet(include))
+    private constructor(base: Includes, descendant: String) : this(base.include, "${base.base}$descendant.")
 
-    private val include = include?.let { TreeSet(it) }
+    fun include(relationship: String) = isDirectInclude(relationship) || isImplicitInclude(relationship)
 
-    fun include(relationship: String) = isIncludeAll || isDirectInclude(relationship) || isImplicitInclude(relationship)
-
-    private val isIncludeAll get() = include == null
-    private fun isDirectInclude(relationship: String) = include?.contains("$base$relationship") == true
+    private fun isDirectInclude(relationship: String) = "$base$relationship" in include
     private fun isImplicitInclude(relationship: String): Boolean {
         val prefix = "$base$relationship."
-        return include?.ceiling(prefix)?.startsWith(prefix) == true
+        return include.ceiling(prefix)?.startsWith(prefix) == true
     }
 
-    fun descendant(relationship: String) = when (include) {
-        null -> this
-        else -> Includes(this, relationship)
-    }
+    fun descendant(relationship: String) = Includes(this, relationship)
 
     val queryParameterValue get() = include.joinToString(",")
 
@@ -33,7 +30,7 @@ class Includes private constructor(include: Collection<String>?, private val bas
         @JvmName("merge")
         internal fun merge(includes: Includes, includes2: Includes): Includes {
             require(includes.base == includes2.base) { "Cannot merge Includes objects with different bases" }
-            return Includes(includes.include.orEmpty() + includes2.include.orEmpty())
+            return Includes(includes.include + includes2.include)
         }
     }
 }
