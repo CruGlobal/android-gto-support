@@ -64,6 +64,24 @@ class JsonApiConverterCycleRelationshipTest {
     }
 
     @Test
+    fun `toJson(cycleObj) - Include relationships - depth infinity`() {
+        val converter = JsonApiConverter.Builder()
+            .addClasses(ModelCycle::class.java)
+            .build()
+        val options = Options.builder().includeAll().build()
+
+        val json = converter.toJson(JsonApiObject.single(obj), options)
+        assertThatJson(json).node("data").isObject()
+        assertThatJson(json).node("data.id").isEqualTo(obj.id)
+        assertThatJson(json).node("data.type").isEqualTo(ModelCycle.JSONAPI_TYPE)
+        assertThatJson(json).node("data.relationships.cycle.data.id").isEqualTo(obj.cycle?.id)
+        assertThatJson(json).node("included").isArray.ofLength(1)
+        assertThatJson(json).node("included[0].id").isEqualTo(2)
+        assertThatJson(json).node("included[0].type").isEqualTo(ModelCycle.JSONAPI_TYPE)
+        assertThatJson(json).node("included[0].relationships.cycle.data.id").isEqualTo(obj.cycle?.cycle?.id)
+    }
+
+    @Test
     fun `toJson(cycleObj) - Include relationships - reference other data - depth 2`() {
         val converter = JsonApiConverter.Builder()
             .addClasses(ModelCycle::class.java)

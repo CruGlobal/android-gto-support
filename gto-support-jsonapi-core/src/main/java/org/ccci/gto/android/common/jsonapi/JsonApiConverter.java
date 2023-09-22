@@ -135,9 +135,8 @@ public final class JsonApiConverter {
         final Includes includes = options.mIncludes;
         try {
             final JSONObject json = new JSONObject();
-            final Map<ObjKey, JSONObject> related = new HashMap<>();
-            final List<JSONObject> anonymousRelated =
-                    options.mIncludeObjectsWithNoId ? new ArrayList<JSONObject>() : null;
+            final Map<ObjKey, JSONObject> outputObjects = new HashMap<>();
+            final List<JSONObject> anonymousRelated = options.mIncludeObjectsWithNoId ? new ArrayList<>() : null;
             if (obj.hasErrors()) {
                 final JSONArray errors = new JSONArray();
                 for (final JsonApiError error : obj.getErrors()) {
@@ -150,28 +149,28 @@ public final class JsonApiConverter {
                     json.put(JSON_DATA, JSONObject.NULL);
                 } else {
                     final JSONObject data =
-                            resourceToJson(resource, options, includes, related, anonymousRelated, false);
+                            resourceToJson(resource, options, includes, outputObjects, anonymousRelated, false);
                     json.put(JSON_DATA, data);
                     if (data != null) {
-                        related.remove(ObjKey.create(data));
+                        outputObjects.remove(ObjKey.create(data));
                     }
                 }
             } else {
                 final List<JSONObject> dataArr = new ArrayList<>();
                 for (final Object resource : obj.getData()) {
-                    dataArr.add(resourceToJson(resource, options, includes, related, anonymousRelated, false));
+                    dataArr.add(resourceToJson(resource, options, includes, outputObjects, anonymousRelated, false));
                 }
                 for (final JSONObject data : dataArr) {
                     if (data != null) {
-                        related.remove(ObjKey.create(data));
+                        outputObjects.remove(ObjKey.create(data));
                     }
                 }
                 json.put(JSON_DATA, new JSONArray(dataArr));
             }
 
             // include related objects if there are any
-            if (related.size() > 0 || (anonymousRelated != null && !anonymousRelated.isEmpty())) {
-                final JSONArray included = new JSONArray(related.values());
+            if (!outputObjects.isEmpty() || (anonymousRelated != null && !anonymousRelated.isEmpty())) {
+                final JSONArray included = new JSONArray(outputObjects.values());
                 if (anonymousRelated != null) {
                     for (final JSONObject object : anonymousRelated) {
                         included.put(object);
@@ -355,7 +354,7 @@ public final class JsonApiConverter {
     /**
      * @param resource
      * @param include  the relationships to include related objects for.
-     * @param related
+     * @param outputObjects
      * @return
      * @throws JSONException
      */
@@ -365,7 +364,7 @@ public final class JsonApiConverter {
             @Nullable final Object resource,
             @NonNull final Options options,
             @NonNull final Includes include,
-            @NonNull final Map<ObjKey, JSONObject> related,
+            @NonNull final Map<ObjKey, JSONObject> outputObjects,
             @Nullable final List<JSONObject> anonymousRelated,
             final boolean referenceOnly
     ) throws JSONException {
@@ -388,8 +387,19 @@ public final class JsonApiConverter {
             json.put(JSON_DATA_ID, convertToJsonValue(resource, idField));
         }
 
+        // there is no need to process fields if a reference object is all that's needed
         if (referenceOnly) {
             return json;
+        }
+
+        // short-circuit if this object has already been processed
+        final ObjKey objKey = ObjKey.create(json);
+        if (objKey != null) {
+            final JSONObject obj = outputObjects.get(objKey);
+            if (obj != null) {
+                return obj;
+            }
+            outputObjects.put(objKey, json);
         }
 
         // process all fields
@@ -421,18 +431,15 @@ public final class JsonApiConverter {
             if (supports(fieldType)) {
                 try {
                     final JSONObject relatedObj =
-                            resourceToJson(field.mField.get(resource), options, include.descendant(attrName), related,
-                                           anonymousRelated, !includeRelated);
+                            resourceToJson(field.mField.get(resource), options, include.descendant(attrName),
+                                           outputObjects, anonymousRelated, !includeRelated);
                     final ObjKey key = relatedObj != null ? ObjKey.create(relatedObj) : null;
                     if (key != null) {
                         final JSONObject reference =
                                 new JSONObject(relatedObj, new String[] {JSON_DATA_TYPE, JSON_DATA_ID});
                         relationships.put(attrName, new JSONObject(singletonMap(JSON_DATA, reference)));
-
-                        if (includeRelated) {
-                            related.put(key, relatedObj);
-                        }
-                    } else if (relatedObj != null && anonymousRelated != null && include.include(attrName)) {
+                    }
+                    if (relatedObj != null && anonymousRelated != null && key == null && includeRelated) {
                         anonymousRelated.add(relatedObj);
                     }
                 } catch (final IllegalAccessException ignored) {
@@ -445,16 +452,13 @@ public final class JsonApiConverter {
                     if (col != null) {
                         for (final Object obj : col) {
                             final JSONObject relatedObj =
-                                    resourceToJson(obj, options, include.descendant(attrName), related,
+                                    resourceToJson(obj, options, include.descendant(attrName), outputObjects,
                                                    anonymousRelated, !includeRelated);
                             final ObjKey key = relatedObj != null ? ObjKey.create(relatedObj) : null;
                             if (key != null) {
                                 objs.put(new JSONObject(relatedObj, new String[] {JSON_DATA_TYPE, JSON_DATA_ID}));
-
-                                if (includeRelated) {
-                                    related.put(key, relatedObj);
-                                }
-                            } else if (anonymousRelated != null && relatedObj != null && include.include(attrName)) {
+                            }
+                            if (anonymousRelated != null && relatedObj != null && key == null && includeRelated) {
                                 anonymousRelated.add(relatedObj);
                             }
                         }
@@ -470,16 +474,13 @@ public final class JsonApiConverter {
                     if (col != null) {
                         for (final Object obj : col) {
                             final JSONObject relatedObj =
-                                    resourceToJson(obj, options, include.descendant(attrName), related,
+                                    resourceToJson(obj, options, include.descendant(attrName), outputObjects,
                                                    anonymousRelated, !includeRelated);
                             final ObjKey key = relatedObj != null ? ObjKey.create(relatedObj) : null;
                             if (key != null) {
                                 objs.put(new JSONObject(relatedObj, new String[] {JSON_DATA_TYPE, JSON_DATA_ID}));
-
-                                if (includeRelated) {
-                                    related.put(key, relatedObj);
-                                }
-                            } else if (anonymousRelated != null && relatedObj != null && include.include(attrName)) {
+                            }
+                            if (anonymousRelated != null && relatedObj != null && key == null && includeRelated) {
                                 anonymousRelated.add(relatedObj);
                             }
                         }
