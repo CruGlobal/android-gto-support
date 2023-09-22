@@ -1,6 +1,6 @@
 plugins {
     id("gto-support.android-conventions")
-    kotlin("kapt")
+    alias(libs.plugins.ksp)
 }
 
 android {
@@ -25,5 +25,5 @@ dependencies {
     testImplementation(libs.jsonUnit.fluent)
     testImplementation(libs.junitParams)
 
-    kapt(libs.moshi.kotlin.codegen)
+    ksp(libs.moshi.kotlin.codegen)
 }
