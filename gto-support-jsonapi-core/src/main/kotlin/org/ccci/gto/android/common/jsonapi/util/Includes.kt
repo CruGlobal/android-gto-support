@@ -18,31 +18,22 @@ class Includes private constructor(include: Collection<String>?, private val bas
         return include?.ceiling(prefix)?.startsWith(prefix) == true
     }
 
-    /**
-     * Merge two base Includes objects together. This should only ever be called on a base includes object.
-     */
-    fun merge(includes: Includes?): Includes {
-        // throw an error if this is a descendant includes object
-        check("" == base) { "Cannot merge includes with a descendant Includes object" }
-
-        // short-circuit if we aren't actually merging an Includes object
-        if (includes == null) return this
-
-        // throw an error if the includes object being merged is a descendant includes object
-        require("" == includes.base) { "Cannot merge a descendant Includes object" }
-
-        // merge rules: include all overrides everything, otherwise merge the includes
-        return when {
-            isIncludeAll -> this
-            includes.isIncludeAll -> includes
-            else -> Includes(include.orEmpty() + includes.include.orEmpty())
-        }
-    }
-
     fun descendant(relationship: String) = when (include) {
         null -> this
         else -> Includes(this, relationship)
     }
 
     val queryParameterValue get() = include.joinToString(",")
+
+    internal companion object {
+        /**
+         * Merge two Includes objects together. This should only be called on includes with the same base.
+         */
+        @JvmStatic
+        @JvmName("merge")
+        internal fun merge(includes: Includes, includes2: Includes): Includes {
+            require(includes.base == includes2.base) { "Cannot merge Includes objects with different bases" }
+            return Includes(includes.include.orEmpty() + includes2.include.orEmpty())
+        }
+    }
 }
