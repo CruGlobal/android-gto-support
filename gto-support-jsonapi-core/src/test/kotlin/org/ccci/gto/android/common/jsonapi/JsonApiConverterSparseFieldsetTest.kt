@@ -35,6 +35,7 @@ class JsonApiConverterSparseFieldsetTest {
             .build()
         val options = JsonApiConverter.Options.builder()
             .fields(ModelParent.TYPE, "name")
+            .includeAll()
             .build()
 
         val json = converter.toJson(JsonApiObject.single(parent), options)
@@ -55,6 +56,7 @@ class JsonApiConverterSparseFieldsetTest {
             .build()
         val options = JsonApiConverter.Options.builder()
             .fields(ModelChild.TYPE, "name")
+            .includeAll()
             .build()
 
         val json = converter.toJson(JsonApiObject.single(parent), options,)
@@ -77,6 +79,7 @@ class JsonApiConverterSparseFieldsetTest {
         val options = JsonApiConverter.Options.builder()
             .fields(ModelParent.TYPE, "name", "favorite")
             .fields(ModelChild.TYPE, "name")
+            .includeAll()
             .build()
 
         val json = converter.toJson(JsonApiObject.single(parent), options,)

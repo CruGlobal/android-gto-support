@@ -1,9 +1,8 @@
 package org.ccci.gto.android.common.jsonapi.retrofit2
 
-import androidx.annotation.VisibleForTesting
+import org.ccci.gto.android.common.jsonapi.retrofit2.JsonApiParams.Companion.PARAM_INCLUDE
+import org.ccci.gto.android.common.jsonapi.util.Includes
 
-@VisibleForTesting
-internal const val PARAM_INCLUDE = "include"
 private const val PARAM_FIELDS = "fields"
 private const val PARAM_SORT = "sort"
 
@@ -12,6 +11,11 @@ abstract class BaseJsonApiParams<T : BaseJsonApiParams<T>> : MutableMap<String, 
 
     fun addAll(vararg params: Map<String, String>): T {
         params.forEach { putAll(it) }
+        return self
+    }
+
+    fun includes(includes: Includes): T {
+        this[PARAM_INCLUDE] = includes.queryParameterValue
         return self
     }
 

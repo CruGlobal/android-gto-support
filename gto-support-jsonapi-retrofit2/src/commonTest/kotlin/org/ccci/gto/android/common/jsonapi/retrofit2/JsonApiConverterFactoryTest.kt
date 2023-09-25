@@ -1,5 +1,7 @@
 package org.ccci.gto.android.common.jsonapi.retrofit2
 
+import kotlin.test.assertNotNull
+import kotlinx.coroutines.test.runTest
 import net.javacrumbs.jsonunit.JsonMatchers.jsonEquals
 import net.javacrumbs.jsonunit.JsonMatchers.jsonNodeAbsent
 import net.javacrumbs.jsonunit.JsonMatchers.jsonPartEquals
@@ -11,19 +13,21 @@ import org.ccci.gto.android.common.jsonapi.annotation.JsonApiId
 import org.ccci.gto.android.common.jsonapi.annotation.JsonApiType
 import org.ccci.gto.android.common.jsonapi.model.JsonApiObject
 import org.ccci.gto.android.common.jsonapi.retrofit2.annotation.JsonApiInclude
+import org.ccci.gto.android.common.jsonapi.util.Includes
 import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.CoreMatchers.hasItem
 import org.hamcrest.CoreMatchers.not
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
 import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.http.Body
+import retrofit2.http.GET
 import retrofit2.http.POST
+import retrofit2.http.Query
 
 private const val SIMPLE_SINGLE_RAW_JSON = "{data:{id:5,type:\"simple\"}}"
 
@@ -123,7 +127,22 @@ class JsonApiConverterFactoryTest {
         )
     }
 
+    @Test
+    fun `Includes query parameter encoding`() = runTest {
+        server.enqueue(MockResponse().setBody(SIMPLE_SINGLE_RAW_JSON))
+        val includes = Includes("a", "b.c")
+
+        val obj = service.includesQueryParam(includes)
+        assertNotNull(obj) { assertEquals(5, it.id) }
+
+        val request = server.takeRequest()
+        assertEquals("a,b.c", request.requestUrl?.queryParameter(JsonApiParams.PARAM_INCLUDE))
+    }
+
     internal interface Service {
+        @GET("/")
+        suspend fun includesQueryParam(@Query(JsonApiParams.PARAM_INCLUDE) includes: Includes): ModelSimple
+
         @POST("/")
         fun post(@Body model: JsonApiObject<ModelSimple>?): Call<JsonApiObject<ModelSimple>>
 

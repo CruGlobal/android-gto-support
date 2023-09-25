@@ -17,7 +17,7 @@ class JsonApiConverterCycleRelationshipTest {
         val converter = JsonApiConverter.Builder()
             .addClasses(ModelCycle::class.java)
             .build()
-        val options = Options.builder().include().build()
+        val options = Options.builder().build()
 
         val json = converter.toJson(JsonApiObject.single(obj), options)
         assertThatJson(json).node("data").isObject()

@@ -363,7 +363,7 @@ public final class JsonApiConverter {
     private JSONObject resourceToJson(
             @Nullable final Object resource,
             @NonNull final Options options,
-            @NonNull final Includes include,
+            @Nullable final Includes include,
             @NonNull final Map<ObjKey, JSONObject> outputObjects,
             @Nullable final List<JSONObject> anonymousRelated,
             final boolean referenceOnly
@@ -427,12 +427,13 @@ public final class JsonApiConverter {
             final Class<?> fieldCollectionType = field.getCollectionType();
 
             // is this a relationship?
-            final boolean includeRelated = include.include(attrName);
+            final boolean includeRelated = include == null || include.include(attrName);
+            final Includes descendantInclude = include != null ? include.descendant(attrName) : null;
             if (supports(fieldType)) {
                 try {
                     final JSONObject relatedObj =
-                            resourceToJson(field.mField.get(resource), options, include.descendant(attrName),
-                                           outputObjects, anonymousRelated, !includeRelated);
+                            resourceToJson(field.mField.get(resource), options, descendantInclude, outputObjects,
+                                           anonymousRelated, !includeRelated);
                     final ObjKey key = relatedObj != null ? ObjKey.create(relatedObj) : null;
                     if (key != null) {
                         final JSONObject reference =
@@ -452,8 +453,8 @@ public final class JsonApiConverter {
                     if (col != null) {
                         for (final Object obj : col) {
                             final JSONObject relatedObj =
-                                    resourceToJson(obj, options, include.descendant(attrName), outputObjects,
-                                                   anonymousRelated, !includeRelated);
+                                    resourceToJson(obj, options, descendantInclude, outputObjects, anonymousRelated,
+                                                   !includeRelated);
                             final ObjKey key = relatedObj != null ? ObjKey.create(relatedObj) : null;
                             if (key != null) {
                                 objs.put(new JSONObject(relatedObj, new String[] {JSON_DATA_TYPE, JSON_DATA_ID}));
@@ -474,8 +475,8 @@ public final class JsonApiConverter {
                     if (col != null) {
                         for (final Object obj : col) {
                             final JSONObject relatedObj =
-                                    resourceToJson(obj, options, include.descendant(attrName), outputObjects,
-                                                   anonymousRelated, !includeRelated);
+                                    resourceToJson(obj, options, descendantInclude, outputObjects, anonymousRelated,
+                                                   !includeRelated);
                             final ObjKey key = relatedObj != null ? ObjKey.create(relatedObj) : null;
                             if (key != null) {
                                 objs.put(new JSONObject(relatedObj, new String[] {JSON_DATA_TYPE, JSON_DATA_ID}));
@@ -1148,7 +1149,7 @@ public final class JsonApiConverter {
     }
 
     public static final class Options {
-        @NonNull
+        @Nullable
         final Includes mIncludes;
         final boolean mIncludeObjectsWithNoId;
         @NonNull
@@ -1156,7 +1157,7 @@ public final class JsonApiConverter {
         @NonNull
         final Map<String, Boolean> mSerializeNullAttributes;
 
-        Options(@NonNull final Includes includes, final boolean includeObjectsWithNoId,
+        Options(@Nullable final Includes includes, final boolean includeObjectsWithNoId,
                 @NonNull final Map<String, Fields> fields,
                 @NonNull final Map<String, Boolean> serializeNullAttributes) {
             mIncludes = includes;
@@ -1182,9 +1183,13 @@ public final class JsonApiConverter {
             serializeNullAttributes.putAll(mSerializeNullAttributes);
             serializeNullAttributes.putAll(options.mSerializeNullAttributes);
 
-            return new Options(mIncludes.merge(options.mIncludes),
-                               mIncludeObjectsWithNoId || options.mIncludeObjectsWithNoId, fields,
-                               serializeNullAttributes);
+            return new Options(
+                    mIncludes == null || options.mIncludes == null ? null :
+                            Includes.merge(mIncludes, options.mIncludes),
+                    mIncludeObjectsWithNoId || options.mIncludeObjectsWithNoId,
+                    fields,
+                    serializeNullAttributes
+            );
         }
 
         @NonNull
@@ -1209,7 +1214,7 @@ public final class JsonApiConverter {
         }
 
         public static final class Builder {
-            private List<String> mIncludes = null;
+            private Includes mIncludes = new Includes();
             private boolean mIncludeObjectsWithNoId = false;
             private final Map<String, Set<String>> mFields = new HashMap<>();
             private final Map<String, Boolean> mSerializeNullAttributes = new HashMap<>();
@@ -1221,12 +1226,24 @@ public final class JsonApiConverter {
             }
 
             @NonNull
-            public Builder include(@NonNull final String... include) {
-                if (mIncludes == null) {
-                    mIncludes = new ArrayList<>();
+            public Builder include(@NonNull final String... includes) {
+                if (mIncludes != null) {
+                    mIncludes = Includes.merge(mIncludes, new Includes(includes));
                 }
+                return this;
+            }
 
-                Collections.addAll(mIncludes, include);
+            public Builder include(@NonNull final Includes... includes) {
+                if (mIncludes != null) {
+                    for (Includes i : includes) {
+                        mIncludes = Includes.merge(mIncludes, i);
+                    }
+                }
+                return this;
+            }
+
+            public Builder clearIncludes() {
+                mIncludes = new Includes();
                 return this;
             }
 
@@ -1272,8 +1289,7 @@ public final class JsonApiConverter {
                     fields.put(type, new Fields(values));
                 }
 
-                return new Options(new Includes(mIncludes), mIncludeObjectsWithNoId, fields,
-                        new HashMap<>(mSerializeNullAttributes));
+                return new Options(mIncludes, mIncludeObjectsWithNoId, fields, new HashMap<>(mSerializeNullAttributes));
             }
         }
     }

@@ -1,46 +1,39 @@
 package org.ccci.gto.android.common.jsonapi.util
 
+import androidx.annotation.VisibleForTesting
+import java.util.NavigableSet
 import java.util.TreeSet
 
-class Includes private constructor(include: Collection<String>?, private val base: String = "") {
-    constructor(vararg include: String) : this(include.toList())
-    constructor(include: Collection<String>?) : this(include, "")
-    private constructor(base: Includes, descendant: String) : this(base.include, base.base + descendant + ".")
+class Includes private constructor(
+    @get:VisibleForTesting
+    internal val include: NavigableSet<String> = TreeSet(),
+    private val base: String = "",
+) {
+    constructor(vararg include: String) : this(TreeSet(include.toList()))
+    constructor(include: Collection<String>) : this(TreeSet(include))
+    private constructor(base: Includes, descendant: String) : this(base.include, "${base.base}$descendant.")
 
-    private val include = include?.let { TreeSet(it) }
+    fun include(relationship: String) = isDirectInclude(relationship) || isImplicitInclude(relationship)
 
-    fun include(relationship: String) = isIncludeAll || isDirectInclude(relationship) || isImplicitInclude(relationship)
-
-    private val isIncludeAll get() = include == null
-    private fun isDirectInclude(relationship: String) = include?.contains("$base$relationship") == true
+    private fun isDirectInclude(relationship: String) = "$base$relationship" in include
     private fun isImplicitInclude(relationship: String): Boolean {
         val prefix = "$base$relationship."
-        return include?.ceiling(prefix)?.startsWith(prefix) == true
+        return include.ceiling(prefix)?.startsWith(prefix) == true
     }
 
-    /**
-     * Merge two base Includes objects together. This should only ever be called on a base includes object.
-     */
-    fun merge(includes: Includes?): Includes {
-        // throw an error if this is a descendant includes object
-        check("" == base) { "Cannot merge includes with a descendant Includes object" }
+    fun descendant(relationship: String) = Includes(this, relationship)
 
-        // short-circuit if we aren't actually merging an Includes object
-        if (includes == null) return this
+    val queryParameterValue get() = include.joinToString(",")
 
-        // throw an error if the includes object being merged is a descendant includes object
-        require("" == includes.base) { "Cannot merge a descendant Includes object" }
-
-        // merge rules: include all overrides everything, otherwise merge the includes
-        return when {
-            isIncludeAll -> this
-            includes.isIncludeAll -> includes
-            else -> Includes(include.orEmpty() + includes.include.orEmpty())
+    internal companion object {
+        /**
+         * Merge two Includes objects together. This should only be called on includes with the same base.
+         */
+        @JvmStatic
+        @JvmName("merge")
+        internal fun merge(includes: Includes, includes2: Includes): Includes {
+            require(includes.base == includes2.base) { "Cannot merge Includes objects with different bases" }
+            return Includes(includes.include + includes2.include)
         }
-    }
-
-    fun descendant(relationship: String) = when (include) {
-        null -> this
-        else -> Includes(this, relationship)
     }
 }

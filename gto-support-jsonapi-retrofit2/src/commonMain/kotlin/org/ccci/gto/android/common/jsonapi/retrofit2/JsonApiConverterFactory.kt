@@ -11,6 +11,7 @@ import org.ccci.gto.android.common.jsonapi.internal.util.ReflectionUtils
 import org.ccci.gto.android.common.jsonapi.model.JsonApiObject
 import org.ccci.gto.android.common.jsonapi.retrofit2.annotation.JsonApiInclude
 import org.ccci.gto.android.common.jsonapi.retrofit2.model.JsonApiRetrofitObject
+import org.ccci.gto.android.common.jsonapi.util.Includes
 import org.json.JSONException
 import retrofit2.Converter
 import retrofit2.Retrofit
@@ -76,13 +77,22 @@ class JsonApiConverterFactory(private val converter: JsonApiConverter) : Convert
         }
     }
 
+    override fun stringConverter(
+        type: Type,
+        annotations: Array<out Annotation>,
+        retrofit: Retrofit,
+    ): Converter<*, String>? = when (type) {
+        Includes::class.java -> JsonApiIncludesStringConverter
+        else -> null
+    }
+
     private inner class JsonApiObjectRequestBodyConverter(
         include: JsonApiInclude?,
     ) : Converter<JsonApiObject<*>, RequestBody> {
         private val options = JsonApiConverter.Options.builder()
             .apply {
                 when {
-                    include == null -> include()
+                    include == null -> Unit
                     include.all -> includeAll()
                     else -> include(*include.value)
                 }
@@ -113,5 +123,9 @@ class JsonApiConverterFactory(private val converter: JsonApiConverter) : Convert
     private inner class ObjectResponseBodyConverter<T : Any>(type: Class<T>) : Converter<ResponseBody, T?> {
         private val wrappedConverter = JsonApiObjectResponseBodyConverter(type)
         override fun convert(value: ResponseBody) = wrappedConverter.convert(value).dataSingle
+    }
+
+    private object JsonApiIncludesStringConverter : Converter<Includes, String> {
+        override fun convert(includes: Includes) = includes.queryParameterValue
     }
 }

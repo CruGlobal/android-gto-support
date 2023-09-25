@@ -27,6 +27,7 @@ kotlin {
                 implementation(libs.json)
                 implementation(libs.jsonUnit)
                 implementation(libs.jsonUnit.fluent)
+                implementation(libs.kotlin.coroutines.test)
                 implementation(libs.okhttp3.mockwebserver)
             }
         }
