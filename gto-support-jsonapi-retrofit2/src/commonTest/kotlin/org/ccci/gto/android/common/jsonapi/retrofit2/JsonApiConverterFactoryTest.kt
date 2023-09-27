@@ -128,6 +128,28 @@ class JsonApiConverterFactoryTest {
     }
 
     @Test
+    fun `RequestBody - Collection`() = runTest {
+        server.enqueue(MockResponse().setBody(SIMPLE_SINGLE_RAW_JSON))
+        val body = listOf(
+            ModelSimple(1, "first"),
+            ModelSimple(2, "second"),
+        )
+
+        val obj = service.collectionRequestBody(body)
+        assertNotNull(obj) { assertEquals(5, it.id) }
+
+        val request = server.takeRequest()
+        val json = request.body.readUtf8()
+        assertThatJson(json).node("data").isArray.ofLength(2)
+        assertThatJson(json).node("data[0].id").isEqualTo(1)
+        assertThatJson(json).node("data[0].type").isEqualTo(ModelSimple.TYPE)
+        assertThatJson(json).node("data[0].attributes.attr1").isEqualTo("first")
+        assertThatJson(json).node("data[1].id").isEqualTo(2)
+        assertThatJson(json).node("data[1].type").isEqualTo(ModelSimple.TYPE)
+        assertThatJson(json).node("data[1].attributes.attr1").isEqualTo("second")
+    }
+
+    @Test
     fun `Includes query parameter encoding`() = runTest {
         server.enqueue(MockResponse().setBody(SIMPLE_SINGLE_RAW_JSON))
         val includes = Includes("a", "b.c")
@@ -145,6 +167,9 @@ class JsonApiConverterFactoryTest {
 
         @POST("/")
         fun post(@Body model: JsonApiObject<ModelSimple>?): Call<JsonApiObject<ModelSimple>>
+
+        @POST("/")
+        suspend fun collectionRequestBody(@Body model: List<ModelSimple>): ModelSimple?
 
         @POST("/")
         fun post(@Body model: ModelSimple?): Call<ModelSimple>

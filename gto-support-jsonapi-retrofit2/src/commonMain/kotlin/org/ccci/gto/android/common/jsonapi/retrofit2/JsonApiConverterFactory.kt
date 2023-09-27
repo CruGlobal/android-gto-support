@@ -53,7 +53,8 @@ class JsonApiConverterFactory(private val converter: JsonApiConverter) : Convert
                 require(type is ParameterizedType) { "JsonApiObject needs to be parameterized" }
                 JsonApiObjectRequestBodyConverter(include)
             }
-            Collection::class.java.isAssignableFrom(rawType) -> null // TODO
+            Collection::class.java.isAssignableFrom(rawType) && type is ParameterizedType &&
+                converter.supports(getRawType(type.actualTypeArguments[0])) -> CollectionRequestBodyConverter(include)
             converter.supports(rawType) -> ObjectRequestBodyConverter(include)
             else -> null
         }
@@ -112,6 +113,14 @@ class JsonApiConverterFactory(private val converter: JsonApiConverter) : Convert
         } catch (e: JSONException) {
             throw IOException("Error parsing JSON", e)
         }
+    }
+
+    private inner class CollectionRequestBodyConverter(
+        include: JsonApiInclude?
+    ) : Converter<Collection<Any>, RequestBody> {
+        private val wrappedConverter = JsonApiObjectRequestBodyConverter(include)
+        override fun convert(value: Collection<Any>) =
+            wrappedConverter.convert(JsonApiObject.of(*value.toTypedArray()))
     }
 
     private inner class ObjectRequestBodyConverter(include: JsonApiInclude?) : Converter<Any?, RequestBody> {
