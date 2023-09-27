@@ -2,11 +2,9 @@ package org.ccci.gto.android.common.jsonapi.retrofit2
 
 import kotlin.test.assertNotNull
 import kotlinx.coroutines.test.runTest
-import net.javacrumbs.jsonunit.JsonMatchers.jsonEquals
-import net.javacrumbs.jsonunit.JsonMatchers.jsonNodeAbsent
-import net.javacrumbs.jsonunit.JsonMatchers.jsonPartEquals
+import net.javacrumbs.jsonunit.assertj.assertThatJson
 import net.javacrumbs.jsonunit.core.Option
-import net.javacrumbs.jsonunit.fluent.JsonFluentAssert.assertThatJson
+import net.javacrumbs.jsonunit.core.internal.Options
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import org.ccci.gto.android.common.jsonapi.annotation.JsonApiId
@@ -14,10 +12,6 @@ import org.ccci.gto.android.common.jsonapi.annotation.JsonApiType
 import org.ccci.gto.android.common.jsonapi.model.JsonApiObject
 import org.ccci.gto.android.common.jsonapi.retrofit2.annotation.JsonApiInclude
 import org.ccci.gto.android.common.jsonapi.util.Includes
-import org.hamcrest.CoreMatchers.allOf
-import org.hamcrest.CoreMatchers.hasItem
-import org.hamcrest.CoreMatchers.not
-import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Rule
@@ -60,12 +54,13 @@ class JsonApiConverterFactoryTest {
 
         val request = server.takeRequest()
         assertEquals(JsonApiObject.MEDIA_TYPE, request.getHeader("Content-Type"))
-        val json = request.body.readUtf8()
-        assertThatJson(json).node("data").isObject()
-        assertThat(json, jsonPartEquals("data.type", ModelSimple.TYPE))
-        assertThat(json, jsonPartEquals("data.id", 42))
-        assertThat(json, jsonPartEquals("data.attributes.attr1", "blah"))
-        assertThat(json, jsonNodeAbsent("included"))
+        assertThatJson(request.body.readUtf8()) {
+            node("data").isObject
+            node("data.type").isEqualTo(ModelSimple.TYPE)
+            node("data.id").isEqualTo(42)
+            node("data.attributes.attr1").isEqualTo("blah")
+            node("included").isAbsent()
+        }
     }
 
     @Test
@@ -78,12 +73,13 @@ class JsonApiConverterFactoryTest {
 
         val request = server.takeRequest()
         assertEquals(JsonApiObject.MEDIA_TYPE, request.getHeader("Content-Type"))
-        val json = request.body.readUtf8()
-        assertThatJson(json).node("data").isObject()
-        assertThat(json, jsonPartEquals("data.type", ModelSimple.TYPE))
-        assertThat(json, jsonPartEquals("data.id", 42))
-        assertThat(json, jsonPartEquals("data.attributes.attr1", "blah"))
-        assertThat(json, jsonNodeAbsent("included"))
+        assertThatJson(request.body.readUtf8()) {
+            node("data").isObject
+            node("data.type").isEqualTo(ModelSimple.TYPE)
+            node("data.id").isEqualTo(42)
+            node("data.attributes.attr1").isEqualTo("blah")
+            node("included").isAbsent()
+        }
     }
 
     @Test
@@ -100,31 +96,21 @@ class JsonApiConverterFactoryTest {
 
         val request = server.takeRequest()
         assertEquals(JsonApiObject.MEDIA_TYPE, request.getHeader("Content-Type"))
-        val json = request.body.readUtf8()
-        assertThatJson(json).node("data").isObject()
-        assertThat(json, jsonPartEquals("data.type", ModelParent.TYPE))
-        assertThat(json, jsonPartEquals("data.id", 1))
-        assertThat(json, jsonNodeAbsent("data.attributes.favorite"))
-        assertThat(json, jsonNodeAbsent("data.attributes.children"))
-        assertThat(json, jsonPartEquals("data.relationships.favorite.data.type", ModelChild.TYPE))
-        assertThat(json, jsonPartEquals("data.relationships.favorite.data.id", parent.favorite!!.id))
-        assertThat(json, jsonNodeAbsent("data.relationships.favorite.data.attributes"))
-        assertThatJson(json).node("data.relationships.children.data").isArray.ofLength(2)
-        assertThatJson(json).node("included").isArray.ofLength(1)
-        assertThatJson(json).node("included").matches(
-            allOf(
-                hasItem(
-                    jsonEquals<Any>("{type:'child',id:11,attributes:{name:'Daniel'}}")
-                        .`when`(Option.IGNORING_EXTRA_FIELDS),
-                ),
-                not(
-                    hasItem(
-                        jsonEquals<Any>("{type:'child',id:20,attributes:{name:'Hey You'}}")
-                            .`when`(Option.IGNORING_EXTRA_FIELDS),
-                    ),
-                ),
-            )
-        )
+        assertThatJson(request.body.readUtf8()) {
+            node("data").isObject
+            node("data.type").isEqualTo(ModelParent.TYPE)
+            node("data.id").isEqualTo(1)
+            node("data.attributes.favorite").isAbsent()
+            node("data.attributes.children").isAbsent()
+            node("data.relationships.favorite.data.type").isEqualTo(ModelChild.TYPE)
+            node("data.relationships.favorite.data.id").isEqualTo(parent.favorite!!.id)
+            node("data.relationships.favorite.data.attributes").isAbsent()
+            node("data.relationships.children.data").isArray.hasSize(2)
+            node("included").isArray.hasSize(1)
+
+            withOptions(Options(Option.IGNORING_EXTRA_FIELDS))
+                .node("included[0]").isEqualTo("{type:'child',id:11,attributes:{name:'Daniel'}}")
+        }
     }
 
     @Test
@@ -140,13 +126,15 @@ class JsonApiConverterFactoryTest {
 
         val request = server.takeRequest()
         val json = request.body.readUtf8()
-        assertThatJson(json).node("data").isArray.ofLength(2)
-        assertThatJson(json).node("data[0].id").isEqualTo(1)
-        assertThatJson(json).node("data[0].type").isEqualTo(ModelSimple.TYPE)
-        assertThatJson(json).node("data[0].attributes.attr1").isEqualTo("first")
-        assertThatJson(json).node("data[1].id").isEqualTo(2)
-        assertThatJson(json).node("data[1].type").isEqualTo(ModelSimple.TYPE)
-        assertThatJson(json).node("data[1].attributes.attr1").isEqualTo("second")
+        assertThatJson(json) {
+            node("data").isArray.hasSize(2)
+            node("data[0].id").isEqualTo(1)
+            node("data[0].type").isEqualTo(ModelSimple.TYPE)
+            node("data[0].attributes.attr1").isEqualTo("first")
+            node("data[1].id").isEqualTo(2)
+            node("data[1].type").isEqualTo(ModelSimple.TYPE)
+            node("data[1].attributes.attr1").isEqualTo("second")
+        }
     }
 
     @Test
