@@ -10,6 +10,7 @@ import okhttp3.mockwebserver.MockWebServer
 import org.ccci.gto.android.common.jsonapi.annotation.JsonApiId
 import org.ccci.gto.android.common.jsonapi.annotation.JsonApiType
 import org.ccci.gto.android.common.jsonapi.model.JsonApiObject
+import org.ccci.gto.android.common.jsonapi.retrofit2.annotation.JsonApiFields
 import org.ccci.gto.android.common.jsonapi.retrofit2.annotation.JsonApiInclude
 import org.ccci.gto.android.common.jsonapi.util.Includes
 import org.junit.Assert.assertEquals
@@ -83,16 +84,15 @@ class JsonApiConverterFactoryTest {
     }
 
     @Test
-    fun verifyPostIncludes() {
+    fun `RequestBody - Includes`() = runTest {
         server.enqueue(MockResponse().setBody(SIMPLE_SINGLE_RAW_JSON))
         val parent = ModelParent(1).apply {
             favorite = ModelChild(11, "Daniel")
             children = listOf(favorite!!, ModelChild(20, "Hey You"))
         }
 
-        val obj = service.postInclude(parent).execute().body()
-        assertNotNull(obj)
-        assertEquals(5, obj!!.id)
+        val obj = service.postInclude(parent)
+        assertNotNull(obj) { assertEquals(5, it.id) }
 
         val request = server.takeRequest()
         assertEquals(JsonApiObject.MEDIA_TYPE, request.getHeader("Content-Type"))
@@ -110,6 +110,57 @@ class JsonApiConverterFactoryTest {
 
             withOptions(Options(Option.IGNORING_EXTRA_FIELDS))
                 .node("included[0]").isEqualTo("{type:'child',id:11,attributes:{name:'Daniel'}}")
+        }
+    }
+
+    @Test
+    fun `RequestBody - Fields - Single`() = runTest {
+        server.enqueue(MockResponse().setBody(SIMPLE_SINGLE_RAW_JSON))
+        val parent = ModelParent(1).apply {
+            favorite = ModelChild(11, "Daniel")
+            children = listOf(favorite!!, ModelChild(20, "Hey You"))
+        }
+
+        val obj = service.postFieldsSingle(ModelSimple(1, "attr1", "attr2"))
+        assertNotNull(obj) { assertEquals(5, it.id) }
+
+        val request = server.takeRequest()
+        assertEquals(JsonApiObject.MEDIA_TYPE, request.getHeader("Content-Type"))
+        assertThatJson(request.body.readUtf8()) {
+            node("data").isObject
+            node("data.type").isEqualTo(ModelSimple.TYPE)
+            node("data.id").isEqualTo(1)
+            node("data.attributes").isEqualTo("""{attr2: "attr2"}""")
+            node("data.attributes.attr1").isAbsent()
+        }
+    }
+
+    @Test
+    fun `RequestBody - Fields - Multiple`() = runTest {
+        server.enqueue(MockResponse().setBody(SIMPLE_SINGLE_RAW_JSON))
+        val parent = ModelParent(1).apply {
+            favorite = ModelChild(11, "Daniel")
+            children = listOf(favorite!!, ModelChild(20, "Hey You"))
+        }
+
+        val obj = service.postFieldsMultiple(parent)
+        assertNotNull(obj) { assertEquals(5, it.id) }
+
+        val request = server.takeRequest()
+        assertEquals(JsonApiObject.MEDIA_TYPE, request.getHeader("Content-Type"))
+        assertThatJson(request.body.readUtf8()) {
+            node("data").isObject
+            node("data.type").isEqualTo(ModelParent.TYPE)
+            node("data.id").isEqualTo(1)
+            node("data.attributes.favorite").isAbsent()
+            node("data.attributes.children").isAbsent()
+            node("data.relationships.favorite.data.type").isEqualTo(ModelChild.TYPE)
+            node("data.relationships.favorite.data.id").isEqualTo(parent.favorite!!.id)
+            node("data.relationships.favorite.data.attributes").isAbsent()
+            node("data.relationships.children").isAbsent()
+
+            node("included").isArray.hasSize(1)
+            node("included[0]").isEqualTo("{type:'child',id:11,attributes:{height:0}}")
         }
     }
 
@@ -163,11 +214,27 @@ class JsonApiConverterFactoryTest {
         fun post(@Body model: ModelSimple?): Call<ModelSimple>
 
         @POST("/")
-        fun postInclude(
+        suspend fun postInclude(
             @Body
             @JsonApiInclude("favorite")
-            model: ModelParent?
-        ): Call<ModelSimple>
+            model: ModelParent?,
+        ): ModelSimple?
+
+        @POST("/")
+        suspend fun postFieldsSingle(
+            @Body
+            @JsonApiFields(type = ModelSimple.TYPE, "attr2")
+            model: ModelSimple?,
+        ): ModelSimple?
+
+        @POST("/")
+        suspend fun postFieldsMultiple(
+            @Body
+            @JsonApiFields(type = ModelParent.TYPE, "favorite")
+            @JsonApiFields(type = ModelChild.TYPE, "height")
+            @JsonApiInclude("favorite")
+            model: ModelParent?,
+        ): ModelSimple?
     }
 
     abstract class ModelBase(
@@ -175,7 +242,11 @@ class JsonApiConverterFactoryTest {
     )
 
     @JsonApiType(ModelSimple.TYPE)
-    class ModelSimple @JvmOverloads constructor(id: Int = 0, var attr1: String? = null) : ModelBase(id) {
+    class ModelSimple @JvmOverloads constructor(
+        id: Int = 0,
+        var attr1: String? = null,
+        var attr2: String? = null,
+    ) : ModelBase(id) {
         companion object {
             const val TYPE = "simple"
         }
@@ -192,7 +263,7 @@ class JsonApiConverterFactoryTest {
     }
 
     @JsonApiType(ModelChild.TYPE)
-    class ModelChild(id: Int = 0, var name: String) : ModelBase(id) {
+    class ModelChild(id: Int = 0, var name: String, var height: Int = 0) : ModelBase(id) {
         companion object {
             const val TYPE = "child"
         }
