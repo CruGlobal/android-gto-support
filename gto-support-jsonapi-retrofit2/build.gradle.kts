@@ -25,8 +25,7 @@ kotlin {
         val commonTest by getting {
             dependencies {
                 implementation(libs.json)
-                implementation(libs.jsonUnit)
-                implementation(libs.jsonUnit.fluent)
+                implementation(libs.jsonUnit.assertj)
                 implementation(libs.kotlin.coroutines.test)
                 implementation(libs.okhttp3.mockwebserver)
             }

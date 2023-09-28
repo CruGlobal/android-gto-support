@@ -8,6 +8,7 @@ import okhttp3.RequestBody
 import okhttp3.ResponseBody
 import org.ccci.gto.android.common.jsonapi.JsonApiConverter
 import org.ccci.gto.android.common.jsonapi.model.JsonApiObject
+import org.ccci.gto.android.common.jsonapi.retrofit2.annotation.JsonApiFields
 import org.ccci.gto.android.common.jsonapi.retrofit2.annotation.JsonApiInclude
 import org.ccci.gto.android.common.jsonapi.retrofit2.model.JsonApiRetrofitObject
 import org.ccci.gto.android.common.jsonapi.util.Includes
@@ -48,14 +49,22 @@ class JsonApiConverterFactory(private val converter: JsonApiConverter) : Convert
     ): Converter<*, RequestBody>? {
         val rawType = getRawType(type)
         val include = parameterAnnotations.filterIsInstance<JsonApiInclude>().firstOrNull()
+        val fields = parameterAnnotations.flatMap {
+            when (it) {
+                is JsonApiFields.Container -> it.value.toList()
+                is JsonApiFields -> listOf(it)
+                else -> emptyList()
+            }
+        }
         return when {
             JsonApiObject::class.java.isAssignableFrom(rawType) -> {
                 require(type is ParameterizedType) { "JsonApiObject needs to be parameterized" }
-                JsonApiObjectRequestBodyConverter(include)
+                JsonApiObjectRequestBodyConverter(include, fields)
             }
             Collection::class.java.isAssignableFrom(rawType) && type is ParameterizedType &&
-                converter.supports(getRawType(type.actualTypeArguments[0])) -> CollectionRequestBodyConverter(include)
-            converter.supports(rawType) -> ObjectRequestBodyConverter(include)
+                converter.supports(getRawType(type.actualTypeArguments[0])) ->
+                CollectionRequestBodyConverter(include, fields)
+            converter.supports(rawType) -> ObjectRequestBodyConverter(include, fields)
             else -> null
         }
     }
@@ -88,14 +97,15 @@ class JsonApiConverterFactory(private val converter: JsonApiConverter) : Convert
 
     private inner class JsonApiObjectRequestBodyConverter(
         include: JsonApiInclude?,
+        fields: Collection<JsonApiFields>,
     ) : Converter<JsonApiObject<*>, RequestBody> {
         private val options = JsonApiConverter.Options.builder()
             .apply {
                 when {
-                    include == null -> Unit
-                    include.all -> includeAll()
-                    else -> include(*include.value)
+                    include?.all == true -> includeAll()
+                    include != null -> include(*include.value)
                 }
+                fields.forEach { fields(it.type, *it.value) }
             }
             .build()
 
@@ -116,15 +126,19 @@ class JsonApiConverterFactory(private val converter: JsonApiConverter) : Convert
     }
 
     private inner class CollectionRequestBodyConverter(
-        include: JsonApiInclude?
+        include: JsonApiInclude?,
+        fields: Collection<JsonApiFields>,
     ) : Converter<Collection<Any>, RequestBody> {
-        private val wrappedConverter = JsonApiObjectRequestBodyConverter(include)
+        private val wrappedConverter = JsonApiObjectRequestBodyConverter(include, fields)
         override fun convert(value: Collection<Any>) =
             wrappedConverter.convert(JsonApiObject.of(*value.toTypedArray()))
     }
 
-    private inner class ObjectRequestBodyConverter(include: JsonApiInclude?) : Converter<Any?, RequestBody> {
-        private val wrappedConverter = JsonApiObjectRequestBodyConverter(include)
+    private inner class ObjectRequestBodyConverter(
+        include: JsonApiInclude?,
+        fields: Collection<JsonApiFields>,
+    ) : Converter<Any?, RequestBody> {
+        private val wrappedConverter = JsonApiObjectRequestBodyConverter(include, fields)
         override fun convert(value: Any?) = wrappedConverter.convert(JsonApiObject.single(value))
     }
 
