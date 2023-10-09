@@ -14,7 +14,7 @@ internal fun LibraryExtension.baseConfiguration(project: Project) {
     configureSdk()
     configureProguardRules(project)
     configureCompilerOptions(project)
-    configureTestOptions()
+    configureTestOptions(project)
 }
 
 private fun BaseExtension.configureSdk() {
@@ -60,7 +60,7 @@ fun CommonExtension<*, *, *, *, *>.configureCompose(project: Project) {
     }
 }
 
-private fun BaseExtension.configureTestOptions() {
+private fun BaseExtension.configureTestOptions(project: Project) {
     testOptions {
         unitTests {
             isIncludeAndroidResources = true
@@ -69,6 +69,15 @@ private fun BaseExtension.configureTestOptions() {
                 // increase unit tests max heap size
                 it.jvmArgs("-Xmx2g")
             }
+        }
+    }
+
+    // Test Sharding
+    val shard = project.findProperty("testShard")?.toString()?.toIntOrNull()
+    val totalShards = project.findProperty("testTotalShards")?.toString()?.toIntOrNull()
+    if (shard != null && totalShards != null) {
+        if (Math.floorMod(project.path.hashCode(), totalShards) != Math.floorMod(shard, totalShards)) {
+            project.androidComponents.beforeVariants { it.enableUnitTest = false }
         }
     }
 }
