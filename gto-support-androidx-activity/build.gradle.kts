@@ -3,3 +3,7 @@ plugins {
 }
 
 android.namespace = "org.ccci.gto.android.common.androidx.activity"
+
+dependencies {
+    api(libs.androidx.activity)
+}
