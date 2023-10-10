@@ -15,6 +15,8 @@ import java.util.Formatter
 @Composable
 @ReadOnlyComposable
 fun annotatedStringResource(@StringRes id: Int, vararg formatArgs: Any) = buildAnnotatedString {
+    // We reference the LocalConfiguration to recompose if the configuration changes
+    // see: https://jetc.dev/slack/2022-02-13-why-resources-strange.html
     LocalConfiguration.current
     val args = formatArgs.map { if (it is AnnotatedString) AnnotatedStringFormattable(it) else it }
     Formatter(this, ConfigurationCompat.getLocales(LocalContext.current.resources.configuration)[0])
