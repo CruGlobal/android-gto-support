@@ -13,7 +13,7 @@ import java.util.Locale
 import org.xmlpull.v1.XmlPullParser
 import org.xmlpull.v1.XmlPullParserException
 
-private const val METADATA_LOCALE_CONFIG = "org.ccci.gto.support.common.androidx.core.LocaleConfig"
+private const val METADATA_LOCALE_CONFIG = "org.ccci.gto.android.common.androidx.core.LocaleConfig"
 
 object LocaleConfigCompat {
     private val COMPAT = when {
