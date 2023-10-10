@@ -12,6 +12,9 @@ import java.io.IOException
 import java.util.Locale
 import org.xmlpull.v1.XmlPullParser
 import org.xmlpull.v1.XmlPullParserException
+import timber.log.Timber
+
+private const val TAG = "LocaleConfigCompat"
 
 private const val METADATA_LOCALE_CONFIG = "org.ccci.gto.android.common.androidx.core.LocaleConfig"
 
@@ -35,18 +38,22 @@ private open class BaseLocaleConfigCompatMethods : LocaleConfigCompatMethods {
         const val TAG_LOCALE = "locale"
     }
 
-    override fun getSupportedLocales(context: Context) = try {
-        @Suppress("DEPRECATION")
-        val appInfo =
-            context.packageManager.getApplicationInfo(context.packageName, PackageManager.GET_META_DATA)
-        val parser = context.resources.getXml(appInfo.metaData.getInt(METADATA_LOCALE_CONFIG))
+    override fun getSupportedLocales(context: Context) = runCatching {
+        val metaData =
+            context.packageManager.getApplicationInfo(context.packageName, PackageManager.GET_META_DATA).metaData
+        check(metaData.containsKey(METADATA_LOCALE_CONFIG)) { "meta-data '$METADATA_LOCALE_CONFIG' was not found." }
+        val parser = context.resources.getXml(metaData.getInt(METADATA_LOCALE_CONFIG))
         parseLocaleConfig(parser)
-    } catch (_: Resources.NotFoundException) {
-        null
-    } catch (_: XmlPullParserException) {
-        null
-    } catch (_: IOException) {
-        null
+    }.getOrElse {
+        when (it) {
+            is Resources.NotFoundException,
+            is XmlPullParserException,
+            is IOException -> {
+                Timber.tag(TAG).e(it, "Error loading locales specified by '$METADATA_LOCALE_CONFIG' meta-data")
+                null
+            }
+            else -> throw it
+        }
     }
 
     private fun parseLocaleConfig(parser: XmlResourceParser): LocaleListCompat {
