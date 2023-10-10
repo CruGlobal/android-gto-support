@@ -132,6 +132,13 @@ jobs:
   android_tests:
     name: Android & Java Unit Tests
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        testShard: [1, 2]
+    env:
+      ORG_GRADLE_PROJECT_testShard: ${{ matrix.testShard }}
+      ORG_GRADLE_PROJECT_testTotalShards: 2
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -167,13 +174,13 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v3
         with:
-          name: android-unit-test-results
+          name: android-unit-test-results-${{ matrix.testShard }}
           path: "**/build/reports/tests/"
       - name: Archive kover results
         if: always()
         uses: actions/upload-artifact@v3
         with:
-          name: android-kover-results
+          name: android-kover-results-${{ matrix.testShard }}
           path: "**/build/reports/kover/"
 
   ios_tests:
