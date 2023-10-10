@@ -60,7 +60,7 @@ private fun BaseExtension.configureTestOptions(project: Project) {
 
             all {
                 // increase unit tests max heap size
-                it.jvmArgs("-Xmx2g")
+                it.maxHeapSize = "2g"
             }
         }
     }
