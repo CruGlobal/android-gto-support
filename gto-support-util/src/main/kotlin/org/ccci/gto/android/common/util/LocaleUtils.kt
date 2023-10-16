@@ -73,18 +73,17 @@ object LocaleUtils {
 
         @RequiresApi(Build.VERSION_CODES.N)
         class Nougat : Base() {
-            override fun generateFallbacksSequence(locale: Locale) =
-                generateSequence(ULocale.forLocale(locale)) {
-                    val fixed = FIXED_FALLBACKS[it.toLanguageTag()]
-                    when {
-                        // fixed fallback
-                        fixed != null -> ULocale.forLanguageTag(fixed)
-                        // remove extensions as the fallback if any are defined
-                        it.extensionKeys.isNotEmpty() -> ULocale.Builder().setLocale(it).clearExtensions().build()
-                        // use normal fallback behavior
-                        else -> it.fallback.takeUnless { it == ULocale.ROOT }
-                    }
-                }.drop(1).map { it.toLocale() }.distinct()
+            override fun generateFallbacksSequence(locale: Locale) = generateSequence(ULocale.forLocale(locale)) {
+                val fixed = FIXED_FALLBACKS[it.toLanguageTag()]
+                when {
+                    // fixed fallback
+                    fixed != null -> ULocale.forLanguageTag(fixed)
+                    // remove extensions as the fallback if any are defined
+                    it.extensionKeys.isNotEmpty() -> ULocale.Builder().setLocale(it).clearExtensions().build()
+                    // use normal fallback behavior
+                    else -> it.fallback.takeUnless { it == ULocale.ROOT }
+                }
+            }.drop(1).map { it.toLocale() }.distinct()
         }
     }
 }

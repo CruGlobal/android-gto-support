@@ -130,8 +130,7 @@ class JsonApiConverterFactory(private val converter: JsonApiConverter) : Convert
         fields: Collection<JsonApiFields>,
     ) : Converter<Collection<Any>, RequestBody> {
         private val wrappedConverter = JsonApiObjectRequestBodyConverter(include, fields)
-        override fun convert(value: Collection<Any>) =
-            wrappedConverter.convert(JsonApiObject.of(*value.toTypedArray()))
+        override fun convert(value: Collection<Any>) = wrappedConverter.convert(JsonApiObject.of(*value.toTypedArray()))
     }
 
     private inner class ObjectRequestBodyConverter(

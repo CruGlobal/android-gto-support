@@ -11,14 +11,11 @@ fun <T> LiveData<T>.copyInto(owner: LifecycleOwner, target: MutableLiveData<in T
     observe(owner) { target.value = it }
 
 // region Multi-observe
-fun <IN1, IN2> LifecycleOwner.observe(
-    source1: LiveData<IN1>,
-    source2: LiveData<IN2>,
-    observer: (IN1, IN2) -> Unit
-) = compoundLiveData(source1, source2).observe(this) {
-    @Suppress("UNCHECKED_CAST")
-    observer(source1.value as IN1, source2.value as IN2)
-}
+fun <IN1, IN2> LifecycleOwner.observe(source1: LiveData<IN1>, source2: LiveData<IN2>, observer: (IN1, IN2) -> Unit) =
+    compoundLiveData(source1, source2).observe(this) {
+        @Suppress("UNCHECKED_CAST")
+        observer(source1.value as IN1, source2.value as IN2)
+    }
 
 fun <IN1, IN2, IN3> LifecycleOwner.observe(
     source1: LiveData<IN1>,
@@ -30,14 +27,11 @@ fun <IN1, IN2, IN3> LifecycleOwner.observe(
     observer(source1.value as IN1, source2.value as IN2, source3.value as IN3)
 }
 
-fun <IN1, IN2> observeForever(
-    source1: LiveData<IN1>,
-    source2: LiveData<IN2>,
-    observer: (IN1, IN2) -> Unit
-) = compoundLiveData(source1, source2).observeForever {
-    @Suppress("UNCHECKED_CAST")
-    observer(source1.value as IN1, source2.value as IN2)
-}
+fun <IN1, IN2> observeForever(source1: LiveData<IN1>, source2: LiveData<IN2>, observer: (IN1, IN2) -> Unit) =
+    compoundLiveData(source1, source2).observeForever {
+        @Suppress("UNCHECKED_CAST")
+        observer(source1.value as IN1, source2.value as IN2)
+    }
 
 fun <IN1, IN2, IN3> observeForever(
     source1: LiveData<IN1>,

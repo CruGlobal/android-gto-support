@@ -9,6 +9,7 @@ import com.okta.authfoundation.client.OidcClient
 import com.okta.authfoundation.credential.SharedPreferencesTokenStorageInternals
 import com.okta.authfoundation.credential.TokenStorage
 
+@Suppress("ktlint:standard:function-naming")
 @RequiresApi(Build.VERSION_CODES.M)
 fun SharedPreferencesTokenStorage(
     client: OidcClient,

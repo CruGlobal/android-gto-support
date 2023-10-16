@@ -40,12 +40,11 @@ class PageTransformerFixTest {
 
         override fun getItemId(position: Int) = items[position].toLong()
         override fun getItemCount() = items.size
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
-            object : RecyclerView.ViewHolder(
-                View(parent.context).apply {
-                    layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT)
-                }
-            ) {}
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = object : RecyclerView.ViewHolder(
+            View(parent.context).apply {
+                layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT)
+            },
+        ) {}
 
         override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) = Unit
     }

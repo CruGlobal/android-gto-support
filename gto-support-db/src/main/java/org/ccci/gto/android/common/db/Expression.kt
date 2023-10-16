@@ -81,11 +81,14 @@ sealed class Expression : Parcelable {
     infix fun gte(constant: Any): Expression = gte(constant(constant))
     infix fun gte(expression: Expression): Expression = Binary(Binary.GTE, this, expression)
 
-    fun `in`(vararg expressions: Expression): Expression = Binary(Binary.IN, this, *expressions)
+    @Deprecated("Since v4.2.0, use oneOf() instead.", ReplaceWith("oneOf(*expressions)"))
+    @Suppress("ktlint:standard:function-naming")
+    fun `in`(vararg expressions: Expression): Expression = oneOf(*expressions)
     fun oneOf(vararg expressions: Expression): Expression = Binary(Binary.IN, this, *expressions)
     fun oneOf(literals: List<Expression>): Expression = Binary(Binary.IN, this, *literals.toTypedArray())
     fun notIn(vararg expressions: Expression): Expression = Binary(Binary.NOTIN, this, *expressions)
 
+    @Suppress("ktlint:standard:function-naming")
     fun `is`(expression: Expression): Expression = Binary(Binary.IS, this, expression)
     fun isNull(): Expression = Binary(Binary.IS, this, NULL)
     fun isNot(expression: Expression): Expression = Binary(Binary.ISNOT, this, expression)
@@ -115,10 +118,10 @@ sealed class Expression : Parcelable {
 
         @Transient
         @IgnoredOnParcel
-        private var _sql: QueryComponent? = null
+        private var sql: QueryComponent? = null
 
         override fun buildSql(dao: AbstractDao) =
-            _sql ?: QueryComponent(if (table != null) "${table.sqlPrefix(dao)}$name" else name).also { _sql = it }
+            sql ?: QueryComponent(if (table != null) "${table.sqlPrefix(dao)}$name" else name).also { sql = it }
     }
 
     @Parcelize
@@ -138,7 +141,7 @@ sealed class Expression : Parcelable {
         }
 
         @IgnoredOnParcel
-        private val _sql by lazy {
+        private val sql by lazy {
             when {
                 isConstant -> when {
                     numValue != null -> QueryComponent(numValue.toString())
@@ -150,7 +153,7 @@ sealed class Expression : Parcelable {
             }
         }
 
-        override fun buildSql(dao: AbstractDao) = _sql
+        override fun buildSql(dao: AbstractDao) = sql
     }
 
     @Parcelize
@@ -219,7 +222,7 @@ sealed class Expression : Parcelable {
 
         @Transient
         @IgnoredOnParcel
-        private var _sql: QueryComponent? = null
+        private var sql: QueryComponent? = null
         private fun generateSql(dao: AbstractDao): QueryComponent {
             val query = QueryComponent("(") + when (op) {
                 IN, NOTIN -> {
@@ -228,11 +231,11 @@ sealed class Expression : Parcelable {
                 }
                 else -> exprs.joinToQueryComponent(" $op ") { it.buildSql(dao) }
             } + ")"
-            _sql = query
+            sql = query
             return query
         }
 
-        override fun buildSql(dao: AbstractDao) = _sql ?: generateSql(dao)
+        override fun buildSql(dao: AbstractDao) = sql ?: generateSql(dao)
     }
 
     @Parcelize
@@ -251,11 +254,11 @@ sealed class Expression : Parcelable {
 
         @Transient
         @IgnoredOnParcel
-        private var _sql: QueryComponent? = null
+        private var sql: QueryComponent? = null
         private fun generateSql(dao: AbstractDao) =
-            (QueryComponent("$op (") + expr.buildSql(dao) + ")").also { _sql = it }
+            (QueryComponent("$op (") + expr.buildSql(dao) + ")").also { sql = it }
 
-        override fun buildSql(dao: AbstractDao) = _sql ?: generateSql(dao)
+        override fun buildSql(dao: AbstractDao) = sql ?: generateSql(dao)
     }
 
     @Parcelize
@@ -279,12 +282,13 @@ sealed class Expression : Parcelable {
 
         @Transient
         @IgnoredOnParcel
-        private var _sql: QueryComponent? = null
-        private fun generateSql(dao: AbstractDao) =
-            // {mOp} (DISTINCT {expr})
-            (QueryComponent("$op (${if (isDistinct) "DISTINCT " else ""}") + expr.buildSql(dao) + ")")
-                .also { _sql = it }
+        private var sql: QueryComponent? = null
 
-        override fun buildSql(dao: AbstractDao) = _sql ?: generateSql(dao)
+        // {mOp} (DISTINCT {expr})
+        private fun generateSql(dao: AbstractDao) =
+            (QueryComponent("$op (${if (isDistinct) "DISTINCT " else ""}") + expr.buildSql(dao) + ")")
+                .also { sql = it }
+
+        override fun buildSql(dao: AbstractDao) = sql ?: generateSql(dao)
     }
 }

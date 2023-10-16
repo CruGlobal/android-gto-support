@@ -8,6 +8,7 @@ import androidx.compose.ui.graphics.luminance
  *
  * Copied from [androidx.compose.material3.DisabledAlpha]
  */
+@Suppress("ktlint:standard:property-naming")
 const val DisabledAlpha = 0.38f
 
 val ColorScheme.isLight get() = background.luminance() > 0.5f

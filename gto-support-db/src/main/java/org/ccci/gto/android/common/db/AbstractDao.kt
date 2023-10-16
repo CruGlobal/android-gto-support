@@ -289,19 +289,17 @@ abstract class AbstractDao(private val helper: SQLiteOpenHelper) : Dao {
     ): T = (if (readOnly) readableDatabase else writableDatabase).transaction(exclusive, body)
 
     @WorkerThread
-    private inline fun <T> SQLiteDatabase.transaction(
-        exclusive: Boolean = true,
-        body: (SQLiteDatabase) -> T,
-    ): T = with(newTransaction(this)) {
-        try {
-            beginTransaction(exclusive)
-            val result = body(this@transaction)
-            setTransactionSuccessful()
-            return result
-        } finally {
-            endTransaction().recycle()
+    private inline fun <T> SQLiteDatabase.transaction(exclusive: Boolean = true, body: (SQLiteDatabase) -> T): T =
+        with(newTransaction(this)) {
+            try {
+                beginTransaction(exclusive)
+                val result = body(this@transaction)
+                setTransactionSuccessful()
+                return result
+            } finally {
+                endTransaction().recycle()
+            }
         }
-    }
     // endregion Transaction Management
 
     // region LastSync tracking

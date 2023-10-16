@@ -32,6 +32,5 @@ fun Bundle.putLocaleArray(key: String?, locales: Array<Locale>?, singleString: B
     }
 }
 
-fun Bundle.getLocaleArray(key: String?) =
-    (getStringArray(key) ?: getString(key)?.split(",")?.toTypedArray())
-        ?.map { it?.let { Locale.forLanguageTag(it) } }?.toTypedArray()
+fun Bundle.getLocaleArray(key: String?) = (getStringArray(key) ?: getString(key)?.split(",")?.toTypedArray())
+    ?.map { it?.let { Locale.forLanguageTag(it) } }?.toTypedArray()

@@ -9,6 +9,8 @@ import android.util.DisplayMetrics
 
 @JvmInline
 value class Px(val value: Float) {
+    constructor(value: Number) : this(value.toFloat())
+
     /**
      * Convert this value to an Int pixel size.
      *
@@ -25,12 +27,11 @@ value class Px(val value: Float) {
     }
 }
 @JvmInline
-value class Dp(val value: Float)
+value class Dp(val value: Float) {
+    constructor(value: Number) : this(value.toFloat())
+}
 @JvmInline
 value class Sp(val value: Float)
-
-inline fun Px(value: Number) = Px(value.toFloat())
-inline fun Dp(value: Number) = Dp(value.toFloat())
 
 inline fun Dp.toPx(context: Context) = toPx(context.resources)
 inline fun Dp.toPx(resources: Resources) = toPx(resources.displayMetrics)

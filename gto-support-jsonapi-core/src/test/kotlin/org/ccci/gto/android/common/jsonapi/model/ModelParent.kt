@@ -9,7 +9,8 @@ class ModelParent(
     var name: String? = null,
     var age: Long = 0,
     var children: List<ModelChild> = emptyList(),
-    var favorite: ModelChild? = null, // everyone has a favorite child
+    // everyone has a favorite child
+    var favorite: ModelChild? = null,
     var orphans: Array<ModelChild>? = null,
 ) : ModelBase(id) {
     companion object {
