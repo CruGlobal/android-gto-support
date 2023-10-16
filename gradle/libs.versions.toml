@@ -17,7 +17,7 @@ jsonUnit = "2.38.0"
 jvm = "11"
 kotlin = "1.9.10"
 kotlinCoroutines = "1.7.3"
-ktlint = "0.51.0-FINAL"
+ktlint = "1.0.1"
 ktlintGradle = "11.6.1"
 moshi = "1.15.0"
 okhttp3 = "4.11.0"
@@ -127,7 +127,7 @@ weakdelegate = { module = "com.github.Karumi:WeakDelegate", version = "1.0.1" }
 
 # HACK: dependencies used to trigger renovate upgrades
 androidx-compose-compiler = { module = "androidx.compose.compiler:compiler", version.ref = "androidx-compose-compiler" }
-ktlint = { module = "com.pinterest:ktlint", version.ref = "ktlint" }
+ktlint = { module = "com.pinterest.ktlint:ktlint-cli", version.ref = "ktlint" }
 
 [bundles]
 androidx-compose-debug = ["androidx-compose-ui-test-manifest"]
