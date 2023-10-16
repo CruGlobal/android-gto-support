@@ -19,16 +19,13 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 
-private const val EmptyTextReplacement = "HHHHHHHHHH"
+private const val EMPTY_TEXT_REPLACEMENT = "HHHHHHHHHH"
 
 /**
  * Return the height of a block of text in Dp
  */
 @Composable
-fun computeHeightForDefaultText(
-    textStyle: TextStyle,
-    lines: Int = 1,
-): Dp {
+fun computeHeightForDefaultText(textStyle: TextStyle, lines: Int = 1): Dp {
     require(lines >= 0) { "Invalid number of lines: $lines" }
     if (lines == 0) return 0.dp
 
@@ -53,7 +50,7 @@ private fun computeHeightForDefaultText(
     require(lines >= 1) { "Invalid number of lines: $lines" }
 
     val paragraph = Paragraph(
-        text = Array(lines) { EmptyTextReplacement }.joinToString("\n"),
+        text = Array(lines) { EMPTY_TEXT_REPLACEMENT }.joinToString("\n"),
         style = style,
         maxLines = lines,
         ellipsis = false,
@@ -100,14 +97,12 @@ private fun resolveStyle(style: TextStyle, layoutDirection: LayoutDirection) =
     remember(style, layoutDirection) { resolveDefaults(style, layoutDirection) }
 
 @Composable
-private fun rememberTypeface(
-    style: TextStyle,
-    fontFamilyResolver: FontFamily.Resolver,
-) = remember(style, fontFamilyResolver) {
-    fontFamilyResolver.resolve(
-        style.fontFamily,
-        style.fontWeight ?: FontWeight.Normal,
-        style.fontStyle ?: FontStyle.Normal,
-        style.fontSynthesis ?: FontSynthesis.All
-    )
-}
+private fun rememberTypeface(style: TextStyle, fontFamilyResolver: FontFamily.Resolver) =
+    remember(style, fontFamilyResolver) {
+        fontFamilyResolver.resolve(
+            style.fontFamily,
+            style.fontWeight ?: FontWeight.Normal,
+            style.fontStyle ?: FontStyle.Normal,
+            style.fontSynthesis ?: FontSynthesis.All,
+        )
+    }

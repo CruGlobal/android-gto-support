@@ -20,17 +20,17 @@ internal class MessageMessageAdapter<T>(
     private val actionCableChannel = annotations.actionCableChannel
     private val serializeDataAsJson = annotations.actionCableSerializeDataAsJson != null
 
-    override fun fromMessage(message: ScarletMessage) =
-        incomingMessageAdapter.fromJson(message.stringValue)!!.let {
+    override fun fromMessage(message: ScarletMessage) = incomingMessageAdapter.fromJson(message.stringValue)!!
+        .let {
             it.identifier.require(actionCableChannel)
             Message(
-                it.identifier,
-                dataAdapter.fromMessage(
+                identifier = it.identifier,
+                data = dataAdapter.fromMessage(
                     when (it.message) {
                         is String -> it.message
                         else -> anyAdapter.toJson(it.message)
-                    }
-                )
+                    },
+                ),
             )
         }
 

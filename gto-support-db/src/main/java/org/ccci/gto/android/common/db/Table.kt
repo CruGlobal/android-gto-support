@@ -18,6 +18,7 @@ data class Table<T : Any> internal constructor(
         inline fun <reified T : Any> forClass() = forClass(T::class.java)
     }
 
+    @Suppress("ktlint:standard:function-naming")
     fun `as`(alias: String?) = copy(alias = alias)
     fun field(field: String) = Expression.Field(this, field)
 

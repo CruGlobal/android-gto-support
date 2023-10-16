@@ -29,11 +29,7 @@ data class AppBarAction(
 }
 
 @Composable
-fun AppBarActionButton(
-    action: AppBarAction,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier,
-) {
+fun AppBarActionButton(action: AppBarAction, onClick: () -> Unit, modifier: Modifier = Modifier) {
     val title = action.titleRes?.let { stringResource(it) } ?: action.title
     when {
         action.iconRes != null -> IconButton(onClick = onClick, modifier = modifier) {

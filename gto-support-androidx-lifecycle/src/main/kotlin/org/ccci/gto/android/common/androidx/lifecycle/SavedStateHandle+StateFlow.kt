@@ -12,11 +12,7 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.plus
 
 @MainThread
-fun <T> SavedStateHandle.getMutableStateFlow(
-    scope: CoroutineScope,
-    key: String,
-    initialValue: T
-): MutableStateFlow<T> {
+fun <T> SavedStateHandle.getMutableStateFlow(scope: CoroutineScope, key: String, initialValue: T): MutableStateFlow<T> {
     val liveData = getLiveData(key, initialValue)
     val stateFlow = MutableStateFlow(initialValue)
 

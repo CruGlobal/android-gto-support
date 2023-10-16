@@ -15,14 +15,11 @@ import androidx.lifecycle.switchMap
  *
  * @see androidx.lifecycle.Transformations.map
  */
-fun <IN1, IN2, OUT> combine(
-    source1: LiveData<IN1>,
-    source2: LiveData<IN2>,
-    mapFunction: (IN1, IN2) -> OUT,
-) = combineInt(source1, source2) {
-    @Suppress("UNCHECKED_CAST")
-    mapFunction(source1.value as IN1, source2.value as IN2)
-}
+fun <IN1, IN2, OUT> combine(source1: LiveData<IN1>, source2: LiveData<IN2>, mapFunction: (IN1, IN2) -> OUT) =
+    combineInt(source1, source2) {
+        @Suppress("UNCHECKED_CAST")
+        mapFunction(source1.value as IN1, source2.value as IN2)
+    }
 
 /**
  * This method will combine 2 LiveData objects into a new LiveData object by running the {@param mapFunction} on the
@@ -31,13 +28,11 @@ fun <IN1, IN2, OUT> combine(
  * @see androidx.lifecycle.Transformations.map
  */
 @JvmSynthetic
-fun <IN1, IN2, OUT> LiveData<IN1>.combineWith(
-    other: LiveData<IN2>,
-    mapFunction: (IN1, IN2) -> OUT,
-) = combineInt(this, other) {
-    @Suppress("UNCHECKED_CAST")
-    mapFunction(value as IN1, other.value as IN2)
-}
+fun <IN1, IN2, OUT> LiveData<IN1>.combineWith(other: LiveData<IN2>, mapFunction: (IN1, IN2) -> OUT) =
+    combineInt(this, other) {
+        @Suppress("UNCHECKED_CAST")
+        mapFunction(value as IN1, other.value as IN2)
+    }
 
 /**
  * This method will combine 3 LiveData objects into a new LiveData object by running the {@param mapFunction} on the
@@ -201,10 +196,7 @@ fun <IN1, IN2, IN3, IN4, IN5, IN6, IN7, OUT> LiveData<IN1>.combineWith(
     )
 }
 
-private inline fun <OUT> combineInt(
-    vararg input: LiveData<*>,
-    crossinline mapFunction: () -> OUT,
-): LiveData<OUT> {
+private inline fun <OUT> combineInt(vararg input: LiveData<*>, crossinline mapFunction: () -> OUT): LiveData<OUT> {
     val result = MediatorLiveData<OUT>()
     val state = object {
         val inputInitialized = BooleanArray(input.size) { false }

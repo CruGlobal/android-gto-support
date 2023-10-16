@@ -184,8 +184,12 @@ class PrimaryItemChangeObserverTest {
         }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = TestViewHolder(parent)
-        override fun onBindViewHolder(holder: TestViewHolder, position: Int) { holder.id = items[position] }
-        override fun onViewRecycled(holder: TestViewHolder) { holder.id = null }
+        override fun onBindViewHolder(holder: TestViewHolder, position: Int) {
+            holder.id = items[position]
+        }
+        override fun onViewRecycled(holder: TestViewHolder) {
+            holder.id = null
+        }
     }
 
     class TestViewHolder(parent: ViewGroup) : RecyclerView.ViewHolder(
