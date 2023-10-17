@@ -7,27 +7,28 @@ import android.content.pm.ApplicationInfo
 import android.content.res.Configuration
 import android.os.Build
 import android.os.LocaleList
+import androidx.annotation.RequiresApi
 import androidx.annotation.StringRes
 import java.util.Locale
 import org.ccci.gto.android.common.util.os.locales
 
 fun Context.localize(vararg locales: Locale, includeExisting: Boolean = true): Context = when {
     locales.isEmpty() -> this
-    else -> createConfigurationContext(
-        Configuration().apply {
-            when {
-                Build.VERSION.SDK_INT >= Build.VERSION_CODES.N -> setLocales(
-                    LocaleList(
-                        *LinkedHashSet<Locale>().apply {
-                            addAll(locales)
-                            if (includeExisting) addAll(resources.configuration.locales.locales)
-                        }.toTypedArray()
-                    )
-                )
-                else -> setLocale(locales.first())
-            }
-        }
-    )
+    Build.VERSION.SDK_INT < Build.VERSION_CODES.N -> when (val first = locales.first()) {
+        resources.configuration.locale -> this
+        else -> createConfigurationContext(Configuration().apply { setLocale(first) })
+    }
+    else -> when (
+        val newLocales = LocaleList(
+            *LinkedHashSet<Locale>().apply {
+                addAll(locales)
+                if (includeExisting) addAll(resources.configuration.locales.locales)
+            }.toTypedArray(),
+        )
+    ) {
+        resources.configuration.locales -> this
+        else -> createConfigurationContext(Configuration().apply { setLocales(newLocales) })
+    }
 }
 fun Context.localizeIfPossible(locale: Locale?) = locale?.let { localize(it) } ?: this
 
