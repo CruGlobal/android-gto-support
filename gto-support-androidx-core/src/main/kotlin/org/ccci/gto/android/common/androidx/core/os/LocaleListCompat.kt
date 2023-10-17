@@ -4,6 +4,7 @@ import androidx.core.os.LocaleListCompat
 import java.util.Locale
 
 fun LocaleListCompat.asIterable(): Iterable<Locale> = LocaleIterable(this)
+fun LocaleListCompat.toTypedArray() = asIterable().toList().toTypedArray()
 
 private class LocaleIterable(private val localeList: LocaleListCompat) : Iterable<Locale> {
     override fun iterator() = LocaleListCompatIterator(localeList)

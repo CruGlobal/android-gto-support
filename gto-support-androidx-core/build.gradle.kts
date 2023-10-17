@@ -8,4 +8,11 @@ dependencies {
     api(libs.androidx.core)
 
     implementation(libs.timber)
+
+    testImplementation(kotlin("test"))
+
+    // region Context.localize()
+    compileOnly(project(":gto-support-util"))
+    testImplementation(project(":gto-support-util"))
+    // endregion Context.localize()
 }

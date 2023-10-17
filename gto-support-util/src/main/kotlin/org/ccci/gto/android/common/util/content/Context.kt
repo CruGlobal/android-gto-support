@@ -11,6 +11,7 @@ import androidx.annotation.RequiresApi
 import androidx.annotation.StringRes
 import java.util.Locale
 import org.ccci.gto.android.common.util.os.locales
+import org.ccci.gto.android.common.util.os.toTypedArray
 
 fun Context.localize(vararg locales: Locale, includeExisting: Boolean = true): Context = when {
     locales.isEmpty() -> this
@@ -31,6 +32,14 @@ fun Context.localize(vararg locales: Locale, includeExisting: Boolean = true): C
     }
 }
 fun Context.localizeIfPossible(locale: Locale?) = locale?.let { localize(it) } ?: this
+
+@RequiresApi(Build.VERSION_CODES.N)
+fun Context.localize(locales: LocaleList, includeExisting: Boolean = true) = when {
+    locales.isEmpty -> this
+    else -> localize(*locales.toTypedArray(), includeExisting = includeExisting)
+}
+@RequiresApi(Build.VERSION_CODES.N)
+fun Context.localizeIfPossible(locales: LocaleList?) = locales?.let { localize(locales) } ?: this
 
 // region findActivity()
 fun Context.findActivityOrNull(): Activity? = findActivityOrNull<Activity>()

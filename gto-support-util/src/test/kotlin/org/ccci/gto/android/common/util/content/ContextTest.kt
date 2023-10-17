@@ -77,6 +77,7 @@ class ContextTest {
     }
     // endregion findActivity()
 
+    // region localize()
     @Test
     @Config(sdk = [OLDEST_SDK, 23])
     fun `localize() - SDK 21`() {
@@ -111,6 +112,16 @@ class ContextTest {
 
     @Test
     @Config(sdk = [24, NEWEST_SDK])
+    fun `localize(LocaleList())`() {
+        context.resources.configuration.setLocales(LocaleList(Locale.ENGLISH, Locale.GERMAN))
+        assertThat(
+            context.localize(LocaleList(Locale.GERMAN, Locale.FRENCH)).resources.configuration.locales.toTypedArray(),
+            arrayContaining(Locale.GERMAN, Locale.FRENCH, Locale.ENGLISH)
+        )
+    }
+
+    @Test
+    @Config(sdk = [24, NEWEST_SDK])
     fun `localize() - Duplicate Locales`() {
         assertTrue(Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
 
@@ -120,4 +131,5 @@ class ContextTest {
             arrayContaining(Locale.ENGLISH)
         )
     }
+    // endregion localize()
 }
