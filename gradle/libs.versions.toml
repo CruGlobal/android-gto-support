@@ -112,7 +112,7 @@ okta-auth-foundation-bootstrap = { module = "com.okta.kotlin:auth-foundation-boo
 picasso = { module = "com.squareup.picasso:picasso", version = "2.8" }
 play-auth = "com.google.android.gms:play-services-auth:20.7.0"
 play-featuredelivery = "com.google.android.play:feature-delivery:2.1.0"
-realm = "io.realm:realm-android-library:10.16.1"
+realm = "io.realm:realm-android-library:10.16.2"
 retrofit = { module = "com.squareup.retrofit2:retrofit", version = "2.9.0" }
 robolectric = "org.robolectric:robolectric:4.10.3"
 scarlet = { module = "com.tinder.scarlet:scarlet", version.ref = "scarlet" }
