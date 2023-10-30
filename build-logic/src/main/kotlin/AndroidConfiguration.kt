@@ -1,7 +1,6 @@
 import com.android.build.api.dsl.CommonExtension
 import com.android.build.gradle.BaseExtension
 import com.android.build.gradle.LibraryExtension
-import org.gradle.api.JavaVersion
 import org.gradle.api.Project
 import org.gradle.api.plugins.ExtensionAware
 import org.gradle.kotlin.dsl.findByType
@@ -31,12 +30,6 @@ private fun BaseExtension.configureProguardRules(project: Project) {
 }
 
 private fun BaseExtension.configureCompilerOptions(project: Project) {
-    compileOptions {
-        // HACK: workaround a kotlin.jvmToolchain bug
-        //       see: https://issuetracker.google.com/issues/260059413
-        sourceCompatibility = JavaVersion.toVersion(project.libs.findVersion("jvm").get().requiredVersion)
-        targetCompatibility = JavaVersion.toVersion(project.libs.findVersion("jvm").get().requiredVersion)
-    }
     (this as ExtensionAware).extensions.findByType<KotlinJvmOptions>()?.apply {
         freeCompilerArgs += "-Xjvm-default=all"
     }
