@@ -22,7 +22,7 @@ private fun BaseExtension.configureSdk() {
 
     defaultConfig {
         minSdk = 21
-        targetSdk = 33
+        targetSdk = 34
     }
 }
 
