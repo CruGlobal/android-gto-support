@@ -54,6 +54,7 @@ class JsonApiConverterErrorsTest {
         assertThatJson(json).node("errors").isArray.ofLength(1)
         assertThat(json, jsonPartEquals("errors[0].detail", error.detail))
         assertThat(json, jsonPartEquals("errors[0].status", "\"${error.status}\""))
+        assertThatJson(json).node("errors[0].code").isEqualTo("error_code")
         assertThat(json, jsonPartEquals("errors[0].source.pointer", error.source!!.pointer))
         assertThat(json, jsonPartEquals("errors[0].meta", META_SIMPLE))
     }
@@ -102,6 +103,8 @@ class JsonApiConverterErrorsTest {
 
     private fun simpleError() = JsonApiError(
         status = 200,
+        code = "error_code",
+        title = "Title",
         detail = "Detail human readable message.",
         source = JsonApiError.Source(
             pointer = "/data/attributes/title",
