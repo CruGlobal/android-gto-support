@@ -1,5 +1,26 @@
 package org.ccci.gto.android.common.jsonapi;
 
+import static org.ccci.gto.android.common.jsonapi.model.JsonApiError.JSON_ERROR_CODE;
+import static org.ccci.gto.android.common.jsonapi.model.JsonApiError.JSON_ERROR_DETAIL;
+import static org.ccci.gto.android.common.jsonapi.model.JsonApiError.JSON_ERROR_META;
+import static org.ccci.gto.android.common.jsonapi.model.JsonApiError.JSON_ERROR_SOURCE;
+import static org.ccci.gto.android.common.jsonapi.model.JsonApiError.JSON_ERROR_STATUS;
+import static org.ccci.gto.android.common.jsonapi.model.JsonApiError.JSON_ERROR_TITLE;
+import static org.ccci.gto.android.common.jsonapi.model.JsonApiError.Source.JSON_ERROR_SOURCE_POINTER;
+import static org.ccci.gto.android.common.jsonapi.model.JsonApiObject.JSON_DATA;
+import static org.ccci.gto.android.common.jsonapi.model.JsonApiObject.JSON_DATA_ATTRIBUTES;
+import static org.ccci.gto.android.common.jsonapi.model.JsonApiObject.JSON_DATA_ID;
+import static org.ccci.gto.android.common.jsonapi.model.JsonApiObject.JSON_DATA_RELATIONSHIPS;
+import static org.ccci.gto.android.common.jsonapi.model.JsonApiObject.JSON_DATA_TYPE;
+import static org.ccci.gto.android.common.jsonapi.model.JsonApiObject.JSON_ERRORS;
+import static org.ccci.gto.android.common.jsonapi.model.JsonApiObject.JSON_INCLUDED;
+import static org.ccci.gto.android.common.jsonapi.model.JsonApiObject.JSON_META;
+import static org.ccci.gto.android.common.jsonapi.util.CollectionUtils.newCollection;
+import static java.util.Collections.singletonMap;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import org.ccci.gto.android.common.jsonapi.annotation.JsonApiAttribute;
 import org.ccci.gto.android.common.jsonapi.annotation.JsonApiId;
 import org.ccci.gto.android.common.jsonapi.annotation.JsonApiIgnore;
@@ -34,26 +55,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
-import static java.util.Collections.singletonMap;
-import static org.ccci.gto.android.common.jsonapi.model.JsonApiError.JSON_ERROR_DETAIL;
-import static org.ccci.gto.android.common.jsonapi.model.JsonApiError.JSON_ERROR_META;
-import static org.ccci.gto.android.common.jsonapi.model.JsonApiError.JSON_ERROR_SOURCE;
-import static org.ccci.gto.android.common.jsonapi.model.JsonApiError.JSON_ERROR_STATUS;
-import static org.ccci.gto.android.common.jsonapi.model.JsonApiError.JSON_ERROR_TITLE;
-import static org.ccci.gto.android.common.jsonapi.model.JsonApiError.Source.JSON_ERROR_SOURCE_POINTER;
-import static org.ccci.gto.android.common.jsonapi.model.JsonApiObject.JSON_DATA;
-import static org.ccci.gto.android.common.jsonapi.model.JsonApiObject.JSON_DATA_ATTRIBUTES;
-import static org.ccci.gto.android.common.jsonapi.model.JsonApiObject.JSON_DATA_ID;
-import static org.ccci.gto.android.common.jsonapi.model.JsonApiObject.JSON_DATA_RELATIONSHIPS;
-import static org.ccci.gto.android.common.jsonapi.model.JsonApiObject.JSON_DATA_TYPE;
-import static org.ccci.gto.android.common.jsonapi.model.JsonApiObject.JSON_ERRORS;
-import static org.ccci.gto.android.common.jsonapi.model.JsonApiObject.JSON_INCLUDED;
-import static org.ccci.gto.android.common.jsonapi.model.JsonApiObject.JSON_META;
-import static org.ccci.gto.android.common.jsonapi.util.CollectionUtils.newCollection;
-import static org.ccci.gto.android.common.jsonapi.util.NumberUtils.toInteger;
+import kotlin.text.StringsKt;
 
 public final class JsonApiConverter {
     public static final class Builder {
@@ -310,6 +312,7 @@ public final class JsonApiConverter {
         if (status != null) {
             json.put(JSON_ERROR_STATUS, status.toString());
         }
+        json.put(JSON_ERROR_CODE, error.getCode());
         json.put(JSON_ERROR_TITLE, error.getTitle());
         json.put(JSON_ERROR_DETAIL, error.getDetail());
         json.put(JSON_ERROR_SOURCE, errorSourceToJson(error.getSource()));
@@ -330,13 +333,14 @@ public final class JsonApiConverter {
     @Nullable
     private JsonApiError errorFromJson(@Nullable final JSONObject json) {
         if (json != null) {
-            final JsonApiError error = new JsonApiError();
-            error.setStatus(toInteger(json.optString(JSON_ERROR_STATUS, null)));
-            error.setTitle(json.optString(JSON_ERROR_TITLE, null));
-            error.setDetail(json.optString(JSON_ERROR_DETAIL, null));
-            error.setSource(errorSourceFromJson(json.optJSONObject(JSON_ERROR_SOURCE)));
-            error.setRawMeta(json.optJSONObject(JSON_ERROR_META));
-            return error;
+            return new JsonApiError(
+                    StringsKt.toIntOrNull(json.optString(JSON_ERROR_STATUS, null)),
+                    json.optString(JSON_ERROR_CODE, null),
+                    json.optString(JSON_ERROR_TITLE, null),
+                    json.optString(JSON_ERROR_DETAIL, null),
+                    errorSourceFromJson(json.optJSONObject(JSON_ERROR_SOURCE)),
+                    json.optJSONObject(JSON_ERROR_META)
+            );
         }
         return null;
     }
