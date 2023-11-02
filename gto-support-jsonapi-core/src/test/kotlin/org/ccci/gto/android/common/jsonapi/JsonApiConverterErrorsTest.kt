@@ -73,6 +73,19 @@ class JsonApiConverterErrorsTest {
     }
 
     @Test
+    fun `fromJson() - Sparse Error`() {
+        val converter = JsonApiConverter.Builder()
+            .addClasses(ModelSimple::class.java)
+            .build()
+        val error = JsonApiError()
+        val json = converter.toJson(JsonApiObject.error<Any>(error))
+        val obj = converter.fromJson(json, ModelSimple::class.java)
+        assertTrue(obj.hasErrors)
+        assertEquals(1, obj.errors.size)
+        assertEquals(error, obj.errors[0])
+    }
+
+    @Test
     fun verifyFromJsonJsonapiMultiple1() {
         val converter = JsonApiConverter.Builder().addClasses(ModelSimple::class.java).build()
         val obj = converter.fromJson(ERROR_JSONAPI_MULTIPLE1, ModelSimple::class.java)
