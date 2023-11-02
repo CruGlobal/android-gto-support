@@ -33,6 +33,7 @@ import org.ccci.gto.android.common.jsonapi.internal.util.ReflectionUtils;
 import org.ccci.gto.android.common.jsonapi.model.JsonApiError;
 import org.ccci.gto.android.common.jsonapi.model.JsonApiObject;
 import org.ccci.gto.android.common.jsonapi.util.Includes;
+import org.ccci.gto.android.common.jsonapi.util.NumberUtilsKt;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -54,8 +55,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import kotlin.text.StringsKt;
 
 public final class JsonApiConverter {
     public static final class Builder {
@@ -334,7 +333,7 @@ public final class JsonApiConverter {
     private JsonApiError errorFromJson(@Nullable final JSONObject json) {
         if (json != null) {
             return new JsonApiError(
-                    StringsKt.toIntOrNull(json.optString(JSON_ERROR_STATUS, null)),
+                    NumberUtilsKt.toIntegerOrNull(json.optString(JSON_ERROR_STATUS, null)),
                     json.optString(JSON_ERROR_CODE, null),
                     json.optString(JSON_ERROR_TITLE, null),
                     json.optString(JSON_ERROR_DETAIL, null),
