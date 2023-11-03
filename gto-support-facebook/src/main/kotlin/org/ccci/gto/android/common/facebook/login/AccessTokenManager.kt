@@ -10,11 +10,11 @@ import kotlin.coroutines.suspendCoroutine
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.channels.trySendBlocking
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.conflate
 import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.transformLatest
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOf
 
 fun AccessTokenManager.currentAccessTokenFlow() = callbackFlow {
     val tracker = object : AccessTokenTracker() {
@@ -27,15 +27,12 @@ fun AccessTokenManager.currentAccessTokenFlow() = callbackFlow {
     awaitClose { tracker.stopTracking() }
 }.conflate()
 
+@Deprecated("Since v4.2.0, use isExpiredFlow() instead.", ReplaceWith("isExpiredFlow()"))
+fun AccessTokenManager.isAuthenticatedFlow() = isExpiredFlow()
+
 @OptIn(ExperimentalCoroutinesApi::class)
-fun AccessTokenManager.isAuthenticatedFlow() = currentAccessTokenFlow()
-    .transformLatest {
-        while (it?.isExpired == false) {
-            emit(true)
-            delay((it.expires.time - System.currentTimeMillis()).coerceAtLeast(1))
-        }
-        emit(false)
-    }
+fun AccessTokenManager.isExpiredFlow() = currentAccessTokenFlow()
+    .flatMapLatest { it?.isExpiredFlow() ?: flowOf(false) }
     .distinctUntilChanged()
 
 suspend fun AccessTokenManager.refreshCurrentAccessToken() = suspendCoroutine { cont ->
