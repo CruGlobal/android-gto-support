@@ -96,10 +96,10 @@ class AccessTokenManagerTest {
     }
     // endregion currentAccessTokenFlow()
 
-    // region isAuthenticatedFlow()
+    // region isExpiredFlow()
     @Test
-    fun `isAuthenticatedFlow()`() = runTest {
-        accessTokenManager.isAuthenticatedFlow().test {
+    fun `isExpiredFlow()`() = runTest {
+        accessTokenManager.isExpiredFlow().test {
             assertFalse(awaitItem())
             accessTokenManager.currentAccessToken = AccessToken(
                 "2",
@@ -121,7 +121,7 @@ class AccessTokenManagerTest {
             assertFalse(awaitItem())
         }
     }
-    // endregion isAuthenticatedFlow()
+    // endregion isExpiredFlow()
 
     // region refreshCurrentAccessToken()
     @Test
