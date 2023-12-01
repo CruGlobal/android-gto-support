@@ -7,6 +7,7 @@ android.namespace = "org.ccci.gto.android.common.testing.picasso"
 dependencies {
     api(libs.picasso)
 
+    implementation(libs.mockito)
     implementation(libs.mockito.kotlin)
     compileOnly(libs.junit)
 }
