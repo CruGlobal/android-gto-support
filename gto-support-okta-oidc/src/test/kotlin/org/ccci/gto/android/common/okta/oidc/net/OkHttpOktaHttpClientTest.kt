@@ -136,7 +136,7 @@ class OkHttpOktaHttpClientTest {
         server.enqueue(
             MockResponse()
                 .setResponseCode(200)
-                .setBody("""{"access_token":"success"}""")
+                .setBody("""{"access_token":"success","token_type":"bearer","expires_in":300}""")
         )
 
         val response = refreshTokenRequest().executeRequest(client)
