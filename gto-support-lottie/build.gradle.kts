@@ -17,6 +17,10 @@ dependencies {
     api(libs.lottie)
     implementation(libs.androidx.appcompat)
 
+    // region Data Binding
     compileOnly(libs.androidx.databinding.runtime)
+    testImplementation(libs.androidx.databinding.runtime)
+    // endregion Data Binding
+
     compileOnly(libs.okio)
 }

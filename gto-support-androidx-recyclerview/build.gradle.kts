@@ -14,8 +14,9 @@ dependencies {
     implementation(libs.weakdelegate)
 
     // region Data Binding
-    compileOnly(libs.androidx.databinding.runtime)
     compileOnly(libs.androidx.databinding.adapters)
+    compileOnly(libs.androidx.databinding.runtime)
+    testImplementation(libs.androidx.databinding.runtime)
     // endregion Data Binding
 
     testImplementation(libs.junitParams)
