@@ -46,21 +46,6 @@ open class JsonApiObject<T : Any> private constructor(
     @get:JvmName("hasErrors")
     val hasErrors get() = errors.isNotEmpty()
 
-    @Deprecated("Since v4.1.0, use data += value instead.", ReplaceWith("data += resource"))
-    fun addData(resource: T) {
-        data += resource
-    }
-
-    @Deprecated("Since v4.1.0, use dataSingle property instead.", ReplaceWith("dataSingle = data"))
-    fun setData(data: T?) {
-        dataSingle = data
-    }
-
-    @JvmSynthetic
-    @JvmName("-hasErrors")
-    @Deprecated("Since v4.1.0, use hasErrors property instead.", ReplaceWith("hasErrors"))
-    fun hasErrors() = hasErrors
-
     @Deprecated("Since v4.1.0, use errors += error instead", ReplaceWith("errors += error"))
     fun addError(error: JsonApiError) {
         errors += error
