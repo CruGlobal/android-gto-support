@@ -25,6 +25,7 @@ dependencies {
 
     // region Data Binding Adapters
     compileOnly(libs.androidx.databinding.runtime)
+    testImplementation(libs.androidx.databinding.runtime)
     // endregion Data Binding Adapters
 
     // region Material Component Targets
