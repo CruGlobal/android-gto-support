@@ -11,7 +11,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.layout
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.lerp
-import com.google.accompanist.pager.PagerState as AccompanistPagerState
 
 @ExperimentalFoundationApi
 fun Modifier.pagerTabIndicatorOffset(
@@ -22,25 +21,6 @@ fun Modifier.pagerTabIndicatorOffset(
     val stateBridge = object : PagerStateBridge {
         override val currentPage get() = pagerState.currentPage
         override val currentPageOffset get() = pagerState.currentPageOffsetFraction
-    }
-
-    return pagerTabIndicatorOffset(stateBridge, tabPositions, pageIndexMapping)
-}
-
-@Deprecated(
-    """
-        Since v4.0.2, pagerTabIndicatorOffset for accompanist Pagers are deprecated, please use the version that takes 
-        androidx.compose.foundation.pager.PagerState instead
-    """
-)
-fun Modifier.pagerTabIndicatorOffset(
-    pagerState: AccompanistPagerState,
-    tabPositions: List<TabPosition>,
-    pageIndexMapping: (Int) -> Int = { it },
-): Modifier {
-    val stateBridge = object : PagerStateBridge {
-        override val currentPage get() = pagerState.currentPage
-        override val currentPageOffset get() = pagerState.currentPageOffset
     }
 
     return pagerTabIndicatorOffset(stateBridge, tabPositions, pageIndexMapping)
