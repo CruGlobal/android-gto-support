@@ -4,7 +4,6 @@ import kotlin.test.assertNotNull
 import kotlinx.coroutines.test.runTest
 import net.javacrumbs.jsonunit.assertj.assertThatJson
 import net.javacrumbs.jsonunit.core.Option
-import net.javacrumbs.jsonunit.core.internal.Options
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import org.ccci.gto.android.common.jsonapi.annotation.JsonApiId
@@ -108,7 +107,7 @@ class JsonApiConverterFactoryTest {
             node("data.relationships.children.data").isArray.hasSize(2)
             node("included").isArray.hasSize(1)
 
-            withOptions(Options(Option.IGNORING_EXTRA_FIELDS))
+            withOptions(Option.IGNORING_EXTRA_FIELDS)
                 .node("included[0]").isEqualTo("{type:'child',id:11,attributes:{name:'Daniel'}}")
         }
     }
