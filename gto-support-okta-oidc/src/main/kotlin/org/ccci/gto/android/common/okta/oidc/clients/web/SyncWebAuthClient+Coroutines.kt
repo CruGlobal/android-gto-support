@@ -1,5 +1,6 @@
 package org.ccci.gto.android.common.okta.oidc.clients.web
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import com.okta.oidc.clients.AuthAPI
 import com.okta.oidc.clients.BaseAuth
@@ -16,6 +17,7 @@ import org.ccci.gto.android.common.compat.app.unregisterActivityLifecycleCallbac
 import org.ccci.gto.android.common.util.app.EmptyActivityLifecycleCallbacks
 import splitties.bitflags.hasFlag
 
+@SuppressLint("RestrictedApi")
 suspend fun SyncWebAuthClient.signOutSuspending(activity: Activity, flags: Int = BaseAuth.ALL): Int {
     val callbacks = object : EmptyActivityLifecycleCallbacks() {
         override fun onActivityDestroyed(activity: Activity) = cancel()

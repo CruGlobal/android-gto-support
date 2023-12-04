@@ -5,7 +5,6 @@ plugins {
 android {
     namespace = "org.ccci.gto.android.common.androidx.room"
 
-    compileOptions.isCoreLibraryDesugaringEnabled = true
     testFixtures.enable = true
 }
 
