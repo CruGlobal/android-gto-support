@@ -68,16 +68,16 @@ class ExpressionTest {
     }
 
     @Test
-    fun verifyInSql() {
+    fun `oneOf()`() {
         assertThat(
-            expr.`in`(Expression.constant(1), Expression.constant(2)).buildSql(dao),
+            expr.oneOf(Expression.constant(1), Expression.constant(2)).buildSql(dao),
             matchesQueryComponent("(expr IN (1,2))")
         )
     }
 
     @Test
     fun verifyBinaryArgs() {
-        val expression = field.`in`(Expression.bind(), Expression.bind()).args(1, 2)
+        val expression = field.oneOf(Expression.bind(), Expression.bind()).args(1, 2)
         assertThat(expression.buildSql(dao).args, arrayContaining("1", "2"))
     }
 
