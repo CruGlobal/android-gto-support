@@ -35,7 +35,7 @@ jobs:
           distribution: "temurin"
           java-version-file: ".java-version"
       - name: Cache Konan
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ~/.konan
           key: ${{ runner.os }}-konan-${{ github.sha }}
@@ -57,7 +57,7 @@ jobs:
           distribution: "temurin"
           java-version-file: ".java-version"
       - name: Cache Konan
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ~/.konan
           key: ${{ runner.os }}-konan-${{ github.sha }}
@@ -85,7 +85,7 @@ jobs:
           distribution: "temurin"
           java-version-file: ".java-version"
       - name: Cache Konan
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ~/.konan
           key: ${{ runner.os }}-konan-${{ github.sha }}
@@ -113,7 +113,7 @@ jobs:
           distribution: "temurin"
           java-version-file: ".java-version"
       - name: Cache Konan
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ~/.konan
           key: ${{ runner.os }}-konan-${{ github.sha }}
@@ -148,13 +148,13 @@ jobs:
           distribution: "temurin"
           java-version-file: ".java-version"
       - name: Cache Konan
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ~/.konan
           key: ${{ runner.os }}-konan-${{ github.sha }}
           restore-keys: ${{ runner.os }}-konan-
       - name: Cache Maven
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ~/.m2/repository
           key: ${{ runner.os }}-maven-${{ github.sha }}
@@ -195,7 +195,7 @@ jobs:
           distribution: "temurin"
           java-version-file: ".java-version"
       - name: Cache Konan
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ~/.konan
           key: ${{ runner.os }}-konan-${{ github.sha }}
@@ -217,7 +217,7 @@ jobs:
           distribution: "temurin"
           java-version-file: ".java-version"
       - name: Cache Konan
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ~/.konan
           key: ${{ runner.os }}-konan-${{ github.sha }}
@@ -306,7 +306,7 @@ jobs:
           distribution: "temurin"
           java-version-file: ".java-version"
       - name: Cache Konan
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ~/.konan
           key: ${{ runner.os }}-konan-${{ github.sha }}
