@@ -25,4 +25,9 @@ dependencies {
     // region PullRefreshIndicator
     compileOnly(libs.androidx.compose.material)
     // endregion PullRefreshIndicator
+
+    // region LinearProgressIndicator bug
+    testImplementation(libs.accompanist.pager)
+    testImplementation(libs.androidx.compose.material)
+    // endregion LinearProgressIndicator bug
 }
