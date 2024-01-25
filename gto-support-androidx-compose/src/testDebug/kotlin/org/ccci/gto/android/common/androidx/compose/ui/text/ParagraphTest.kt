@@ -21,8 +21,8 @@ class ParagraphTest {
     fun `computeHeightForDefaultText()`() {
         composeTestRule.setContent {
             assertEquals(0.dp, computeHeightForDefaultText(textStyle, 0))
-            assertEquals(41.dp, computeHeightForDefaultText(textStyle, 1))
-            assertEquals(55.dp, computeHeightForDefaultText(textStyle, 2))
+            assertEquals(35.dp, computeHeightForDefaultText(textStyle, 1))
+            assertEquals(49.dp, computeHeightForDefaultText(textStyle, 2))
         }
     }
 
