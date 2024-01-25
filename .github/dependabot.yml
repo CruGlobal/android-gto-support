@@ -4,15 +4,7 @@ updates:
   directory: "/"
   schedule:
     interval: daily
-  reviewers:
-  - frett
-  assignees:
-  - frett
   ignore:
   - dependency-name: com.squareup.picasso:picasso
     versions:
     - "= 2.71828"
-  - dependency-name: org.jetbrains.kotlinx:kotlinx-coroutines-core
-    versions:
-    - "1.4.3-native-mt"
-    - "1.5.0-native-mt"
