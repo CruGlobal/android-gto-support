@@ -19,8 +19,11 @@ class HeightAndAlphaVisibilityAnimator private constructor(private val view: Vie
 
     private var current: Animator? = null
 
+    @Suppress("ktlint:standard:property-naming") // https://github.com/pinterest/ktlint/issues/2448
     private var _originalHeight: Int? = null
     private val originalHeight get() = _originalHeight ?: HEIGHT.get(view)
+
+    @Suppress("ktlint:standard:property-naming") // https://github.com/pinterest/ktlint/issues/2448
     private var _originalAlpha: Float? = null
     private val originalAlpha get() = _originalAlpha ?: View.ALPHA.get(view)
 
