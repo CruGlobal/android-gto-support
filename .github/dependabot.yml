@@ -3,7 +3,7 @@ updates:
 - package-ecosystem: gradle
   directory: "/"
   schedule:
-    interval: daily
+    interval: monthly
   ignore:
   - dependency-name: com.squareup.picasso:picasso
     versions:
