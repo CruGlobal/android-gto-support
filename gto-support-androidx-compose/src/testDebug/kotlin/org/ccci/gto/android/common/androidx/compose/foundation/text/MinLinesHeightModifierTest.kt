@@ -33,7 +33,7 @@ class MinLinesHeightModifierTest {
         composeTestRule.setContent {
             Spacer(modifier = Modifier.minLinesHeight(1, textStyle))
         }
-        composeTestRule.onRoot().assertHeightIsEqualTo(41.dp)
+        composeTestRule.onRoot().assertHeightIsEqualTo(35.dp)
     }
 
     @Test
@@ -41,6 +41,6 @@ class MinLinesHeightModifierTest {
         composeTestRule.setContent {
             Spacer(modifier = Modifier.minLinesHeight(2, textStyle))
         }
-        composeTestRule.onRoot().assertHeightIsEqualTo(55.dp)
+        composeTestRule.onRoot().assertHeightIsEqualTo(49.dp)
     }
 }
