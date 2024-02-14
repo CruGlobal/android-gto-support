@@ -74,8 +74,12 @@ fun LazyDropdownMenu(
 }
 
 /** Forked version of [androidx.compose.material3.DropdownMenuContent] supporting a LazyColumn */
-@Suppress("TransitionPropertiesLabel")
 @Composable
+@Suppress(
+    "ktlint:compose:modifier-not-used-at-root",
+    "ktlint:compose:mutable-params-check",
+    "TransitionPropertiesLabel",
+)
 private fun LazyDropdownMenuContent(
     expandedStates: MutableTransitionState<Boolean>,
     transformOriginState: MutableState<TransformOrigin>,
