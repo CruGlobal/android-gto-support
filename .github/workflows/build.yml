@@ -41,7 +41,7 @@ jobs:
           key: ${{ runner.os }}-konan-${{ github.sha }}
           restore-keys: ${{ runner.os }}-konan-
       - name: Build Library
-        uses: gradle/gradle-build-action@v2
+        uses: gradle/gradle-build-action@v3
         with:
           arguments: assemble --scan
 
@@ -63,7 +63,7 @@ jobs:
           key: ${{ runner.os }}-konan-${{ github.sha }}
           restore-keys: ${{ runner.os }}-konan-
       - name: Run Checkstyle
-        uses: gradle/gradle-build-action@v2
+        uses: gradle/gradle-build-action@v3
         with:
           arguments: checkstyle --scan
       - name: Archive Checkstyle results
@@ -91,7 +91,7 @@ jobs:
           key: ${{ runner.os }}-konan-${{ github.sha }}
           restore-keys: ${{ runner.os }}-konan-
       - name: Run ktlint
-        uses: gradle/gradle-build-action@v2
+        uses: gradle/gradle-build-action@v3
         with:
           arguments: :build-logic:ktlintCheck ktlintCheck --scan
       - name: Archive ktlint results
@@ -119,7 +119,7 @@ jobs:
           key: ${{ runner.os }}-konan-${{ github.sha }}
           restore-keys: ${{ runner.os }}-konan-
       - name: Run Lint Checks
-        uses: gradle/gradle-build-action@v2
+        uses: gradle/gradle-build-action@v3
         with:
           arguments: lint --scan
       - name: Archive lint results
@@ -161,7 +161,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven-
       - name: Run Unit Tests
-        uses: gradle/gradle-build-action@v2
+        uses: gradle/gradle-build-action@v3
         with:
           arguments: test jvmTest koverXmlReport --scan
       - name: Codecov
@@ -201,7 +201,7 @@ jobs:
           key: ${{ runner.os }}-konan-${{ github.sha }}
           restore-keys: ${{ runner.os }}-konan-
       - name: Run iOS Unit Tests
-        uses: gradle/gradle-build-action@v2
+        uses: gradle/gradle-build-action@v3
         with:
           arguments: iosX64Test iosX64BackgroundTest --scan
 
@@ -223,7 +223,7 @@ jobs:
           key: ${{ runner.os }}-konan-${{ github.sha }}
           restore-keys: ${{ runner.os }}-konan-
       - name: Run JS Unit Tests
-        uses: gradle/gradle-build-action@v2
+        uses: gradle/gradle-build-action@v3
         with:
           arguments: jsBrowserTest jsNodeTest --scan
       - name: Archive test results
@@ -312,7 +312,7 @@ jobs:
           key: ${{ runner.os }}-konan-${{ github.sha }}
           restore-keys: ${{ runner.os }}-konan-
       - name: Publish library
-        uses: gradle/gradle-build-action@v2
+        uses: gradle/gradle-build-action@v3
         with:
           arguments: publish --scan
         env:
