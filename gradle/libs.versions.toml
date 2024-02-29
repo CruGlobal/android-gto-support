@@ -139,5 +139,5 @@ okhttp3-mockwebserver = ["okhttp3-mockwebserver", "okhttp3-tls"]
 [plugins]
 dagger-hilt = { id = "com.google.dagger.hilt.android", version.ref = "dagger" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
-ksp = { id = "com.google.devtools.ksp", version = "1.9.22-1.0.17" }
+ksp = { id = "com.google.devtools.ksp", version = "1.9.22-1.0.18" }
 ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlintGradle" }
