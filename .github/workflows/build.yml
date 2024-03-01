@@ -34,6 +34,8 @@ jobs:
         with:
           distribution: "temurin"
           java-version-file: ".java-version"
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v3
       - name: Cache Konan
         uses: actions/cache@v4
         with:
@@ -41,9 +43,7 @@ jobs:
           key: ${{ runner.os }}-konan-${{ github.sha }}
           restore-keys: ${{ runner.os }}-konan-
       - name: Build Library
-        uses: gradle/gradle-build-action@v2
-        with:
-          arguments: assemble --scan
+        run: ./gradlew assemble --scan
 
   checkstyle:
     name: Checkstyle
@@ -56,6 +56,8 @@ jobs:
         with:
           distribution: "temurin"
           java-version-file: ".java-version"
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v3
       - name: Cache Konan
         uses: actions/cache@v4
         with:
@@ -63,9 +65,7 @@ jobs:
           key: ${{ runner.os }}-konan-${{ github.sha }}
           restore-keys: ${{ runner.os }}-konan-
       - name: Run Checkstyle
-        uses: gradle/gradle-build-action@v2
-        with:
-          arguments: checkstyle --scan
+        run: ./gradlew checkstyle --scan
       - name: Archive Checkstyle results
         if: always()
         uses: actions/upload-artifact@v4
@@ -84,6 +84,8 @@ jobs:
         with:
           distribution: "temurin"
           java-version-file: ".java-version"
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v3
       - name: Cache Konan
         uses: actions/cache@v4
         with:
@@ -91,9 +93,7 @@ jobs:
           key: ${{ runner.os }}-konan-${{ github.sha }}
           restore-keys: ${{ runner.os }}-konan-
       - name: Run ktlint
-        uses: gradle/gradle-build-action@v2
-        with:
-          arguments: :build-logic:ktlintCheck ktlintCheck --scan
+        run: ./gradlew :build-logic:ktlintCheck ktlintCheck --scan
       - name: Archive ktlint results
         if: always()
         uses: actions/upload-artifact@v4
@@ -112,6 +112,8 @@ jobs:
         with:
           distribution: "temurin"
           java-version-file: ".java-version"
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v3
       - name: Cache Konan
         uses: actions/cache@v4
         with:
@@ -119,9 +121,7 @@ jobs:
           key: ${{ runner.os }}-konan-${{ github.sha }}
           restore-keys: ${{ runner.os }}-konan-
       - name: Run Lint Checks
-        uses: gradle/gradle-build-action@v2
-        with:
-          arguments: lint --scan
+        run: ./gradlew lint --scan
       - name: Archive lint results
         if: always()
         uses: actions/upload-artifact@v4
@@ -147,6 +147,8 @@ jobs:
         with:
           distribution: "temurin"
           java-version-file: ".java-version"
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v3
       - name: Cache Konan
         uses: actions/cache@v4
         with:
@@ -161,9 +163,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven-
       - name: Run Unit Tests
-        uses: gradle/gradle-build-action@v2
-        with:
-          arguments: test jvmTest koverXmlReport --scan
+        run: ./gradlew test jvmTest koverXmlReport --scan
       - name: Codecov
         uses: codecov/codecov-action@v4
         with:
@@ -194,6 +194,8 @@ jobs:
         with:
           distribution: "temurin"
           java-version-file: ".java-version"
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v3
       - name: Cache Konan
         uses: actions/cache@v4
         with:
@@ -201,9 +203,7 @@ jobs:
           key: ${{ runner.os }}-konan-${{ github.sha }}
           restore-keys: ${{ runner.os }}-konan-
       - name: Run iOS Unit Tests
-        uses: gradle/gradle-build-action@v2
-        with:
-          arguments: iosX64Test iosX64BackgroundTest --scan
+        run: ./gradlew iosX64Test iosX64BackgroundTest --scan
 
   js_tests:
     name: JS Unit Tests
@@ -216,6 +216,8 @@ jobs:
         with:
           distribution: "temurin"
           java-version-file: ".java-version"
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v3
       - name: Cache Konan
         uses: actions/cache@v4
         with:
@@ -223,9 +225,7 @@ jobs:
           key: ${{ runner.os }}-konan-${{ github.sha }}
           restore-keys: ${{ runner.os }}-konan-
       - name: Run JS Unit Tests
-        uses: gradle/gradle-build-action@v2
-        with:
-          arguments: jsBrowserTest jsNodeTest --scan
+        run: ./gradlew jsBrowserTest jsNodeTest --scan
       - name: Archive test results
         if: always()
         uses: actions/upload-artifact@v4
@@ -305,6 +305,8 @@ jobs:
         with:
           distribution: "temurin"
           java-version-file: ".java-version"
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v3
       - name: Cache Konan
         uses: actions/cache@v4
         with:
@@ -312,9 +314,7 @@ jobs:
           key: ${{ runner.os }}-konan-${{ github.sha }}
           restore-keys: ${{ runner.os }}-konan-
       - name: Publish library
-        uses: gradle/gradle-build-action@v2
-        with:
-          arguments: publish --scan
+        run: ./gradlew publish --scan
         env:
           ORG_GRADLE_PROJECT_cruGlobalMavenRepositoryUsername: ${{ secrets.DEPLOY_USERNAME }}
           ORG_GRADLE_PROJECT_cruGlobalMavenRepositoryPassword: ${{ secrets.DEPLOY_PASSWORD }}
