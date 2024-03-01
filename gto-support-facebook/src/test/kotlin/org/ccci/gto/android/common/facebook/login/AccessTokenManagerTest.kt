@@ -16,8 +16,6 @@ import io.mockk.just
 import io.mockk.mockk
 import io.mockk.mockkStatic
 import io.mockk.verifyAll
-import java.lang.Thread.sleep
-import java.util.Date
 import kotlin.test.assertFailsWith
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
@@ -99,24 +97,17 @@ class AccessTokenManagerTest {
     // region isExpiredFlow()
     @Test
     fun `isExpiredFlow()`() = runTest {
+        val token: AccessToken = mockk(relaxed = true) {
+            every { isExpired } returns false
+        }
+
         accessTokenManager.isExpiredFlow().test {
             assertFalse(awaitItem())
-            accessTokenManager.currentAccessToken = AccessToken(
-                "2",
-                "2",
-                "2",
-                null,
-                null,
-                null,
-                null,
-                expirationTime = Date(System.currentTimeMillis() + 300),
-                lastRefreshTime = null,
-                dataAccessExpirationTime = null
-            )
+            accessTokenManager.currentAccessToken = token
             executePendingBroadcasts()
             assertTrue(awaitItem())
 
-            sleep(300)
+            every { token.isExpired } returns true
             advanceUntilIdle()
             assertFalse(awaitItem())
         }
