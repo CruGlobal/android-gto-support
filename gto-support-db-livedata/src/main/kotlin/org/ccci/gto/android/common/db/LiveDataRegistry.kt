@@ -8,6 +8,7 @@ import androidx.lifecycle.ComputableLiveData
 import java.util.WeakHashMap
 
 class LiveDataRegistry(dao: Dao) {
+    @SuppressLint("RestrictedApi")
     private val registry: SimpleArrayMap<Class<*>, MutableMap<ComputableLiveData<*>, Unit>> = SimpleArrayMap()
 
     init {

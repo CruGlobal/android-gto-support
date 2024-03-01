@@ -1,5 +1,7 @@
 package org.ccci.gto.android.common.androidx.room;
 
+import android.annotation.SuppressLint;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.arch.core.executor.ArchTaskExecutor;
@@ -67,6 +69,7 @@ public class RoomDatabaseRule<T extends RoomDatabase> extends TestWatcher {
     }
 
     @Override
+    @SuppressLint("RestrictedApi")
     protected void starting(Description description) {
         mDb = Room.inMemoryDatabaseBuilder(ApplicationProvider.getApplicationContext(), mDbClass)
                 .allowMainThreadQueries()
