@@ -77,7 +77,7 @@ fun LazyDropdownMenu(
 @Composable
 @Suppress(
     "ktlint:compose:modifier-not-used-at-root",
-    "ktlint:compose:mutable-params-check",
+    "ktlint:compose:mutable-state-param-check",
     "TransitionPropertiesLabel",
 )
 private fun LazyDropdownMenuContent(
