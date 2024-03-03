@@ -79,7 +79,7 @@ facebook-login = "com.facebook.android:facebook-login:16.3.0"
 facebookFlipper = "com.facebook.flipper:flipper:0.247.0"
 firebase-crashlytics = "com.google.firebase:firebase-crashlytics:18.6.2"
 fluidsonic-locale = "io.fluidsonic.locale:fluid-locale:0.13.0"
-json = "org.json:json:20240205"
+json = "org.json:json:20240303"
 jsonUnit = { module = "net.javacrumbs.json-unit:json-unit", version.ref = "jsonUnit" }
 jsonUnit-assertj = { module = "net.javacrumbs.json-unit:json-unit-assertj", version.ref = "jsonUnit" }
 jsonUnit-fluent = { module = "net.javacrumbs.json-unit:json-unit-fluent", version.ref = "jsonUnit" }
