@@ -67,7 +67,6 @@ include("gto-support-dagger")
 include("gto-support-db")
 include("gto-support-db-coroutines")
 include("gto-support-db-livedata")
-include("gto-support-db-stream")
 include("gto-support-eventbus")
 include("gto-support-facebook")
 include("gto-support-facebook-flipper")
@@ -103,4 +102,5 @@ include("testing:gto-support-picasso")
 include("testing:gto-support-timber")
 
 // deprecated modules
+include("gto-support-db-stream")
 include("gto-support-napier")
