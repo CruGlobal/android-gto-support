@@ -4,6 +4,7 @@ import android.database.sqlite.SQLiteDatabase
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 
+@Deprecated("Since v4.2.0, apps should use Room instead of our custom DB solution")
 interface CoroutinesAsyncDao : CoroutinesDao {
     fun <T : Any> findAsync(clazz: Class<T>, vararg key: Any) = coroutineScope.async { find(clazz, *key) }
     fun <T : Any> getAsync(query: Query<T>) = coroutineScope.async { get(query) }
@@ -27,4 +28,5 @@ interface CoroutinesAsyncDao : CoroutinesDao {
         coroutineScope.async { transaction(exclusive, body) }
 }
 
+@Deprecated("Since v4.2.0, apps should use Room instead of our custom DB solution")
 inline fun <reified T : Any> CoroutinesAsyncDao.findAsync(vararg key: Any) = findAsync(T::class.java, *key)

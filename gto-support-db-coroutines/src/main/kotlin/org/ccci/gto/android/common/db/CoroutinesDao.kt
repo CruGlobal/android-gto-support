@@ -9,6 +9,7 @@ import kotlinx.coroutines.SupervisorJob
 
 private const val COROUTINES_PARALLELISM = 4
 
+@Deprecated("Since v4.2.0, apps should use Room instead of our custom DB solution")
 interface CoroutinesDao : Dao {
     @OptIn(ExperimentalCoroutinesApi::class)
     @get:RestrictTo(RestrictTo.Scope.SUBCLASSES)
