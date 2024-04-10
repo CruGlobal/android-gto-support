@@ -98,9 +98,3 @@ include("gto-support-viewpager")
 include("testing:gto-support-dagger")
 include("testing:gto-support-picasso")
 include("testing:gto-support-timber")
-
-// deprecated modules
-include("gto-support-db-coroutines")
-include("gto-support-db-livedata")
-include("gto-support-db-stream")
-include("gto-support-napier")

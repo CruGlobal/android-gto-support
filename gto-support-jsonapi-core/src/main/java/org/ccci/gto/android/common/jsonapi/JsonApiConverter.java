@@ -229,7 +229,7 @@ public final class JsonApiConverter {
                 output = JsonApiObject.single(null);
                 final T resource = resourceFromJson(jsonObject.optJSONObject(JSON_DATA), type, false, objects);
                 if (resource != null) {
-                    output.setData(resource);
+                    output.setDataSingle(resource);
                 }
             }
         } else {
