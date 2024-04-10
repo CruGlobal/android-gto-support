@@ -100,6 +100,3 @@ include("gto-support-viewpager")
 include("testing:gto-support-dagger")
 include("testing:gto-support-picasso")
 include("testing:gto-support-timber")
-
-// deprecated modules
-include("gto-support-napier")
