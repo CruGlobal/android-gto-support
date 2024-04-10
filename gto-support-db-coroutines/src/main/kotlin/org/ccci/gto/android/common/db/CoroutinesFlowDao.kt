@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 
+@Deprecated("Since v4.2.0, apps should use Room instead of our custom DB solution")
 interface CoroutinesFlowDao : CoroutinesDao, Dao {
     private fun invalidationFlow(types: Collection<Class<*>>, emitOnStart: Boolean = true) = when {
         types.isEmpty() -> if (emitOnStart) flowOf(Unit) else emptyFlow()
@@ -38,6 +39,9 @@ interface CoroutinesFlowDao : CoroutinesDao, Dao {
         invalidationFlow(query.allTables.map { it.type }.toSet()).map { getCursor(query) }.flowOn(coroutineDispatcher)
 }
 
+@Deprecated("Since v4.2.0, apps should use Room instead of our custom DB solution")
 inline fun <reified T : Any> CoroutinesFlowDao.findAsFlow(vararg key: Any) = findAsFlow(T::class.java, *key)
+@Deprecated("Since v4.2.0, apps should use Room instead of our custom DB solution")
 fun <T : Any> Query<T>.getAsFlow(dao: CoroutinesFlowDao) = dao.getAsFlow(this)
+@Deprecated("Since v4.2.0, apps should use Room instead of our custom DB solution")
 fun <T : Any> Query<T>.getCursorAsFlow(dao: CoroutinesFlowDao) = dao.getCursorAsFlow(this)

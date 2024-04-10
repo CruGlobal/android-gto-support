@@ -8,6 +8,7 @@ import androidx.lifecycle.ComputableLiveData
 import androidx.lifecycle.LiveData
 import org.ccci.gto.android.common.androidx.lifecycle.notNull
 
+@Deprecated("Since v4.2.0, apps should use Room instead of our custom DB solution")
 interface LiveDataDao : Dao {
     @get:RestrictTo(RestrictTo.Scope.SUBCLASSES)
     val liveDataRegistry get() = getService { LiveDataRegistry(this) }
@@ -35,6 +36,7 @@ interface LiveDataDao : Dao {
 
 // region DaoComputableLiveData
 @SuppressLint("RestrictedApi")
+@Deprecated("Since v4.2.0, apps should use Room instead of our custom DB solution")
 internal sealed class DaoComputableLiveData<T>(protected val dao: LiveDataDao) : ComputableLiveData<T>()
 
 private class DaoFindComputableLiveData<T : Any>(
@@ -59,6 +61,9 @@ private class DaoGetCursorComputableLiveData(dao: LiveDataDao, private val query
 }
 // endregion DaoComputableLiveData
 
+@Deprecated("Since v4.2.0, apps should use Room instead of our custom DB solution")
 inline fun <reified T : Any> LiveDataDao.findLiveData(vararg key: Any) = findLiveData(T::class.java, *key)
+@Deprecated("Since v4.2.0, apps should use Room instead of our custom DB solution")
 fun <T : Any> Query<T>.getAsLiveData(dao: LiveDataDao) = dao.getLiveData(this)
+@Deprecated("Since v4.2.0, apps should use Room instead of our custom DB solution")
 fun <T : Any> Query<T>.getCursorAsLiveData(dao: LiveDataDao) = dao.getCursorLiveData(this)
