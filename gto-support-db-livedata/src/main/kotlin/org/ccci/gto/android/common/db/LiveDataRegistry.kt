@@ -7,6 +7,7 @@ import androidx.collection.SimpleArrayMap
 import androidx.lifecycle.ComputableLiveData
 import java.util.WeakHashMap
 
+@Deprecated("Since v4.2.0, apps should use Room instead of our custom DB solution")
 class LiveDataRegistry(dao: Dao) {
     @SuppressLint("RestrictedApi")
     private val registry: SimpleArrayMap<Class<*>, MutableMap<ComputableLiveData<*>, Unit>> = SimpleArrayMap()
