@@ -9,6 +9,7 @@ import org.ccci.gto.android.common.compat.os.getParcelableArrayCompat
 
 // region equalsBundle()
 @Suppress("DEPRECATION")
+@JvmName("bundleEquals")
 infix fun Bundle?.equalsBundle(other: Bundle?) = when {
     this === other -> true
     this == null -> false
