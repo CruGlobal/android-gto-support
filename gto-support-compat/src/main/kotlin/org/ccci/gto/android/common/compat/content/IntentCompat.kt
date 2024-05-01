@@ -27,6 +27,7 @@ private sealed interface IntentCompatMethods {
 
 private open class BaseIntentCompatMethods : IntentCompatMethods {
     override fun <T> getParcelableExtra(intent: Intent, name: String?, clazz: Class<T>): T? {
+        @Suppress("DEPRECATION")
         val raw: Parcelable? = intent.getParcelableExtra(name)
         return if (clazz.isInstance(raw)) clazz.cast(raw) else null
     }
