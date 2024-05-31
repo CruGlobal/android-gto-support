@@ -14,6 +14,7 @@ dependencies {
 
     // region jsonapi Module
     compileOnly(project(":gto-support-jsonapi"))
+    testImplementation(project(":gto-support-jsonapi"))
     // endregion jsonapi Module
 
     // region Moshi Module
