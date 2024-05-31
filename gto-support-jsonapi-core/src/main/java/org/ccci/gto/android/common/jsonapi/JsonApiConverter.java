@@ -68,6 +68,12 @@ public final class JsonApiConverter {
         }
 
         @NonNull
+        public Builder addClasses(@NonNull final Collection<Class<?>> classes) {
+            mClasses.addAll(classes);
+            return this;
+        }
+
+        @NonNull
         public Builder addConverters(@NonNull final TypeConverter<?>... converters) {
             mConverters.addAll(Arrays.asList(converters));
             return this;
