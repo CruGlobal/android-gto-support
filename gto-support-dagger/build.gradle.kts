@@ -1,6 +1,6 @@
 plugins {
     id("gto-support.android-conventions")
-    kotlin("kapt")
+    alias(libs.plugins.ksp)
 }
 
 android.namespace = "org.ccci.gto.android.common.dagger"
@@ -12,6 +12,14 @@ dependencies {
     compileOnly(libs.kotlin.coroutines)
     // endregion EagerSingleton module
 
+    // region jsonapi Module
+    compileOnly(project(":gto-support-jsonapi"))
+    // endregion jsonapi Module
+
+    // region Moshi Module
+    compileOnly(libs.moshi)
+    // endregion Moshi Module
+
     // region OkHttp3 Module
     compileOnly(libs.okhttp3)
     // endregion OkHttp3 Module
@@ -22,9 +30,9 @@ dependencies {
     testImplementation(libs.play.featuredelivery)
     // endregion Split Install module
 
-    kapt(libs.dagger.compiler)
+    ksp(libs.dagger.compiler)
 
     testImplementation(libs.dagger.hilt.android)
     testImplementation(libs.kotlin.coroutines.test)
-    kaptTest(libs.dagger.compiler)
+    kspTest(libs.dagger.compiler)
 }
