@@ -16,6 +16,10 @@ dependencies {
     compileOnly(project(":gto-support-jsonapi"))
     // endregion jsonapi Module
 
+    // region Moshi Module
+    compileOnly(libs.moshi)
+    // endregion Moshi Module
+
     // region OkHttp3 Module
     compileOnly(libs.okhttp3)
     // endregion OkHttp3 Module
