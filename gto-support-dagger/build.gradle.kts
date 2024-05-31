@@ -1,6 +1,6 @@
 plugins {
     id("gto-support.android-conventions")
-    kotlin("kapt")
+    alias(libs.plugins.ksp)
 }
 
 android.namespace = "org.ccci.gto.android.common.dagger"
@@ -22,9 +22,9 @@ dependencies {
     testImplementation(libs.play.featuredelivery)
     // endregion Split Install module
 
-    kapt(libs.dagger.compiler)
+    ksp(libs.dagger.compiler)
 
     testImplementation(libs.dagger.hilt.android)
     testImplementation(libs.kotlin.coroutines.test)
-    kaptTest(libs.dagger.compiler)
+    kspTest(libs.dagger.compiler)
 }
