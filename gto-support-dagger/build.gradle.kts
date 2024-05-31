@@ -12,6 +12,10 @@ dependencies {
     compileOnly(libs.kotlin.coroutines)
     // endregion EagerSingleton module
 
+    // region jsonapi Module
+    compileOnly(project(":gto-support-jsonapi"))
+    // endregion jsonapi Module
+
     // region OkHttp3 Module
     compileOnly(libs.okhttp3)
     // endregion OkHttp3 Module
