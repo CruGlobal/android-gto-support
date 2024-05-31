@@ -20,6 +20,7 @@ abstract class JsonApiModule {
         @Provides
         @ElementsIntoSet
         @JsonApiModel
-        fun convertJsonApiModelClasses(@JsonApiModel classes: Set<KClass<*>>) = classes.map { it.java }.toSet()
+        fun convertJsonApiModelClasses(@JsonApiModel classes: Set<@JvmSuppressWildcards KClass<*>>) =
+            classes.map { it.java }.toSet()
     }
 }
