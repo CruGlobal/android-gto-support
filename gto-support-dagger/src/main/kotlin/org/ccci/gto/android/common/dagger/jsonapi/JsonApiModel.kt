@@ -10,4 +10,4 @@ import javax.inject.Qualifier
     AnnotationTarget.PROPERTY_GETTER,
     AnnotationTarget.VALUE_PARAMETER,
 )
-annotation class JsonApiClass
+annotation class JsonApiModel
