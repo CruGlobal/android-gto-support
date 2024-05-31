@@ -5,6 +5,7 @@ plugins {
 dependencies {
     implementation(libs.androidx.annotation)
     compileOnly(libs.json)
+    compileOnly(libs.moshi)
 
     testImplementation(kotlin("test"))
     testImplementation(libs.json)

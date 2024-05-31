@@ -74,6 +74,12 @@ public final class JsonApiConverter {
         }
 
         @NonNull
+        public Builder addConverters(@NonNull final List<TypeConverter<?>> converters) {
+            mConverters.addAll(converters);
+            return this;
+        }
+
+        @NonNull
         public JsonApiConverter build() {
             return new JsonApiConverter(mClasses, mConverters);
         }
