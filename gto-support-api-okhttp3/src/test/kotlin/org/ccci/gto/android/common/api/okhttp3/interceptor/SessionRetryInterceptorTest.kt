@@ -10,8 +10,8 @@ import kotlin.test.assertFailsWith
 import okhttp3.Interceptor
 import okhttp3.Response
 import org.ccci.gto.android.common.api.okhttp3.SessionApiException
-import org.ccci.gto.android.common.api.okhttp3.interceptor.SessionRetryInterceptor.ATTEMPTS_MAX
-import org.ccci.gto.android.common.api.okhttp3.interceptor.SessionRetryInterceptor.ATTEMPTS_MIN
+import org.ccci.gto.android.common.api.okhttp3.interceptor.SessionRetryInterceptor.Companion.ATTEMPTS_MAX
+import org.ccci.gto.android.common.api.okhttp3.interceptor.SessionRetryInterceptor.Companion.ATTEMPTS_MIN
 
 class SessionRetryInterceptorTest {
     private val sessionInterceptor: SessionInterceptor<*> = mockk {
