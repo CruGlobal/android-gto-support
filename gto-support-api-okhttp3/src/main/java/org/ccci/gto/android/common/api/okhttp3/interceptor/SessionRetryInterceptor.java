@@ -12,8 +12,8 @@ import okhttp3.Response;
 
 public final class SessionRetryInterceptor implements Interceptor {
     private static final int ATTEMPTS_DEFAULT = 3;
-    private static final int ATTEMPTS_MIN = 1;
-    private static final int ATTEMPTS_MAX = 20;
+    static final int ATTEMPTS_MIN = 1;
+    static final int ATTEMPTS_MAX = 20;
 
     @Nullable
     private final SessionInterceptor mSessionInterceptor;
