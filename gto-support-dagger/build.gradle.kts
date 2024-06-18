@@ -25,6 +25,10 @@ dependencies {
     compileOnly(libs.okhttp3)
     // endregion OkHttp3 Module
 
+    // region Retrofit2 Module
+    compileOnly(libs.retrofit)
+    // endregion Retrofit2 Module
+
     // region Split Install module
     compileOnly(libs.dagger.hilt.android)
     compileOnly(libs.play.featuredelivery)
