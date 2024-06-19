@@ -1,6 +1,8 @@
 package org.ccci.gto.android.common.jsonapi.retrofit2
 
+import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
+import kotlin.test.assertTrue
 import kotlinx.coroutines.test.runTest
 import net.javacrumbs.jsonunit.assertj.assertThatJson
 import net.javacrumbs.jsonunit.core.Option
@@ -12,8 +14,6 @@ import org.ccci.gto.android.common.jsonapi.model.JsonApiObject
 import org.ccci.gto.android.common.jsonapi.retrofit2.annotation.JsonApiFields
 import org.ccci.gto.android.common.jsonapi.retrofit2.annotation.JsonApiInclude
 import org.ccci.gto.android.common.jsonapi.util.Includes
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
 import retrofit2.Call
@@ -45,12 +45,13 @@ class JsonApiConverterFactoryTest {
     fun verifyWrappedObj() {
         server.enqueue(MockResponse().setBody(SIMPLE_SINGLE_RAW_JSON))
 
-        val body = service.post(JsonApiObject.single(ModelSimple(42, "blah"))).execute().body()
-        assertNotNull(body)
-        assertTrue(body!!.isSingle)
-        val obj = body.dataSingle
-        assertNotNull(obj)
-        assertEquals(5, obj!!.id)
+        val response = service.post(JsonApiObject.single(ModelSimple(42, "blah"))).execute()
+        assertNotNull(response.body()) { body ->
+            assertTrue(body.isSingle)
+            assertNotNull(body.dataSingle) { obj ->
+                assertEquals(5, obj.id)
+            }
+        }
 
         val request = server.takeRequest()
         assertEquals(JsonApiObject.MEDIA_TYPE, request.getHeader("Content-Type"))
@@ -67,9 +68,10 @@ class JsonApiConverterFactoryTest {
     fun verifyPlainObj() {
         server.enqueue(MockResponse().setBody(SIMPLE_SINGLE_RAW_JSON))
 
-        val obj = service.post(ModelSimple(42, "blah")).execute().body()
-        assertNotNull(obj)
-        assertEquals(5, obj!!.id)
+        val response = service.post(ModelSimple(42, "blah")).execute()
+        assertNotNull(response.body()) {
+            assertEquals(5, it.id)
+        }
 
         val request = server.takeRequest()
         assertEquals(JsonApiObject.MEDIA_TYPE, request.getHeader("Content-Type"))
@@ -115,10 +117,6 @@ class JsonApiConverterFactoryTest {
     @Test
     fun `RequestBody - Fields - Single`() = runTest {
         server.enqueue(MockResponse().setBody(SIMPLE_SINGLE_RAW_JSON))
-        val parent = ModelParent(1).apply {
-            favorite = ModelChild(11, "Daniel")
-            children = listOf(favorite!!, ModelChild(20, "Hey You"))
-        }
 
         val obj = service.postFieldsSingle(ModelSimple(1, "attr1", "attr2"))
         assertNotNull(obj) { assertEquals(5, it.id) }
