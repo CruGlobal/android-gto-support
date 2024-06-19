@@ -1,11 +1,13 @@
 package org.ccci.gto.android.common.jsonapi.retrofit2
 
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 import kotlinx.coroutines.test.runTest
 import net.javacrumbs.jsonunit.assertj.assertThatJson
 import net.javacrumbs.jsonunit.core.Option
+import okhttp3.ResponseBody
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import org.ccci.gto.android.common.jsonapi.annotation.JsonApiId
@@ -18,6 +20,7 @@ import org.junit.Rule
 import org.junit.Test
 import retrofit2.Call
 import retrofit2.Retrofit
+import retrofit2.create
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
@@ -29,8 +32,9 @@ class JsonApiConverterFactoryTest {
     @get:Rule
     val server = MockWebServer()
 
-    private var service = Retrofit.Builder()
+    private val retrofit: Retrofit = Retrofit.Builder()
         .baseUrl(server.url("/"))
+        .validateEagerly(true)
         .addConverterFactory(
             JsonApiConverterFactory(
                 ModelSimple::class.java,
@@ -39,7 +43,7 @@ class JsonApiConverterFactoryTest {
             ),
         )
         .build()
-        .create(Service::class.java)
+    private val service: Service = retrofit.create()
 
     @Test
     fun verifyWrappedObj() {
@@ -197,6 +201,64 @@ class JsonApiConverterFactoryTest {
         assertEquals("a,b.c", request.requestUrl?.queryParameter(JsonApiParams.PARAM_INCLUDE))
     }
 
+    // region Retrofit Validation
+    @Test
+    fun `Retrofit Validation - Error - RequestBody - Wrapped Object`() {
+        assertFailsWith<IllegalArgumentException> {
+            retrofit.create<ServiceValidationErrorRequestBodyWrappedObject>()
+        }
+    }
+
+    @Test
+    fun `Retrofit Validation - Error - RequestBody - Collection`() {
+        assertFailsWith<IllegalArgumentException> {
+            retrofit.create<ServiceValidationErrorRequestBodyCollection>()
+        }
+    }
+
+    @Test
+    fun `Retrofit Validation - Error - RequestBody - Plain Object`() {
+        assertFailsWith<IllegalArgumentException> {
+            retrofit.create<ServiceValidationErrorRequestBodyPlainObject>()
+        }
+    }
+
+    @Test
+    fun `Retrofit Validation - Error - Response - Wrapped Object`() {
+        assertFailsWith<IllegalArgumentException> {
+            retrofit.create<ServiceValidationErrorResponseWrappedObject>()
+        }
+    }
+
+    @Test
+    fun `Retrofit Validation - Error - Response - Plain Object`() {
+        assertFailsWith<IllegalArgumentException> {
+            retrofit.create<ServiceValidationErrorResponsePlainObject>()
+        }
+    }
+
+    interface ServiceValidationErrorRequestBodyWrappedObject {
+        @POST("/")
+        suspend fun post(@Body data: JsonApiObject<ModelInvalid>): ResponseBody
+    }
+    interface ServiceValidationErrorRequestBodyCollection {
+        @POST("/")
+        suspend fun post(@Body data: List<ModelInvalid>): ResponseBody
+    }
+    interface ServiceValidationErrorRequestBodyPlainObject {
+        @POST("/")
+        suspend fun post(@Body data: ModelInvalid): ResponseBody
+    }
+    interface ServiceValidationErrorResponseWrappedObject {
+        @GET("/")
+        suspend fun get(): JsonApiObject<ModelInvalid>
+    }
+    interface ServiceValidationErrorResponsePlainObject {
+        @GET("/")
+        suspend fun get(): ModelInvalid
+    }
+    // endregion Retrofit Validation
+
     internal interface Service {
         @GET("/")
         suspend fun includesQueryParam(@Query(JsonApiParams.PARAM_INCLUDE) includes: Includes): ModelSimple
@@ -263,6 +325,13 @@ class JsonApiConverterFactoryTest {
     class ModelChild(id: Int = 0, var name: String, var height: Int = 0) : ModelBase(id) {
         companion object {
             const val TYPE = "child"
+        }
+    }
+
+    @JsonApiType(ModelInvalid.TYPE)
+    class ModelInvalid : ModelBase(0) {
+        companion object {
+            const val TYPE = "invalid"
         }
     }
 }

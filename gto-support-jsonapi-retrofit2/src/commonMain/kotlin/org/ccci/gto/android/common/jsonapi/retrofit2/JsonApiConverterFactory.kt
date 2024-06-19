@@ -59,7 +59,11 @@ class JsonApiConverterFactory(private val converter: JsonApiConverter) : Convert
         return when {
             JsonApiObject::class.java.isAssignableFrom(rawType) -> {
                 require(type is ParameterizedType) { "JsonApiObject needs to be parameterized" }
-                JsonApiObjectRequestBodyConverter(include, fields)
+                if (converter.supports(getRawType(type.actualTypeArguments[0]))) {
+                    JsonApiObjectRequestBodyConverter(include, fields)
+                } else {
+                    null
+                }
             }
             Collection::class.java.isAssignableFrom(rawType) && type is ParameterizedType &&
                 converter.supports(getRawType(type.actualTypeArguments[0])) ->
@@ -78,7 +82,12 @@ class JsonApiConverterFactory(private val converter: JsonApiConverter) : Convert
         return when {
             JsonApiObject::class.java.isAssignableFrom(rawType) -> {
                 require(type is ParameterizedType) { "JsonApiObject needs to be parameterized" }
-                return JsonApiObjectResponseBodyConverter(getRawType(type.actualTypeArguments[0]))
+                val actualType = getRawType(type.actualTypeArguments[0])
+                if (converter.supports(actualType)) {
+                    JsonApiObjectResponseBodyConverter(actualType)
+                } else {
+                    null
+                }
             }
             Collection::class.java.isAssignableFrom(rawType) -> null // TODO
             converter.supports(rawType) -> ObjectResponseBodyConverter(rawType)
