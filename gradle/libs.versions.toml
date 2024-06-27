@@ -65,7 +65,7 @@ androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "
 androidx-security-crypto = "androidx.security:security-crypto:1.0.0"
 androidx-sqlite = "androidx.sqlite:sqlite:2.4.0"
 androidx-swiperefreshlayout = { module = "androidx.swiperefreshlayout:swiperefreshlayout", version = "1.1.0" }
-androidx-test = "androidx.test:core:1.6.0"
+androidx-test = "androidx.test:core:1.6.1"
 androidx-test-junit = { module = "androidx.test.ext:junit", version = "1.2.1" }
 androidx-viewpager = { module = "androidx.viewpager:viewpager", version = "1.0.0" }
 androidx-viewpager2 = { module = "androidx.viewpager2:viewpager2", version = "1.1.0" }
