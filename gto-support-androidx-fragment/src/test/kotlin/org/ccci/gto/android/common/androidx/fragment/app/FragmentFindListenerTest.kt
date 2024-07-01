@@ -3,11 +3,11 @@ package org.ccci.gto.android.common.androidx.fragment.app
 import android.app.Activity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
+import io.mockk.every
+import io.mockk.mockk
 import org.junit.Assert.assertSame
 import org.junit.Before
 import org.junit.Test
-import org.mockito.kotlin.doReturn
-import org.mockito.kotlin.mock
 
 class FragmentFindListenerTest {
     private lateinit var activity: FragmentActivity
@@ -18,17 +18,26 @@ class FragmentFindListenerTest {
 
     @Before
     fun setupMocks() {
-        activity = mock()
-        friend = mock { on { activity } doReturn activity }
-        grandparent = mock { on { activity } doReturn activity }
-        parent = mock {
-            on { activity } doReturn activity
-            on { parentFragment } doReturn grandparent
+        activity = mockk()
+        friend = mockk {
+            every { activity } returns this@FragmentFindListenerTest.activity
+            every { parentFragment } returns null
+            every { targetFragment } returns null
         }
-        child = mock {
-            on { activity } doReturn activity
-            on { parentFragment } doReturn parent
-            on { targetFragment } doReturn friend
+        grandparent = mockk {
+            every { activity } returns this@FragmentFindListenerTest.activity
+            every { parentFragment } returns null
+            every { targetFragment } returns null
+        }
+        parent = mockk {
+            every { activity } returns this@FragmentFindListenerTest.activity
+            every { parentFragment } returns grandparent
+            every { targetFragment } returns null
+        }
+        child = mockk {
+            every { activity } returns this@FragmentFindListenerTest.activity
+            every { parentFragment } returns parent
+            every { targetFragment } returns friend
         }
     }
 
