@@ -3,24 +3,21 @@ package org.ccci.gto.android.common.util
 import android.content.Context
 import android.content.res.Resources
 import android.util.DisplayMetrics
-import org.junit.Assert.assertEquals
-import org.junit.Before
-import org.junit.Test
-import org.mockito.kotlin.doReturn
-import org.mockito.kotlin.mock
+import io.mockk.every
+import io.mockk.mockk
+import kotlin.test.Test
+import kotlin.test.assertEquals
 
 class DimensionUtilsTest {
-    private lateinit var context: Context
-    private lateinit var resources: Resources
     private val metrics = DisplayMetrics().apply {
         density = 1f
         scaledDensity = 1f
     }
-
-    @Before
-    fun setup() {
-        resources = mock { on { displayMetrics } doReturn metrics }
-        context = mock { on { resources } doReturn resources }
+    private val resources: Resources = mockk {
+        every { displayMetrics } returns metrics
+    }
+    private val context: Context = mockk {
+        every { resources } returns this@DimensionUtilsTest.resources
     }
 
     // region Px
