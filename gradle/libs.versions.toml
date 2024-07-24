@@ -2,7 +2,7 @@
 accompanist = "0.34.0"
 android-gradle-plugin = "8.5.1"
 androidx-arch-core = "2.2.0"
-androidx-collection = "1.4.1"
+androidx-collection = "1.4.2"
 androidx-compose = "1.6.8"
 androidx-compose-compiler = "1.5.14"
 androidx-compose-ui = "1.6.8"
