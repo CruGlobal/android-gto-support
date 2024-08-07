@@ -65,9 +65,11 @@ class JsonApiConverterFactory(private val converter: JsonApiConverter) : Convert
                     null
                 }
             }
-            Collection::class.java.isAssignableFrom(rawType) && type is ParameterizedType &&
-                converter.supports(getRawType(type.actualTypeArguments[0])) ->
+            Collection::class.java.isAssignableFrom(rawType) &&
+                type is ParameterizedType &&
+                converter.supports(getRawType(type.actualTypeArguments[0])) -> {
                 CollectionRequestBodyConverter(include, fields)
+            }
             converter.supports(rawType) -> ObjectRequestBodyConverter(include, fields)
             else -> null
         }
