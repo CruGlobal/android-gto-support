@@ -7,9 +7,9 @@ import android.view.LayoutInflater
 import androidx.annotation.CallSuper
 import androidx.annotation.LayoutRes
 import androidx.annotation.RestrictTo
+import androidx.appcompat.app.AlertDialog as AppCompatAlertDialog
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
-import androidx.appcompat.app.AlertDialog as AppCompatAlertDialog
 
 abstract class DataBindingDialogFragment<B : ViewDataBinding>(@LayoutRes private val bindingLayoutRes: Int?) :
     BaseDialogFragment() {

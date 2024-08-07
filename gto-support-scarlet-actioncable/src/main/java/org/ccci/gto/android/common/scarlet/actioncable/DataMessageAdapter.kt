@@ -1,12 +1,12 @@
 package org.ccci.gto.android.common.scarlet.actioncable
 
 import com.squareup.moshi.Moshi
+import com.tinder.scarlet.Message as ScarletMessage
 import com.tinder.scarlet.MessageAdapter
 import org.ccci.gto.android.common.scarlet.actioncable.model.Identifier
 import org.ccci.gto.android.common.scarlet.actioncable.model.RawIncomingMessage
 import org.ccci.gto.android.common.scarlet.actioncable.model.RawOutgoingMessage
 import org.ccci.gto.android.common.scarlet.stringValue
-import com.tinder.scarlet.Message as ScarletMessage
 
 internal class DataMessageAdapter<T>(
     private val dataAdapter: MessageAdapter<T>,

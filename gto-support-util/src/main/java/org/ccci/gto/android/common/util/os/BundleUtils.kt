@@ -11,12 +11,10 @@ fun Bundle.putEnum(key: String?, value: Enum<*>?) = putString(key, value?.name)
 
 @JvmOverloads
 @Contract("_, _, _, !null -> !null")
-fun <T : Enum<T>> Bundle.getEnum(type: Class<T>, key: String?, defValue: T? = null): T? {
-    return try {
-        getString(key)?.let { java.lang.Enum.valueOf<T>(type, it) } ?: defValue
-    } catch (e: IllegalArgumentException) {
-        defValue
-    }
+fun <T : Enum<T>> Bundle.getEnum(type: Class<T>, key: String?, defValue: T? = null): T? = try {
+    getString(key)?.let { java.lang.Enum.valueOf<T>(type, it) } ?: defValue
+} catch (e: IllegalArgumentException) {
+    defValue
 }
 
 @Contract("_, _, !null -> !null")
