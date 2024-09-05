@@ -40,7 +40,11 @@ import androidx.compose.ui.window.PopupProperties
 import kotlin.math.max
 import kotlin.math.min
 
-/** Forked version of [androidx.compose.material3.DropdownMenu] supporting a LazyColumn */
+/**
+ * Forked version of [androidx.compose.material3.DropdownMenu] supporting a LazyColumn
+ *
+ * This can go away once this issue is officially supported: https://issuetracker.google.com/issues/242398344
+ */
 @Composable
 fun LazyDropdownMenu(
     expanded: Boolean,
