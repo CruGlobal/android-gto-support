@@ -7,10 +7,14 @@ import androidx.compose.animation.core.MutableTransitionState
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.core.updateTransition
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MenuDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
@@ -19,10 +23,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Density
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.IntRect
@@ -42,20 +49,28 @@ fun LazyDropdownMenu(
     onDismissRequest: () -> Unit,
     modifier: Modifier = Modifier,
     offset: DpOffset = DpOffset(0.dp, 0.dp),
+    scrollState: ScrollState = rememberScrollState(),
     properties: PopupProperties = PopupProperties(focusable = true),
+    shape: Shape = MenuDefaults.shape,
+    containerColor: Color = MenuDefaults.containerColor,
+    tonalElevation: Dp = MenuDefaults.TonalElevation,
+    shadowElevation: Dp = MenuDefaults.ShadowElevation,
+    border: BorderStroke? = null,
     content: LazyListScope.() -> Unit
 ) {
-    val expandedStates = remember { MutableTransitionState(false) }
-    expandedStates.targetState = expanded
+    val expandedState = remember { MutableTransitionState(false) }
+    expandedState.targetState = expanded
 
-    if (expandedStates.currentState || expandedStates.targetState) {
+    if (expandedState.currentState || expandedState.targetState) {
         val transformOriginState = remember { mutableStateOf(TransformOrigin.Center) }
         val density = LocalDensity.current
-        val popupPositionProvider = DropdownMenuPositionProvider(
-            offset,
-            density
-        ) { parentBounds, menuBounds ->
-            transformOriginState.value = calculateTransformOrigin(parentBounds, menuBounds)
+        val popupPositionProvider = remember(offset, density) {
+            DropdownMenuPositionProvider(
+                offset,
+                density,
+            ) { parentBounds, menuBounds ->
+                transformOriginState.value = calculateTransformOrigin(parentBounds, menuBounds)
+            }
         }
 
         Popup(
@@ -64,10 +79,16 @@ fun LazyDropdownMenu(
             properties = properties
         ) {
             LazyDropdownMenuContent(
-                expandedStates = expandedStates,
+                expandedStates = expandedState,
                 transformOriginState = transformOriginState,
+//                scrollState = scrollState,
+//                shape = shape,
+//                containerColor = containerColor,
+//                tonalElevation = tonalElevation,
+//                shadowElevation = shadowElevation,
+//                border = border,
                 modifier = modifier,
-                content = content
+                content = content,
             )
         }
     }
