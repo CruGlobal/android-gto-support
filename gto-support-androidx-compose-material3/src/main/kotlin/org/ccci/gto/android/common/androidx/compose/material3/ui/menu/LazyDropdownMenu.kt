@@ -8,12 +8,9 @@ import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MenuDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
@@ -28,6 +25,7 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpOffset
@@ -49,7 +47,6 @@ fun LazyDropdownMenu(
     onDismissRequest: () -> Unit,
     modifier: Modifier = Modifier,
     offset: DpOffset = DpOffset(0.dp, 0.dp),
-    scrollState: ScrollState = rememberScrollState(),
     properties: PopupProperties = PopupProperties(focusable = true),
     shape: Shape = MenuDefaults.shape,
     containerColor: Color = MenuDefaults.containerColor,
@@ -79,14 +76,13 @@ fun LazyDropdownMenu(
             properties = properties
         ) {
             LazyDropdownMenuContent(
-                expandedStates = expandedState,
+                expandedState = expandedState,
                 transformOriginState = transformOriginState,
-//                scrollState = scrollState,
-//                shape = shape,
-//                containerColor = containerColor,
-//                tonalElevation = tonalElevation,
-//                shadowElevation = shadowElevation,
-//                border = border,
+                shape = shape,
+                containerColor = containerColor,
+                tonalElevation = tonalElevation,
+                shadowElevation = shadowElevation,
+                border = border,
                 modifier = modifier,
                 content = content,
             )
@@ -98,42 +94,38 @@ fun LazyDropdownMenu(
 @Composable
 @Suppress(
     "ktlint:compose:modifier-not-used-at-root",
+    "ktlint:compose:modifier-without-default-check",
     "ktlint:compose:mutable-state-param-check",
+    "ktlint:standard:multiline-if-else",
     "TransitionPropertiesLabel",
 )
 private fun LazyDropdownMenuContent(
-    expandedStates: MutableTransitionState<Boolean>,
+    modifier: Modifier,
+    expandedState: MutableTransitionState<Boolean>,
     transformOriginState: MutableState<TransformOrigin>,
-    modifier: Modifier = Modifier,
+    shape: Shape,
+    containerColor: Color,
+    tonalElevation: Dp,
+    shadowElevation: Dp,
+    border: BorderStroke?,
     content: LazyListScope.() -> Unit
 ) {
     // Menu open/close animation.
-    val transition = updateTransition(expandedStates, "DropDownMenu")
+    @Suppress("DEPRECATION")
+    val transition = updateTransition(expandedState, "DropDownMenu")
 
     val scale by transition.animateFloat(
         transitionSpec = {
             if (false isTransitioningTo true) {
                 // Dismissed to expanded
-                tween(
-                    durationMillis = InTransitionDuration,
-                    easing = LinearOutSlowInEasing
-                )
+                tween(durationMillis = InTransitionDuration, easing = LinearOutSlowInEasing)
             } else {
                 // Expanded to dismissed.
-                tween(
-                    durationMillis = 1,
-                    delayMillis = OutTransitionDuration - 1
-                )
+                tween(durationMillis = 1, delayMillis = OutTransitionDuration - 1)
             }
-        },
-    ) {
-        if (it) {
-            // Menu is expanded.
-            1f
-        } else {
-            // Menu is dismissed.
-            0.8f
         }
+    ) { expanded ->
+        if (expanded) ExpandedScaleTarget else ClosedScaleTarget
     }
 
     val alpha by transition.animateFloat(
@@ -146,26 +138,30 @@ private fun LazyDropdownMenuContent(
                 tween(durationMillis = OutTransitionDuration)
             }
         }
-    ) {
-        if (it) {
-            // Menu is expanded.
-            1f
-        } else {
-            // Menu is dismissed.
-            0f
-        }
+    ) { expanded ->
+        if (expanded) ExpandedAlphaTarget else ClosedAlphaTarget
     }
+
+    val isInspecting = LocalInspectionMode.current
     Surface(
-        modifier = Modifier.graphicsLayer {
-            scaleX = scale
-            scaleY = scale
-            this.alpha = alpha
+        modifier =
+        Modifier.graphicsLayer {
+            scaleX =
+                if (!isInspecting) scale
+                else if (expandedState.targetState) ExpandedScaleTarget else ClosedScaleTarget
+            scaleY =
+                if (!isInspecting) scale
+                else if (expandedState.targetState) ExpandedScaleTarget else ClosedScaleTarget
+            this.alpha =
+                if (!isInspecting) alpha
+                else if (expandedState.targetState) ExpandedAlphaTarget else ClosedAlphaTarget
             transformOrigin = transformOriginState.value
         },
-        shape = MaterialTheme.shapes.extraSmall,
-        color = MaterialTheme.colorScheme.surface,
-        tonalElevation = 3.dp,
-        shadowElevation = 3.dp
+        shape = shape,
+        color = containerColor,
+        tonalElevation = tonalElevation,
+        shadowElevation = shadowElevation,
+        border = border,
     ) {
         LazyColumn(
             modifier = modifier.padding(vertical = DropdownMenuVerticalPadding),
@@ -186,6 +182,18 @@ private const val InTransitionDuration = 120
 
 /** Copied from [androidx.compose.material3.OutTransitionDuration] */
 private const val OutTransitionDuration = 75
+
+/** Copied from [androidx.compose.material3.ExpandedScaleTarget] */
+private const val ExpandedScaleTarget = 1f
+
+/** Copied from [androidx.compose.material3.ClosedScaleTarget] */
+private const val ClosedScaleTarget = 0.8f
+
+/** Copied from [androidx.compose.material3.ExpandedAlphaTarget] */
+private const val ExpandedAlphaTarget = 1f
+
+/** Copied from [androidx.compose.material3.ClosedAlphaTarget] */
+private const val ClosedAlphaTarget = 0f
 
 /**
  * Copied from [androidx.compose.material3.DropdownMenuPositionProvider]
