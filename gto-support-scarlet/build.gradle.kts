@@ -11,5 +11,6 @@ dependencies {
     api(libs.scarlet.core)
     compileOnly(libs.scarlet)
 
+    implementation(project(":gto-support-util"))
     implementation(libs.okio)
 }
