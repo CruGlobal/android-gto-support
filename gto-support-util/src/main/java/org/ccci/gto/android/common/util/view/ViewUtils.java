@@ -62,7 +62,10 @@ public final class ViewUtils {
     }
 
     private static boolean isMotionEventPointerIndexException(@NonNull final Throwable cause) {
-        return cause instanceof IllegalArgumentException && cause.getMessage() != null &&
-                cause.getMessage().startsWith("pointerIndex out of range");
+        if (!(cause instanceof IllegalArgumentException)) return false;
+        final String message = cause.getMessage();
+        if (message == null) return false;
+        if (message.startsWith("pointerIndex out of range")) return true;
+        return message.startsWith("invalid pointerIndex");
     }
 }
