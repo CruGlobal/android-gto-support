@@ -20,6 +20,7 @@ import androidx.compose.ui.text.style.TextOverflow
 // NOTE: this is hopefully temporary until a ClickableText composable is added to Material3
 @Composable
 @Deprecated("Since v4.2.3, use a Text composable that takes an AnnotatedString with LinkAnnotations instead.")
+@Suppress("ktlint:compose:lambda-param-event-trailing")
 fun ClickableText(
     text: AnnotatedString,
     modifier: Modifier = Modifier,
