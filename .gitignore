@@ -21,3 +21,6 @@ bin/
 gen-external-apklibs/
 local.properties
 out/
+
+# Kotlin project ignores
+.kotlin/
