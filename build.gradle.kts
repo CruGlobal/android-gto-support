@@ -1,5 +1,6 @@
 plugins {
     id("build-logic")
+    alias(libs.plugins.compose.compiler).apply(false)
     alias(libs.plugins.ktlint)
 }
 

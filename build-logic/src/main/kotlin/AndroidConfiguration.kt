@@ -40,8 +40,7 @@ private fun BaseExtension.configureCompilerOptions(project: Project) {
 // context(Project)
 fun CommonExtension<*, *, *, *, *, *>.configureCompose(project: Project) {
     buildFeatures.compose = true
-    composeOptions.kotlinCompilerExtensionVersion =
-        project.libs.findVersion("androidx-compose-compiler").get().requiredVersion
+    project.pluginManager.apply("org.jetbrains.kotlin.plugin.compose")
 
     project.dependencies.apply {
         // the runtime dependency is required to build a library when compose is enabled
