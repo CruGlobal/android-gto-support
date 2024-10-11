@@ -5,6 +5,7 @@ plugins {
 android {
     namespace = "org.ccci.gto.android.common.androidx.compose"
     configureCompose(project)
+    testFixtures.enable = true
 }
 
 dependencies {
@@ -14,4 +15,8 @@ dependencies {
     // region Linkify support
     implementation(libs.androidx.core)
     // endregion Linkify support
+
+    testFixturesImplementation(kotlin("test"))
+    testFixturesImplementation(libs.androidx.compose.ui)
+    testFixturesImplementation(libs.kotlin.coroutines)
 }
