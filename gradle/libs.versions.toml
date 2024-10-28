@@ -92,7 +92,7 @@ kotlin-gradle = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.
 kotlin-kover-gradlePlugin = "org.jetbrains.kotlinx:kover-gradle-plugin:0.7.6"
 kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "kotlin" }
 ktlint-gradle = { module = "org.jlleitschuh.gradle:ktlint-gradle", version.ref = "ktlintGradle"}
-ktlint-rules-compose = "io.nlopez.compose.rules:ktlint:0.4.16"
+ktlint-rules-compose = "io.nlopez.compose.rules:ktlint:0.4.17"
 leakcanary = "com.squareup.leakcanary:leakcanary-android:2.14"
 lightweightStream = { module = "com.annimon:stream", version = "1.2.2" }
 lottie = "com.airbnb.android:lottie:6.6.0"
