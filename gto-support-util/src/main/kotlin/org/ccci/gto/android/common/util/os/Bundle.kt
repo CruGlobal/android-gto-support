@@ -16,7 +16,15 @@ infix fun Bundle?.equalsBundle(other: Bundle?) = when {
     other == null -> false
     size() != other.size() -> false
     keySet() != other.keySet() -> false
-    keySet().any { get(it) != other.get(it) } -> false
+    keySet().any {
+        val value = get(it)
+        val otherValue = other.get(it)
+        if (value is Array<*> && otherValue is Array<*>) {
+            !value.contentEquals(otherValue)
+        } else {
+            get(it) != other.get(it)
+        }
+    } -> false
     else -> true
 }
 // endregion equalsBundle()
