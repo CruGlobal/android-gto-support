@@ -36,6 +36,16 @@ class BundleTest {
         assertFalse(bundle equalsBundle Bundle())
         assertFalse(Bundle() equalsBundle bundle)
     }
+
+    @Test
+    fun `equalsBundle() - StringArray`() {
+        val bundle = Bundle().apply { putStringArray("a", arrayOf("b", "c")) }
+        val valid = Bundle().apply { putStringArray("a", arrayOf("b", "c")) }
+        val invalid = Bundle().apply { putStringArray("a", arrayOf("c", "b")) }
+
+        assertTrue(bundle equalsBundle valid)
+        assertFalse(bundle equalsBundle invalid)
+    }
     // endregion equalsBundle
 
     // region ParcelableArrays
