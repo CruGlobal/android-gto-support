@@ -1,3 +1,5 @@
+package org.ccci.gto.android.common.util.content
+
 import android.Manifest.permission.ACCESS_NETWORK_STATE
 import android.content.Context
 import android.net.ConnectivityManager
