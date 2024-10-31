@@ -1,6 +1,4 @@
 package org.ccci.gto.support.androidx.annotation
 
-@OptIn(ExperimentalMultiplatform::class)
-@OptionalExpectation
-@Retention(AnnotationRetention.BINARY)
-expect annotation class VisibleForTesting()
+@Deprecated("Since v4.2.3, use androidx.annotation.VisibleForTesting instead")
+typealias VisibleForTesting = androidx.annotation.VisibleForTesting

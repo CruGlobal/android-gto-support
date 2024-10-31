@@ -1,16 +1,6 @@
 package org.ccci.gto.support.androidx.annotation
 
-@OptIn(ExperimentalMultiplatform::class)
-@OptionalExpectation
-@Target(
-    AnnotationTarget.ANNOTATION_CLASS,
-    AnnotationTarget.CLASS,
-    AnnotationTarget.FUNCTION,
-    AnnotationTarget.PROPERTY_GETTER,
-    AnnotationTarget.PROPERTY_SETTER,
-    AnnotationTarget.CONSTRUCTOR,
-    AnnotationTarget.FIELD,
-    AnnotationTarget.FILE,
-)
-expect annotation class RestrictTo(vararg val value: RestrictToScope)
-expect enum class RestrictToScope { LIBRARY, LIBRARY_GROUP, TESTS, SUBCLASSES }
+@Deprecated("Since v4.2.3, use androidx.annotation.RestrictTo instead")
+typealias RestrictTo = androidx.annotation.RestrictTo
+@Deprecated("Since v4.2.3, use androidx.annotation.RestrictTo.Scope instead")
+typealias RestrictToScope = androidx.annotation.RestrictTo.Scope

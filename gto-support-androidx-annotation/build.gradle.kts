@@ -1,3 +1,5 @@
+// Deprecated since v4.2.3, use the standard androidx-annotation library instead
+
 plugins {
     id("gto-support.multiplatform-android-conventions")
 }
@@ -11,7 +13,7 @@ kotlin {
     configureJsTarget()
 
     sourceSets {
-        val androidMain by getting {
+        commonMain {
             dependencies {
                 api(libs.androidx.annotation)
             }
