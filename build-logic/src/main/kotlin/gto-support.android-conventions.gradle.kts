@@ -14,11 +14,5 @@ kotlin {
     configureJvmToolchain(project)
 }
 
-koverReport {
-    defaults {
-        mergeWith("debug")
-    }
-}
-
 configureKtlint()
 configurePublishing()
