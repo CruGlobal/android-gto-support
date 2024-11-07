@@ -6,9 +6,3 @@ plugins {
 kotlin {
     configureAndroidTarget(project)
 }
-
-koverReport {
-    defaults {
-        mergeWith("debug")
-    }
-}
