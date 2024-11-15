@@ -117,7 +117,7 @@ play-auth = "com.google.android.gms:play-services-auth:21.2.0"
 play-featuredelivery = "com.google.android.play:feature-delivery:2.1.0"
 realm = "io.realm:realm-android-library:10.19.0"
 retrofit = { module = "com.squareup.retrofit2:retrofit", version = "2.11.0" }
-robolectric = "org.robolectric:robolectric:4.13"
+robolectric = "org.robolectric:robolectric:4.14"
 scarlet = { module = "com.tinder.scarlet:scarlet", version.ref = "scarlet" }
 scarlet-core = { module = "com.tinder.scarlet:scarlet-core", version.ref = "scarlet" }
 scarlet-messageadapter-builtin = { module = "com.tinder.scarlet:message-adapter-built-in", version.ref = "scarlet" }
