@@ -97,7 +97,7 @@ ktlint-gradle = { module = "org.jlleitschuh.gradle:ktlint-gradle", version.ref =
 ktlint-rules-compose = "io.nlopez.compose.rules:ktlint:0.4.19"
 leakcanary = "com.squareup.leakcanary:leakcanary-android:2.14"
 lightweightStream = { module = "com.annimon:stream", version = "1.2.2" }
-lottie = "com.airbnb.android:lottie:6.6.0"
+lottie = "com.airbnb.android:lottie:6.6.1"
 materialComponents = "com.google.android.material:material:1.12.0"
 mockito = "org.mockito:mockito-inline:5.2.0"
 mockito-kotlin = "org.mockito.kotlin:mockito-kotlin:5.4.0"
