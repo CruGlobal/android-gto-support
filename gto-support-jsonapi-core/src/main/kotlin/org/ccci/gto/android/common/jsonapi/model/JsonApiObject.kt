@@ -45,9 +45,4 @@ open class JsonApiObject<T : Any> private constructor(
 
     @get:JvmName("hasErrors")
     val hasErrors get() = errors.isNotEmpty()
-
-    @Deprecated("Since v4.1.0, use errors += error instead", ReplaceWith("errors += error"))
-    fun addError(error: JsonApiError) {
-        errors += error
-    }
 }
