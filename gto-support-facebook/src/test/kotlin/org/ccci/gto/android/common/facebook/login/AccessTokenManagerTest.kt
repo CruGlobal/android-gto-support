@@ -105,11 +105,11 @@ class AccessTokenManagerTest {
             assertFalse(awaitItem())
             accessTokenManager.currentAccessToken = token
             executePendingBroadcasts()
-            assertTrue(awaitItem())
+            expectNoEvents()
 
             every { token.isExpired } returns true
             advanceUntilIdle()
-            assertFalse(awaitItem())
+            assertTrue(awaitItem())
         }
     }
     // endregion isExpiredFlow()

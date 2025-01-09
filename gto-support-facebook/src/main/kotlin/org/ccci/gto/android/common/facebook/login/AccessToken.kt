@@ -7,8 +7,8 @@ import kotlinx.coroutines.flow.flow
 
 fun AccessToken.isExpiredFlow() = flow {
     while (!isExpired) {
-        emit(true)
+        emit(false)
         delay((expires.time - System.currentTimeMillis()).coerceAtLeast(1))
     }
-    emit(false)
+    emit(true)
 }.distinctUntilChanged()
