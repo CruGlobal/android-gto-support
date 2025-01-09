@@ -21,26 +21,6 @@ private val MEDIA_TYPE = MediaType.parse(JsonApiObject.MEDIA_TYPE)
 class JsonApiConverterFactory(private val converter: JsonApiConverter) : Converter.Factory() {
     constructor(vararg classes: Class<*>) : this(JsonApiConverter.Builder().addClasses(*classes).build())
 
-    companion object {
-        @Deprecated(
-            "Since v4.0.1, use constructor instead.",
-            ReplaceWith(
-                "JsonApiConverterFactory(converter)",
-                "org.ccci.gto.android.common.jsonapi.retrofit2.JsonApiConverterFactory",
-            ),
-        )
-        fun create(converter: JsonApiConverter) = JsonApiConverterFactory(converter)
-
-        @Deprecated(
-            "Since v4.0.1, use constructor instead.",
-            ReplaceWith(
-                "JsonApiConverterFactory(*classes)",
-                "org.ccci.gto.android.common.jsonapi.retrofit2.JsonApiConverterFactory",
-            ),
-        )
-        fun create(vararg classes: Class<*>) = JsonApiConverterFactory(*classes)
-    }
-
     override fun requestBodyConverter(
         type: Type,
         parameterAnnotations: Array<Annotation>,
