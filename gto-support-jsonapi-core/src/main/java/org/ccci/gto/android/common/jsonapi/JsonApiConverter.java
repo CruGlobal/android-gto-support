@@ -56,6 +56,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import kotlin.collections.CollectionsKt;
+
 public final class JsonApiConverter {
     public static final class Builder {
         private final List<Class<?>> mClasses = new ArrayList<>();
@@ -224,7 +226,7 @@ public final class JsonApiConverter {
                 for (int i = 0; i < errors.length(); i++) {
                     final JsonApiError error = errorFromJson(errors.optJSONObject(i));
                     if (error != null) {
-                        output.addError(error);
+                        output.setErrors(CollectionsKt.plus(output.getErrors(), error));
                     }
                 }
             }
