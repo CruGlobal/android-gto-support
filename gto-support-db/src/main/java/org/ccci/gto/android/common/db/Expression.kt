@@ -81,9 +81,6 @@ sealed class Expression : Parcelable {
     infix fun gte(constant: Any): Expression = gte(constant(constant))
     infix fun gte(expression: Expression): Expression = Binary(Binary.GTE, this, expression)
 
-    @Deprecated("Since v4.2.0, use oneOf() instead.", ReplaceWith("oneOf(*expressions)"))
-    @Suppress("ktlint:standard:function-naming")
-    fun `in`(vararg expressions: Expression): Expression = oneOf(*expressions)
     fun oneOf(vararg expressions: Expression): Expression = Binary(Binary.IN, this, *expressions)
     fun oneOf(literals: List<Expression>): Expression = Binary(Binary.IN, this, *literals.toTypedArray())
     fun notIn(vararg expressions: Expression): Expression = Binary(Binary.NOTIN, this, *expressions)

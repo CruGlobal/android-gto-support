@@ -41,7 +41,6 @@ if (System.getenv("GITHUB_ACTIONS")?.toBoolean() == true) {
 includeBuild("build-logic")
 
 include("gto-support-androidx-activity")
-include("gto-support-androidx-annotation")
 include("gto-support-androidx-collection")
 include("gto-support-androidx-compose")
 include("gto-support-androidx-compose-material3")
@@ -100,9 +99,3 @@ include("gto-support-viewpager")
 include("testing:gto-support-dagger")
 include("testing:gto-support-picasso")
 include("testing:gto-support-timber")
-
-// deprecated modules
-include("gto-support-db-coroutines")
-include("gto-support-db-livedata")
-include("gto-support-db-stream")
-include("gto-support-napier")
