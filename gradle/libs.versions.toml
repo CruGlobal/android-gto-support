@@ -79,7 +79,7 @@ eventbus = "org.greenrobot:eventbus:3.3.1"
 facebook-login = "com.facebook.android:facebook-login:17.0.2"
 facebookFlipper = "com.facebook.flipper:flipper:0.273.0"
 firebase-config = "com.google.firebase:firebase-config:22.0.1"
-firebase-crashlytics = "com.google.firebase:firebase-crashlytics:19.4.0"
+firebase-crashlytics = "com.google.firebase:firebase-crashlytics:19.4.1"
 fluidsonic-locale = "io.fluidsonic.locale:fluid-locale:0.13.0"
 json = "org.json:json:20250107"
 jsonUnit = { module = "net.javacrumbs.json-unit:json-unit", version.ref = "jsonUnit" }
