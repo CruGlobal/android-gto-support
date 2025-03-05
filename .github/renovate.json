@@ -1,22 +1,30 @@
 {
-  "extends": [ "config:base" ],
-  "labels": [ "dependencies" ],
+  "extends": [
+    "config:recommended"
+  ],
+  "labels": [
+    "dependencies"
+  ],
   "dependencyDashboard": true,
   "packageRules": [
     {
       "groupName": "Kotlin and KSP",
       "description": "KSP is tightly coupled to Kotlin version.",
-      "matchPackagePrefixes": [
-        "org.jetbrains.kotlin:kotlin",
-        "org.jetbrains.kotlin.plugin.compose",
-        "org.jetbrains.kotlin.plugin.serialization",
-        "com.google.devtools.ksp"
-      ],
+      "matchPackageNames": [
+        "org.jetbrains.kotlin:kotlin{/,}**",
+        "org.jetbrains.kotlin.plugin.compose{/,}**",
+        "org.jetbrains.kotlin.plugin.serialization{/,}**",
+        "com.google.devtools.ksp{/,}**"
+      ]
     },
     {
-      "matchManagers": [ "gradle" ],
-      "matchPackagePrefixes": [ "org.jetbrains.kotlinx:kotlinx-coroutines-" ],
-      "groupName": "kotlinx.coroutines"
+      "matchManagers": [
+        "gradle"
+      ],
+      "groupName": "kotlinx.coroutines",
+      "matchPackageNames": [
+        "org.jetbrains.kotlinx:kotlinx-coroutines-{/,}**"
+      ]
     }
   ]
 }
