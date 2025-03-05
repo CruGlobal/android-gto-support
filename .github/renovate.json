@@ -16,15 +16,6 @@
         "org.jetbrains.kotlin.plugin.serialization{/,}**",
         "com.google.devtools.ksp{/,}**"
       ]
-    },
-    {
-      "matchManagers": [
-        "gradle"
-      ],
-      "groupName": "kotlinx.coroutines",
-      "matchPackageNames": [
-        "org.jetbrains.kotlinx:kotlinx-coroutines-{/,}**"
-      ]
     }
   ]
 }
