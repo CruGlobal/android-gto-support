@@ -27,10 +27,10 @@ class EagerSingletonInitializer @Inject constructor(
     @EagerSingleton(on = ACTIVITY_CREATED, threadMode = MAIN) activityMain: Lazy<Set<Any>>,
     @EagerSingleton(on = ACTIVITY_CREATED, threadMode = MAIN_ASYNC) activityMainAsync: Lazy<Set<Any>>,
     @EagerSingleton(on = ACTIVITY_CREATED, threadMode = ASYNC) activityAsync: Lazy<Set<Any>>,
-) : Application.ActivityLifecycleCallbacks, CoroutineScope {
+) : Application.ActivityLifecycleCallbacks {
     @VisibleForTesting
     internal val job = SupervisorJob()
-    override val coroutineContext get() = Dispatchers.Default + job
+    private val coroutineScope = CoroutineScope(Dispatchers.Default + job)
 
     private var app: Application? = app
     private var activityMain: Lazy<Set<Any>>? = activityMain
@@ -56,7 +56,7 @@ class EagerSingletonInitializer @Inject constructor(
 
     private fun initialize(main: Lazy<Set<Any>>?, mainAsync: Lazy<Set<Any>>?, async: Lazy<Set<Any>>?) {
         main?.get()
-        launch(Dispatchers.Main) {
+        coroutineScope.launch(Dispatchers.Main) {
             mainAsync?.get()
             withContext(Dispatchers.Default) { async?.get() }
         }
