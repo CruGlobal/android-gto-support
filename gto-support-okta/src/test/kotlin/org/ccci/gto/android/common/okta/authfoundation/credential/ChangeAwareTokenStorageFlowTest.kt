@@ -35,13 +35,10 @@ class ChangeAwareTokenStorageFlowTest {
             storage.notifyChanged(UUID.randomUUID().toString())
             awaitItem()
             expectNoEvents()
-            verify(exactly = 1) { storage.addObserver(any()) }
-            verify(exactly = 0) { storage.removeObserver(any()) }
             confirmVerified(storage)
 
             // cancelling the flow should remove the subscriber
             cancel()
-            verify(exactly = 1) { storage.addObserver(any()) }
             verify(exactly = 1) { storage.removeObserver(any()) }
             confirmVerified(storage)
         }
