@@ -5,7 +5,6 @@ import androidx.room.RoomDatabase
 import kotlinx.coroutines.CoroutineScope
 
 object TestRoomDatabaseCoroutines {
-    @JvmStatic
     @SuppressLint("RestrictedApi")
     fun setCoroutineScope(db: RoomDatabase, scope: CoroutineScope) {
         db.backingFieldMap[FIELD_COROUTINE_SCOPE] = scope
