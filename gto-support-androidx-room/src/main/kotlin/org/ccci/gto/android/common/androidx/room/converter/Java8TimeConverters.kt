@@ -8,9 +8,9 @@ import java.time.Instant
 object Java8TimeConverters {
     @JvmStatic
     @TypeConverter
-    internal fun Long?.toInstant() = this?.let { Instant.ofEpochMilli(it) }
+    fun toInstant(epochMillis: Long?) = epochMillis?.let { Instant.ofEpochMilli(it) }
 
     @JvmStatic
     @TypeConverter
-    internal fun Instant?.toLong() = this?.toEpochMilli()
+    fun toLong(instant: Instant?) = instant?.toEpochMilli()
 }
