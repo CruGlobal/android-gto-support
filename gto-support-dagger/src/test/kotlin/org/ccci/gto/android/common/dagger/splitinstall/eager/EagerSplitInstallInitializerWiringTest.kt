@@ -3,7 +3,9 @@ package org.ccci.gto.android.common.dagger.splitinstall.eager
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import dagger.Component
 import javax.inject.Singleton
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.newSingleThreadContext
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.resetMain
@@ -18,6 +20,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
+@OptIn(DelicateCoroutinesApi::class, ExperimentalCoroutinesApi::class)
 class EagerSplitInstallInitializerWiringTest {
     private val mainThreadDispatcher = newSingleThreadContext("Main Thread")
 
