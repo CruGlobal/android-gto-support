@@ -15,7 +15,6 @@ import kotlinx.coroutines.flow.conflate
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.flow.map
 
 fun AccessTokenManager.currentAccessTokenFlow() = callbackFlow {
     val tracker = object : AccessTokenTracker() {
@@ -27,9 +26,6 @@ fun AccessTokenManager.currentAccessTokenFlow() = callbackFlow {
     send(currentAccessToken)
     awaitClose { tracker.stopTracking() }
 }.conflate()
-
-@Deprecated("Since v4.2.0, use isExpiredFlow() instead.", ReplaceWith("isExpiredFlow()"))
-fun AccessTokenManager.isAuthenticatedFlow() = isExpiredFlow().map { !it }
 
 @OptIn(ExperimentalCoroutinesApi::class)
 fun AccessTokenManager.isExpiredFlow() = currentAccessTokenFlow()
