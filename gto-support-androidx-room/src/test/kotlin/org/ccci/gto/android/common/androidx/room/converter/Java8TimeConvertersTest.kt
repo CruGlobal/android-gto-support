@@ -2,18 +2,18 @@ package org.ccci.gto.android.common.androidx.room.converter
 
 import java.time.Instant
 import java.time.temporal.ChronoUnit
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertNull
-import org.junit.Test
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertNull
 
 class Java8TimeConvertersTest {
     @Test
     fun testInstantConverter() = with(Java8TimeConverters) {
-        assertNull((null as Long?).toInstant())
-        assertNull((null as Instant?).toLong())
-        assertEquals(Instant.ofEpochMilli(0), 0L.toInstant())
-        assertEquals(0L, Instant.ofEpochMilli(0).toLong())
+        assertNull(toInstant(null))
+        assertNull(toLong(null as Instant?))
+        assertEquals(Instant.ofEpochMilli(0), toInstant(0L))
+        assertEquals(0L, toLong(Instant.ofEpochMilli(0)))
         val instant = Instant.now().truncatedTo(ChronoUnit.MILLIS)
-        assertEquals(instant, instant.toLong()!!.toInstant())
+        assertEquals(instant, toInstant(toLong(instant)))
     }
 }
