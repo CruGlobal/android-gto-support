@@ -24,7 +24,7 @@ class SessionRetryInterceptorTest {
 
     @Test
     fun `Property attempts - at least ATTEMPTS_MIN attempts`() {
-        val interceptor = SessionRetryInterceptor(ATTEMPTS_MIN - 1)
+        val interceptor = SessionRetryInterceptor(attempts = ATTEMPTS_MIN - 1)
 
         assertFailsWith<SessionApiException> { interceptor.intercept(chain) }
         verify(exactly = ATTEMPTS_MIN) { chain.proceed(any()) }
@@ -32,7 +32,7 @@ class SessionRetryInterceptorTest {
 
     @Test
     fun `Property attempts - at most ATTEMPTS_MAX attempts`() {
-        val interceptor = SessionRetryInterceptor(ATTEMPTS_MAX + 1)
+        val interceptor = SessionRetryInterceptor(attempts = ATTEMPTS_MAX + 1)
 
         assertFailsWith<SessionApiException> { interceptor.intercept(chain) }
         verify(exactly = ATTEMPTS_MAX) { chain.proceed(any()) }
