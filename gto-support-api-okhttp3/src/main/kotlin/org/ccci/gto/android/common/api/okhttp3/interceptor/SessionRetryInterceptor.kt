@@ -9,9 +9,6 @@ class SessionRetryInterceptor @JvmOverloads constructor(
     private val sessionInterceptor: SessionInterceptor<*>? = null,
     attempts: Int = ATTEMPTS_DEFAULT,
 ) : Interceptor {
-    @Deprecated("Since v4.2.2, use the default constructor instead.")
-    internal constructor(_attempts: Int) : this(attempts = _attempts)
-
     companion object {
         private const val ATTEMPTS_DEFAULT = 3
         internal const val ATTEMPTS_MIN = 1
