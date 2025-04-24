@@ -4,7 +4,6 @@ import androidx.annotation.StringRes
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.buildAnnotatedString
@@ -15,11 +14,8 @@ import java.util.Formatter
 @Composable
 @ReadOnlyComposable
 fun annotatedStringResource(@StringRes id: Int, vararg formatArgs: Any) = buildAnnotatedString {
-    // We reference the LocalConfiguration to recompose if the configuration changes
-    // see: https://jetc.dev/slack/2022-02-13-why-resources-strange.html
-    LocalConfiguration.current
     val args = formatArgs.map { if (it is AnnotatedString) AnnotatedStringFormattable(it) else it }
-    Formatter(this, ConfigurationCompat.getLocales(LocalContext.current.resources.configuration)[0])
+    Formatter(this, ConfigurationCompat.getLocales(LocalConfiguration.current)[0])
         .format(stringResource(id), *args.toTypedArray())
 }
 

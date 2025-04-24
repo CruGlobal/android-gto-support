@@ -13,6 +13,7 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontSynthesis
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.resolveDefaults
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
@@ -52,11 +53,11 @@ private fun computeHeightForDefaultText(
     val paragraph = Paragraph(
         text = Array(lines) { EMPTY_TEXT_REPLACEMENT }.joinToString("\n"),
         style = style,
-        maxLines = lines,
-        ellipsis = false,
+        constraints = Constraints(),
         density = density,
         fontFamilyResolver = fontFamilyResolver,
-        constraints = Constraints()
+        maxLines = lines,
+        overflow = TextOverflow.Clip,
     )
     return with(density) { paragraph.height.toDp() }
 }
@@ -84,11 +85,11 @@ private fun computeWidthForSingleLineOfText(
     Paragraph(
         text = text,
         style = style,
-        maxLines = 1,
-        ellipsis = false,
+        constraints = Constraints(),
         density = density,
         fontFamilyResolver = fontFamilyResolver,
-        constraints = Constraints()
+        maxLines = 1,
+        overflow = TextOverflow.Clip,
     ).maxIntrinsicWidth.toDp()
 }
 
