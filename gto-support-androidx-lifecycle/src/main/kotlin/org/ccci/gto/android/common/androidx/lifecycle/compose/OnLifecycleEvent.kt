@@ -6,6 +6,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.lifecycle.compose.LocalLifecycleOwner
 
 @Composable
@@ -21,5 +22,8 @@ fun OnLifecycleEvent(vararg keys: Any?, onEvent: (event: Lifecycle.Event) -> Uni
 }
 
 @Composable
-fun OnResume(vararg keys: Any?, onResume: () -> Unit) =
-    OnLifecycleEvent(*keys) { if (it == Lifecycle.Event.ON_RESUME) onResume() }
+@Deprecated("Since v4.4.0, use LifecycleResumeEffect instead.")
+fun OnResume(vararg keys: Any?, onResume: () -> Unit) = LifecycleResumeEffect(keys = keys) {
+    onResume()
+    onPauseOrDispose { }
+}
