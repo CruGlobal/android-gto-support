@@ -17,7 +17,7 @@ dependencies {
     implementation(libs.weakdelegate)
 
     // region Composables
-    compileOnly(libs.androidx.compose.ui)
+    compileOnly(libs.androidx.lifecycle.runtime.compose)
     // endregion Composables
 
     // region ObservableLiveData
