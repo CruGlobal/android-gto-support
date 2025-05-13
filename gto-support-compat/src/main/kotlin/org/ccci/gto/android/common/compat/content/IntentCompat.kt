@@ -2,10 +2,10 @@
 
 package org.ccci.gto.android.common.compat.content
 
-import android.annotation.TargetApi
 import android.content.Intent
 import android.os.Build
 import android.os.Parcelable
+import androidx.annotation.RequiresApi
 import java.io.Serializable
 
 @JvmName("getParcelableExtra")
@@ -39,7 +39,7 @@ private open class BaseIntentCompatMethods : IntentCompatMethods {
     }
 }
 
-@TargetApi(Build.VERSION_CODES.TIRAMISU)
+@RequiresApi(Build.VERSION_CODES.TIRAMISU)
 private class TiramisuIntentCompatMethods : BaseIntentCompatMethods() {
     override fun <T> getParcelableExtra(intent: Intent, name: String?, clazz: Class<T>) =
         intent.getParcelableExtra(name, clazz)
