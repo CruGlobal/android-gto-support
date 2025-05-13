@@ -2,10 +2,10 @@
 
 package org.ccci.gto.android.common.compat.os
 
-import android.annotation.TargetApi
 import android.os.Build
 import android.os.Bundle
 import android.os.Parcelable
+import androidx.annotation.RequiresApi
 import java.io.Serializable
 
 private val COMPAT = when {
@@ -50,7 +50,7 @@ private open class BaseBundleCompatMethods : BundleCompatMethods {
     }
 }
 
-@TargetApi(Build.VERSION_CODES.TIRAMISU)
+@RequiresApi(Build.VERSION_CODES.TIRAMISU)
 private class TiramisuBundleCompatMethods : BaseBundleCompatMethods() {
     override fun <T> getParcelable(bundle: Bundle, key: String?, clazz: Class<T>) = bundle.getParcelable(key, clazz)
     override fun <T> getParcelableArray(bundle: Bundle, key: String?, clazz: Class<T>): Array<T?>? =
