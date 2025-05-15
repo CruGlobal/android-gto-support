@@ -2,7 +2,7 @@ package org.ccci.gto.android.common.retrofit2.converter
 
 import java.io.IOException
 import java.lang.reflect.Type
-import okhttp3.MediaType
+import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.RequestBody
 import okhttp3.ResponseBody
 import org.json.JSONArray
@@ -29,7 +29,7 @@ object JSONObjectConverterFactory : Converter.Factory() {
     }
 
     private object JSONObjectRequestBodyConverter : Converter<Any?, RequestBody> {
-        private val MEDIA_TYPE = MediaType.parse("text/json; charset=UTF-8")
+        private val MEDIA_TYPE = "text/json; charset=UTF-8".toMediaType()
 
         override fun convert(value: Any?): RequestBody = RequestBody.create(MEDIA_TYPE, value?.toString().orEmpty())
     }

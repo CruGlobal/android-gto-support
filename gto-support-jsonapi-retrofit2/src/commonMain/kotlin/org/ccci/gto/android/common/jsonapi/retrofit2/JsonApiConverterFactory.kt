@@ -3,7 +3,7 @@ package org.ccci.gto.android.common.jsonapi.retrofit2
 import java.io.IOException
 import java.lang.reflect.ParameterizedType
 import java.lang.reflect.Type
-import okhttp3.MediaType
+import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.RequestBody
 import okhttp3.ResponseBody
 import org.ccci.gto.android.common.jsonapi.JsonApiConverter
@@ -16,7 +16,7 @@ import org.json.JSONException
 import retrofit2.Converter
 import retrofit2.Retrofit
 
-private val MEDIA_TYPE = MediaType.parse(JsonApiObject.MEDIA_TYPE)
+private val MEDIA_TYPE = JsonApiObject.MEDIA_TYPE.toMediaType()
 
 class JsonApiConverterFactory(private val converter: JsonApiConverter) : Converter.Factory() {
     constructor(vararg classes: Class<*>) : this(JsonApiConverter.Builder().addClasses(*classes).build())
