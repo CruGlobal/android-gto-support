@@ -114,7 +114,7 @@ picasso = { module = "com.squareup.picasso:picasso", version = "2.8" }
 play-auth = "com.google.android.gms:play-services-auth:21.3.0"
 play-featuredelivery = "com.google.android.play:feature-delivery:2.1.0"
 realm = "io.realm:realm-android-library:10.19.0"
-retrofit = { module = "com.squareup.retrofit2:retrofit", version = "2.11.0" }
+retrofit = { module = "com.squareup.retrofit2:retrofit", version = "2.12.0" }
 robolectric = "org.robolectric:robolectric:4.14.1"
 scarlet = { module = "com.tinder.scarlet:scarlet", version.ref = "scarlet" }
 scarlet-core = { module = "com.tinder.scarlet:scarlet-core", version.ref = "scarlet" }
