@@ -175,6 +175,7 @@ private fun LazyDropdownMenuContent(
 }
 
 // region Copied Menu internals
+
 /** Copied from [androidx.compose.material3.MenuVerticalMargin] */
 private val MenuVerticalMargin = 48.dp
 

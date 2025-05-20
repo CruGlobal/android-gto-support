@@ -224,6 +224,7 @@ fun <T : Any> LiveData<T?>.notNull(): LiveData<T> {
 fun <T> LiveData<out Iterable<T>>.sortedWith(comparator: Comparator<in T>) = map { it.sortedWith(comparator) }
 
 // region switchCombineWith
+
 /**
  * This method will combine 2 LiveData objects into a new LiveData object by running the {@param mapFunction} on the
  * current values of both source LiveData objects.

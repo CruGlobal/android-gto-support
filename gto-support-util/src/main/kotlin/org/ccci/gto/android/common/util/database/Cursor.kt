@@ -10,7 +10,6 @@ inline fun Cursor.forEach(block: (Cursor) -> Unit) {
     while (moveToNext()) block(this)
 }
 
-// region JSONArray
 /**
  * @receiver The Cursor we are fetching the value from
  * @param[columnName] The column we are requesting the value of
@@ -22,9 +21,7 @@ fun Cursor.getJSONArrayOrNull(field: String) = try {
 } catch (ignored: JSONException) {
     null
 }
-// endregion JSONArray
 
-// region JSONObject
 /**
  * @receiver The Cursor we are fetching the value from
  * @param[columnName] The column we are requesting the value of
@@ -36,4 +33,3 @@ fun Cursor.getJSONObjectOrNull(field: String) = try {
 } catch (ignored: JSONException) {
     null
 }
-// endregion JSONObject
