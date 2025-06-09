@@ -14,7 +14,7 @@ kotlin {
     configureJvmTarget()
 
     sourceSets {
-        val commonMain by getting {
+        commonMain {
             dependencies {
                 api(project(":gto-support-jsonapi"))
 
@@ -22,7 +22,7 @@ kotlin {
                 implementation(libs.androidx.annotation)
             }
         }
-        val commonTest by getting {
+        commonTest {
             dependencies {
                 implementation(libs.json)
                 implementation(libs.jsonUnit.assertj)
@@ -31,7 +31,7 @@ kotlin {
             }
         }
 
-        val jvmMain by getting {
+        jvmMain {
             dependencies {
                 implementation(libs.json)
             }
