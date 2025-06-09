@@ -14,7 +14,10 @@ dependencyResolutionManagement {
     repositories {
         maven {
             setUrl("https://jitpack.io")
-            content { includeGroupByRegex("com\\.github\\..*") }
+            content {
+                includeGroupByRegex("com\\.github\\..*")
+                excludeGroup("com.github.ajalt.clikt")
+            }
         }
         maven {
             // This repository contains pre-release versions of the Compose Compiler
