@@ -6,7 +6,6 @@ plugins {
 }
 
 kotlin {
-    baseConfiguration()
     configureJvmToolchain(project)
 
     sourceSets {
