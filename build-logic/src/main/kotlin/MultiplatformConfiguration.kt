@@ -1,7 +1,18 @@
+import com.android.build.api.dsl.androidLibrary
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTargetWithTests
 import org.jetbrains.kotlin.gradle.plugin.mpp.TestExecutable
+
+@Suppress("UnstableApiUsage")
+fun KotlinMultiplatformExtension.configureAndroidLibraryTarget() {
+    project.pluginManager.apply("com.android.kotlin.multiplatform.library")
+
+    androidLibrary {
+        compileSdk = project.libs.findVersion("android-sdk-compile").get().requiredVersion.toInt()
+        minSdk = project.libs.findVersion("android-sdk-min").get().requiredVersion.toInt()
+    }
+}
 
 fun KotlinMultiplatformExtension.configureIosTarget() {
     iosArm64 { enableBackgroundTests() }

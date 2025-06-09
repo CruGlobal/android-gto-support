@@ -1,17 +1,21 @@
+import com.android.build.api.dsl.androidLibrary
+
 plugins {
-    id("gto-support.multiplatform-android-conventions")
-}
-
-android {
-    namespace = "org.ccci.gto.android.common.jsonapi.retrofit2"
-
-    defaultConfig {
-        consumerProguardFile("src/jvmMain/resources/META-INF/proguard/jsonapi-retrofit2.pro")
-    }
+    id("gto-support.multiplatform-conventions")
 }
 
 kotlin {
+    configureAndroidLibraryTarget()
     configureJvmTarget()
+
+    androidLibrary {
+        namespace = "org.ccci.gto.android.common.jsonapi.retrofit2"
+
+        optimization {
+            consumerKeepRules.publish = true
+            consumerKeepRules.file("src/jvmMain/resources/META-INF/proguard/jsonapi-retrofit2.pro")
+        }
+    }
 
     sourceSets {
         commonMain {

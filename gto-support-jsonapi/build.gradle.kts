@@ -1,13 +1,16 @@
-plugins {
-    id("gto-support.multiplatform-android-conventions")
-}
+import com.android.build.api.dsl.androidLibrary
 
-android {
-    namespace = "org.ccci.gto.android.common.jsonapi"
+plugins {
+    id("gto-support.multiplatform-conventions")
 }
 
 kotlin {
+    configureAndroidLibraryTarget()
     configureJvmTarget()
+
+    androidLibrary {
+        namespace = "org.ccci.gto.android.common.jsonapi"
+    }
 
     sourceSets {
         commonMain {
