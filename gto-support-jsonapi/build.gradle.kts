@@ -10,13 +10,13 @@ kotlin {
     configureJvmTarget()
 
     sourceSets {
-        val commonMain by getting {
+        commonMain {
             dependencies {
                 api(project(":gto-support-jsonapi-core"))
             }
         }
 
-        val jvmMain by getting {
+        jvmMain {
             dependencies {
                 api(libs.json)
             }

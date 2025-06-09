@@ -9,7 +9,7 @@ kotlin {
     configureJvmToolchain(project)
 
     sourceSets {
-        val commonTest by getting {
+        commonTest {
             dependencies {
                 implementation(kotlin("test"))
             }
