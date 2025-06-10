@@ -10,4 +10,12 @@ android {
 
 kotlin {
     configureIosTarget()
+
+    sourceSets {
+        commonMain {
+            dependencies {
+                implementation(compose.ui)
+            }
+        }
+    }
 }

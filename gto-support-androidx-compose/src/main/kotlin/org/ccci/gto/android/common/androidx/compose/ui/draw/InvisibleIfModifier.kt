@@ -1,9 +1,22 @@
 package org.ccci.gto.android.common.androidx.compose.ui.draw
 
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.drawWithContent
+import org.ccci.gto.android.common.compose.ui.draw.invisibleIf
 
-fun Modifier.invisibleIf(invisible: Boolean) = if (invisible) drawWithContent { } else this
+@Deprecated(
+    "Since v4.4.0, use the multiplatform invisibleIf instead",
+    replaceWith = ReplaceWith(
+        "invisibleIf(invisible)",
+        imports = ["org.ccci.gto.android.common.compose.ui.draw.invisibleIf"],
+    ),
+)
+fun Modifier.invisibleIf(invisible: Boolean) = invisibleIf(invisible)
 
-inline fun Modifier.invisibleIf(crossinline invisible: () -> Boolean) =
-    drawWithContent { if (!invisible()) drawContent() }
+@Deprecated(
+    "Since v4.4.0, use the multiplatform invisibleIf instead",
+    replaceWith = ReplaceWith(
+        "invisibleIf(invisible)",
+        imports = ["org.ccci.gto.android.common.compose.ui.draw.invisibleIf"],
+    ),
+)
+inline fun Modifier.invisibleIf(crossinline invisible: () -> Boolean) = invisibleIf(invisible)
