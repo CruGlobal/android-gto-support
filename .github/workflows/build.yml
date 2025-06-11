@@ -15,7 +15,7 @@ on:
         type: boolean
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
+  group: ${{ github.workflow }}-${{ github.ref }}-${{ inputs.triggerRelease || false }}
   cancel-in-progress: true
 
 env:
