@@ -2,10 +2,11 @@ package org.ccci.gto.android.common.compose.ui.draw
 
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithContent
-import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.semantics.hideFromAccessibility
+import androidx.compose.ui.semantics.semantics
 
 fun Modifier.invisibleIf(invisible: Boolean) = when {
-    invisible -> drawWithContent { }.clearAndSetSemantics { }
+    invisible -> drawWithContent { }.semantics { hideFromAccessibility() }
     else -> this
 }
 
