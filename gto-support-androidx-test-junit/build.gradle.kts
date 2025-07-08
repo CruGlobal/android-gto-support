@@ -9,6 +9,7 @@ android {
 kotlin {
     configureIosTarget()
     configureJsTarget()
+    configureJvmTarget()
 
     sourceSets {
         val androidMain by getting {
