@@ -2,9 +2,6 @@ import com.android.build.api.dsl.CommonExtension
 import com.android.build.gradle.BaseExtension
 import com.android.build.gradle.LibraryExtension
 import org.gradle.api.Project
-import org.gradle.api.plugins.ExtensionAware
-import org.gradle.kotlin.dsl.findByType
-import org.jetbrains.kotlin.gradle.dsl.KotlinJvmOptions
 
 // TODO: provide Project using the new multiple context receivers functionality.
 //       this is prototyped in 1.6.20 and will probably reach beta in Kotlin 1.8 or 1.9
@@ -12,7 +9,6 @@ import org.jetbrains.kotlin.gradle.dsl.KotlinJvmOptions
 internal fun LibraryExtension.baseConfiguration(project: Project) {
     configureSdk()
     configureProguardRules(project)
-    configureCompilerOptions(project)
     configureTestOptions(project)
 }
 
@@ -27,12 +23,6 @@ private fun BaseExtension.configureSdk() {
 
 private fun BaseExtension.configureProguardRules(project: Project) {
     defaultConfig.consumerProguardFiles(project.rootProject.file("proguard-consumer-jetbrains.pro"))
-}
-
-private fun BaseExtension.configureCompilerOptions(project: Project) {
-    (this as ExtensionAware).extensions.findByType<KotlinJvmOptions>()?.apply {
-        freeCompilerArgs += "-Xjvm-default=all"
-    }
 }
 
 // TODO: provide Project using the new multiple context receivers functionality.
