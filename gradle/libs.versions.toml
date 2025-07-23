@@ -112,7 +112,7 @@ okta = "com.okta.android:okta-oidc-android:1.3.4"
 okta-auth-foundation = { module = "com.okta.kotlin:auth-foundation", version.ref = "okta" }
 okta-auth-foundation-bootstrap = { module = "com.okta.kotlin:auth-foundation-bootstrap", version.ref = "okta" }
 picasso = { module = "com.squareup.picasso:picasso", version = "2.8" }
-play-auth = "com.google.android.gms:play-services-auth:21.3.0"
+play-auth = "com.google.android.gms:play-services-auth:21.4.0"
 play-featuredelivery = "com.google.android.play:feature-delivery:2.1.0"
 realm = "io.realm:realm-android-library:10.19.0"
 retrofit = { module = "com.squareup.retrofit2:retrofit", version = "3.0.0" }
