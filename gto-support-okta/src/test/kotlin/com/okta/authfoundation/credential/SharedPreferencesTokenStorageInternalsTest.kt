@@ -11,11 +11,13 @@ import com.okta.authfoundation.client.OidcClient
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkStatic
+import io.mockk.unmockkStatic
+import kotlin.test.AfterTest
+import kotlin.test.BeforeTest
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertNotNull
 import kotlinx.coroutines.Dispatchers
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertNotNull
-import org.junit.Before
-import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
@@ -32,11 +34,16 @@ class SharedPreferencesTokenStorageInternalsTest {
     private val keySpec = MasterKeys.AES256_GCM_SPEC
     private val sharedPreferences: SharedPreferences = mockk()
 
-    @Before
+    @BeforeTest
     fun setup() {
         mockkStatic(MasterKeys::class, EncryptedSharedPreferences::class)
         every { MasterKeys.getOrCreate(any()) } returns "key"
-        every { EncryptedSharedPreferences.create(any(), any(), any(), any(), any()) } returns sharedPreferences
+        every { EncryptedSharedPreferences.create(any<String>(), any(), any(), any(), any()) } returns sharedPreferences
+    }
+
+    @AfterTest
+    fun cleanup() {
+        unmockkStatic(MasterKeys::class, EncryptedSharedPreferences::class)
     }
 
     @Test
