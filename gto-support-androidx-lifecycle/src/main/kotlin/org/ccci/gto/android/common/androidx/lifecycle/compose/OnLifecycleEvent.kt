@@ -23,7 +23,10 @@ fun OnLifecycleEvent(vararg keys: Any?, onEvent: (event: Lifecycle.Event) -> Uni
 
 @Composable
 @Deprecated("Since v4.4.0, use LifecycleResumeEffect instead.")
-fun OnResume(vararg keys: Any?, onResume: () -> Unit) = LifecycleResumeEffect(keys = keys) {
-    onResume()
-    onPauseOrDispose { }
+fun OnResume(vararg keys: Any?, onResume: () -> Unit) {
+    val onResume by rememberUpdatedState(onResume)
+    LifecycleResumeEffect(keys = keys) {
+        onResume()
+        onPauseOrDispose { }
+    }
 }
