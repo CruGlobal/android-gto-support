@@ -3,7 +3,7 @@ package org.ccci.gto.android.common.util.graphics
 import android.graphics.Color
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import java.security.SecureRandom
-import org.junit.Assert.assertEquals
+import kotlin.test.assertEquals
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.annotation.Config

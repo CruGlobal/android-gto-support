@@ -3,9 +3,9 @@ package org.ccci.gto.android.common.animation
 import android.animation.TimeInterpolator
 import android.view.View
 import kotlin.random.Random
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertSame
-import org.junit.Assert.fail
+import kotlin.test.assertEquals
+import kotlin.test.assertSame
+import kotlin.test.fail
 import org.junit.Before
 import org.junit.Test
 import org.mockito.kotlin.doReturn

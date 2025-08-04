@@ -1,6 +1,6 @@
 package org.ccci.gto.android.common.util.graphics
 
-import org.junit.Assert.assertEquals
+import kotlin.test.assertEquals
 
 val HSL_CYAN = HslColor(180f, 1f, 0.5f)
 val HSL_LTGRAY = HslColor(0f, 0f, 0.8f)

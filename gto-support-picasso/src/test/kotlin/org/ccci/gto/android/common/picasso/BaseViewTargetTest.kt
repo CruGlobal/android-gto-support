@@ -6,7 +6,7 @@ import android.graphics.drawable.Drawable
 import android.widget.ImageView
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.squareup.picasso.Picasso
-import org.junit.Assert
+import kotlin.test.assertSame
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -49,7 +49,7 @@ class BaseViewTargetTest {
         target.onBitmapLoaded(bitmap, Picasso.LoadedFrom.DISK)
         argumentCaptor<BitmapDrawable> {
             verify(view).setImageDrawable(capture())
-            Assert.assertSame(bitmap, firstValue.bitmap)
+            assertSame(bitmap, firstValue.bitmap)
         }
     }
 }

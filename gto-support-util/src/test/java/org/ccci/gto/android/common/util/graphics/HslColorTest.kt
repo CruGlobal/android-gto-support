@@ -3,8 +3,8 @@ package org.ccci.gto.android.common.util.graphics
 import android.graphics.Color
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import java.security.SecureRandom
-import org.junit.Assert.assertEquals
-import org.junit.Test
+import kotlin.test.Test
+import kotlin.test.assertEquals
 import org.junit.runner.RunWith
 import org.robolectric.annotation.Config
 
@@ -48,7 +48,7 @@ class HslColorTest {
 
     @Test
     fun verifyDarken() {
-        assertEquals("white darkened 100% is black", Color.BLACK, Color.WHITE.toHslColor().darken(1f).toColorInt())
+        assertEquals(Color.BLACK, Color.WHITE.toHslColor().darken(1f).toColorInt(), "white darkened 100% is black")
         assertEquals(Color.rgb(194, 0, 0), Color.RED.toHslColor().darken(.12f).toColorInt())
     }
 }

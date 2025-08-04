@@ -10,6 +10,13 @@ import com.squareup.picasso.StubRequestCreator
 import com.squareup.picasso.Target
 import java.lang.ref.Reference
 import java.lang.ref.WeakReference
+import kotlin.test.AfterTest
+import kotlin.test.BeforeTest
+import kotlin.test.Test
+import kotlin.test.assertNotNull
+import kotlin.test.assertNotSame
+import kotlin.test.assertSame
+import kotlin.test.assertTrue
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.android.asCoroutineDispatcher
@@ -20,13 +27,6 @@ import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
-import org.junit.After
-import org.junit.Assert.assertNotNull
-import org.junit.Assert.assertNotSame
-import org.junit.Assert.assertSame
-import org.junit.Assert.assertTrue
-import org.junit.Before
-import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.kotlin.any
 import org.mockito.kotlin.doAnswer
@@ -42,7 +42,7 @@ class RequestCreatorTest {
     private lateinit var bitmap: Bitmap
     private lateinit var request: RequestCreator
 
-    @Before
+    @BeforeTest
     fun setup() {
         mainThread = HandlerThread("").apply { start() }
         Dispatchers.setMain(Handler(mainThread.looper).asCoroutineDispatcher())
@@ -51,7 +51,7 @@ class RequestCreatorTest {
         request = mock()
     }
 
-    @After
+    @AfterTest
     fun cleanup() {
         Dispatchers.resetMain()
         mainThread.quit()
@@ -77,7 +77,7 @@ class RequestCreatorTest {
     @Test
     fun testGetBitmapMainThreadUsage() = runTest {
         whenever(request.into(any<Target>())).thenAnswer {
-            assertSame("Not executing on the Main Thread", mainThread, Thread.currentThread())
+            assertSame(mainThread, Thread.currentThread(), "Not executing on the Main Thread")
             it.getArgument<Target>(0).onBitmapLoaded(bitmap, Picasso.LoadedFrom.DISK)
         }
 

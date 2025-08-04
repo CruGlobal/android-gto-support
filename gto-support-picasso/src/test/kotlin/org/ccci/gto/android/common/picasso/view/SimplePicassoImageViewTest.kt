@@ -4,10 +4,10 @@ import android.content.Context
 import android.util.AttributeSet
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertNull
 import org.ccci.gto.android.common.picasso.R
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertNull
-import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.Robolectric
 
