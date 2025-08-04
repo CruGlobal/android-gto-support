@@ -2,9 +2,9 @@ package org.ccci.gto.android.common.picasso.material
 
 import android.graphics.drawable.Drawable
 import com.google.android.material.chip.Chip
-import org.junit.Assert.assertSame
-import org.junit.Before
-import org.junit.Test
+import kotlin.test.BeforeTest
+import kotlin.test.Test
+import kotlin.test.assertSame
 import org.mockito.kotlin.any
 import org.mockito.kotlin.eq
 import org.mockito.kotlin.mock
@@ -17,7 +17,7 @@ class ChipIconTargetTest {
     private lateinit var target: ChipIconTarget
     private lateinit var drawable: Drawable
 
-    @Before
+    @BeforeTest
     fun setup() {
         chip = mock()
         target = ChipIconTarget.of(chip)

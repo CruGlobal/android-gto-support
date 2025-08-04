@@ -16,6 +16,7 @@ import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 import kotlin.test.assertNotNull
 import kotlinx.coroutines.Dispatchers
 import org.junit.runner.RunWith
@@ -60,11 +61,13 @@ class SharedPreferencesTokenStorageInternalsTest {
 
     class SharedPreferencesException : Exception()
 
-    @Test(expected = SharedPreferencesException::class)
+    @Test
     fun `getSharedPreferences() - Propagates Exceptions`() {
         val preferences = SharedPreferencesTokenStorageInternals.create(oidcClient, context, keySpec)
         every { MasterKeys.getOrCreate(any()) } throws SharedPreferencesException()
-        SharedPreferencesTokenStorageInternals.getSharedPreferences(preferences)
+        assertFailsWith<SharedPreferencesException> {
+            SharedPreferencesTokenStorageInternals.getSharedPreferences(preferences)
+        }
     }
     // endregion getSharedPreferences()
 }
