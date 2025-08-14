@@ -8,4 +8,5 @@ android {
 
 kotlin {
     configureIosTarget()
+    configureJsTarget()
 }
