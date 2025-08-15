@@ -2,6 +2,7 @@ package org.ccci.gto.android.common.kotlin.coroutines
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.os.Build
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import app.cash.turbine.test
@@ -17,6 +18,9 @@ import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.robolectric.annotation.Config
+import org.robolectric.annotation.Config.NEWEST_SDK
+import org.robolectric.annotation.Config.OLDEST_SDK
 
 private const val KEY = "key"
 private const val OTHER_KEY = "other"
@@ -51,6 +55,7 @@ class FlowSharedPreferencesTest {
     // endregion getChangeFlow()
 
     @Test
+    @Config(sdk = [OLDEST_SDK, Build.VERSION_CODES.Q, Build.VERSION_CODES.R, NEWEST_SDK])
     fun testGetBooleanFlow() = runTest {
         prefs.getBooleanFlow(KEY, false).test {
             assertFalse("Initially not set", awaitItem())
@@ -64,10 +69,18 @@ class FlowSharedPreferencesTest {
             expectNoEvents()
 
             prefs.edit().clear().apply()
-            assertFalse("Preferences cleared", awaitItem())
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                // On R and above, clearing prefs will trigger a callback
+                assertFalse("Preferences cleared", awaitItem())
+            } else {
+                // TODO: On Q and below, clearing prefs will not trigger a callback
+                //       This is a known issue with SharedPreferences on Q and below
+                //       see: https://stackoverflow.com/q/24262595
+                expectNoEvents()
+            }
 
             prefs.edit().putBoolean(KEY, true).apply()
-            awaitItem()
+            assertTrue(awaitItem())
             prefs.edit().putBoolean(KEY, false).apply()
             assertFalse("Toggled this pref to false", awaitItem())
         }
