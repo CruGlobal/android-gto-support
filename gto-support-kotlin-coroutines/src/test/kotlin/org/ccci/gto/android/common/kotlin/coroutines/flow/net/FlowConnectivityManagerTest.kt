@@ -3,7 +3,6 @@ package org.ccci.gto.android.common.kotlin.coroutines.flow.net
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkInfo
-import android.os.Build
 import androidx.core.content.getSystemService
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -16,9 +15,6 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.Shadows.shadowOf
-import org.robolectric.annotation.Config
-import org.robolectric.annotation.Config.NEWEST_SDK
-import org.robolectric.annotation.Config.OLDEST_SDK
 import org.robolectric.shadows.ShadowConnectivityManager
 import org.robolectric.shadows.ShadowNetworkInfo
 
@@ -35,7 +31,6 @@ class FlowConnectivityManagerTest {
     }
 
     @Test
-    @Config(sdk = [OLDEST_SDK, Build.VERSION_CODES.LOLLIPOP_MR1, Build.VERSION_CODES.M, NEWEST_SDK])
     fun `isConnectedFlow()`() = runTest {
         // start off disconnected
         shadowConnectivityManager.setActiveNetworkInfo(
