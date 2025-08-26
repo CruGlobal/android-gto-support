@@ -87,7 +87,7 @@ jsonUnit-assertj = { module = "net.javacrumbs.json-unit:json-unit-assertj", vers
 jsonUnit-fluent = { module = "net.javacrumbs.json-unit:json-unit-fluent", version.ref = "jsonUnit" }
 junit = { module = "junit:junit", version = "4.13.2" }
 junitParams = "pl.pragmatists:JUnitParams:1.1.1"
-kermit = "co.touchlab:kermit:2.0.6"
+kermit = "co.touchlab:kermit:2.0.8"
 kotlin-coroutines = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinCoroutines" }
 kotlin-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlinCoroutines" }
 kotlin-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinCoroutines" }
