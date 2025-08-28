@@ -17,6 +17,7 @@ kotlin {
         commonMain {
             dependencies {
                 api(libs.androidx.lifecycle.common)
+                implementation(libs.androidx.lifecycle.runtime)
 
                 // region Composables
                 compileOnly(compose.runtime)

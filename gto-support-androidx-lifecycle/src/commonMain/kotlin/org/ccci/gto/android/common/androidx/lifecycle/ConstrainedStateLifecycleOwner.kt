@@ -1,6 +1,5 @@
 package org.ccci.gto.android.common.androidx.lifecycle
 
-import android.annotation.SuppressLint
 import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
@@ -10,30 +9,32 @@ import androidx.lifecycle.LifecycleRegistry
 class ConstrainedStateLifecycleOwner private constructor(
     private val parent: Lifecycle,
     maxState: Lifecycle.State,
-    isUnsafe: Boolean,
+    useUnsafeLifecycleRegistry: Boolean,
 ) : LifecycleOwner {
     constructor(
         parent: LifecycleOwner,
         maxState: Lifecycle.State = Lifecycle.State.RESUMED,
-    ) : this(parent.lifecycle, maxState, false)
+    ) : this(parent.lifecycle, maxState, useUnsafeLifecycleRegistry = false)
 
     constructor(
         parent: Lifecycle,
         maxState: Lifecycle.State = Lifecycle.State.RESUMED,
-    ) : this(parent, maxState, false)
+    ) : this(parent, maxState, useUnsafeLifecycleRegistry = false)
 
     companion object {
         @VisibleForTesting
         fun createUnsafe(parent: LifecycleOwner, maxState: Lifecycle.State = Lifecycle.State.RESUMED) =
-            ConstrainedStateLifecycleOwner(parent.lifecycle, maxState, isUnsafe = true)
+            ConstrainedStateLifecycleOwner(parent.lifecycle, maxState, useUnsafeLifecycleRegistry = true)
 
         @VisibleForTesting
         fun createUnsafe(parent: Lifecycle, maxState: Lifecycle.State = Lifecycle.State.RESUMED) =
-            ConstrainedStateLifecycleOwner(parent, maxState, isUnsafe = true)
+            ConstrainedStateLifecycleOwner(parent, maxState, useUnsafeLifecycleRegistry = true)
     }
 
-    @SuppressLint("VisibleForTests")
-    private val registry = if (isUnsafe) LifecycleRegistry.createUnsafe(this) else LifecycleRegistry(this)
+    private val registry = when {
+        useUnsafeLifecycleRegistry -> LifecycleRegistry.createUnsafe(this)
+        else -> LifecycleRegistry(this)
+    }
     override val lifecycle = registry
 
     var maxState = maxState
