@@ -1,22 +1,16 @@
 package org.ccci.gto.android.common.androidx.lifecycle
 
-import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.testing.TestLifecycleOwner
-import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertContentEquals
 import kotlin.test.assertEquals
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
-import org.junit.Rule
 
 class ConstrainedStateLifecycleOwnerTest {
-    @get:Rule
-    val rule = InstantTaskExecutorRule()
-
     @OptIn(ExperimentalCoroutinesApi::class)
     private val parentLifecycleOwner = TestLifecycleOwner(Lifecycle.State.CREATED, UnconfinedTestDispatcher())
     private val lifecycleEvents = mutableListOf<Lifecycle.Event>()
@@ -26,12 +20,7 @@ class ConstrainedStateLifecycleOwnerTest {
         }
     }
 
-    private lateinit var lifecycleOwner: ConstrainedStateLifecycleOwner
-
-    @BeforeTest
-    fun setup() {
-        lifecycleOwner = ConstrainedStateLifecycleOwner(parentLifecycleOwner)
-    }
+    private val lifecycleOwner = ConstrainedStateLifecycleOwner.createUnsafe(parentLifecycleOwner)
 
     @Test
     fun verifyMaxStateIsObserved() {
