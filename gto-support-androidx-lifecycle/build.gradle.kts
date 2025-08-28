@@ -16,15 +16,23 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
+                api(libs.androidx.lifecycle.common)
+
                 // region Composables
                 compileOnly(compose.runtime)
                 // endregion Composables
             }
         }
 
+        commonTest {
+            dependencies {
+                implementation(libs.androidx.lifecycle.runtime.testing)
+                implementation(libs.kotlin.coroutines.test)
+            }
+        }
+
         androidMain {
             dependencies {
-                api(libs.androidx.lifecycle.common)
                 implementation(libs.androidx.lifecycle.common.java8)
                 implementation(libs.androidx.lifecycle.livedata)
                 implementation(libs.androidx.lifecycle.viewmodel)
@@ -49,9 +57,7 @@ kotlin {
             dependencies {
                 implementation(libs.androidx.arch.core.testing)
                 implementation(libs.androidx.core.ktx)
-                implementation(libs.androidx.lifecycle.runtime.testing)
                 implementation(libs.androidx.lifecycle.viewmodel.savedstate)
-                implementation(libs.kotlin.coroutines.test)
             }
         }
 
