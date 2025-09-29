@@ -1,14 +1,17 @@
-plugins {
-    id("gto-support.multiplatform-android-conventions")
-}
+import com.android.build.api.dsl.androidLibrary
 
-android {
-    namespace = "org.ccci.gto.android.common.fluidsonic.locale"
+plugins {
+    id("gto-support.multiplatform-conventions")
 }
 
 kotlin {
+    configureAndroidLibraryTarget()
     configureIosTarget()
     configureJsTarget()
+
+    androidLibrary {
+        namespace = "org.ccci.gto.android.common.fluidsonic.locale"
+    }
 
     sourceSets {
         commonMain {
