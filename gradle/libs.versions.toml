@@ -102,7 +102,7 @@ lottie = "com.airbnb.android:lottie:6.6.9"
 materialComponents = "com.google.android.material:material:1.13.0"
 mockito = "org.mockito:mockito-inline:5.2.0"
 mockito-kotlin = "org.mockito.kotlin:mockito-kotlin:6.1.0"
-mockk = "io.mockk:mockk:1.14.5"
+mockk = "io.mockk:mockk:1.14.6"
 moshi = { module = "com.squareup.moshi:moshi", version.ref = "moshi" }
 moshi-kotlin-codegen = { module = "com.squareup.moshi:moshi-kotlin-codegen", version.ref = "moshi" }
 okhttp3 = { module = "com.squareup.okhttp3:okhttp", version.ref = "okhttp3" }
