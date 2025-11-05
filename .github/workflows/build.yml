@@ -68,7 +68,7 @@ jobs:
         run: ./gradlew checkstyle --scan
       - name: Archive Checkstyle results
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: checkstyle-results
           path: "**/build/reports/checkstyle/"
@@ -96,7 +96,7 @@ jobs:
         run: ./gradlew :build-logic:ktlintCheck ktlintCheck --scan
       - name: Archive ktlint results
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: ktlint-results
           path: "**/build/reports/ktlint/"
@@ -124,7 +124,7 @@ jobs:
         run: ./gradlew lint --scan
       - name: Archive lint results
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: lint-results
           path: "**/build/reports/lint-results*.*"
@@ -172,13 +172,13 @@ jobs:
           verbose: true
       - name: Archive Unit Test results
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: android-unit-test-results-${{ matrix.testShard }}
           path: "**/build/reports/tests/"
       - name: Archive kover results
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: android-kover-results-${{ matrix.testShard }}
           path: "**/build/reports/kover/"
@@ -228,7 +228,7 @@ jobs:
         run: ./gradlew jsBrowserTest jsNodeTest --scan
       - name: Archive test results
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: js-unit-test-results
           path: "**/build/reports/tests/"
