@@ -2,6 +2,8 @@ import com.android.build.api.dsl.CommonExtension
 import com.android.build.gradle.BaseExtension
 import com.android.build.gradle.LibraryExtension
 import org.gradle.api.Project
+import org.gradle.api.tasks.testing.Test
+import org.gradle.kotlin.dsl.withType
 
 // TODO: provide Project using the new multiple context receivers functionality.
 //       this is prototyped in 1.6.20 and will probably reach beta in Kotlin 1.8 or 1.9
@@ -52,6 +54,11 @@ private fun BaseExtension.configureTestOptions(project: Project) {
                 it.maxHeapSize = "2g"
             }
         }
+    }
+
+    // not all projects actually have tests
+    project.tasks.withType<Test> {
+        failOnNoDiscoveredTests.set(false)
     }
 
     // Test Sharding
