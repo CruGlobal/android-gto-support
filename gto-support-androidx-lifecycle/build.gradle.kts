@@ -34,7 +34,6 @@ kotlin {
 
         androidMain {
             dependencies {
-                implementation(libs.androidx.lifecycle.common.java8)
                 implementation(libs.androidx.lifecycle.livedata)
                 implementation(libs.androidx.lifecycle.viewmodel)
 
