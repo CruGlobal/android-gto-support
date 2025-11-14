@@ -7,7 +7,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import org.ccci.gto.android.common.db.util.CursorUtils;
-import org.ccci.gto.android.common.util.database.CursorKt;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -57,28 +56,10 @@ public abstract class AbstractMapper<T> implements Mapper<T> {
         return CursorUtils.getEnum(c, field, clazz, defValue);
     }
 
-    /**
-     * @deprecated Since v3.6.2, use {@link CursorKt#getJSONArrayOrNull(Cursor, String)} instead.
-     */
-    @Nullable
-    @Deprecated
-    protected final JSONArray getJSONArray(@NonNull final Cursor c, @NonNull final String field) {
-        return CursorKt.getJSONArrayOrNull(c, field);
-    }
-
     @Nullable
     protected final JSONArray getJSONArray(@NonNull final Cursor c, @NonNull final String field,
                                            @Nullable final JSONArray defValue) {
         return CursorUtils.getJSONArray(c, field, defValue);
-    }
-
-    /**
-     * @deprecated Since v3.6.2, use {@link CursorKt#getJSONObjectOrNull(Cursor, String)} instead.
-     */
-    @Nullable
-    @Deprecated
-    protected final JSONObject getJSONObject(@NonNull final Cursor c, @NonNull final String field) {
-        return CursorKt.getJSONObjectOrNull(c, field);
     }
 
     @Nullable
