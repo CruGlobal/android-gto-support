@@ -6,8 +6,6 @@ import androidx.room.RoomDatabase
 import androidx.test.core.app.ApplicationProvider
 import java.util.concurrent.Executor
 import kotlin.coroutines.CoroutineContext
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.CoroutineScope
 import org.junit.rules.TestWatcher
 import org.junit.runner.Description
 
@@ -16,17 +14,6 @@ class RoomDatabaseRule<T : RoomDatabase>(
     private val coroutineContext: CoroutineContext? = null,
     private val queryExecutor: Executor? = null,
 ) : TestWatcher() {
-    @Deprecated("Since v4.4.0, pass a coroutineContext directly instead.")
-    constructor(dbClass: Class<T>, queryDispatcher: CoroutineDispatcher, coroutineScope: CoroutineScope) :
-        this(dbClass, coroutineScope.coroutineContext + queryDispatcher)
-
-    @Deprecated(
-        "Since v4.4.0, passing both a coroutineContext and a queryExecutor is not supported.",
-        level = DeprecationLevel.ERROR
-    )
-    constructor(dbClass: Class<T>, queryExecutor: Executor, coroutineScope: CoroutineScope) :
-        this(dbClass, coroutineScope.coroutineContext, queryExecutor)
-
     private var _db: T? = null
     val db: T get() = checkNotNull(_db)
 
