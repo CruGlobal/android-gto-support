@@ -1,21 +1,16 @@
-import com.android.build.gradle.LibraryExtension
-import org.gradle.api.Project
-import org.gradle.kotlin.dsl.configure
+import com.android.build.api.dsl.androidLibrary
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTargetWithTests
 import org.jetbrains.kotlin.gradle.plugin.mpp.TestExecutable
 
-// TODO: provide Project using the new multiple context receivers functionality.
-//       this is prototyped in 1.6.20 and will probably reach beta in Kotlin 1.8 or 1.9
-// context(Project)
-internal fun KotlinMultiplatformExtension.configureAndroidTarget(project: Project) {
-    androidTarget {
-        publishAllLibraryVariants()
-    }
+@Suppress("UnstableApiUsage")
+fun KotlinMultiplatformExtension.configureAndroidLibraryTarget() {
+    project.pluginManager.apply("com.android.kotlin.multiplatform.library")
 
-    project.extensions.configure<LibraryExtension> {
-        baseConfiguration(project)
+    androidLibrary {
+        compileSdk = project.libs.findVersion("android-sdk-compile").get().requiredVersion.toInt()
+        minSdk = project.libs.findVersion("android-sdk-min").get().requiredVersion.toInt()
     }
 }
 
