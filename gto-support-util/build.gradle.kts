@@ -15,4 +15,5 @@ dependencies {
     testImplementation(kotlin("test"))
     testImplementation(libs.json)
     testImplementation(libs.jsonUnit)
+    testImplementation(libs.junitParams)
 }

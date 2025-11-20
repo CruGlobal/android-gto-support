@@ -8,9 +8,7 @@ import org.ccci.gto.android.common.compat.util.LocaleCompat
 import org.ccci.gto.android.common.compat.util.LocaleCompat.Category
 import timber.log.Timber
 
-@JvmOverloads
-fun Double.formatCurrency(currency: String?, locale: Locale = LocaleCompat.getDefault(Category.FORMAT)) =
-    formatCurrency(currency?.toCurrencyOrNull(), locale)
+private const val TAG = "CurrencyUtils"
 
 fun Double.formatCurrency(
     currency: Currency? = null,
@@ -29,9 +27,13 @@ fun Double.formatCurrency(
     }
     .format(this)
 
+@JvmOverloads
+fun Double.formatCurrency(currency: String?, locale: Locale = LocaleCompat.getDefault(Category.FORMAT)) =
+    formatCurrency(currency?.toCurrencyOrNull(), locale)
+
 fun String.toCurrencyOrNull() = try {
     Currency.getInstance(this)
 } catch (e: IllegalArgumentException) {
-    Timber.tag("CurrencyUtils").e(e, "Unsupported currency: %s", this)
+    Timber.tag(TAG).e(e, "Unsupported currency: %s", this)
     null
 }
