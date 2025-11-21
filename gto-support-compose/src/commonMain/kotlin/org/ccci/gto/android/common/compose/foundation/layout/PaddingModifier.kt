@@ -1,11 +1,10 @@
-package org.ccci.gto.android.common.androidx.compose.foundation.layout
+package org.ccci.gto.android.common.compose.foundation.layout
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
-@Deprecated("Since v4.5.1, Use the multiplatform version instead.")
 fun Modifier.padding(
     all: Dp = 0.dp,
     horizontal: Dp = all,
