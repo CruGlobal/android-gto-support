@@ -4,4 +4,6 @@ plugins {
 
 dependencies {
     api(libs.moshi)
+
+    testImplementation(kotlin("test"))
 }
