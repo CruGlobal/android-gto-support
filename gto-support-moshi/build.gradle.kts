@@ -1,9 +1,9 @@
 plugins {
-    id("gto-support.android-conventions")
+    id("gto-support.java-conventions")
 }
-
-android.namespace = "org.ccci.gto.android.common.moshi"
 
 dependencies {
     api(libs.moshi)
+
+    testImplementation(kotlin("test"))
 }
