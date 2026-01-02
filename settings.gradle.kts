@@ -44,7 +44,6 @@ if (System.getenv("GITHUB_ACTIONS")?.toBoolean() == true) {
 includeBuild("build-logic")
 
 include("gto-support-androidx-activity")
-include("gto-support-androidx-annotation")
 include("gto-support-androidx-collection")
 include("gto-support-androidx-compose")
 include("gto-support-androidx-compose-material3")
