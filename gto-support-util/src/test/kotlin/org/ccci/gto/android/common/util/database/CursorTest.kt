@@ -27,7 +27,7 @@ class CursorTest {
     @Test
     fun verifyGetJSONArrayOrNull() {
         every { cursor.getString(VALID_INDEX) } returns "[\"a\", 1]"
-        assertThat(cursor.getJSONArrayOrNull(VALID), jsonEquals(JSONArray(listOf("a", 1))))
+        assertThat(cursor.getJSONArrayOrNull(VALID)!!, jsonEquals(JSONArray(listOf("a", 1))))
     }
 
     @Test
@@ -53,7 +53,7 @@ class CursorTest {
     @Test
     fun verifyGetJSONObjectOrNull() {
         every { cursor.getString(VALID_INDEX) } returns "{\"a\":1}"
-        assertThat(cursor.getJSONObjectOrNull(VALID), jsonEquals(JSONObject(mapOf("a" to 1))))
+        assertThat(cursor.getJSONObjectOrNull(VALID)!!, jsonEquals(JSONObject(mapOf("a" to 1))))
     }
 
     @Test
