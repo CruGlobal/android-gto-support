@@ -1,7 +1,7 @@
 package org.ccci.gto.android.common.scarlet.actioncable.model
 
 import com.squareup.moshi.Moshi
-import net.javacrumbs.jsonunit.fluent.JsonFluentAssert.assertThatJson
+import net.javacrumbs.jsonunit.assertj.assertThatJson
 import org.junit.Test
 
 class IdentifierTest {

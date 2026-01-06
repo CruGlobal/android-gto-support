@@ -2,7 +2,7 @@ package org.ccci.gto.android.common.scarlet.actioncable
 
 import com.tinder.scarlet.Message as ScarletMessage
 import com.tinder.scarlet.MessageAdapter
-import net.javacrumbs.jsonunit.fluent.JsonFluentAssert.assertThatJson
+import net.javacrumbs.jsonunit.assertj.assertThatJson
 import org.ccci.gto.android.common.scarlet.actioncable.model.ConfirmSubscription
 import org.ccci.gto.android.common.scarlet.actioncable.model.Message
 import org.ccci.gto.android.common.scarlet.actioncable.model.Subscribe

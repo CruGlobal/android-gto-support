@@ -22,7 +22,7 @@ dependencies {
 
     testImplementation(libs.json)
     testImplementation(libs.jsonUnit)
-    testImplementation(libs.jsonUnit.fluent)
+    testImplementation(libs.jsonUnit.assertj)
     testImplementation(libs.junitParams)
 
     ksp(libs.moshi.kotlin.codegen)

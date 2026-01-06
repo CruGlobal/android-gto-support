@@ -5,7 +5,7 @@ import com.tinder.scarlet.Message
 import com.tinder.scarlet.MessageAdapter
 import junitparams.JUnitParamsRunner
 import junitparams.Parameters
-import net.javacrumbs.jsonunit.fluent.JsonFluentAssert
+import net.javacrumbs.jsonunit.assertj.assertThatJson
 import org.json.JSONObject
 import org.junit.Assert
 import org.junit.Test
@@ -82,9 +82,9 @@ class ActionCableDataMessageAdapterTest : BaseActionCableMessageAdapterTest() {
             factory.create(CharSequence::class.java, arrayOf(actionCableAnnotation)) as MessageAdapter<CharSequence>
 
         val json = (adapter.toMessage("payload") as Message.Text).value
-        JsonFluentAssert.assertThatJson(json).node("command").isEqualTo("message")
-        JsonFluentAssert.assertThatJson(JSONObject(json).getString("identifier")).isEqualTo("""{channel:"valid"}""")
-        JsonFluentAssert.assertThatJson(json).node("data").isEqualTo("daolyap")
+        assertThatJson(json).node("command").isEqualTo("message")
+        assertThatJson(JSONObject(json).getString("identifier")).isEqualTo("""{channel:"valid"}""")
+        assertThatJson(json).node("data").isEqualTo("daolyap")
         verify(dataMessageAdapter).toMessage(eq("payload"))
     }
 
@@ -111,10 +111,10 @@ class ActionCableDataMessageAdapterTest : BaseActionCableMessageAdapterTest() {
             factory.create(CharSequence::class.java, arrayOf(actionCableAnnotation)) as MessageAdapter<CharSequence>
 
         val json = (adapter.toMessage("payload") as Message.Text).value
-        JsonFluentAssert.assertThatJson(json).node("command").isEqualTo("message")
-        JsonFluentAssert.assertThatJson(JSONObject(json).getString("identifier")).isEqualTo("""{channel:"valid"}""")
-        JsonFluentAssert.assertThatJson(json).node("data").isString()
-        JsonFluentAssert.assertThatJson(JSONObject(json).getString("data")).node("msg").isEqualTo("payload")
+        assertThatJson(json).node("command").isEqualTo("message")
+        assertThatJson(JSONObject(json).getString("identifier")).isEqualTo("""{channel:"valid"}""")
+        assertThatJson(json).node("data").isString()
+        assertThatJson(JSONObject(json).getString("data")).node("msg").isEqualTo("payload")
         verify(dataMessageAdapter).toMessage(eq("payload"))
     }
 
@@ -128,10 +128,10 @@ class ActionCableDataMessageAdapterTest : BaseActionCableMessageAdapterTest() {
         ) as MessageAdapter<CharSequence>
 
         val json = (adapter.toMessage("payload") as Message.Text).value
-        JsonFluentAssert.assertThatJson(json).node("command").isEqualTo("message")
-        JsonFluentAssert.assertThatJson(JSONObject(json).getString("identifier")).isEqualTo("""{channel:"valid"}""")
-        JsonFluentAssert.assertThatJson(json).node("data").isObject()
-        JsonFluentAssert.assertThatJson(json).node("data.msg").isEqualTo("payload")
+        assertThatJson(json).node("command").isEqualTo("message")
+        assertThatJson(JSONObject(json).getString("identifier")).isEqualTo("""{channel:"valid"}""")
+        assertThatJson(json).node("data").isObject()
+        assertThatJson(json).node("data.msg").isEqualTo("payload")
         verify(dataMessageAdapter).toMessage(eq("payload"))
     }
     // endregion toMessage()
