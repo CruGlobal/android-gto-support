@@ -1,7 +1,7 @@
 package org.ccci.gto.android.common.jsonapi
 
 import kotlin.test.Test
-import net.javacrumbs.jsonunit.fluent.JsonFluentAssert.assertThatJson
+import net.javacrumbs.jsonunit.assertj.assertThatJson
 import org.ccci.gto.android.common.jsonapi.JsonApiConverter.Options
 import org.ccci.gto.android.common.jsonapi.annotation.JsonApiType
 import org.ccci.gto.android.common.jsonapi.model.JsonApiObject
@@ -24,7 +24,7 @@ class JsonApiConverterCycleRelationshipTest {
         assertThatJson(json).node("data.id").isEqualTo(obj.id)
         assertThatJson(json).node("data.type").isEqualTo(ModelCycle.JSONAPI_TYPE)
         assertThatJson(json).node("data.relationships.cycle.data.id").isEqualTo(obj.cycle?.id)
-        assertThatJson(json).node("included").isAbsent
+        assertThatJson(json).node("included").isAbsent()
     }
 
     @Test
@@ -39,7 +39,7 @@ class JsonApiConverterCycleRelationshipTest {
         assertThatJson(json).node("data.id").isEqualTo(obj.id)
         assertThatJson(json).node("data.type").isEqualTo(ModelCycle.JSONAPI_TYPE)
         assertThatJson(json).node("data.relationships.cycle.data.id").isEqualTo(obj.cycle?.id)
-        assertThatJson(json).node("included").isArray.ofLength(1)
+        assertThatJson(json).node("included").isArray.hasSize(1)
         assertThatJson(json).node("included[0].id").isEqualTo(obj.cycle?.id)
         assertThatJson(json).node("included[0].type").isEqualTo(ModelCycle.JSONAPI_TYPE)
         assertThatJson(json).node("included[0].relationships.cycle.data.id").isEqualTo(obj.cycle?.cycle?.id)
@@ -57,7 +57,7 @@ class JsonApiConverterCycleRelationshipTest {
         assertThatJson(json).node("data.id").isEqualTo(obj.id)
         assertThatJson(json).node("data.type").isEqualTo(ModelCycle.JSONAPI_TYPE)
         assertThatJson(json).node("data.relationships.cycle.data.id").isEqualTo(obj.cycle?.id)
-        assertThatJson(json).node("included").isArray.ofLength(1)
+        assertThatJson(json).node("included").isArray.hasSize(1)
         assertThatJson(json).node("included[0].id").isEqualTo(obj.cycle?.id)
         assertThatJson(json).node("included[0].type").isEqualTo(ModelCycle.JSONAPI_TYPE)
         assertThatJson(json).node("included[0].relationships.cycle.data.id").isEqualTo(obj.cycle?.cycle?.id)
@@ -75,7 +75,7 @@ class JsonApiConverterCycleRelationshipTest {
         assertThatJson(json).node("data.id").isEqualTo(obj.id)
         assertThatJson(json).node("data.type").isEqualTo(ModelCycle.JSONAPI_TYPE)
         assertThatJson(json).node("data.relationships.cycle.data.id").isEqualTo(obj.cycle?.id)
-        assertThatJson(json).node("included").isArray.ofLength(1)
+        assertThatJson(json).node("included").isArray.hasSize(1)
         assertThatJson(json).node("included[0].id").isEqualTo(2)
         assertThatJson(json).node("included[0].type").isEqualTo(ModelCycle.JSONAPI_TYPE)
         assertThatJson(json).node("included[0].relationships.cycle.data.id").isEqualTo(obj.cycle?.cycle?.id)
@@ -89,14 +89,14 @@ class JsonApiConverterCycleRelationshipTest {
         val options = Options.builder().include("cycle.cycle").build()
 
         val json = converter.toJson(JsonApiObject.of(obj, obj.cycle!!), options)
-        assertThatJson(json).node("data").isArray.ofLength(2)
+        assertThatJson(json).node("data").isArray.hasSize(2)
         assertThatJson(json).node("data[0].id").isEqualTo(obj.id)
         assertThatJson(json).node("data[0].type").isEqualTo(ModelCycle.JSONAPI_TYPE)
         assertThatJson(json).node("data[0].relationships.cycle.data.id").isEqualTo(obj.cycle?.id)
         assertThatJson(json).node("data[1].id").isEqualTo(obj.cycle?.id)
         assertThatJson(json).node("data[1].type").isEqualTo(ModelCycle.JSONAPI_TYPE)
         assertThatJson(json).node("data[1].relationships.cycle.data.id").isEqualTo(obj.cycle?.cycle?.id)
-        assertThatJson(json).node("included").isAbsent
+        assertThatJson(json).node("included").isAbsent()
     }
 
     @JsonApiType(ModelCycle.JSONAPI_TYPE)

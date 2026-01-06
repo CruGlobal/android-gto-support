@@ -1,12 +1,10 @@
 package org.ccci.gto.android.common.jsonapi
 
 import kotlin.test.Test
-import net.javacrumbs.jsonunit.JsonMatchers.jsonEquals
-import net.javacrumbs.jsonunit.fluent.JsonFluentAssert.assertThatJson
+import net.javacrumbs.jsonunit.assertj.assertThatJson
 import org.ccci.gto.android.common.jsonapi.model.JsonApiObject
 import org.ccci.gto.android.common.jsonapi.model.ModelChild
 import org.ccci.gto.android.common.jsonapi.model.ModelParent
-import org.hamcrest.Matchers.containsInAnyOrder
 
 class JsonApiConverterSparseFieldsetTest {
     private val favorite = ModelChild(
@@ -41,12 +39,12 @@ class JsonApiConverterSparseFieldsetTest {
         val json = converter.toJson(JsonApiObject.single(parent), options)
         assertThatJson(json).node("data").isObject()
         assertThatJson(json).node("data.type").isEqualTo(ModelParent.TYPE)
-        assertThatJson(json).node("data.attributes").matches(jsonEquals<Any>("{name:'Padre'}"))
-        assertThatJson(json).node("data.attributes.favorite").isAbsent
-        assertThatJson(json).node("data.relationships.favorite").isAbsent
-        assertThatJson(json).node("data.attributes.children").isAbsent
-        assertThatJson(json).node("data.relationships.children").isAbsent
-        assertThatJson(json).node("included").isAbsent
+        assertThatJson(json).node("data.attributes").isEqualTo("{name:'Padre'}")
+        assertThatJson(json).node("data.attributes.favorite").isAbsent()
+        assertThatJson(json).node("data.relationships.favorite").isAbsent()
+        assertThatJson(json).node("data.attributes.children").isAbsent()
+        assertThatJson(json).node("data.relationships.children").isAbsent()
+        assertThatJson(json).node("included").isAbsent()
     }
 
     @Test
@@ -62,13 +60,12 @@ class JsonApiConverterSparseFieldsetTest {
         val json = converter.toJson(JsonApiObject.single(parent), options,)
         assertThatJson(json).node("data").isObject()
         assertThatJson(json).node("data.type").isEqualTo(ModelParent.TYPE)
-        assertThatJson(json).node("included").isArray.ofLength(2)
-        assertThatJson(json).node("included").matches(
-            containsInAnyOrder<Any>(
-                jsonEquals("{type:'child',id:11,attributes:{name:'Daniel'}}"),
-                jsonEquals("{type:'child',id:20,attributes:{name:'Hey You'}}"),
-            ),
-        )
+        assertThatJson(json).node("included").isArray
+            .hasSize(2)
+            .contains(
+                "{type:'child',id:11,attributes:{name:'Daniel'}}",
+                "{type:'child',id:20,attributes:{name:'Hey You'}}"
+            )
     }
 
     @Test
@@ -85,13 +82,13 @@ class JsonApiConverterSparseFieldsetTest {
         val json = converter.toJson(JsonApiObject.single(parent), options,)
         assertThatJson(json).node("data").isObject()
         assertThatJson(json).node("data.type").isEqualTo(ModelParent.TYPE)
-        assertThatJson(json).node("data.attributes").matches(jsonEquals<Any>("{name:'Padre'}"))
-        assertThatJson(json).node("data.attributes.favorite").isAbsent
+        assertThatJson(json).node("data.attributes").isEqualTo("{name:'Padre'}")
+        assertThatJson(json).node("data.attributes.favorite").isAbsent()
         assertThatJson(json).node("data.relationships.favorite").isPresent
-        assertThatJson(json).node("data.attributes.children").isAbsent
-        assertThatJson(json).node("data.relationships.children").isAbsent
-        assertThatJson(json).node("included").isArray.ofLength(1)
-        assertThatJson(json).node("included")
-            .matches(containsInAnyOrder(jsonEquals<Any>("{type:'child',id:11,attributes:{name:'Daniel'}}")))
+        assertThatJson(json).node("data.attributes.children").isAbsent()
+        assertThatJson(json).node("data.relationships.children").isAbsent()
+        assertThatJson(json).node("included").isArray
+            .hasSize(1)
+            .contains("{type:'child',id:11,attributes:{name:'Daniel'}}")
     }
 }

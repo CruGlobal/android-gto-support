@@ -4,7 +4,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 import net.javacrumbs.jsonunit.JsonMatchers.jsonPartEquals
-import net.javacrumbs.jsonunit.fluent.JsonFluentAssert.assertThatJson
+import net.javacrumbs.jsonunit.assertj.assertThatJson
 import org.ccci.gto.android.common.jsonapi.model.JsonApiError
 import org.ccci.gto.android.common.jsonapi.model.JsonApiObject
 import org.ccci.gto.android.common.jsonapi.model.ModelSimple
@@ -49,9 +49,9 @@ class JsonApiConverterErrorsTest {
         val converter = JsonApiConverter.Builder().addClasses(ModelSimple::class.java).build()
         val error = simpleError()
         val json = converter.toJson(JsonApiObject.error<Any>(error))
-        assertThatJson(json).node("data").isAbsent
+        assertThatJson(json).node("data").isAbsent()
         assertThatJson(json).node("errors").isPresent
-        assertThatJson(json).node("errors").isArray.ofLength(1)
+        assertThatJson(json).node("errors").isArray.hasSize(1)
         assertThat(json, jsonPartEquals("errors[0].detail", error.detail))
         assertThat(json, jsonPartEquals("errors[0].status", "\"${error.status}\""))
         assertThatJson(json).node("errors[0].code").isEqualTo("error_code")

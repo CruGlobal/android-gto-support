@@ -1,9 +1,9 @@
 package org.ccci.gto.android.common.jsonapi
 
 import net.javacrumbs.jsonunit.JsonMatchers
-import net.javacrumbs.jsonunit.core.Option.IGNORING_ARRAY_ORDER
+import net.javacrumbs.jsonunit.assertj.assertThatJson
+import net.javacrumbs.jsonunit.assertj.whenever
 import net.javacrumbs.jsonunit.core.Option.IGNORING_EXTRA_ARRAY_ITEMS
-import net.javacrumbs.jsonunit.fluent.JsonFluentAssert.assertThatJson
 import org.ccci.gto.android.common.jsonapi.annotation.JsonApiType
 import org.ccci.gto.android.common.jsonapi.model.JsonApiObject
 import org.ccci.gto.android.common.jsonapi.model.ModelBase
@@ -27,14 +27,14 @@ class JsonApiConverterNullAttributesTest {
         )
         assertThatJson(json).node("data").isObject()
         assertThat(json, JsonMatchers.jsonPartEquals("data.type", ModelParent.TYPE))
-        assertThatJson(json).node("data.attributes").isAbsent
-        assertThatJson(json).node("included").isArray.ofLength(2)
-        assertThatJson(json).node("included")
-            .`when`(IGNORING_EXTRA_ARRAY_ITEMS, IGNORING_ARRAY_ORDER)
-            .isEqualTo("[{type:'child',id:11,attributes:{name:'Daniel'}}]")
-        assertThatJson(json).node("included")
-            .`when`(IGNORING_EXTRA_ARRAY_ITEMS, IGNORING_ARRAY_ORDER)
-            .isEqualTo("[{type:'child',id:20,attributes:{name:null}}]")
+        assertThatJson(json).node("data.attributes").isAbsent()
+        assertThatJson(json).node("included").isArray.hasSize(2)
+        assertThatJson(json).whenever(IGNORING_EXTRA_ARRAY_ITEMS)
+            .node("included").isArray
+            .contains("{type:'child',id:11,attributes:{name:'Daniel'}}")
+        assertThatJson(json).whenever(IGNORING_EXTRA_ARRAY_ITEMS)
+            .node("included").isArray
+            .contains("{type:'child',id:20,attributes:{name:null}}")
     }
 
     private fun createObj(): ModelParent {

@@ -5,7 +5,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
-import net.javacrumbs.jsonunit.fluent.JsonFluentAssert.assertThatJson
+import net.javacrumbs.jsonunit.assertj.assertThatJson
 import org.ccci.gto.android.common.jsonapi.annotation.JsonApiType
 import org.ccci.gto.android.common.jsonapi.model.JsonApiObject
 import org.ccci.gto.android.common.jsonapi.model.ModelBase
@@ -23,8 +23,8 @@ class JsonApiConverterAttributeCollectionsTest {
         assertThatJson(json).node("data").isObject()
         assertThatJson(json).node("data.id").isEqualTo(obj.id)
         assertThatJson(json).node("data.type").isEqualTo(ModelCollectionAttribute.TYPE)
-        assertThatJson(json).node("data.attributes.stringSet").isAbsent
-        assertThatJson(json).node("data.attributes.integerList").isAbsent
+        assertThatJson(json).node("data.attributes.stringSet").isAbsent()
+        assertThatJson(json).node("data.attributes.integerList").isAbsent()
     }
 
     @Test
@@ -39,8 +39,8 @@ class JsonApiConverterAttributeCollectionsTest {
         assertThatJson(json).node("data").isObject()
         assertThatJson(json).node("data.id").isEqualTo(obj.id)
         assertThatJson(json).node("data.type").isEqualTo(ModelCollectionAttribute.TYPE)
-        assertThatJson(json).node("data.attributes.stringSet").isArray.ofLength(0)
-        assertThatJson(json).node("data.attributes.integerList").isArray.ofLength(0)
+        assertThatJson(json).node("data.attributes.stringSet").isArray.hasSize(0)
+        assertThatJson(json).node("data.attributes.integerList").isArray.hasSize(0)
     }
 
     @Test
@@ -55,14 +55,10 @@ class JsonApiConverterAttributeCollectionsTest {
         assertThatJson(json).node("data").isObject()
         assertThatJson(json).node("data.id").isEqualTo(obj.id)
         assertThatJson(json).node("data.type").isEqualTo(ModelCollectionAttribute.TYPE)
-        assertThatJson(json).node("data.attributes.integerList").isArray.ofLength(3)
-            .thatContains(1)
-            .thatContains(2)
-            .thatContains(3)
-        assertThatJson(json).node("data.attributes.stringSet").isArray.ofLength(3)
-            .thatContains("a")
-            .thatContains("b")
-            .thatContains("c")
+        assertThatJson(json).node("data.attributes.integerList").isArray.hasSize(3)
+            .contains(1, 2, 3)
+        assertThatJson(json).node("data.attributes.stringSet").isArray.hasSize(3)
+            .contains("a", "b", "c")
     }
 
     @Test
