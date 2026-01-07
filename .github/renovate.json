@@ -8,13 +8,13 @@
   "dependencyDashboard": true,
   "packageRules": [
     {
-      "groupName": "Kotlin and KSP",
-      "description": "KSP is tightly coupled to Kotlin version.",
+      "groupName": "Kotlin and IR codegen plugins",
+      "description": "Kotlin IR plugins are tightly coupled to Kotlin version.",
       "matchPackageNames": [
         "org.jetbrains.kotlin:kotlin{/,}**",
         "org.jetbrains.kotlin.plugin.compose{/,}**",
         "org.jetbrains.kotlin.plugin.serialization{/,}**",
-        "com.google.devtools.ksp{/,}**"
+        "dev.zacsweers.moshix{/,}**"
       ]
     }
   ]
