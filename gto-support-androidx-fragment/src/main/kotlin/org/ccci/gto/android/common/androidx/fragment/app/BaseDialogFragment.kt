@@ -51,11 +51,10 @@ abstract class BaseDialogFragment : DialogFragment() {
     // region DialogLifecycleOwner
     private var _dialogLifecycleOwner: FragmentDialogLifecycleOwner? = null
     val dialogLifecycleOwner: LifecycleOwner
-        get() = _dialogLifecycleOwner
-            ?: throw IllegalStateException(
-                "Can't access the Fragment Dialog's LifecycleOwner when getDialog() is null " +
-                    "i.e., before onCreateDialog() or after onDestroyView()"
-            )
+        get() = checkNotNull(_dialogLifecycleOwner) {
+            "Can't access the Fragment Dialog's LifecycleOwner when getDialog() is null " +
+                "i.e., before onCreateDialog() or after onDestroyView()"
+        }
 
     private fun initializeDialogLifecycleOwner() {
         when {
