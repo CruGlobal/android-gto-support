@@ -1,11 +1,15 @@
 plugins {
     id("gto-support.android-conventions")
-    alias(libs.plugins.ksp)
+    alias(libs.plugins.moshiX)
 }
 
 android {
     namespace = "org.ccci.gto.android.common.scarlet.actioncable"
     defaultConfig.consumerProguardFiles("proguard-consumer.pro")
+}
+
+moshi {
+    applyMoshiDependency.set(false)
 }
 
 dependencies {
@@ -24,6 +28,4 @@ dependencies {
     testImplementation(libs.jsonUnit)
     testImplementation(libs.jsonUnit.assertj)
     testImplementation(libs.junitParams)
-
-    ksp(libs.moshi.kotlin.codegen)
 }
