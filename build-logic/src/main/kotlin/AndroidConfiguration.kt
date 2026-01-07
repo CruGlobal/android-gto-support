@@ -25,12 +25,18 @@ private fun BaseExtension.configureSdk() {
 }
 
 private fun Project.configureCommonDependencies() {
-    // HACK: sync kotlin-metadata-jvm version for Dagger
-    //       This works around dagger/hilt depending on an older version when upgrading to Kotlin 2.3.0.
-    //       This can be removed when Dagger/Hilt is upgraded and the the build completes successfully without this
-    //       override.
     configurations.configureEach {
-        resolutionStrategy.force(versionCatalog.findLibrary("kotlin-metadata-jvm").get())
+        resolutionStrategy {
+            // HACK: force androidx-annotation version for several modules
+            //       known modules requiring the forced version: androidx-constraintlayout, androidx-core
+            force(versionCatalog.findLibrary("androidx-annotation").get())
+
+            // HACK: force kotlin-metadata-jvm version for Dagger
+            //       This works around dagger/hilt depending on an older version when upgrading to Kotlin 2.3.0.
+            //       This can be removed when Dagger/Hilt is upgraded and the the build completes successfully without
+            //       this override.
+            force(versionCatalog.findLibrary("kotlin-metadata-jvm").get())
+        }
     }
 }
 
