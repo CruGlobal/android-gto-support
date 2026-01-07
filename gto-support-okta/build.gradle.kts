@@ -27,13 +27,6 @@ dependencies {
     testImplementation(libs.androidx.datastore)
     // endregion DataStoreTokenStorage
 
-    // import legacy okta-oidc module. this transitive dependency will be removed over the next several releases of gto-support
-    // v3.14.0 - api dependency
-    // v4.2.0 - implementation dependency
-    // v4.3.0 - removed
-    implementation(project(":gto-support-okta-oidc"))
-    testFixturesImplementation(testFixtures(project(":gto-support-okta-oidc")))
-
     testImplementation(libs.kotlin.coroutines.test)
     testImplementation(libs.turbine)
 }
