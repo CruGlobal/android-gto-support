@@ -5,7 +5,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
-import net.javacrumbs.jsonunit.fluent.JsonFluentAssert.assertThatJson
+import net.javacrumbs.jsonunit.assertj.assertThatJson
 import org.ccci.gto.android.common.jsonapi.annotation.JsonApiType
 import org.ccci.gto.android.common.jsonapi.model.JsonApiObject
 import org.ccci.gto.android.common.jsonapi.model.ModelBase
@@ -27,8 +27,8 @@ class JsonApiConverterJSONObjectTest {
         assertThatJson(json).node("data").isObject()
         assertThatJson(json).node("data.id").isEqualTo(obj.id)
         assertThatJson(json).node("data.type").isEqualTo(ModelJSONObject.TYPE)
-        assertThatJson(json).node("data.attributes.jsonObject").isAbsent
-        assertThatJson(json).node("data.attributes.jsonArray").isAbsent
+        assertThatJson(json).node("data.attributes.jsonObject").isAbsent()
+        assertThatJson(json).node("data.attributes.jsonArray").isAbsent()
     }
 
     @Test
@@ -46,7 +46,7 @@ class JsonApiConverterJSONObjectTest {
         assertThatJson(json).node("data.type").isEqualTo(ModelJSONObject.TYPE)
         assertThatJson(json).node("data.attributes.jsonObject").isObject()
         assertThatJson(json).node("data.attributes.jsonObject").isEqualTo("{}")
-        assertThatJson(json).node("data.attributes.jsonArray").isArray.ofLength(0)
+        assertThatJson(json).node("data.attributes.jsonArray").isArray.hasSize(0)
     }
 
     @Test
