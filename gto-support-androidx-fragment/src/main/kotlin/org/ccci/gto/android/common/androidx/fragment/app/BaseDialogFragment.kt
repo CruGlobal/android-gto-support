@@ -59,8 +59,10 @@ abstract class BaseDialogFragment : DialogFragment() {
     private fun initializeDialogLifecycleOwner() {
         when {
             dialog != null -> _dialogLifecycleOwner!!.initialize()
+
             _dialogLifecycleOwner!!.isInitialized ->
                 throw IllegalStateException("Called getDialogLifecycleOwner() but onCreateDialog() returned null")
+
             else -> _dialogLifecycleOwner = null
         }
     }

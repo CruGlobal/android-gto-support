@@ -145,7 +145,9 @@ sealed class Expression : Parcelable {
                     strValue != null -> QueryComponent("?", strValue)
                     else -> QueryComponent("NULL")
                 }
+
                 numValue != null -> QueryComponent("?", numValue.toString())
+
                 else -> QueryComponent("?", strValue.orEmpty())
             }
         }
@@ -212,8 +214,10 @@ sealed class Expression : Parcelable {
 
         override fun binaryExpr(op: String, expression: Expression) = when {
             this.op != op -> super.binaryExpr(op, expression)
+
             // chain binary expressions together when possible
             op == AND || op == OR -> Binary(op, *exprs.toTypedArray(), expression)
+
             else -> super.binaryExpr(op, expression)
         }
 
@@ -226,6 +230,7 @@ sealed class Expression : Parcelable {
                     exprs[0].buildSql(dao) + " $op (" + exprs.subList(1, exprs.size)
                         .joinToQueryComponent(",") { it.buildSql(dao) } + ")"
                 }
+
                 else -> exprs.joinToQueryComponent(" $op ") { it.buildSql(dao) }
             } + ")"
             sql = query

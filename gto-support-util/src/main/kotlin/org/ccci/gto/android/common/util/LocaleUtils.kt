@@ -52,6 +52,8 @@ object LocaleUtils {
                 return generateSequence {
                     val currentLocale = builder.buildOrNull() ?: return@generateSequence null
                     val directFallback = FIXED_FALLBACKS[currentLocale.toLanguageTag()]
+
+                    @Suppress("ktlint:standard:blank-line-between-when-conditions")
                     when {
                         directFallback != null -> {
                             val fallbackLocale = Locale.forLanguageTag(directFallback)
@@ -78,8 +80,10 @@ object LocaleUtils {
                 when {
                     // fixed fallback
                     fixed != null -> ULocale.forLanguageTag(fixed)
+
                     // remove extensions as the fallback if any are defined
                     it.extensionKeys.isNotEmpty() -> ULocale.Builder().setLocale(it).clearExtensions().build()
+
                     // use normal fallback behavior
                     else -> it.fallback.takeUnless { it == ULocale.ROOT }
                 }

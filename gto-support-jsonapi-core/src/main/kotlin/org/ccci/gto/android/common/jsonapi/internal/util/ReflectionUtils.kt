@@ -10,6 +10,7 @@ import java.lang.reflect.WildcardType
 internal object ReflectionUtils {
     // logic copied from retrofit2.Utils.getRawType and converted to Kotlin
     @JvmStatic
+    @Suppress("ktlint:standard:blank-line-between-when-conditions")
     fun getRawType(type: Type?): Class<*> = when (type) {
         null -> error("type == null")
         // Type is a normal class.
@@ -21,7 +22,6 @@ internal object ReflectionUtils {
             require(rawType is Class<*>) { "Unsupported ParameterizedType: $type" }
             rawType
         }
-
         is GenericArrayType -> Array.newInstance(getRawType(type.genericComponentType), 0).javaClass
         // We could use the variable's bounds, but that won't work if there are multiple. Having a raw
         // type that's more general than necessary is okay.

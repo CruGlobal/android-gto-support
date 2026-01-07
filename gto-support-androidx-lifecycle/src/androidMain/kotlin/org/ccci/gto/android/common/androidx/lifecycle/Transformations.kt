@@ -336,10 +336,11 @@ inline fun <T, R> LiveData<out Iterable<T>>.switchFold(
  * Transform a LiveData to return an initial value before it has had a chance to resolve it's actual value.
  * This shouldn't be used with [MutableLiveData] which already has a mechanism to define an initial value.
  */
-fun <T> LiveData<T>.withInitialValue(value: T) = when {
+fun <T> LiveData<T>.withInitialValue(value: T): LiveData<T> {
     // short-circuit if the LiveData has already loaded an initial value
-    isInitialized -> this
-    else -> MediatorLiveData<T>().also {
+    if (isInitialized) return this
+
+    return MediatorLiveData<T>().also {
         it.value = value
         it.addSource(this) { value -> it.value = value }
     }

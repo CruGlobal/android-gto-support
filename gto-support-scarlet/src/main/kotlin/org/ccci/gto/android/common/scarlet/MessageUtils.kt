@@ -7,6 +7,7 @@ import okio.ByteString.Companion.toByteString
 private val UTF8_BOM = "EFBBBF".decodeHex()
 val Message.stringValue get() = when (this) {
     is Message.Text -> value
+
     is Message.Bytes -> {
         val byteString = value.toByteString(0, value.size)
 

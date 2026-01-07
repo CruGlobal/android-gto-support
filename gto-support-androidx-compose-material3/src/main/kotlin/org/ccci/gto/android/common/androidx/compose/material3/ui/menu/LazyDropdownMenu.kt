@@ -1,4 +1,8 @@
-@file:Suppress("ktlint:standard:property-naming")
+@file:Suppress(
+    "ktlint:standard:blank-line-between-when-conditions",
+    "ktlint:standard:indent",
+    "ktlint:standard:property-naming",
+)
 
 package org.ccci.gto.android.common.androidx.compose.material3.ui.menu
 

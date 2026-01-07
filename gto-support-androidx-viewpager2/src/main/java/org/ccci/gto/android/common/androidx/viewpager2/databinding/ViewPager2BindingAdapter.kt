@@ -12,6 +12,7 @@ private const val ON_PAGE_SELECTED = "onPageSelected"
 internal fun ViewPager2.setOnPageChangeCallback(scrolled: OnPageScrolled?, selected: OnPageSelected?) {
     val newValue = when {
         scrolled == null && selected == null -> null
+
         else -> object : ViewPager2.OnPageChangeCallback() {
             override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
                 scrolled?.onPageScrolled(position, positionOffset, positionOffsetPixels)

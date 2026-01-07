@@ -16,6 +16,7 @@ fun EventBus.register(
             lifecycleOwner.lifecycle.onStart { register(subscriber) }
             lifecycleOwner.lifecycle.onStop { unregister(subscriber) }
         }
+
         else -> TODO("This state is not supported yet")
     }
 }

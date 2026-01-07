@@ -8,7 +8,7 @@ import android.os.Parcelable
 import org.ccci.gto.android.common.compat.os.getParcelableArrayCompat
 
 // region equalsBundle()
-@Suppress("DEPRECATION")
+@Suppress("DEPRECATION", "ktlint:standard:blank-line-between-when-conditions")
 @JvmName("bundleEquals")
 infix fun Bundle?.equalsBundle(other: Bundle?) = when {
     this === other -> true

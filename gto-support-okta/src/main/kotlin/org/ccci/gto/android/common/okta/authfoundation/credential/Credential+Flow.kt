@@ -90,6 +90,7 @@ private suspend fun Credential.loadUserInfo() = when (val result = getUserInfo()
         )
         result.result
     }
+
     is OidcClientResult.Error -> {
         // TODO: should we do something with errors here?
         null

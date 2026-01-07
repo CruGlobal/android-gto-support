@@ -1,7 +1,3 @@
-/**
- * Copied from https://github.com/google/accompanist/blob/main/pager-indicators/src/main/java/com/google/accompanist/pager/PagerTab.kt
- * and updated to support material3 TabRow
- */
 package org.ccci.gto.android.common.androidx.compose.material3.ui.tabs
 
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -12,6 +8,10 @@ import androidx.compose.ui.layout.layout
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.lerp
 
+/**
+ * Copied from https://github.com/google/accompanist/blob/main/pager-indicators/src/main/java/com/google/accompanist/pager/PagerTab.kt
+ * and updated to support material3 TabRow
+ */
 @ExperimentalFoundationApi
 fun Modifier.pagerTabIndicatorOffset(
     pagerState: PagerState,

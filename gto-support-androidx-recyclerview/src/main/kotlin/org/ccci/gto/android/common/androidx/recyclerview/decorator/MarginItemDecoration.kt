@@ -26,6 +26,7 @@ class MarginItemDecoration(
                 outRect.left = endMargin ?: leftMargin
                 outRect.right = startMargin ?: rightMargin
             }
+
             else -> {
                 outRect.left = startMargin ?: leftMargin
                 outRect.right = endMargin ?: rightMargin

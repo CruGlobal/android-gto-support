@@ -35,6 +35,7 @@ abstract class BindingFragment<B : ViewBinding> protected constructor(@LayoutRes
         contentLayoutId != 0 ->
             @Suppress("UNCHECKED_CAST")
             DataBindingUtil.inflate<ViewDataBinding>(inflater, contentLayoutId, container, false) as? B
+
         else -> null
     }
 

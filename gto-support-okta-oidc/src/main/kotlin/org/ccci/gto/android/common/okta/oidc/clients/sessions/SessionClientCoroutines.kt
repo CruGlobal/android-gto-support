@@ -32,6 +32,7 @@ suspend fun SessionClient.refreshToken(): Tokens = suspendCoroutine { cont ->
         override fun onError(error: String?, exception: AuthorizationException) {
             when {
                 exception == TokenRequestErrors.INVALID_GRANT -> clear()
+
                 exception.type == AuthorizationException.TYPE_OAUTH_TOKEN_ERROR -> Timber.tag(TAG)
                     .e(exception, "Unhandled OAUTH_TOKEN_ERROR for refreshToken()")
             }

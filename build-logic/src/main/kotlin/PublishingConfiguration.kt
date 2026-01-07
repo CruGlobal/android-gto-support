@@ -20,6 +20,7 @@ internal fun Project.configurePublishing() {
                     when {
                         isSnapshotVersion ->
                             "https://cruglobal.jfrog.io/cruglobal/list/maven-cru-android-public-snapshots-local/"
+
                         else -> "https://cruglobal.jfrog.io/cruglobal/list/maven-cru-android-public-releases-local/"
                     }
                 )
