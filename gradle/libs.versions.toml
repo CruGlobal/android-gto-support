@@ -15,7 +15,7 @@ dagger = "2.57.2"
 hamcrest = "2.2"
 jsonUnit = "5.1.0"
 jvm = "17"
-kotlin = "2.2.21"
+kotlin = "2.3.0"
 kotlinCoroutines = "1.10.2"
 ktlint = "1.8.0"
 ktlintGradle = "14.0.1"
@@ -92,6 +92,7 @@ kotlin-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines
 kotlin-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinCoroutines" }
 kotlin-gradle = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
 kotlin-kover-gradlePlugin = "org.jetbrains.kotlinx:kover-gradle-plugin:0.9.4"
+kotlin-metadata-jvm = { module = "org.jetbrains.kotlin:kotlin-metadata-jvm", version.ref = "kotlin" }
 kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "kotlin" }
 ktlint-gradle = { module = "org.jlleitschuh.gradle:ktlint-gradle", version.ref = "ktlintGradle"}
 ktlint-rules-compose = "io.nlopez.compose.rules:ktlint:0.5.3"
@@ -141,4 +142,4 @@ dagger-hilt = { id = "com.google.dagger.hilt.android", version.ref = "dagger" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 ksp = { id = "com.google.devtools.ksp", version = "2.2.20-2.0.3" }
 ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlintGradle" }
-moshiX = { id = "dev.zacsweers.moshix", version = "0.34.0"}
+moshiX = { id = "dev.zacsweers.moshix", version = "0.34.1"}

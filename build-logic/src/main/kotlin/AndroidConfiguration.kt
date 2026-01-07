@@ -12,6 +12,7 @@ internal fun LibraryExtension.baseConfiguration(project: Project) {
     configureSdk()
     configureProguardRules(project)
     configureTestOptions(project)
+    project.configureCommonDependencies()
 }
 
 private fun BaseExtension.configureSdk() {
@@ -20,6 +21,16 @@ private fun BaseExtension.configureSdk() {
     defaultConfig {
         minSdk = 23
         targetSdk = 36
+    }
+}
+
+private fun Project.configureCommonDependencies() {
+    // HACK: sync kotlin-metadata-jvm version for Dagger
+    //       This works around dagger/hilt depending on an older version when upgrading to Kotlin 2.3.0.
+    //       This can be removed when Dagger/Hilt is upgraded and the the build completes successfully without this
+    //       override.
+    configurations.configureEach {
+        resolutionStrategy.force(libs.findLibrary("kotlin-metadata-jvm").get())
     }
 }
 
