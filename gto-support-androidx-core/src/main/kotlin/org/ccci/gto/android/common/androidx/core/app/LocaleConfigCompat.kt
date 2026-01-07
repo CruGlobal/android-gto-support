@@ -1,12 +1,12 @@
 package org.ccci.gto.android.common.androidx.core.app
 
-import android.annotation.TargetApi
 import android.app.LocaleConfig
 import android.content.Context
 import android.content.pm.PackageManager
 import android.content.res.Resources
 import android.content.res.XmlResourceParser
 import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.core.os.LocaleListCompat
 import java.io.IOException
 import java.util.Locale
@@ -70,7 +70,7 @@ private open class BaseLocaleConfigCompatMethods : LocaleConfigCompatMethods {
     }
 }
 
-@TargetApi(Build.VERSION_CODES.TIRAMISU)
+@RequiresApi(Build.VERSION_CODES.TIRAMISU)
 private class TiramisuLocaleConfigCompatMethods : BaseLocaleConfigCompatMethods() {
     override fun getSupportedLocales(context: Context) =
         LocaleConfig(context).supportedLocales?.let { LocaleListCompat.wrap(it) }
