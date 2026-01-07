@@ -25,12 +25,14 @@ class ActionCableMessageAdapterFactory private constructor(
     override fun create(type: Type, annotations: Array<Annotation>): MessageAdapter<*> = when (type.getRawType()) {
         Subscribe::class.java, ConfirmSubscription::class.java, Unsubscribe::class.java ->
             moshiMessageAdapterFactory.create(type, annotations)
+
         Message::class.java -> {
             require(type is ParameterizedType && !type.hasUnresolvableType()) {
                 "ActionCable Message type requires a resolvable ParameterizedType"
             }
             MessageMessageAdapter(findMessageAdapter(type.getParameterUpperBound(0), annotations), moshi, annotations)
         }
+
         else -> {
             annotations.actionCableMessage ?: error("Type is not supported by this MessageAdapterFactory: $type")
             DataMessageAdapter(findMessageAdapter(type, annotations), moshi, annotations)

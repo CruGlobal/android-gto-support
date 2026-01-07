@@ -15,10 +15,12 @@ import org.ccci.gto.android.common.util.os.toTypedArray
 
 fun Context.localize(vararg locales: Locale, includeExisting: Boolean = true): Context = when {
     locales.isEmpty() -> this
+
     Build.VERSION.SDK_INT < Build.VERSION_CODES.N -> when (val first = locales.first()) {
         resources.configuration.locale -> this
         else -> createConfigurationContext(Configuration().apply { setLocale(first) })
     }
+
     else -> when (
         val newLocales = LocaleList(
             *LinkedHashSet<Locale>().apply {

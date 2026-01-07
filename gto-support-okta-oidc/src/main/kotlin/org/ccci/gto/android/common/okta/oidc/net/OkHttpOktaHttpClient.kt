@@ -24,12 +24,14 @@ class OkHttpOktaHttpClient(okhttp: OkHttpClient = OkHttpClient()) : OktaHttpClie
             .apply {
                 when (param.requestMethod()) {
                     ConnectionParameters.RequestMethod.GET -> get()
+
                     ConnectionParameters.RequestMethod.POST -> {
                         val body = FormBody.Builder()
                             .apply { param.postParameters().orEmpty().forEach { add(it.key, it.value) } }
                             .build()
                         post(body)
                     }
+
                     null -> error("requestMethod should never be null")
                 }
             }

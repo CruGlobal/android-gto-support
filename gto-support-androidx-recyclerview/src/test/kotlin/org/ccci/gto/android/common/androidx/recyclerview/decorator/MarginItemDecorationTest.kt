@@ -116,10 +116,12 @@ class MarginItemDecorationTest {
                     assertEquals(start, it.left)
                     assertEquals(end, it.right)
                 }
+
                 LAYOUT_DIRECTION_RTL -> {
                     assertEquals(end, it.left)
                     assertEquals(start, it.right)
                 }
+
                 else -> fail()
             }
         }

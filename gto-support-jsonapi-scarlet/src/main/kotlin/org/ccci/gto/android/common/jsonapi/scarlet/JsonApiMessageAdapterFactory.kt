@@ -20,6 +20,7 @@ class JsonApiMessageAdapterFactory(private val jsonApi: JsonApiConverter) : Mess
                 }
                 JsonApiObjectMessageAdapter(type.getParameterUpperBound(0).getRawType())
             }
+
             else -> {
                 if (jsonApi.supports(raw)) {
                     ObjectMessageAdapter(raw)

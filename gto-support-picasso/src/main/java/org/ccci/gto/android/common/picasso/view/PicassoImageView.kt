@@ -195,11 +195,13 @@ interface PicassoImageView {
                         update.onlyScaleDown()
                         update.centerCrop()
                     }
+
                 ScaleType.CENTER_INSIDE, ScaleType.FIT_CENTER, ScaleType.FIT_START, ScaleType.FIT_END -> {
                     update.resize(size.width, size.height)
                     update.onlyScaleDown()
                     update.centerInside()
                 }
+
                 else -> update.transform(ScaleTransformation(size.width, size.height))
             }
         }

@@ -34,9 +34,11 @@ abstract class BindingBottomSheetDialogFragment<B : ViewBinding>(@LayoutRes priv
         container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): B? = when {
-        contentLayoutId != INVALID_LAYOUT_RES ->
+        contentLayoutId != INVALID_LAYOUT_RES -> {
             @Suppress("UNCHECKED_CAST")
             DataBindingUtil.inflate<ViewDataBinding>(inflater, contentLayoutId, container, false) as? B
+        }
+
         else -> null
     }
 

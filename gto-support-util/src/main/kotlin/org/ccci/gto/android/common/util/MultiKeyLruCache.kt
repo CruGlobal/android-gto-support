@@ -44,6 +44,7 @@ open class MultiKeyLruCache<K, V : Any>(maxSize: Int) : LruCache<K, V>(maxSize) 
                     sizeGap = (sizeGap - sizeOf(key, value).coerceAtLeast(0)).coerceAtLeast(0)
                     copies[value] = count
                 }
+
                 else -> copies.remove(value)
             }
         }

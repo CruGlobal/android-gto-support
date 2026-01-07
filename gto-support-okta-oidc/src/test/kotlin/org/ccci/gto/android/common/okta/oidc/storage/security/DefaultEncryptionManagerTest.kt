@@ -28,6 +28,7 @@ class DefaultEncryptionManagerTest {
                         "Failed generate keys.",
                         IllegalArgumentException("invalid date string: Unparseable date: \"g``a`a``````GMT+00:00\"")
                     )
+
                     else -> manager
                 }
             }

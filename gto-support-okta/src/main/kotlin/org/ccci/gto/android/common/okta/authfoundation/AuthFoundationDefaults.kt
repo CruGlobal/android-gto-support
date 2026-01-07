@@ -10,5 +10,6 @@ fun AuthFoundationDefaults.enableClockCompat() = when {
     Build.VERSION.SDK_INT < Build.VERSION_CODES.O -> {
         clock = OidcClock { System.currentTimeMillis() / 1000 }
     }
+
     else -> Unit
 }

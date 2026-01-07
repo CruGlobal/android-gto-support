@@ -35,6 +35,7 @@ fun AppBarActionButton(action: AppBarAction, onClick: () -> Unit, modifier: Modi
         action.iconRes != null -> IconButton(onClick = onClick, modifier = modifier) {
             Icon(painterResource(action.iconRes), contentDescription = title)
         }
+
         title != null -> {
             val style = MaterialTheme.typography.labelLarge
             val titleWidth = computeWidthForSingleLineOfText(title, style).coerceAtLeast(40.dp)

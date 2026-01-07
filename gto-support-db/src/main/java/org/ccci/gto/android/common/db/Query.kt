@@ -52,12 +52,15 @@ data class Query<T : Any> private constructor(
     internal fun buildSqlHaving(dao: AbstractDao) = having?.buildSql(dao)
 
     internal val sqlLimit get() = when {
-        // // XXX: not supported by Android
-        // // "{limit} OFFSET {offset}" syntax
-        // limit != null && offset != null -> "$limit OFFSET $offset"
-        // "{offset},{limit}" syntax
+//         // XXX: not supported by Android
+//         // "{limit} OFFSET {offset}" syntax
+//         limit != null && offset != null -> "$limit OFFSET $offset"
+
+        // "{offset}, {limit}" syntax
         limit != null && offset != null -> "$offset, $limit"
+
         limit != null -> "$limit"
+
         else -> null
     }
 }

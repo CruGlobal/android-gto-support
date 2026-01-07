@@ -52,6 +52,7 @@ private open class BaseLocaleConfigCompatMethods : LocaleConfigCompatMethods {
                 Timber.tag(TAG).e(it, "Error loading locales specified by '$METADATA_LOCALE_CONFIG' meta-data")
                 null
             }
+
             else -> throw it
         }
     }

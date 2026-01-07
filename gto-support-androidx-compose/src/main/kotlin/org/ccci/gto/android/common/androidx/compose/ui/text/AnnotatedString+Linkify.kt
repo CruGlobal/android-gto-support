@@ -32,12 +32,10 @@ fun String.addLinks(
 @Deprecated("Since v4.2.3, use addLinks() instead.")
 fun AnnotatedString.addUriAnnotations(@LinkifyMask mask: Int, linkStyle: SpanStyle?): AnnotatedString {
     val (spannable, spans) = getUrlSpans(this, mask)
-    return when {
-        spans.isEmpty() -> this
-        else -> buildAnnotatedString {
-            append(this@addUriAnnotations)
-            addUrlSpans(spannable, spans, linkStyle)
-        }
+    if (spans.isEmpty()) return this
+    return buildAnnotatedString {
+        append(this@addUriAnnotations)
+        addUrlSpans(spannable, spans, linkStyle)
     }
 }
 
@@ -47,12 +45,10 @@ fun AnnotatedString.addLinks(
     linkInteractionListener: LinkInteractionListener? = null,
 ): AnnotatedString {
     val (spannable, spans) = getUrlSpans(this, mask)
-    return when {
-        spans.isEmpty() -> this
-        else -> buildAnnotatedString {
-            append(this@addLinks)
-            addLinks(spannable, spans, styles, linkInteractionListener)
-        }
+    if (spans.isEmpty()) return this
+    return buildAnnotatedString {
+        append(this@addLinks)
+        addLinks(spannable, spans, styles, linkInteractionListener)
     }
 }
 
