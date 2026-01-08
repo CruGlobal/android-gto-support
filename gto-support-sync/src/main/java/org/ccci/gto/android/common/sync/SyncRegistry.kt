@@ -5,6 +5,7 @@ import java.util.concurrent.atomic.AtomicInteger
 
 private const val INITIAL_SYNC_ID = 1
 
+@Deprecated("Since v4.5.1, we no longer use this module in any of our apps")
 object SyncRegistry {
     private val syncsRunning = SparseBooleanArray()
     private val nextSyncId = AtomicInteger(INITIAL_SYNC_ID)

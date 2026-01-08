@@ -96,7 +96,6 @@ include("gto-support-recyclerview-advrecyclerview")
 include("gto-support-retrofit2")
 include("gto-support-scarlet")
 include("gto-support-scarlet-actioncable")
-include("gto-support-sync")
 include("gto-support-util")
 include("gto-support-viewpager")
 
@@ -107,3 +106,4 @@ include("testing:gto-support-timber")
 // deprecated modules
 include("gto-support-androidx-annotation")
 include("gto-support-androidx-drawerlayout")
+include("gto-support-sync")
