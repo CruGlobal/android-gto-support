@@ -11,6 +11,7 @@ import org.ccci.gto.android.common.sync.SyncTask
 
 private const val EXTRA_ACTIVE_SYNCS = "org.ccci.gto.android.common.sync.SwipeRefreshSyncHelper.ACTIVE_SYNCS"
 
+@Deprecated("Since v4.5.1, we no longer use this module in any of our apps")
 class SwipeRefreshSyncHelper {
     private val activeSyncIds = LongSparseBooleanArray()
 

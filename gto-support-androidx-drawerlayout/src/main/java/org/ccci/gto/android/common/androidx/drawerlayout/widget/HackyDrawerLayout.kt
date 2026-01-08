@@ -8,6 +8,7 @@ import androidx.drawerlayout.R
 import androidx.drawerlayout.widget.DrawerLayout
 import org.ccci.gto.android.common.util.view.ViewUtils
 
+@Deprecated("Since v4.5.1, use Compose for building UIs")
 class HackyDrawerLayout @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,

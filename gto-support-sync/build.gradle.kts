@@ -1,3 +1,5 @@
+// Deprecated since v4.5.1, we no longer use this module in any of our apps
+
 plugins {
     id("gto-support.android-conventions")
 }
