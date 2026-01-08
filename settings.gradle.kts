@@ -44,14 +44,12 @@ if (System.getenv("GITHUB_ACTIONS")?.toBoolean() == true) {
 includeBuild("build-logic")
 
 include("gto-support-androidx-activity")
-include("gto-support-androidx-annotation")
 include("gto-support-androidx-collection")
 include("gto-support-androidx-compose")
 include("gto-support-androidx-compose-material3")
 include("gto-support-androidx-constraintlayout")
 include("gto-support-androidx-core")
 include("gto-support-androidx-databinding")
-include("gto-support-androidx-drawerlayout")
 include("gto-support-androidx-fragment")
 include("gto-support-androidx-lifecycle")
 include("gto-support-androidx-recyclerview")
@@ -105,3 +103,7 @@ include("gto-support-viewpager")
 include("testing:gto-support-dagger")
 include("testing:gto-support-picasso")
 include("testing:gto-support-timber")
+
+// deprecated modules
+include("gto-support-androidx-annotation")
+include("gto-support-androidx-drawerlayout")
