@@ -1,6 +1,6 @@
 package org.ccci.gto.android.common.compose.foundation
 
-import androidx.compose.foundation.ScrollState
+import androidx.compose.foundation.gestures.ScrollableState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -16,17 +16,17 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun Modifier.verticalFadingEdgeEffect(scrollState: ScrollState, fade: Dp = 16.dp) =
-    verticalFadingEdgeEffect(scrollState = scrollState, fadeTop = fade, fadeBottom = fade)
+fun Modifier.verticalFadingEdgeEffect(scrollableState: ScrollableState, fade: Dp = 16.dp) =
+    verticalFadingEdgeEffect(scrollableState = scrollableState, fadeTop = fade, fadeBottom = fade)
 
 @Composable
 fun Modifier.verticalFadingEdgeEffect(
-    scrollState: ScrollState,
+    scrollableState: ScrollableState,
     fadeTop: Dp = 16.dp,
     fadeBottom: Dp = 16.dp,
 ): Modifier {
-    val showTopFade by remember { derivedStateOf { fadeTop > 0.dp && scrollState.value > 0 } }
-    val showBottomFade by remember { derivedStateOf { fadeBottom > 0.dp && scrollState.value < scrollState.maxValue } }
+    val showTopFade by remember { derivedStateOf { fadeTop > 0.dp && scrollableState.canScrollBackward } }
+    val showBottomFade by remember { derivedStateOf { fadeBottom > 0.dp && scrollableState.canScrollForward } }
 
     return graphicsLayer(compositingStrategy = CompositingStrategy.Offscreen)
         .drawWithContent {
