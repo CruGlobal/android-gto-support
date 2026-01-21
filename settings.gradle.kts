@@ -96,6 +96,7 @@ include("gto-support-recyclerview-advrecyclerview")
 include("gto-support-retrofit2")
 include("gto-support-scarlet")
 include("gto-support-scarlet-actioncable")
+include("gto-support-turbine")
 include("gto-support-util")
 include("gto-support-viewpager")
 
