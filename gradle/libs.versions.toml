@@ -142,4 +142,4 @@ dagger-hilt = { id = "com.google.dagger.hilt.android", version.ref = "dagger" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 ksp = { id = "com.google.devtools.ksp", version = "2.3.4" }
 ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlintGradle" }
-moshiX = { id = "dev.zacsweers.moshix", version = "0.34.2"}
+moshiX = { id = "dev.zacsweers.moshix", version = "0.34.3"}
