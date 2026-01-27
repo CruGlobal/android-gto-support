@@ -1,15 +1,18 @@
+import com.android.build.api.dsl.androidLibrary
+
 plugins {
-    id("gto-support.multiplatform-android-conventions")
+    id("gto-support.multiplatform-conventions")
     alias(libs.plugins.compose)
     alias(libs.plugins.compose.compiler)
 }
 
-android {
-    namespace = "org.ccci.gto.android.common.compose"
-}
-
 kotlin {
+    configureAndroidLibraryTarget()
     configureIosTarget()
+
+    androidLibrary {
+        namespace = "org.ccci.gto.android.common.compose"
+    }
 
     sourceSets {
         commonMain {
