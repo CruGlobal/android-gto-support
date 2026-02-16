@@ -1,6 +1,5 @@
 import com.android.build.api.dsl.CommonExtension
 import com.android.build.gradle.BaseExtension
-import com.android.build.gradle.LibraryExtension
 import org.gradle.api.Project
 import org.gradle.api.tasks.testing.Test
 import org.gradle.kotlin.dsl.withType
@@ -8,19 +7,19 @@ import org.gradle.kotlin.dsl.withType
 // TODO: provide Project using the new multiple context receivers functionality.
 //       this is prototyped in 1.6.20 and will probably reach beta in Kotlin 1.8 or 1.9
 // context(Project)
-internal fun LibraryExtension.baseConfiguration(project: Project) {
-    configureSdk()
+internal fun BaseExtension.baseConfiguration(project: Project) {
+    configureSdk(project)
     configureProguardRules(project)
     configureTestOptions(project)
     project.configureCommonDependencies()
 }
 
-private fun BaseExtension.configureSdk() {
-    compileSdkVersion(36)
+private fun BaseExtension.configureSdk(project: Project) {
+    compileSdkVersion(project.libs.findVersion("android-sdk-compile").get().requiredVersion.toInt())
 
     defaultConfig {
-        minSdk = 23
-        targetSdk = 36
+        minSdk = project.libs.findVersion("android-sdk-min").get().requiredVersion.toInt()
+        targetSdk = project.libs.findVersion("android-sdk-compile").get().requiredVersion.toInt()
     }
 }
 

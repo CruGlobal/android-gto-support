@@ -1,18 +1,21 @@
-plugins {
-    id("gto-support.multiplatform-android-conventions")
-}
+import com.android.build.api.dsl.androidLibrary
 
-android {
-    namespace = "org.ccci.gto.support.androidx.test.junit"
+plugins {
+    id("gto-support.multiplatform-conventions")
 }
 
 kotlin {
+    configureAndroidLibraryTarget()
     configureIosTarget()
     configureJsTarget()
     configureJvmTarget()
 
+    androidLibrary {
+        namespace = "org.ccci.gto.support.androidx.test.junit"
+    }
+
     sourceSets {
-        val androidMain by getting {
+        androidMain {
             dependencies {
                 api(libs.androidx.test.junit)
             }

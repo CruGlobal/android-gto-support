@@ -4,5 +4,11 @@ plugins {
 }
 
 kotlin {
-    configureAndroidTarget(project)
+    androidTarget {
+        publishAllLibraryVariants()
+    }
+}
+
+android {
+    baseConfiguration(project)
 }

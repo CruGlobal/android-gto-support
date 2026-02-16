@@ -1,8 +1,8 @@
 import org.gradle.api.Project
 import org.gradle.jvm.toolchain.JavaLanguageVersion
-import org.jetbrains.kotlin.gradle.dsl.KotlinTopLevelExtension
+import org.jetbrains.kotlin.gradle.dsl.KotlinBaseExtension
 
-fun KotlinTopLevelExtension.configureJvmToolchain(project: Project) {
+fun KotlinBaseExtension.configureJvmToolchain(project: Project) {
     jvmToolchain {
         languageVersion.set(JavaLanguageVersion.of(project.libs.findVersion("jvm").get().requiredVersion))
     }

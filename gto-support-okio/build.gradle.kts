@@ -1,13 +1,16 @@
-plugins {
-    id("gto-support.multiplatform-android-conventions")
-}
+import com.android.build.api.dsl.androidLibrary
 
-android {
-    namespace = "org.ccci.gto.android.common.okio"
+plugins {
+    id("gto-support.multiplatform-conventions")
 }
 
 kotlin {
+    configureAndroidLibraryTarget()
     configureIosTarget()
+
+    androidLibrary {
+        namespace = "org.ccci.gto.android.common.okio"
+    }
 
     sourceSets {
         commonMain {
