@@ -1,6 +1,7 @@
 [versions]
 accompanist = "0.36.0"
 android-gradle-plugin = "8.13.2"
+androidx-activity = "1.12.4"
 androidx-arch-core = "2.2.0"
 androidx-collection = "1.5.0"
 androidx-compose = "1.10.3"
@@ -28,7 +29,8 @@ scarlet = "0.1.12"
 accompanist-pager = { module = "com.google.accompanist:accompanist-pager", version.ref = "accompanist" }
 advancedrecyclerview = { module = "com.h6ah4i.android.widget.advrecyclerview:advrecyclerview", version = "1.0.0" }
 android-gradle = { module = "com.android.tools.build:gradle", version.ref = "android-gradle-plugin" }
-androidx-activity = "androidx.activity:activity:1.12.4"
+androidx-activity = { module = "androidx.activity:activity", version.ref = "androidx-activity" }
+androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activity" }
 androidx-annotation = "androidx.annotation:annotation:1.9.1"
 androidx-appcompat = "androidx.appcompat:appcompat:1.7.1"
 androidx-arch-core-runtime = { module = "androidx.arch.core:core-runtime", version.ref = "androidx-arch-core" }
