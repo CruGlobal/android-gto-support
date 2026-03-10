@@ -7,6 +7,8 @@ android {
 }
 
 kotlin {
+    configureIosTarget()
+
     sourceSets {
         commonMain {
             dependencies {
