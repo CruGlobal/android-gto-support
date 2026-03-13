@@ -1,5 +1,6 @@
 plugins {
     id("gto-support.multiplatform-android-conventions")
+    alias(libs.plugins.compose.compiler)
 }
 
 android {
@@ -14,6 +15,10 @@ kotlin {
             dependencies {
                 implementation(libs.kermit)
                 implementation(libs.kotlin.coroutines)
+
+                // region Composables
+                compileOnly(libs.compose.runtime)
+                // endregion Composables
             }
         }
 
@@ -27,8 +32,16 @@ kotlin {
             }
         }
 
+        nativeMain {
+            dependencies {
+                // HACK: compileOnly dependencies aren't supported on Kotlin/Native, so promote them to implementation
+                implementation(libs.compose.runtime)
+            }
+        }
+
         commonTest {
             dependencies {
+                implementation(libs.compose.runtime)
                 implementation(libs.kotlin.coroutines.test)
                 implementation(libs.turbine)
             }
