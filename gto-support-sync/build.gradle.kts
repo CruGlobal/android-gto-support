@@ -1,5 +1,3 @@
-// Deprecated since v4.5.1, we no longer use this module in any of our apps
-
 plugins {
     id("gto-support.multiplatform-android-conventions")
 }
@@ -12,6 +10,13 @@ kotlin {
     configureIosTarget()
 
     sourceSets {
+        commonMain {
+            dependencies {
+                implementation(libs.kermit)
+                implementation(libs.kotlin.coroutines)
+            }
+        }
+
         androidMain {
             dependencies {
                 api(project(":gto-support-core"))
@@ -19,6 +24,13 @@ kotlin {
                 implementation(project(":gto-support-compat"))
 
                 compileOnly(libs.androidx.swiperefreshlayout)
+            }
+        }
+
+        commonTest {
+            dependencies {
+                implementation(libs.kotlin.coroutines.test)
+                implementation(libs.turbine)
             }
         }
     }
