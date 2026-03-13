@@ -1,6 +1,5 @@
 plugins {
     id("gto-support.multiplatform-android-conventions")
-    alias(libs.plugins.compose)
     alias(libs.plugins.compose.compiler)
 }
 
@@ -20,7 +19,7 @@ kotlin {
                 implementation(libs.androidx.lifecycle.runtime)
 
                 // region Composables
-                compileOnly(compose.runtime)
+                compileOnly(libs.compose.runtime)
                 // endregion Composables
             }
         }
@@ -64,7 +63,7 @@ kotlin {
         nativeMain {
             dependencies {
                 // HACK: compileOnly dependencies aren't supported on Kotlin/Native, so promote them to implementation
-                implementation(compose.runtime)
+                implementation(libs.compose.runtime)
             }
         }
     }

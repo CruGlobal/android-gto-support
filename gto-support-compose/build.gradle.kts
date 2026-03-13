@@ -1,6 +1,5 @@
 plugins {
     id("gto-support.multiplatform-android-conventions")
-    alias(libs.plugins.compose)
     alias(libs.plugins.compose.compiler)
 }
 
@@ -14,8 +13,8 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
-                implementation(compose.foundation)
-                implementation(compose.ui)
+                implementation(libs.compose.foundation)
+                implementation(libs.compose.ui)
             }
         }
     }

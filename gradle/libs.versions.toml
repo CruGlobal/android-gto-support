@@ -74,6 +74,9 @@ androidx-viewpager = { module = "androidx.viewpager:viewpager", version = "1.1.0
 androidx-viewpager2 = { module = "androidx.viewpager2:viewpager2", version = "1.1.0" }
 androidx-work-runtime = { module = "androidx.work:work-runtime", version = "2.11.1" }
 circuit-overlay = { module = "com.slack.circuit:circuit-overlay", version.ref = "circuit" }
+compose-foundation = "org.jetbrains.compose.foundation:foundation:1.10.2"
+compose-runtime = "org.jetbrains.compose.runtime:runtime:1.10.2"
+compose-ui = "org.jetbrains.compose.ui:ui:1.10.2"
 dagger = { module = "com.google.dagger:dagger", version.ref = "dagger" }
 dagger-compiler = { module = "com.google.dagger:dagger-compiler", version.ref = "dagger" }
 dagger-hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "dagger" }
@@ -138,7 +141,6 @@ ktlint-rulesets = ["ktlint-rules-compose"]
 okhttp3-mockwebserver = ["okhttp3-mockwebserver", "okhttp3-tls"]
 
 [plugins]
-compose = { id = "org.jetbrains.compose", version = "1.10.2" }
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 dagger-hilt = { id = "com.google.dagger.hilt.android", version.ref = "dagger" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }

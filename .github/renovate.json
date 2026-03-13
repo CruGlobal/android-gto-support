@@ -8,6 +8,13 @@
   "dependencyDashboard": true,
   "packageRules": [
     {
+      "groupName": "Compose Multiplatform",
+      "matchPackageNames": [
+        "org.jetbrains.compose:{/,}**",
+        "org.jetbrains.compose.*:{/,}**"
+      ]
+    },
+    {
       "groupName": "Kotlin and IR codegen plugins",
       "description": "Kotlin IR plugins are tightly coupled to Kotlin version.",
       "matchPackageNames": [
