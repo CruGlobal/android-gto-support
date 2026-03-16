@@ -16,7 +16,7 @@ dagger = "2.58"
 hamcrest = "2.2"
 jsonUnit = "5.1.1"
 jvm = "17"
-kotlin = "2.3.10"
+kotlin = "2.3.20"
 kotlinCoroutines = "1.10.2"
 ktlint = "1.8.0"
 ktlintGradle = "14.0.1"
@@ -146,4 +146,4 @@ dagger-hilt = { id = "com.google.dagger.hilt.android", version.ref = "dagger" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 ksp = { id = "com.google.devtools.ksp", version = "2.3.6" }
 ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlintGradle" }
-moshiX = { id = "dev.zacsweers.moshix", version = "0.34.5"}
+moshiX = { id = "dev.zacsweers.moshix", version = "0.35.0"}
