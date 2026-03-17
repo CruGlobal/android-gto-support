@@ -8,7 +8,7 @@ import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.getByType
 import org.jlleitschuh.gradle.ktlint.KtlintExtension
 
-internal val Project.libs get() = project.extensions.getByType<VersionCatalogsExtension>().named("libs")
+internal val Project.versionCatalog get() = project.extensions.getByType<VersionCatalogsExtension>().named("libs")
 
 internal val Project.android: LibraryExtension get() = extensions.getByType()
 internal val Project.androidComponents

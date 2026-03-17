@@ -4,6 +4,6 @@ import org.jetbrains.kotlin.gradle.dsl.KotlinTopLevelExtension
 
 fun KotlinTopLevelExtension.configureJvmToolchain(project: Project) {
     jvmToolchain {
-        languageVersion.set(JavaLanguageVersion.of(project.libs.findVersion("jvm").get().requiredVersion))
+        languageVersion.set(JavaLanguageVersion.of(project.versionCatalog.findVersion("jvm").get().requiredVersion))
     }
 }

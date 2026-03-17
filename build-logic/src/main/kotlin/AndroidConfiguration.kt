@@ -30,7 +30,7 @@ private fun Project.configureCommonDependencies() {
     //       This can be removed when Dagger/Hilt is upgraded and the the build completes successfully without this
     //       override.
     configurations.configureEach {
-        resolutionStrategy.force(libs.findLibrary("kotlin-metadata-jvm").get())
+        resolutionStrategy.force(versionCatalog.findLibrary("kotlin-metadata-jvm").get())
     }
 }
 
@@ -47,11 +47,11 @@ fun CommonExtension<*, *, *, *, *, *>.configureCompose(project: Project) {
 
     project.dependencies.apply {
         // the runtime dependency is required to build a library when compose is enabled
-        addProvider("implementation", project.libs.findLibrary("androidx-compose-runtime").get())
+        addProvider("implementation", project.versionCatalog.findLibrary("androidx-compose-runtime").get())
 
         // these dependencies are required for tests of Composables
-        addProvider("debugImplementation", project.libs.findBundle("androidx-compose-debug").get())
-        addProvider("testDebugImplementation", project.libs.findBundle("androidx-compose-testing").get())
+        addProvider("debugImplementation", project.versionCatalog.findBundle("androidx-compose-debug").get())
+        addProvider("testDebugImplementation", project.versionCatalog.findBundle("androidx-compose-testing").get())
     }
 }
 
