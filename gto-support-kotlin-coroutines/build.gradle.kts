@@ -1,23 +1,47 @@
 plugins {
-    id("gto-support.android-conventions")
+    id("gto-support.multiplatform-android-conventions")
 }
 
-android.namespace = "org.ccci.gto.android.common.kotlin.coroutines"
+android {
+    namespace = "org.ccci.gto.android.common.kotlin.coroutines"
+}
 
-dependencies {
-    api(libs.kotlin.coroutines)
+kotlin {
+    configureIosTarget()
 
-    // region ConnectivityManager extensions
-    compileOnly(libs.androidx.core.ktx)
-    testImplementation(libs.androidx.core.ktx)
-    // endregion ConnectivityManager extensions
+    sourceSets {
+        commonMain {
+            dependencies {
+                api(libs.kotlin.coroutines)
+                implementation(libs.androidx.annotation)
+            }
+        }
 
-    // region LiveData extensions
-    compileOnly(libs.androidx.lifecycle.livedata.core)
-    // endregion LiveData extensions
+        commonTest {
+            dependencies {
+                implementation(libs.kotlin.coroutines.test)
+                implementation(libs.turbine)
+            }
+        }
 
-    testImplementation(libs.androidx.arch.core.testing)
-    testImplementation(libs.androidx.lifecycle.livedata.core)
-    testImplementation(libs.kotlin.coroutines.test)
-    testImplementation(libs.turbine)
+        androidMain {
+            dependencies {
+                // region ConnectivityManager extensions
+                compileOnly(libs.androidx.core.ktx)
+                // endregion ConnectivityManager extensions
+
+                // region LiveData extensions
+                compileOnly(libs.androidx.lifecycle.livedata.core)
+                // endregion LiveData extensions
+            }
+        }
+
+        androidUnitTest {
+            dependencies {
+                implementation(libs.androidx.core.ktx)
+                implementation(libs.androidx.arch.core.testing)
+                implementation(libs.androidx.lifecycle.livedata.core)
+            }
+        }
+    }
 }
