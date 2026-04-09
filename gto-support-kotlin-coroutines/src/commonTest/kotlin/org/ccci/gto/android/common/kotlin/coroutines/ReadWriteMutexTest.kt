@@ -7,8 +7,10 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
+import kotlin.time.Duration.Companion.seconds
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.IO
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
@@ -133,21 +135,19 @@ class ReadWriteMutexTest {
         finish(7)
     }
 
-    @Test(expected = IllegalStateException::class)
-    fun testReadLockTooManyTimes() {
-        runTest {
-            (mutex as ReadWriteMutexImpl).readers.store(Long.MAX_VALUE)
-            mutex.read.lock()
-        }
+    @Test
+    fun testReadLockTooManyTimes() = runTest {
+        (mutex as ReadWriteMutexImpl).readers.store(Long.MAX_VALUE)
+        assertFailsWith<IllegalStateException> { mutex.read.lock() }
     }
 
-    @Test(expected = IllegalStateException::class)
+    @Test
     fun testInvalidReadUnlock() {
-        mutex.read.unlock()
+        assertFailsWith<IllegalStateException> { mutex.read.unlock() }
     }
 
-    @Test(timeout = 10000)
-    fun `GT-1423 - readUnlock causes deadlock from runBlocking usage`() = runTest {
+    @Test
+    fun `GT-1423 - readUnlock causes deadlock from runBlocking usage`() = runTest(timeout = 10.seconds) {
         mutex.write.lock()
 
         launch(Dispatchers.Unconfined) {
@@ -174,9 +174,9 @@ class ReadWriteMutexTest {
     @Test
     fun `GT-1440 - race condition with owner between unlocking and locking the read lock`() = runTest {
         withContext(Dispatchers.IO) {
-            repeat(2) {
+            repeat(100) {
                 launch {
-                    repeat(40000) {
+                    repeat(1000) {
                         mutex.read.lock()
                         yield()
                         mutex.read.unlock()

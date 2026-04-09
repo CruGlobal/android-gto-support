@@ -13,6 +13,7 @@ kotlin {
         commonMain {
             dependencies {
                 api(libs.kotlin.coroutines)
+                implementation(libs.androidx.annotation)
             }
         }
 
