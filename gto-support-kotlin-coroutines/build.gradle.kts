@@ -16,6 +16,12 @@ kotlin {
             }
         }
 
+        commonTest {
+            dependencies {
+                implementation(libs.kotlin.coroutines.test)
+            }
+        }
+
         androidMain {
             dependencies {
                 // region ConnectivityManager extensions
@@ -33,7 +39,6 @@ kotlin {
                 implementation(libs.androidx.core.ktx)
                 implementation(libs.androidx.arch.core.testing)
                 implementation(libs.androidx.lifecycle.livedata.core)
-                implementation(libs.kotlin.coroutines.test)
                 implementation(libs.turbine)
             }
         }
