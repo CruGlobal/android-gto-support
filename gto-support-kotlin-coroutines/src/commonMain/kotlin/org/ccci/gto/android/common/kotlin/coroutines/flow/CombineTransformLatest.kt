@@ -16,7 +16,7 @@ import kotlinx.coroutines.flow.transformLatest
 fun <T1, T2, R> combineTransformLatest(
     flow: Flow<T1>,
     flow2: Flow<T2>,
-    @BuilderInference transform: suspend FlowCollector<R>.(T1, T2) -> Unit
+    transform: suspend FlowCollector<R>.(T1, T2) -> Unit
 ): Flow<R> = combineTransformLatest(flow, flow2) { args ->
     @Suppress("UNCHECKED_CAST")
     transform(
@@ -30,7 +30,7 @@ fun <T1, T2, T3, R> combineTransformLatest(
     flow: Flow<T1>,
     flow2: Flow<T2>,
     flow3: Flow<T3>,
-    @BuilderInference transform: suspend FlowCollector<R>.(T1, T2, T3) -> Unit
+    transform: suspend FlowCollector<R>.(T1, T2, T3) -> Unit
 ): Flow<R> = combineTransformLatest(flow, flow2, flow3) { args ->
     @Suppress("UNCHECKED_CAST")
     transform(
@@ -45,11 +45,11 @@ fun <T1, T2, T3, R> combineTransformLatest(
 @OptIn(ExperimentalTypeInference::class)
 fun <T1, T2, R> Flow<T1>.combineTransformLatest(
     flow2: Flow<T2>,
-    @BuilderInference transform: suspend FlowCollector<R>.(T1, T2) -> Unit
+    transform: suspend FlowCollector<R>.(T1, T2) -> Unit
 ): Flow<R> = combineTransformLatest(this, flow2, transform)
 
 @OptIn(ExperimentalCoroutinesApi::class, ExperimentalTypeInference::class)
 inline fun <reified T, R> combineTransformLatest(
     vararg flows: Flow<T>,
-    @BuilderInference noinline transform: suspend FlowCollector<R>.(Array<T>) -> Unit
+    noinline transform: suspend FlowCollector<R>.(Array<T>) -> Unit
 ): Flow<R> = combine(*flows) { it }.transformLatest(transform)
