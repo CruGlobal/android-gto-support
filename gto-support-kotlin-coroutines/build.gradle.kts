@@ -10,10 +10,14 @@ kotlin {
     configureIosTarget()
 
     sourceSets {
-        androidMain {
+        commonMain {
             dependencies {
                 api(libs.kotlin.coroutines)
+            }
+        }
 
+        androidMain {
+            dependencies {
                 // region ConnectivityManager extensions
                 compileOnly(libs.androidx.core.ktx)
                 // endregion ConnectivityManager extensions
