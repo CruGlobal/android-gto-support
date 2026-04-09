@@ -1,28 +1,29 @@
 package org.ccci.gto.android.common.kotlin.coroutines
 
-import java.util.concurrent.atomic.AtomicBoolean
+import kotlin.concurrent.atomics.AtomicBoolean
+import kotlin.concurrent.atomics.ExperimentalAtomicApi
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.yield
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertFalse
-import org.junit.Assert.assertThrows
-import org.junit.Assert.assertTrue
-import org.junit.Test
 
-@OptIn(ExperimentalCoroutinesApi::class)
+@OptIn(ExperimentalCoroutinesApi::class, ExperimentalAtomicApi::class)
 class ReadWriteMutexTest {
     private val mutex = ReadWriteMutex()
 
     @Test
     fun testWriteExclusion() {
-        runBlocking {
+        runTest {
             launch {
                 expect(3)
                 mutex.write.withLock {
@@ -42,7 +43,7 @@ class ReadWriteMutexTest {
 
     @Test
     fun testReadShared() {
-        runBlocking {
+        runTest {
             launch {
                 expect(3)
                 mutex.read.withLock {
@@ -64,7 +65,7 @@ class ReadWriteMutexTest {
 
     @Test
     fun testWriteLocksRead() {
-        runBlocking {
+        runTest {
             launch {
                 mutex.read.withLock {
                     expect(2)
@@ -84,7 +85,7 @@ class ReadWriteMutexTest {
         val owner1 = Any()
         val owner2 = Any()
         val owner3 = Any()
-        runBlocking {
+        runTest {
             launch {
                 expect(3)
                 mutex.write.withLock(owner1) {
@@ -114,7 +115,7 @@ class ReadWriteMutexTest {
     @Test
     fun testReaderReentrancy() {
         val owner = Any()
-        runBlocking {
+        runTest {
             expect(1)
             mutex.read.withLock(owner) {
                 expect(2)
@@ -134,8 +135,8 @@ class ReadWriteMutexTest {
 
     @Test(expected = IllegalStateException::class)
     fun testReadLockTooManyTimes() {
-        runBlocking {
-            (mutex as ReadWriteMutexImpl).readers.set(Long.MAX_VALUE)
+        runTest {
+            (mutex as ReadWriteMutexImpl).readers.store(Long.MAX_VALUE)
             mutex.read.lock()
         }
     }
@@ -146,25 +147,25 @@ class ReadWriteMutexTest {
     }
 
     @Test(timeout = 10000)
-    fun `GT-1423 readUnlock causes deadlock from runBlocking usage`() = runBlocking {
+    fun `GT-1423 - readUnlock causes deadlock from runBlocking usage`() = runTest {
         mutex.write.lock()
 
         launch(Dispatchers.Unconfined) {
             expect(1)
             mutex.read.lock()
             assertTrue(mutex.write.isLocked)
-            assertEquals(1, (mutex as ReadWriteMutexImpl).readers.get())
+            assertEquals(1, (mutex as ReadWriteMutexImpl).readers.load())
             expect(4)
             mutex.read.unlock()
-            assertEquals(0, mutex.readers.get())
+            assertEquals(0, mutex.readers.load())
         }
         expect(2)
 
-        assertThrows(IllegalStateException::class.java) {
+        assertFailsWith<IllegalStateException> {
             // this can cause a deadlock when runBlocking is being used
             mutex.read.unlock()
         }
-        assertEquals(0, (mutex as ReadWriteMutexImpl).readers.get())
+        assertEquals(0, (mutex as ReadWriteMutexImpl).readers.load())
         expect(3)
 
         mutex.write.unlock()
@@ -186,13 +187,13 @@ class ReadWriteMutexTest {
     }
 
     @Test
-    fun testInvalidReadUnlockCounterRaceCondition() {
+    fun testInvalidReadUnlockCounterRaceCondition() = runTest {
         repeat(10) {
-            runBlocking {
+            coroutineScope {
                 val running = AtomicBoolean(true)
                 val tasks = List(16) {
                     launch(Dispatchers.IO) {
-                        while (running.get()) {
+                        while (running.load()) {
                             try {
                                 mutex.read.unlock()
                             } catch (_: IllegalStateException) {
@@ -206,9 +207,9 @@ class ReadWriteMutexTest {
                     }
                 }
                 mutex.read.lock()
-                running.set(false)
+                running.store(false)
                 tasks.joinAll()
-                assertEquals(0, (mutex as ReadWriteMutexImpl).readers.get())
+                assertEquals(0, (mutex as ReadWriteMutexImpl).readers.load())
             }
         }
     }
@@ -222,7 +223,7 @@ class ReadWriteMutexTest {
 
     private fun finish(index: Int) {
         expect(index)
-        assertFalse("Should call 'finish(...)' at most once", finished)
+        assertFalse(finished, "Should call 'finish(...)' at most once")
         finished = true
     }
 }

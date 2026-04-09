@@ -1,7 +1,8 @@
 package org.ccci.gto.android.common.kotlin.coroutines
 
 import androidx.annotation.VisibleForTesting
-import java.util.concurrent.atomic.AtomicLong
+import kotlin.concurrent.atomics.AtomicLong
+import kotlin.concurrent.atomics.ExperimentalAtomicApi
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 
@@ -18,6 +19,7 @@ interface ReadWriteMutex {
 fun ReadWriteMutex(): ReadWriteMutex = ReadWriteMutexImpl()
 
 @VisibleForTesting
+@OptIn(ExperimentalAtomicApi::class)
 internal class ReadWriteMutexImpl : ReadWriteMutex {
     private val readLockMutex = Mutex()
     @VisibleForTesting
@@ -28,7 +30,7 @@ internal class ReadWriteMutexImpl : ReadWriteMutex {
         override suspend fun lock(owner: Any?) {
             readLockMutex.withLock {
                 while (true) {
-                    val count = readers.get()
+                    val count = readers.load()
                     check(count < Long.MAX_VALUE) {
                         "Attempt to lock the read mutex more than ${Long.MAX_VALUE} times concurrently"
                     }
@@ -42,7 +44,7 @@ internal class ReadWriteMutexImpl : ReadWriteMutex {
         override fun unlock(owner: Any?) {
             var count: Long
             do {
-                count = readers.get()
+                count = readers.load()
                 check(count > 0) { "Attempt to unlock the read mutex when it wasn't locked" }
             } while (!readers.compareAndSet(count, count - 1))
             if (count == 1L) write.unlock()
