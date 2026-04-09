@@ -2,24 +2,49 @@
 name: pr-review
 description: Review a pull request against gto-support project conventions. Use when asked to review a PR, check code quality, or audit changes.
 argument-hint: [pr-number]
-allowed-tools: Bash, Read, Grep, Glob
+allowed-tools: Bash, Read, Grep, Glob, Write, Edit
 ---
 
 Review pull request $ARGUMENTS against the gto-support project conventions.
 
 ## Steps
 
-1. Fetch the PR diff and metadata:
+1. Check for dismissed issues by reading `.claude/skills/pr-review/dismissed-issues.md` if it exists.
+   Load all dismissed entries — each has a **Pattern** and **Reason**. You will use these to suppress matching findings later.
+
+2. Fetch the PR diff and metadata. If `$ARGUMENTS` is provided, use it as the PR number:
 ```
 gh pr diff $ARGUMENTS
 gh pr view $ARGUMENTS
 ```
+If no PR number is given (or the above fails because no upstream PR exists), fall back to reviewing the current branch against `master`:
+```
+git diff master...HEAD
+git log master...HEAD --oneline
+```
+Use the branch name and commit log as the "title" in the review header.
 
-2. Identify all changed files and categorize them (new module, existing module change, build logic, source set restructure, dependency update, etc.).
+3. Identify all changed files and categorize them (new module, existing module change, build logic, source set restructure, dependency update, etc.).
 
-3. Review each category using the checklist below.
+4. Run ktlint and record the result for the Code Style checklist:
+```
+./gradlew :build-logic:ktlintCheck ktlintCheck
+```
+A failure is reported as a ❌ Must Fix item in the review output — it does not stop the rest of the review.
 
-4. Output a structured review.
+5. Review each category using the checklist below.
+
+6. Before outputting, cross-reference every finding against dismissed patterns. A finding matches a dismissed pattern when it describes the same class of issue (not necessarily the exact file/line — match by concept). Move matched findings to a separate suppressed list.
+
+7. Output a structured review (format below).
+
+8. After the review output, print:
+
+```
+---
+To dismiss a finding so it won't appear in future reviews, say:
+  dismiss: <short title> — <reason>
+```
 
 ---
 
@@ -49,7 +74,7 @@ gh pr view $ARGUMENTS
 - [ ] Source sets use KMP layout v2 names: `androidMain`, `androidUnitTest`, `androidInstrumentedTest`, `commonMain`, `commonTest`, `iosMain`, etc.
 - [ ] Android-specific code (framework APIs, `Context`, `android.*`, etc.) lives in `androidMain` — not `commonMain`
 - [ ] Dependencies declared in the most appropriate source set (not all dumped into `androidMain` if they belong in `commonMain`)
-- [ ] `compileOnly` dependencies (e.g. `swiperefreshlayout`) scoped correctly and not leaked to `commonMain`
+- [ ] `compileOnly` dependencies scoped correctly and not leaked to `commonMain`
 
 ### Dependency Management
 
@@ -63,9 +88,9 @@ gh pr view $ARGUMENTS
 ### Source Set Migrations (Android → KMP)
 
 When an existing Android module is converted to KMP:
-- [ ] Source files moved from `src/main/java/` → `src/androidMain/java/`
-- [ ] Test files moved from `src/test/java/` → `src/androidUnitTest/java/`
-- [ ] Instrumented test files moved from `src/androidTest/java/` → `src/androidInstrumentedTest/java/`
+- [ ] Source files moved from `src/main/` → `src/androidMain/`
+- [ ] Test files moved from `src/test/` → `src/androidUnitTest/`
+- [ ] Instrumented test files moved from `src/androidTest/` → `src/androidInstrumentedTest/`
 - [ ] Old `src/main/` and `src/test/` directories fully removed
 - [ ] `dependencies { }` block replaced with `kotlin { sourceSets { androidMain { dependencies { } } } }`
 - [ ] `android.namespace` kept (now set inside `android { }` block)
@@ -97,8 +122,6 @@ Changes to convention plugins or configuration files affect every module — rev
 
 ## Output Format
 
-Structure the review as:
-
 ```
 ## PR Review: <title> (#<number>)
 
@@ -116,9 +139,33 @@ Structure the review as:
 #### ❌ Must Fix
 - <file:line> — <issue> — <suggested fix>
 
+#### ⏭️ Suppressed
+- <short title> — dismissed: <reason>
+(omit this section entirely if nothing was suppressed)
+
 ### Overall Verdict
 APPROVE / REQUEST CHANGES / COMMENT
 <brief rationale>
 ```
 
 Be specific. Reference file paths and line numbers. Cite the relevant convention from CLAUDE.md or this checklist when flagging an issue.
+
+---
+
+## Handling Dismissals
+
+When the user says `dismiss: <title> — <reason>` (in any form — "dismiss the X issue because Y", etc.):
+
+1. Read `.claude/skills/pr-review/dismissed-issues.md` if it exists (create it if not).
+2. Run `git config user.name` to get the current user's name.
+3. Append a new entry in this format:
+
+```markdown
+## <title>
+**Pattern**: <describe the class of issue broadly enough to match future occurrences>
+**Reason**: <reason the user gave>
+**Dismissed**: <today's date as YYYY-MM-DD>
+**Dismissed by**: <git user.name>
+```
+
+4. Confirm to the user what was added and that it will be suppressed in future reviews.
