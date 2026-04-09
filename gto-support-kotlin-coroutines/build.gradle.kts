@@ -19,6 +19,7 @@ kotlin {
         commonTest {
             dependencies {
                 implementation(libs.kotlin.coroutines.test)
+                implementation(libs.turbine)
             }
         }
 
@@ -39,7 +40,6 @@ kotlin {
                 implementation(libs.androidx.core.ktx)
                 implementation(libs.androidx.arch.core.testing)
                 implementation(libs.androidx.lifecycle.livedata.core)
-                implementation(libs.turbine)
             }
         }
     }

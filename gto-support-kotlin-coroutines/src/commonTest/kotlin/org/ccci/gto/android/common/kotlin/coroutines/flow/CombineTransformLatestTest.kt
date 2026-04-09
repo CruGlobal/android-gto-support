@@ -1,6 +1,8 @@
 package org.ccci.gto.android.common.kotlin.coroutines.flow
 
 import app.cash.turbine.test
+import kotlin.test.Test
+import kotlin.test.assertEquals
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -8,8 +10,6 @@ import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.test.runTest
-import org.junit.Assert.assertEquals
-import org.junit.Test
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class CombineTransformLatestTest {
@@ -18,7 +18,7 @@ class CombineTransformLatestTest {
     private val flow3 = MutableStateFlow(0)
 
     @Test
-    fun `combineTransformLatest(flow1, flow2)`() = runTest {
+    fun `combineTransformLatest - 2 flows`() = runTest {
         val innerFlow = MutableSharedFlow<Int>()
 
         combineTransformLatest(flow1, flow2) { it1, it2 ->
@@ -57,7 +57,7 @@ class CombineTransformLatestTest {
     }
 
     @Test
-    fun `combineTransformLatest(flow1, flow2, flow3)`() = runTest {
+    fun `combineTransformLatest - 3 flows`() = runTest {
         val innerFlow = MutableSharedFlow<Int>()
 
         combineTransformLatest(flow1, flow2, flow3) { it1, it2, it3 ->
