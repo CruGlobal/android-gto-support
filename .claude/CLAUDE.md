@@ -16,7 +16,7 @@ This is a monorepo of 59+ Android/Kotlin Multiplatform (KMP) support libraries p
 ./gradlew test jvmTest
 
 # Run iOS tests (KMP modules with iOS targets)
-./gradlew iosX64Test iosX64BackgroundTest
+./gradlew iosX64Test
 
 # Run JavaScript tests
 ./gradlew jsBrowserTest jsNodeTest
@@ -62,7 +62,7 @@ This is a monorepo of 59+ Android/Kotlin Multiplatform (KMP) support libraries p
 
 Multiplatform modules support combinations of:
 - **Android** — primary target, publishes all library variants
-- **iOS** — arm64, x64, simulatorArm64; background thread test support enabled
+- **iOS** — arm64, x64, simulatorArm64
 - **JVM** — for non-Android JVM contexts
 - **JS** — browser + Node targets for select modules
 
