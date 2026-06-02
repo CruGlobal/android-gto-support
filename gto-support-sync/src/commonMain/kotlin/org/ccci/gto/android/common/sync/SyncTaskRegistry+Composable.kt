@@ -13,9 +13,21 @@ fun rememberSyncTaskRegistry(syncTracker: SyncTracker = rememberSyncTracker()) =
     remember(syncTracker) { SyncTaskRegistry(syncTracker) }
 
 @Composable
-fun SyncTaskRegistry.rememberSyncTask(task: SyncTracker.(force: Boolean) -> Unit): String? {
+fun SyncTaskRegistry.rememberSyncTask(task: SyncTracker.(force: Boolean) -> Unit) =
+    rememberSyncTask(keys = emptyArray(), task)
+
+@Composable
+fun SyncTaskRegistry.rememberSyncTask(key1: Any?, task: SyncTracker.(force: Boolean) -> Unit) =
+    rememberSyncTask(keys = arrayOf(key1), task)
+
+@Composable
+fun SyncTaskRegistry.rememberSyncTask(key1: Any?, key2: Any?, task: SyncTracker.(force: Boolean) -> Unit) =
+    rememberSyncTask(keys = arrayOf(key1, key2), task)
+
+@Composable
+fun SyncTaskRegistry.rememberSyncTask(vararg keys: Any?, task: SyncTracker.(force: Boolean) -> Unit): String? {
     var currId: String? by remember { mutableStateOf(null) }
-    DisposableEffect(this, task) {
+    DisposableEffect(this, *keys, task) {
         val id = registerSyncTask(task)
         currId = id
         onDispose {

@@ -8,6 +8,7 @@ import androidx.compose.ui.test.ExperimentalTestApi
 import androidx.compose.ui.test.runComposeUiTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertNotEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertSame
 import kotlinx.coroutines.test.TestScope
@@ -50,13 +51,15 @@ class SyncTaskRegistryComposableTest {
     @Test
     fun `rememberSyncTask - task is registered on composition`() = runComposeUiTest {
         val registry = SyncTaskRegistry(syncTracker)
+        var taskId: String? = null
         val invocations = mutableListOf<Boolean>()
 
-        setContent { registry.rememberSyncTask { force -> invocations.add(force) } }
+        setContent { taskId = registry.rememberSyncTask { force -> invocations.add(force) } }
         invocations.clear()
 
         registry.triggerSyncTasks()
 
+        assertNotNull(taskId)
         assertEquals(listOf(false), invocations)
     }
 
@@ -80,13 +83,63 @@ class SyncTaskRegistryComposableTest {
     }
 
     @Test
-    fun `rememberSyncTask - returns non-null ID after composition`() = runComposeUiTest {
+    fun `rememberSyncTask - stable across recompositions - no key`() = runComposeUiTest {
         val registry = SyncTaskRegistry(syncTracker)
+        var trigger by mutableIntStateOf(0)
         var taskId: String? = null
 
-        setContent { taskId = registry.rememberSyncTask { } }
+        setContent {
+            trigger
+            taskId = registry.rememberSyncTask { }
+        }
+        val initialId = taskId
+
+        trigger++
+        waitForIdle()
 
         assertNotNull(taskId)
+        assertEquals(initialId, taskId)
+    }
+
+    @Test
+    fun `rememberSyncTask - stable across recompositions - single key`() = runComposeUiTest {
+        val registry = SyncTaskRegistry(syncTracker)
+        var trigger by mutableIntStateOf(0)
+        var taskId: String? = null
+
+        setContent {
+            trigger
+            taskId = registry.rememberSyncTask("key") { }
+        }
+        val initialId = taskId
+
+        trigger++
+        waitForIdle()
+
+        assertNotNull(taskId)
+        assertEquals(initialId, taskId)
+    }
+
+    @Test
+    fun `rememberSyncTask - re-registers task when key changes`() = runComposeUiTest {
+        val registry = SyncTaskRegistry(syncTracker)
+        var taskId: String? = null
+        var key by mutableStateOf("initial")
+        val invocations = mutableListOf<Boolean>()
+
+        setContent { taskId = registry.rememberSyncTask(key) { force -> invocations.add(force) } }
+        val firstId = taskId
+        invocations.clear()
+
+        key = "changed"
+        waitForIdle()
+        invocations.clear()
+
+        registry.triggerSyncTasks()
+
+        assertNotNull(taskId)
+        assertNotEquals(firstId, taskId)
+        assertEquals(listOf(false), invocations)
     }
     // endregion SyncTaskRegistry.rememberSyncTask()
 }
