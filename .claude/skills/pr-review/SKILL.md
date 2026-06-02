@@ -26,11 +26,12 @@ Use the branch name and commit log as the "title" in the review header.
 
 3. Identify all changed files and categorize them (new module, existing module change, build logic, source set restructure, dependency update, etc.).
 
-4. Run ktlint and record the result for the Code Style checklist:
+4. Run ktlint and lint, recording results for the Code Style checklist:
 ```
 ./gradlew :build-logic:ktlintCheck ktlintCheck
+./gradlew lint
 ```
-A failure is reported as a ❌ Must Fix item in the review output — it does not stop the rest of the review.
+Failures are reported as ❌ Must Fix items in the review output — they do not stop the rest of the review.
 
 5. Review each category using the checklist below.
 
@@ -133,7 +134,7 @@ Changes to convention plugins or configuration files affect every module — rev
 ### Code Style
 
 - [ ] Kotlin files pass ktlint (run `:ktlintCheck`)
-- [ ] Java files pass Checkstyle
+- [ ] Android lint passes (run `:lint`)
 - [ ] Files end with a trailing newline
 - [ ] No unused imports
 - [ ] `internal` used appropriately — avoid over-exposing API surface
