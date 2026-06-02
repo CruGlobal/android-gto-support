@@ -13,11 +13,13 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
+                compileOnly(libs.androidx.annotation)
                 implementation(libs.kermit)
                 implementation(libs.kotlin.coroutines)
 
                 // region Composables
                 compileOnly(libs.compose.runtime)
+                compileOnly(libs.circuit.runtime)
                 // endregion Composables
             }
         }
@@ -36,14 +38,26 @@ kotlin {
             dependencies {
                 // HACK: compileOnly dependencies aren't supported on Kotlin/Native, so promote them to implementation
                 implementation(libs.compose.runtime)
+                implementation(libs.circuit.runtime)
             }
         }
 
         commonTest {
             dependencies {
+                implementation(projects.gtoSupportAndroidxTestJunit)
+
+                implementation(libs.circuit.runtime)
                 implementation(libs.compose.runtime)
+                implementation(libs.compose.ui.test)
                 implementation(libs.kotlin.coroutines.test)
                 implementation(libs.turbine)
+            }
+        }
+
+        androidUnitTest {
+            dependencies {
+                implementation(libs.androidx.compose.ui.test.manifest)
+                implementation(libs.robolectric)
             }
         }
     }
