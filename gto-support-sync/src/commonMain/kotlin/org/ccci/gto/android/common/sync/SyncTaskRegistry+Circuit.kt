@@ -24,3 +24,15 @@ fun CircuitContext.rememberSyncTaskRegistry(syncTracker: SyncTracker = rememberS
 @Composable
 fun CircuitContext.rememberSyncTask(task: SyncTracker.(force: Boolean) -> Unit) =
     syncTaskRegistry?.rememberSyncTask(task)
+
+@Composable
+fun CircuitContext.rememberSyncTask(key1: Any?, task: SyncTracker.(force: Boolean) -> Unit) =
+    syncTaskRegistry?.rememberSyncTask(key1, task)
+
+@Composable
+fun CircuitContext.rememberSyncTask(key1: Any?, key2: Any?, task: SyncTracker.(force: Boolean) -> Unit) =
+    syncTaskRegistry?.rememberSyncTask(key1, key2, task)
+
+@Composable
+fun CircuitContext.rememberSyncTask(vararg keys: Any?, task: SyncTracker.(force: Boolean) -> Unit) =
+    syncTaskRegistry?.rememberSyncTask(keys = keys, task)
