@@ -6,6 +6,7 @@ import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.Snapshot
 
@@ -30,8 +31,9 @@ fun SyncTaskRegistry.rememberSyncTask(key1: Any?, key2: Any?, task: SyncTracker.
 @Composable
 fun SyncTaskRegistry.rememberSyncTask(vararg keys: Any?, task: SyncTracker.(force: Boolean) -> Unit): String? {
     var currId: String? by remember { mutableStateOf(null) }
-    DisposableEffect(this, *keys, task) {
-        val id = registerSyncTask(task)
+    val task by rememberUpdatedState(task)
+    DisposableEffect(this, *keys) {
+        val id = registerSyncTask { task(it) }
         currId = id
         onDispose {
             unregisterSyncTask(id)
