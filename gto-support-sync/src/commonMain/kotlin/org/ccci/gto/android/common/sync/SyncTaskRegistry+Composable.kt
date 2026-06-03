@@ -2,11 +2,14 @@ package org.ccci.gto.android.common.sync
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.Snapshot
+
+val LocalSyncTaskRegistry = compositionLocalOf<SyncTaskRegistry?> { null }
 
 @Composable
 fun rememberSyncTaskRegistry(syncTracker: SyncTracker = rememberSyncTracker()) =
