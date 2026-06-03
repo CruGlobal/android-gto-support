@@ -13,7 +13,7 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
-                compileOnly(libs.androidx.annotation)
+                implementation(libs.androidx.annotation)
                 implementation(libs.kermit)
                 implementation(libs.kotlin.coroutines)
 
