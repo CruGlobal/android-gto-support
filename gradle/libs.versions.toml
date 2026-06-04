@@ -77,7 +77,7 @@ androidx-work-runtime = { module = "androidx.work:work-runtime", version = "2.11
 circuit-overlay = { module = "com.slack.circuit:circuit-overlay", version.ref = "circuit" }
 circuit-runtime = { module = "com.slack.circuit:circuit-runtime", version.ref = "circuit" }
 compose-foundation = "org.jetbrains.compose.foundation:foundation:1.10.3"
-compose-runtime = "org.jetbrains.compose.runtime:runtime:1.10.3"
+compose-runtime = "org.jetbrains.compose.runtime:runtime:1.11.1"
 compose-ui = { module = "org.jetbrains.compose.ui:ui", version.ref = "compose-ui" }
 compose-ui-test = { module = "org.jetbrains.compose.ui:ui-test", version.ref = "compose-ui" }
 dagger = { module = "com.google.dagger:dagger", version.ref = "dagger" }
