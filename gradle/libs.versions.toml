@@ -22,7 +22,7 @@ kotlinCoroutines = "1.11.0"
 ktlint = "1.8.0"
 ktlintGradle = "14.0.1"
 moshi = "1.15.2"
-okhttp3 = "5.3.2"
+okhttp3 = "5.4.0"
 okta = "1.2.1"
 scarlet = "0.1.12"
 
