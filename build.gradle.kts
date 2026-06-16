@@ -31,12 +31,6 @@ allprojects {
                 }
             }
         }
-
-        if (extensions.findByType<com.android.build.gradle.BaseExtension>() != null) {
-            dependencies {
-                add("compileOnly", libs.androidx.annotation)
-            }
-        }
     }
 }
 

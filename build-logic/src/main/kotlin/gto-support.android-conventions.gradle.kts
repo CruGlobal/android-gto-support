@@ -15,6 +15,8 @@ kotlin {
 }
 
 dependencies {
+    compileOnly(versionCatalog.findLibrary("androidx-annotation").get())
+
     testImplementation(versionCatalog.findBundle("android-test-framework").get())
 }
 
