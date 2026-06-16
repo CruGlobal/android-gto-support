@@ -10,18 +10,18 @@ import org.gradle.kotlin.dsl.withType
 //       this is prototyped in 1.6.20 and will probably reach beta in Kotlin 1.8 or 1.9
 // context(Project)
 internal fun LibraryExtension.baseConfiguration(project: Project) {
-    configureSdk()
+    configureSdk(project)
     configureProguardRules(project)
     configureTestOptions(project)
     project.configureDependencyResolutionStrategy()
 }
 
-private fun BaseExtension.configureSdk() {
-    compileSdkVersion(36)
+private fun BaseExtension.configureSdk(project: Project) {
+    compileSdkVersion(project.versionCatalog.findVersion("android-sdk-compile").get().requiredVersion.toInt())
 
     defaultConfig {
-        minSdk = 23
-        targetSdk = 36
+        minSdk = project.versionCatalog.findVersion("android-sdk-min").get().requiredVersion.toInt()
+        targetSdk = project.versionCatalog.findVersion("android-sdk-compile").get().requiredVersion.toInt()
     }
 }
 
