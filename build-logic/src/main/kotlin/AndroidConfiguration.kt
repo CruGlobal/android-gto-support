@@ -3,6 +3,7 @@ import com.android.build.gradle.BaseExtension
 import com.android.build.gradle.LibraryExtension
 import org.gradle.api.Project
 import org.gradle.api.tasks.testing.Test
+import org.gradle.kotlin.dsl.dependencies
 import org.gradle.kotlin.dsl.withType
 
 // TODO: provide Project using the new multiple context receivers functionality.
@@ -12,7 +13,7 @@ internal fun LibraryExtension.baseConfiguration(project: Project) {
     configureSdk()
     configureProguardRules(project)
     configureTestOptions(project)
-    project.configureCommonDependencies()
+    project.configureDependencyResolutionStrategy()
 }
 
 private fun BaseExtension.configureSdk() {
@@ -24,7 +25,7 @@ private fun BaseExtension.configureSdk() {
     }
 }
 
-private fun Project.configureCommonDependencies() {
+private fun Project.configureDependencyResolutionStrategy() {
     configurations.configureEach {
         resolutionStrategy {
             // HACK: force androidx-annotation version for several modules

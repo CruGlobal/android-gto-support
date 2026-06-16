@@ -34,17 +34,7 @@ allprojects {
 
         if (extensions.findByType<com.android.build.gradle.BaseExtension>() != null) {
             dependencies {
-                add("implementation", libs.kotlin.stdlib)
-
                 add("compileOnly", libs.androidx.annotation)
-
-                add("testImplementation", libs.androidx.test.junit)
-                add("testImplementation", libs.junit)
-                add("testImplementation", kotlin("test"))
-                add("testImplementation", libs.mockito)
-                add("testImplementation", libs.mockito.kotlin)
-                add("testImplementation", libs.mockk)
-                add("testImplementation", libs.robolectric)
             }
         }
     }

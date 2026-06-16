@@ -14,5 +14,9 @@ kotlin {
     configureJvmToolchain(project)
 }
 
+dependencies {
+    testImplementation(versionCatalog.findBundle("android-test-framework").get())
+}
+
 configureKtlint()
 configurePublishing()

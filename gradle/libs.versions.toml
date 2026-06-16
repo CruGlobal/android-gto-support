@@ -102,6 +102,7 @@ kotlin-gradle = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.
 kotlin-kover-gradlePlugin = "org.jetbrains.kotlinx:kover-gradle-plugin:0.9.8"
 kotlin-metadata-jvm = { module = "org.jetbrains.kotlin:kotlin-metadata-jvm", version.ref = "kotlin" }
 kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "kotlin" }
+kotlin-test-junit = { module = "org.jetbrains.kotlin:kotlin-test-junit", version.ref = "kotlin" }
 ktlint-gradle = { module = "org.jlleitschuh.gradle:ktlint-gradle", version.ref = "ktlintGradle"}
 ktlint-rules-compose = "io.nlopez.compose.rules:ktlint:0.6.1"
 leakcanary = "com.squareup.leakcanary:leakcanary-android:2.14"
@@ -138,6 +139,7 @@ weakdelegate = { module = "com.github.Karumi:WeakDelegate", version = "1.0.1" }
 ktlint = { module = "com.pinterest.ktlint:ktlint-cli", version.ref = "ktlint" }
 
 [bundles]
+android-test-framework = ["androidx-test-junit", "junit", "kotlin-test-junit", "mockito", "mockito-kotlin", "mockk", "robolectric"]
 androidx-compose-debug = ["androidx-compose-ui-test-manifest"]
 androidx-compose-testing = ["androidx-compose-ui-test"]
 ktlint-rulesets = ["ktlint-rules-compose"]
