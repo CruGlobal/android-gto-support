@@ -21,14 +21,6 @@ allprojects {
                 force(libs.androidx.sqlite)
                 force(libs.kotlin.coroutines)
                 force(libs.okio)
-
-                dependencySubstitution {
-                    // use the new condensed version of hamcrest
-                    substitute(module("org.hamcrest:hamcrest-core"))
-                        .using(module("org.hamcrest:hamcrest:${libs.versions.hamcrest.get()}"))
-                    substitute(module("org.hamcrest:hamcrest-library"))
-                        .using(module("org.hamcrest:hamcrest:${libs.versions.hamcrest.get()}"))
-                }
             }
         }
     }

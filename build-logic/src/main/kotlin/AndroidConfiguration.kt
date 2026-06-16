@@ -37,6 +37,15 @@ private fun Project.configureDependencyResolutionStrategy() {
             //       This can be removed when Dagger/Hilt is upgraded and the the build completes successfully without
             //       this override.
             force(versionCatalog.findLibrary("kotlin-metadata-jvm").get())
+
+            // use the new condensed version of hamcrest
+            dependencySubstitution {
+                val hamcrestVersion = versionCatalog.findVersion("hamcrest").get().requiredVersion
+                substitute(module("org.hamcrest:hamcrest-core"))
+                    .using(module("org.hamcrest:hamcrest:$hamcrestVersion"))
+                substitute(module("org.hamcrest:hamcrest-library"))
+                    .using(module("org.hamcrest:hamcrest:$hamcrestVersion"))
+            }
         }
     }
 }
