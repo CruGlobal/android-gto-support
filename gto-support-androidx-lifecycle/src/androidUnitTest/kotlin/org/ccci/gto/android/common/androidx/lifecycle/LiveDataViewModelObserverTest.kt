@@ -2,7 +2,7 @@ package org.ccci.gto.android.common.androidx.lifecycle
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelTestInternals
+import androidx.lifecycle.clear
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Before
@@ -27,7 +27,7 @@ class LiveDataViewModelObserverTest : BaseLiveDataTest() {
 
     @After
     fun cleanup() {
-        ViewModelTestInternals.clear(viewModel)
+        viewModel.clear()
     }
 
     @Test
@@ -36,7 +36,7 @@ class LiveDataViewModelObserverTest : BaseLiveDataTest() {
         liveData.value = 1
         verify(observer).onChanged(any())
 
-        ViewModelTestInternals.clear(viewModel)
+        viewModel.clear()
         liveData.value = 2
         verifyNoMoreInteractions(observer)
     }
@@ -114,7 +114,7 @@ class LiveDataViewModelObserverTest : BaseLiveDataTest() {
         liveData.observeOnce(viewModel, observer)
 
         // Lifecycle is destroyed so observer is removed before it can be called
-        ViewModelTestInternals.clear(viewModel)
+        viewModel.clear()
         liveData.value = 1
         verify(observer, never()).invoke(any())
     }
