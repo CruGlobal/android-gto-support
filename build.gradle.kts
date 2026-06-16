@@ -16,11 +16,9 @@ allprojects {
     afterEvaluate {
         configurations.all {
             resolutionStrategy {
-                force(libs.androidx.appcompat)
                 force(libs.androidx.core)
                 force(libs.androidx.sqlite)
                 force(libs.kotlin.coroutines)
-                force(libs.okio)
             }
         }
     }
