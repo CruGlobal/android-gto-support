@@ -12,14 +12,6 @@ allprojects {
             ?.let { version = "$version-$it" }
         version = "$version-SNAPSHOT"
     }
-
-    afterEvaluate {
-        configurations.all {
-            resolutionStrategy {
-                force(libs.androidx.core)
-            }
-        }
-    }
 }
 
 // region checkstyle
