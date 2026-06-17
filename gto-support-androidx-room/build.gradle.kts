@@ -17,5 +17,5 @@ dependencies {
     testFixturesApi(libs.junit)
     testFixturesImplementation(libs.androidx.arch.core.runtime)
     testFixturesImplementation(libs.androidx.test)
-    testFixturesCompileOnly(libs.kotlin.coroutines)
+    testFixturesImplementation(libs.kotlin.coroutines)
 }

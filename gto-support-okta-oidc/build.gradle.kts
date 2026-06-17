@@ -32,3 +32,7 @@ dependencies {
     testImplementation(libs.bundles.okhttp3.mockwebserver)
     testImplementation(libs.turbine)
 }
+
+configurations.all {
+    resolutionStrategy.force(libs.kotlin.coroutines)
+}
