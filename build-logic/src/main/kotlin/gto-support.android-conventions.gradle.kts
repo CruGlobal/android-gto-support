@@ -1,9 +1,9 @@
 plugins {
     id("com.android.library")
     kotlin("android")
-    id("maven-publish")
     id("org.jetbrains.kotlinx.kover")
-    id("org.jlleitschuh.gradle.ktlint")
+    id("ktlint-conventions")
+    id("publishing-conventions")
 }
 
 android {
@@ -14,5 +14,8 @@ kotlin {
     configureJvmToolchain(project)
 }
 
-configureKtlint()
-configurePublishing()
+dependencies {
+    compileOnly(versionCatalog.findLibrary("androidx-annotation").get())
+
+    testImplementation(versionCatalog.findBundle("android-test-framework").get())
+}

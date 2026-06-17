@@ -30,16 +30,14 @@ dependencies {
 
     // region Material Component Targets
     compileOnly(libs.materialComponents)
+    testImplementation(libs.materialComponents)
     // endregion Material Component Targets
 
     // region SimplePicassoImageView
     compileOnly(libs.androidx.appcompat)
     // endregion SimplePicassoImageView
 
-    compileOnly(libs.kotlin.coroutines)
-
     testImplementation(project(":testing:gto-support-picasso"))
-    testImplementation(libs.materialComponents)
     testImplementation(libs.kotlin.coroutines.android)
     testImplementation(libs.kotlin.coroutines.test)
 }

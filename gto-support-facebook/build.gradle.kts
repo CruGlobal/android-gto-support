@@ -10,6 +10,10 @@ dependencies {
     // region facebook-login
     compileOnly(libs.facebook.login)
     testImplementation(libs.facebook.login)
+
+    // region Coroutines Extensions
+    compileOnly(libs.kotlin.coroutines)
+    // endregion Coroutines Extensions
     // endregion facebook-login
 
     testImplementation(kotlin("test"))

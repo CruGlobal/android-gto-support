@@ -3,28 +3,29 @@ import com.android.build.gradle.BaseExtension
 import com.android.build.gradle.LibraryExtension
 import org.gradle.api.Project
 import org.gradle.api.tasks.testing.Test
+import org.gradle.kotlin.dsl.dependencies
 import org.gradle.kotlin.dsl.withType
 
 // TODO: provide Project using the new multiple context receivers functionality.
 //       this is prototyped in 1.6.20 and will probably reach beta in Kotlin 1.8 or 1.9
 // context(Project)
 internal fun LibraryExtension.baseConfiguration(project: Project) {
-    configureSdk()
+    configureSdk(project)
     configureProguardRules(project)
     configureTestOptions(project)
-    project.configureCommonDependencies()
+    project.configureDependencyResolutionStrategy()
 }
 
-private fun BaseExtension.configureSdk() {
-    compileSdkVersion(36)
+private fun BaseExtension.configureSdk(project: Project) {
+    compileSdkVersion(project.versionCatalog.findVersion("android-sdk-compile").get().requiredVersion.toInt())
 
     defaultConfig {
-        minSdk = 23
-        targetSdk = 36
+        minSdk = project.versionCatalog.findVersion("android-sdk-min").get().requiredVersion.toInt()
+        targetSdk = project.versionCatalog.findVersion("android-sdk-compile").get().requiredVersion.toInt()
     }
 }
 
-private fun Project.configureCommonDependencies() {
+private fun Project.configureDependencyResolutionStrategy() {
     configurations.configureEach {
         resolutionStrategy {
             // HACK: force androidx-annotation version for several modules
@@ -36,6 +37,15 @@ private fun Project.configureCommonDependencies() {
             //       This can be removed when Dagger/Hilt is upgraded and the the build completes successfully without
             //       this override.
             force(versionCatalog.findLibrary("kotlin-metadata-jvm").get())
+
+            // use the new condensed version of hamcrest
+            dependencySubstitution {
+                val hamcrestVersion = versionCatalog.findVersion("hamcrest").get().requiredVersion
+                substitute(module("org.hamcrest:hamcrest-core"))
+                    .using(module("org.hamcrest:hamcrest:$hamcrestVersion"))
+                substitute(module("org.hamcrest:hamcrest-library"))
+                    .using(module("org.hamcrest:hamcrest:$hamcrestVersion"))
+            }
         }
     }
 }

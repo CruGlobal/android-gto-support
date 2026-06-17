@@ -12,3 +12,7 @@ dependencies {
 
     compileOnly(libs.androidx.sqlite)
 }
+
+configurations.all {
+    resolutionStrategy.force(libs.androidx.sqlite)
+}

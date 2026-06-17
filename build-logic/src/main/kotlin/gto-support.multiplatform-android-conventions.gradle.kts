@@ -5,4 +5,12 @@ plugins {
 
 kotlin {
     configureAndroidTarget(project)
+
+    sourceSets {
+        androidUnitTest {
+            dependencies {
+                implementation(versionCatalog.findBundle("android-test-framework").get())
+            }
+        }
+    }
 }

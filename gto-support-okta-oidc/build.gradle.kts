@@ -23,12 +23,23 @@ dependencies {
     compileOnly(libs.kotlin.coroutines)
     // endregion Coroutines
 
+    // region LiveData
+    compileOnly(libs.androidx.lifecycle.livedata)
+    // endregion LiveData
+
     // region OkHttpOktaHttpClient
     compileOnly(libs.okhttp3)
+    testImplementation(libs.bundles.okhttp3.mockwebserver)
     // endregion OkHttpOktaHttpClient
 
     testImplementation(libs.androidx.arch.core.testing)
     testImplementation(libs.kotlin.coroutines.test)
-    testImplementation(libs.bundles.okhttp3.mockwebserver)
     testImplementation(libs.turbine)
+}
+
+configurations.all {
+    resolutionStrategy.force(
+        libs.androidx.lifecycle.livedata,
+        libs.kotlin.coroutines
+    )
 }

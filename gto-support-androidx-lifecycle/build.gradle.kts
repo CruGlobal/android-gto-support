@@ -6,7 +6,6 @@ plugins {
 android {
     namespace = "org.ccci.gto.android.common.androidx.lifecycle"
     configureCompose(project)
-    testFixtures.enable = true
 }
 
 kotlin {
@@ -67,8 +66,4 @@ kotlin {
             }
         }
     }
-}
-
-dependencies {
-    testFixturesApi(libs.androidx.lifecycle.viewmodel)
 }
