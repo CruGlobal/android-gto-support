@@ -4,12 +4,11 @@ plugins {
     kotlin("jvm")
     id("maven-publish")
     id("org.jetbrains.kotlinx.kover")
-    id("org.jlleitschuh.gradle.ktlint")
+    id("ktlint-conventions")
 }
 
 kotlin {
     configureJvmToolchain(project)
 }
 
-configureKtlint()
 configurePublishing()

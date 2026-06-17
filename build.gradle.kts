@@ -1,7 +1,7 @@
 plugins {
     id("build-logic")
     alias(libs.plugins.compose.compiler) apply false
-    alias(libs.plugins.ktlint)
+    id("ktlint-conventions")
 }
 
 allprojects {
@@ -33,5 +33,3 @@ allprojects {
     }
 }
 // endregion checkstyle
-
-configureKtlint()
