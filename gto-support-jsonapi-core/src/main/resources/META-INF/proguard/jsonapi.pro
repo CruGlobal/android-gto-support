@@ -9,7 +9,6 @@
 
 # Keep any JsonApiType object
 -keep @org.ccci.gto.android.common.jsonapi.annotation.JsonApiType class **
--keep @org.ccci.gto.android.common.jsonapi.annotation.JsonApiType class ** {
-  !transient <fields>;
-  @org.ccci.gto.android.common.jsonapi.annotation.JsonApiPostCreate <methods>;
+-keepclassmembers,allowoptimization,allowaccessmodification,allowrepackage @org.ccci.gto.android.common.jsonapi.annotation.JsonApiType class ** {
+    *;
 }
