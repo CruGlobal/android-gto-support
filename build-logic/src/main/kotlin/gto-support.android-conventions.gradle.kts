@@ -1,9 +1,9 @@
 plugins {
     id("com.android.library")
     kotlin("android")
-    id("maven-publish")
     id("org.jetbrains.kotlinx.kover")
     id("ktlint-conventions")
+    id("publishing-conventions")
 }
 
 android {
@@ -19,5 +19,3 @@ dependencies {
 
     testImplementation(versionCatalog.findBundle("android-test-framework").get())
 }
-
-configurePublishing()

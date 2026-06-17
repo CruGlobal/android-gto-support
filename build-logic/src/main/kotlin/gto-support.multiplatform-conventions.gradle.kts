@@ -1,8 +1,8 @@
 plugins {
     kotlin("multiplatform")
-    id("maven-publish")
     id("org.jetbrains.kotlinx.kover")
     id("ktlint-conventions")
+    id("publishing-conventions")
 }
 
 kotlin {
@@ -16,5 +16,3 @@ kotlin {
         }
     }
 }
-
-configurePublishing()
