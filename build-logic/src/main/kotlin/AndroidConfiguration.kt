@@ -3,7 +3,6 @@ import com.android.build.gradle.BaseExtension
 import com.android.build.gradle.LibraryExtension
 import org.gradle.api.Project
 import org.gradle.api.tasks.testing.Test
-import org.gradle.kotlin.dsl.dependencies
 import org.gradle.kotlin.dsl.withType
 
 // TODO: provide Project using the new multiple context receivers functionality.
@@ -86,14 +85,5 @@ private fun BaseExtension.configureTestOptions(project: Project) {
     // not all projects actually have tests
     project.tasks.withType<Test> {
         failOnNoDiscoveredTests.set(false)
-    }
-
-    // Test Sharding
-    val shard = project.findProperty("testShard")?.toString()?.toIntOrNull()
-    val totalShards = project.findProperty("testTotalShards")?.toString()?.toIntOrNull()
-    if (shard != null && totalShards != null) {
-        if (Math.floorMod(project.path.hashCode(), totalShards) != Math.floorMod(shard, totalShards)) {
-            project.androidComponents.beforeVariants { it.enableUnitTest = false }
-        }
     }
 }

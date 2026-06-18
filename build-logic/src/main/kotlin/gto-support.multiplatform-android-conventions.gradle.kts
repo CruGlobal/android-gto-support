@@ -14,3 +14,5 @@ kotlin {
         }
     }
 }
+
+configureTestSharding()
