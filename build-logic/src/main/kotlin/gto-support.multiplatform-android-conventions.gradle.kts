@@ -4,7 +4,7 @@ plugins {
 }
 
 kotlin {
-    androidLibrary {
+    android {
         compileSdk = project.versionCatalog.findVersion("android-sdk-compile").get().requiredVersion.toInt()
         minSdk = project.versionCatalog.findVersion("android-sdk-min").get().requiredVersion.toInt()
 

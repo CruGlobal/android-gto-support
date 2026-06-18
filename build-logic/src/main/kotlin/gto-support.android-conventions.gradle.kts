@@ -1,17 +1,15 @@
 plugins {
     id("com.android.library")
-    kotlin("android")
     id("org.jetbrains.kotlinx.kover")
     id("ktlint-conventions")
     id("publishing-conventions")
 }
 
 android {
-    compileSdkVersion(versionCatalog.findVersion("android-sdk-compile").get().requiredVersion.toInt())
+    compileSdk = versionCatalog.findVersion("android-sdk-compile").get().requiredVersion.toInt()
 
     defaultConfig {
         minSdk = versionCatalog.findVersion("android-sdk-min").get().requiredVersion.toInt()
-        targetSdk = versionCatalog.findVersion("android-sdk-compile").get().requiredVersion.toInt()
 
         consumerProguardFiles(rootProject.file("proguard-consumer-jetbrains.pro"))
     }
