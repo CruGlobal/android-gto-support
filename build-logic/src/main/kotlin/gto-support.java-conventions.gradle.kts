@@ -10,3 +10,5 @@ plugins {
 kotlin {
     configureJvmToolchain(project)
 }
+
+baseDependencyResolutionStrategy()

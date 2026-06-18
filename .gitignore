@@ -24,6 +24,3 @@ out/
 
 # Kotlin project ignores
 .kotlin/
-
-# Claude local settings
-.claude/settings.local.json

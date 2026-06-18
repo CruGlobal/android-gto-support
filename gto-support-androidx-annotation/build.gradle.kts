@@ -4,11 +4,11 @@ plugins {
     id("gto-support.multiplatform-android-conventions")
 }
 
-android {
-    namespace = "org.ccci.gto.support.androidx.annotation"
-}
-
 kotlin {
+    androidLibrary {
+        namespace = "org.ccci.gto.support.androidx.annotation"
+    }
+
     configureIosTarget()
     configureJsTarget()
 

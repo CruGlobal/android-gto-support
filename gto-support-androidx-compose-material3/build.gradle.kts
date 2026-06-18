@@ -1,10 +1,10 @@
 plugins {
     id("gto-support.android-conventions")
+    id("compose-conventions")
 }
 
 android {
     namespace = "org.ccci.gto.android.common.androidx.compose.material3"
-    configureCompose(project)
 }
 
 dependencies {

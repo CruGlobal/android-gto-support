@@ -2,11 +2,11 @@ plugins {
     id("gto-support.multiplatform-android-conventions")
 }
 
-android {
-    namespace = "org.ccci.gto.support.androidx.test.junit"
-}
-
 kotlin {
+    androidLibrary {
+        namespace = "org.ccci.gto.support.androidx.test.junit"
+    }
+
     configureIosTarget()
     configureJsTarget()
     configureJvmTarget()

@@ -1,14 +1,13 @@
 plugins {
     id("gto-support.multiplatform-android-conventions")
-    alias(libs.plugins.compose.compiler)
-}
-
-android {
-    namespace = "org.ccci.gto.android.common.androidx.lifecycle"
-    configureCompose(project)
+    id("compose-multiplatform-conventions")
 }
 
 kotlin {
+    androidLibrary {
+        namespace = "org.ccci.gto.android.common.androidx.lifecycle"
+    }
+
     configureIosTarget()
 
     sourceSets {
@@ -16,10 +15,6 @@ kotlin {
             dependencies {
                 api(libs.androidx.lifecycle.common)
                 implementation(libs.androidx.lifecycle.runtime)
-
-                // region Composables
-                compileOnly(libs.compose.runtime)
-                // endregion Composables
             }
         }
 
@@ -51,18 +46,11 @@ kotlin {
             }
         }
 
-        androidUnitTest {
+        androidHostTest {
             dependencies {
                 implementation(libs.androidx.arch.core.testing)
                 implementation(libs.androidx.core.ktx)
                 implementation(libs.androidx.lifecycle.viewmodel.savedstate)
-            }
-        }
-
-        nativeMain {
-            dependencies {
-                // HACK: compileOnly dependencies aren't supported on Kotlin/Native, so promote them to implementation
-                implementation(libs.compose.runtime)
             }
         }
     }

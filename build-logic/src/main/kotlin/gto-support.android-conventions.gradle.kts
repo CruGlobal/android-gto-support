@@ -19,3 +19,6 @@ dependencies {
 
     testImplementation(versionCatalog.findBundle("android-test-framework").get())
 }
+
+baseDependencyResolutionStrategy()
+configureTestSharding()
