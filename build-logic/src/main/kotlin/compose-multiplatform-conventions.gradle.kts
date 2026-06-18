@@ -1,10 +1,6 @@
 plugins {
-    id("gto-support.multiplatform-android-conventions")
+    id("gto-support.multiplatform-conventions")
     id("org.jetbrains.kotlin.plugin.compose")
-}
-
-android {
-    buildFeatures.compose = true
 }
 
 kotlin {

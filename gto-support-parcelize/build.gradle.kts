@@ -2,11 +2,11 @@ plugins {
     id("gto-support.multiplatform-android-conventions")
 }
 
-android {
-    namespace = "org.ccci.gto.android.common.parcelize"
-}
-
 kotlin {
+    androidLibrary {
+        namespace = "org.ccci.gto.android.common.parcelize"
+    }
+
     configureIosTarget()
     configureJsTarget()
 }

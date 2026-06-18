@@ -2,15 +2,13 @@ plugins {
     id("gto-support.multiplatform-android-conventions")
 }
 
-android {
-    namespace = "org.ccci.gto.android.common.jsonapi.retrofit2"
-
-    defaultConfig {
-        consumerProguardFile("src/jvmMain/resources/META-INF/proguard/jsonapi-retrofit2.pro")
-    }
-}
-
 kotlin {
+    androidLibrary {
+        namespace = "org.ccci.gto.android.common.jsonapi.retrofit2"
+
+        optimization.consumerKeepRules.file("src/jvmMain/resources/META-INF/proguard/jsonapi-retrofit2.pro")
+    }
+
     configureJvmTarget()
 
     sourceSets {

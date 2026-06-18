@@ -2,11 +2,11 @@ plugins {
     id("gto-support.multiplatform-android-conventions")
 }
 
-android {
-    namespace = "org.ccci.gto.android.common.kotlin.coroutines"
-}
-
 kotlin {
+    androidLibrary {
+        namespace = "org.ccci.gto.android.common.kotlin.coroutines"
+    }
+
     configureIosTarget()
 
     sourceSets {
@@ -36,7 +36,7 @@ kotlin {
             }
         }
 
-        androidUnitTest {
+        androidHostTest {
             dependencies {
                 implementation(libs.androidx.core.ktx)
                 implementation(libs.androidx.arch.core.testing)

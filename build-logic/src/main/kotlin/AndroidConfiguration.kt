@@ -1,8 +1,10 @@
 import com.android.build.gradle.BaseExtension
 import com.android.build.gradle.LibraryExtension
+import org.gradle.api.NamedDomainObjectContainer
 import org.gradle.api.Project
 import org.gradle.api.tasks.testing.Test
 import org.gradle.kotlin.dsl.withType
+import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSet
 
 // TODO: provide Project using the new multiple context receivers functionality.
 //       this is prototyped in 1.6.20 and will probably reach beta in Kotlin 1.8 or 1.9
@@ -43,3 +45,6 @@ private fun BaseExtension.configureTestOptions(project: Project) {
         failOnNoDiscoveredTests.set(false)
     }
 }
+
+internal fun NamedDomainObjectContainer<KotlinSourceSet>.androidHostTest(action: KotlinSourceSet.() -> Unit) =
+    named("androidHostTest").configure(action)

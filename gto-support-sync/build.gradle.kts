@@ -3,11 +3,11 @@ plugins {
     alias(libs.plugins.compose.compiler)
 }
 
-android {
-    namespace = "org.ccci.gto.android.common.sync"
-}
-
 kotlin {
+    androidLibrary {
+        namespace = "org.ccci.gto.android.common.sync"
+    }
+
     configureIosTarget()
 
     sourceSets {
@@ -54,7 +54,7 @@ kotlin {
             }
         }
 
-        androidUnitTest {
+        androidHostTest {
             dependencies {
                 implementation(libs.androidx.compose.ui.test.manifest)
                 implementation(libs.robolectric)
