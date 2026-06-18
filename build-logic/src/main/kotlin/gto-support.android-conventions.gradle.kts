@@ -7,7 +7,30 @@ plugins {
 }
 
 android {
-    baseConfiguration(project)
+    compileSdkVersion(versionCatalog.findVersion("android-sdk-compile").get().requiredVersion.toInt())
+
+    defaultConfig {
+        minSdk = versionCatalog.findVersion("android-sdk-min").get().requiredVersion.toInt()
+        targetSdk = versionCatalog.findVersion("android-sdk-compile").get().requiredVersion.toInt()
+
+        consumerProguardFiles(rootProject.file("proguard-consumer-jetbrains.pro"))
+    }
+
+    testOptions {
+        unitTests {
+            isIncludeAndroidResources = true
+
+            all {
+                // increase unit tests max heap size
+                it.maxHeapSize = "2g"
+            }
+        }
+    }
+}
+
+// not all projects actually have tests
+tasks.withType<Test> {
+    failOnNoDiscoveredTests.set(false)
 }
 
 kotlin {

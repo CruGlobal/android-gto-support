@@ -1,50 +1,5 @@
-import com.android.build.gradle.BaseExtension
-import com.android.build.gradle.LibraryExtension
 import org.gradle.api.NamedDomainObjectContainer
-import org.gradle.api.Project
-import org.gradle.api.tasks.testing.Test
-import org.gradle.kotlin.dsl.withType
 import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSet
-
-// TODO: provide Project using the new multiple context receivers functionality.
-//       this is prototyped in 1.6.20 and will probably reach beta in Kotlin 1.8 or 1.9
-// context(Project)
-internal fun LibraryExtension.baseConfiguration(project: Project) {
-    configureSdk(project)
-    configureProguardRules(project)
-    configureTestOptions(project)
-}
-
-private fun BaseExtension.configureSdk(project: Project) {
-    compileSdkVersion(project.versionCatalog.findVersion("android-sdk-compile").get().requiredVersion.toInt())
-
-    defaultConfig {
-        minSdk = project.versionCatalog.findVersion("android-sdk-min").get().requiredVersion.toInt()
-        targetSdk = project.versionCatalog.findVersion("android-sdk-compile").get().requiredVersion.toInt()
-    }
-}
-
-private fun BaseExtension.configureProguardRules(project: Project) {
-    defaultConfig.consumerProguardFiles(project.rootProject.file("proguard-consumer-jetbrains.pro"))
-}
-
-private fun BaseExtension.configureTestOptions(project: Project) {
-    testOptions {
-        unitTests {
-            isIncludeAndroidResources = true
-
-            all {
-                // increase unit tests max heap size
-                it.maxHeapSize = "2g"
-            }
-        }
-    }
-
-    // not all projects actually have tests
-    project.tasks.withType<Test> {
-        failOnNoDiscoveredTests.set(false)
-    }
-}
 
 internal fun NamedDomainObjectContainer<KotlinSourceSet>.androidHostTest(action: KotlinSourceSet.() -> Unit) =
     named("androidHostTest").configure(action)
