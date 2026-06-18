@@ -1,10 +1,10 @@
 plugins {
     id("gto-support.android-conventions")
+    id("compose-conventions")
 }
 
 android {
     namespace = "org.ccci.gto.android.common.androidx.compose"
-    configureCompose(project)
     testFixtures.enable = true
 }
 

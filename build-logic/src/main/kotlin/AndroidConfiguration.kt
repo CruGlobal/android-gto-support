@@ -1,4 +1,3 @@
-import com.android.build.api.dsl.CommonExtension
 import com.android.build.gradle.BaseExtension
 import com.android.build.gradle.LibraryExtension
 import org.gradle.api.Project
@@ -25,23 +24,6 @@ private fun BaseExtension.configureSdk(project: Project) {
 
 private fun BaseExtension.configureProguardRules(project: Project) {
     defaultConfig.consumerProguardFiles(project.rootProject.file("proguard-consumer-jetbrains.pro"))
-}
-
-// TODO: provide Project using the new multiple context receivers functionality.
-//       this is prototyped in 1.6.20 and will probably reach beta in Kotlin 1.8 or 1.9
-// context(Project)
-fun CommonExtension<*, *, *, *, *, *>.configureCompose(project: Project) {
-    buildFeatures.compose = true
-    project.pluginManager.apply("org.jetbrains.kotlin.plugin.compose")
-
-    project.dependencies.apply {
-        // the runtime dependency is required to build a library when compose is enabled
-        addProvider("implementation", project.versionCatalog.findLibrary("androidx-compose-runtime").get())
-
-        // these dependencies are required for tests of Composables
-        addProvider("debugImplementation", project.versionCatalog.findBundle("androidx-compose-debug").get())
-        addProvider("testDebugImplementation", project.versionCatalog.findBundle("androidx-compose-testing").get())
-    }
 }
 
 private fun BaseExtension.configureTestOptions(project: Project) {

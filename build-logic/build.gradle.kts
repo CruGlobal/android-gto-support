@@ -24,6 +24,7 @@ repositories {
 dependencies {
     compileOnly(gradleKotlinDsl())
     implementation(libs.android.gradle)
+    implementation(libs.compose.compiler.gradle)
     implementation(libs.kotlin.gradle)
     implementation(libs.kotlin.kover.gradlePlugin)
     implementation(libs.ktlint.gradle)

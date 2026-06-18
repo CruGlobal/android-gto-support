@@ -1,11 +1,10 @@
 plugins {
     id("gto-support.multiplatform-android-conventions")
-    alias(libs.plugins.compose.compiler)
+    id("compose-multiplatform-conventions")
 }
 
 android {
     namespace = "org.ccci.gto.android.common.androidx.lifecycle"
-    configureCompose(project)
 }
 
 kotlin {
