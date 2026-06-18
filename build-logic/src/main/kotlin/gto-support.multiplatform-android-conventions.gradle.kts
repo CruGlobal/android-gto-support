@@ -30,7 +30,4 @@ kotlin {
     }
 }
 
-// TODO: re-enable test sharding once AGP 9 implements
-//       KotlinMultiplatformAndroidComponentsExtension.beforeVariants(); it currently throws
-//       "not supported yet" when we try to disable unit tests for excluded shards.
-// configureTestSharding()
+configureTestSharding()

@@ -1,4 +1,5 @@
-import com.android.build.api.variant.HasUnitTestBuilder
+import com.android.build.api.variant.HasHostTestsBuilder
+import com.android.build.api.variant.HostTestBuilder
 import org.gradle.api.Project
 
 internal fun Project.configureTestSharding() {
@@ -7,7 +8,7 @@ internal fun Project.configureTestSharding() {
     if (shard != null && totalShards != null) {
         if (Math.floorMod(path.hashCode(), totalShards) != Math.floorMod(shard, totalShards)) {
             androidComponents.beforeVariants {
-                (it as? HasUnitTestBuilder)?.enableUnitTest = false
+                (it as? HasHostTestsBuilder)?.hostTests?.get(HostTestBuilder.UNIT_TEST_TYPE)?.enable = false
             }
         }
     }
