@@ -1,6 +1,6 @@
 [versions]
 accompanist = "0.36.0"
-android-gradle-plugin = "8.13.2"
+android-gradle-plugin = "9.2.1"
 android-sdk-compile = "36"
 android-sdk-min = "23"
 androidx-activity = "1.13.0"
@@ -15,7 +15,7 @@ androidx-lifecycle = "2.10.0"
 androidx-room = "2.8.4"
 checkstyle = "7.8.2"
 circuit = "0.33.1"
-dagger = "2.58"
+dagger = "2.59.2"
 hamcrest = "3.0"
 jsonUnit = "5.1.2"
 jvm = "17"
@@ -154,4 +154,5 @@ dagger-hilt = { id = "com.google.dagger.hilt.android", version.ref = "dagger" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 ksp = { id = "com.google.devtools.ksp", version = "2.3.9" }
 ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlintGradle" }
+legacy-kapt = { id = "com.android.legacy-kapt", version.ref = "android-gradle-plugin" }
 moshiX = { id = "dev.zacsweers.moshix", version = "0.35.0"}

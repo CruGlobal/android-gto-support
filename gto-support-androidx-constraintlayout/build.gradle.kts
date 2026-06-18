@@ -1,6 +1,6 @@
 plugins {
     id("gto-support.android-conventions")
-    kotlin("kapt")
+    alias(libs.plugins.legacy.kapt)
 }
 
 android {

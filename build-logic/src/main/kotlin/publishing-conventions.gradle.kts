@@ -1,7 +1,5 @@
-import com.android.build.gradle.api.AndroidSourceDirectorySet
 import org.gradle.api.artifacts.repositories.PasswordCredentials
 import org.gradle.api.publish.maven.MavenPublication
-import org.gradle.api.tasks.bundling.Jar
 
 plugins {
     id("maven-publish")
@@ -31,12 +29,8 @@ publishing {
 pluginManager.withPlugin("com.android.library") {
     // not Kotlin Multiplatform, so configure the android publication
     if (!pluginManager.hasPlugin("org.jetbrains.kotlin.multiplatform")) {
-        android.publishing.singleVariant("release")
-
-        val sourcesJar = tasks.register<Jar>("sourcesJar") {
-            with(android.sourceSets["main"]) {
-                from(java.srcDirs, (kotlin as AndroidSourceDirectorySet).srcDirs)
-            }
+        android.publishing.singleVariant("release") {
+            withSourcesJar()
         }
 
         afterEvaluate {
@@ -44,10 +38,6 @@ pluginManager.withPlugin("com.android.library") {
                 publications {
                     register<MavenPublication>("release") {
                         from(components["release"])
-
-                        artifact(sourcesJar) {
-                            classifier = "sources"
-                        }
                     }
                 }
             }

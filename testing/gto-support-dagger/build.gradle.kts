@@ -1,7 +1,7 @@
 plugins {
     id("gto-support.android-testing-conventions")
     alias(libs.plugins.dagger.hilt)
-    kotlin("kapt")
+    alias(libs.plugins.ksp)
 }
 
 android.namespace = "org.ccci.gto.android.common.testing.dagger"
@@ -12,5 +12,5 @@ dependencies {
 
     api(libs.androidx.appcompat)
 
-    kapt(libs.dagger.hilt.compiler)
+    ksp(libs.dagger.hilt.compiler)
 }

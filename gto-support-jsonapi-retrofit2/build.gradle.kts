@@ -3,7 +3,7 @@ plugins {
 }
 
 kotlin {
-    androidLibrary {
+    android {
         namespace = "org.ccci.gto.android.common.jsonapi.retrofit2"
 
         optimization.consumerKeepRules.file("src/jvmMain/resources/META-INF/proguard/jsonapi-retrofit2.pro")
