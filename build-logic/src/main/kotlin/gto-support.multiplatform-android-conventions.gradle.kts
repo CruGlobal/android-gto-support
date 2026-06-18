@@ -3,8 +3,14 @@ plugins {
     id("com.android.library")
 }
 
+android {
+    baseConfiguration(project)
+}
+
 kotlin {
-    configureAndroidTarget(project)
+    androidTarget {
+        publishAllLibraryVariants()
+    }
 
     sourceSets {
         androidUnitTest {
