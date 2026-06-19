@@ -2,7 +2,6 @@ import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 
 fun KotlinMultiplatformExtension.configureIosTarget() {
     iosArm64()
-    iosX64()
     iosSimulatorArm64()
 }
 
