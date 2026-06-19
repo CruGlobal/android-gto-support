@@ -18,6 +18,7 @@
       "groupName": "Kotlin and IR codegen plugins",
       "description": "Kotlin IR plugins are tightly coupled to Kotlin version.",
       "matchPackageNames": [
+        "org.jetbrains.kotlin:compose-compiler-gradle-plugin{/,}**",
         "org.jetbrains.kotlin:kotlin{/,}**",
         "org.jetbrains.kotlin.plugin.compose{/,}**",
         "org.jetbrains.kotlin.plugin.serialization{/,}**",
