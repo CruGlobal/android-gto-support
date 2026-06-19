@@ -8,7 +8,7 @@ androidx-arch-core = "2.2.0"
 androidx-collection = "1.6.0"
 androidx-compose = "1.11.3"
 androidx-compose-ui = "1.11.3"
-compose-ui = "1.10.3"
+compose-ui = "1.11.1"
 androidx-core = "1.18.0"
 androidx-fragment = "1.8.9"
 androidx-lifecycle = "2.10.0"
@@ -79,7 +79,7 @@ androidx-work-runtime = { module = "androidx.work:work-runtime", version = "2.11
 circuit-overlay = { module = "com.slack.circuit:circuit-overlay", version.ref = "circuit" }
 circuit-runtime = { module = "com.slack.circuit:circuit-runtime", version.ref = "circuit" }
 compose-compiler-gradle = { module = "org.jetbrains.kotlin:compose-compiler-gradle-plugin", version.ref = "kotlin" }
-compose-foundation = "org.jetbrains.compose.foundation:foundation:1.10.3"
+compose-foundation = "org.jetbrains.compose.foundation:foundation:1.11.1"
 compose-runtime = "org.jetbrains.compose.runtime:runtime:1.10.3"
 compose-ui = { module = "org.jetbrains.compose.ui:ui", version.ref = "compose-ui" }
 compose-ui-test = { module = "org.jetbrains.compose.ui:ui-test", version.ref = "compose-ui" }
