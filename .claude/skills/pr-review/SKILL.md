@@ -126,7 +126,7 @@ When an existing Android module is converted to KMP:
 ### Build Logic (`build-logic/`)
 
 Changes to convention plugins or configuration files affect every module — review carefully:
-- [ ] No SDK version changes without intentional justification (compileSdk 36, minSdk 23, targetSdk 36)
+- [ ] No SDK version changes without intentional justification (compileSdk 37, minSdk 23)
 - [ ] JVM toolchain version not changed inadvertently (Java 17)
 - [ ] Publishing configuration changes don't break group IDs (`org.ccci.gto.android` / `org.ccci.gto.android.testing`)
 - [ ] Test heap or sharding configuration changes are intentional

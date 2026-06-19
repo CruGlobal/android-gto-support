@@ -78,7 +78,7 @@ Convention plugins centralize all Gradle configuration. Apply these instead of c
 | `gto-support.multiplatform-conventions` | KMP modules (no Android target) |
 | `gto-support.multiplatform-android-conventions` | KMP modules with Android target |
 
-These plugins configure: compile SDK 36 / min SDK 23 / target SDK 36, Java toolchain 17, 2GB test heap, Robolectric, ktlint, Kover, and publishing.
+These plugins configure: compile SDK 37 / min SDK 23, Java toolchain 17, 2GB test heap, Robolectric, ktlint, Kover, and publishing.
 
 ### Publishing
 
