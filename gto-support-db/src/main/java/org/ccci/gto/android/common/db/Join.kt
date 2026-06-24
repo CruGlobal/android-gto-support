@@ -1,13 +1,11 @@
 package org.ccci.gto.android.common.db
 
-import android.annotation.SuppressLint
 import android.os.Parcelable
 import androidx.annotation.RestrictTo
 import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-@SuppressLint("SupportAnnotationUsage")
 data class Join<S : Any, T : Any> private constructor(
     @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP) val target: Table<T>,
     @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP) val base: Join<S, *>? = null,
