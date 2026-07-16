@@ -2,16 +2,12 @@ package org.ccci.gto.android.common.kotlin.coroutines
 
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertFalse
-import kotlin.test.assertTrue
 import kotlin.test.fail
 import kotlin.time.Duration.Companion.seconds
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Semaphore
 import kotlinx.coroutines.test.runTest
-import kotlinx.coroutines.yield
 
 class MutexMapTest {
     private val map = MutexMap()

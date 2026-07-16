@@ -5,7 +5,6 @@ import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities.NET_CAPABILITY_INTERNET
 import android.net.NetworkCapabilities.NET_CAPABILITY_VALIDATED
-import android.os.Build
 import androidx.annotation.RequiresPermission
 
 @RequiresPermission(ACCESS_NETWORK_STATE)
