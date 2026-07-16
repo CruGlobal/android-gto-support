@@ -39,7 +39,7 @@ Failures are reported as ❌ Must Fix items in the review output — they do not
 
 7. Output a structured review (format below).
 
-8. Post inline comments to the PR for every ⚠️ and ❌ finding that references a specific file and line number. Before posting, deduplicate against all existing comments (resolved or not) to avoid re-posting anything already raised:
+8. Post inline comments to the PR for every ⚠️ and ❌ finding that references a specific file and line number. **Skip this step entirely when reviewing a branch with no PR — there is nowhere to post.** Before posting, deduplicate against all existing comments (resolved or not) to avoid re-posting anything already raised:
 
 ```bash
 # Get the head SHA, repo, and all existing review comments (resolved and unresolved)
@@ -66,7 +66,13 @@ gh api repos/$REPO/pulls/$ARGUMENTS/reviews \
 
 Use the exact file path from the diff and the line number in the current version of the file (RIGHT side). Each comment body should contain the full finding description. Always append the attribution footer `\n\n🤖 Posted by [Claude Code](https://claude.ai/code)` to each comment. If no new actionable findings exist (only ✅ items or all already commented), skip this step.
 
-9. After the review output, print:
+9. If the review has **no ❌ or ⚠️ findings** (only ✅ and/or ⏭️ items), ask the user whether to post the full review. **Skip this step entirely when reviewing a branch with no PR — branch review mode is local-only.** Otherwise, if they say yes:
+   - Check whether the PR author matches the current git user (`gh pr view $ARGUMENTS --json author -q .author.login` vs `gh api user -q .login`)
+   - If it is a **self-review**, post with `--comment` (GitHub does not allow self-approval)
+   - If it is **someone else's PR**, ask whether to approve or just comment, then post with `--approve` or `--comment` accordingly
+   - Always append `\n\n🤖 Posted by [Claude Code](https://claude.ai/code)` to the body
+
+10. After the review output, print:
 
 ```
 ---
@@ -93,13 +99,14 @@ To dismiss a finding so it won't appear in future reviews, say:
 - [ ] KMP without Android → `gto-support.multiplatform-conventions`
 - [ ] Java/JVM-only → `gto-support.java-conventions`
 - [ ] Android test utility → `gto-support.android-testing-conventions`
+- [ ] Compose-enabled module applies `compose-conventions` (Android) or `compose-multiplatform-conventions` (KMP) — not a manual `buildFeatures.compose = true` plus hand-added compose runtime/debug/test dependencies
 
 ### Kotlin Multiplatform (KMP) Modules
 
 - [ ] iOS targets added via `configureIosTarget()` (not manually declared)
 - [ ] JS target added via `configureJsTarget()` if needed
 - [ ] JVM target added via `configureJvmTarget()` if needed
-- [ ] Source sets use KMP layout v2 names: `androidMain`, `androidUnitTest`, `androidInstrumentedTest`, `commonMain`, `commonTest`, `iosMain`, etc.
+- [ ] Source sets use KMP layout v2 names: `androidMain`, `androidHostTest`, `androidDeviceTest`, `commonMain`, `commonTest`, `iosMain`, etc. (the `com.android.kotlin.multiplatform.library` plugin uses `androidHostTest`/`androidDeviceTest`, not `androidUnitTest`/`androidInstrumentedTest`)
 - [ ] Android-specific code (framework APIs, `Context`, `android.*`, etc.) lives in `androidMain` — not `commonMain`
 - [ ] Dependencies declared in the most appropriate source set (not all dumped into `androidMain` if they belong in `commonMain`)
 - [ ] `compileOnly` dependencies scoped correctly and not leaked to `commonMain`
@@ -112,16 +119,17 @@ To dismiss a finding so it won't appear in future reviews, say:
 - [ ] `api` vs `implementation` vs `compileOnly` scoping is appropriate:
   - `api` only for types exposed in the module's public API
   - `compileOnly` for optional integrations (caller must provide the dependency)
+- [ ] Annotation processors use KSP (`ksp(...)` + `alias(libs.plugins.ksp)`), not kapt. `legacy.kapt` (`com.android.legacy-kapt`) is reserved for AGP databinding / view-binding modules that KSP can't handle — not for Dagger/Hilt/Moshi codegen
 
 ### Source Set Migrations (Android → KMP)
 
 When an existing Android module is converted to KMP:
 - [ ] Source files moved from `src/main/` → `src/androidMain/`
-- [ ] Test files moved from `src/test/` → `src/androidUnitTest/`
-- [ ] Instrumented test files moved from `src/androidTest/` → `src/androidInstrumentedTest/`
+- [ ] Test files moved from `src/test/` → `src/androidHostTest/`
+- [ ] Instrumented test files moved from `src/androidTest/` → `src/androidDeviceTest/`
 - [ ] Old `src/main/` and `src/test/` directories fully removed
 - [ ] `dependencies { }` block replaced with `kotlin { sourceSets { androidMain { dependencies { } } } }`
-- [ ] `android.namespace` kept (now set inside `android { }` block)
+- [ ] `android.namespace` kept (now set inside the `kotlin { android { namespace = … } }` block)
 
 ### Build Logic (`build-logic/`)
 
@@ -133,11 +141,15 @@ Changes to convention plugins or configuration files affect every module — rev
 
 ### Code Style
 
-- [ ] Kotlin files pass ktlint (run `:ktlintCheck`)
-- [ ] Android lint passes (run `:lint`)
-- [ ] Files end with a trailing newline
-- [ ] No unused imports
+Ktlint and `.editorconfig` enforce most style rules (line length, final newline, unused imports, formatter rules) — step 4's pre-flight already covers those. Manual checks:
+
+- [ ] No trailing comma on single-line function/constructor signatures or calls (ktlint's `trailing-comma-on-*` rules are disabled in `.editorconfig`, so the pre-flight does NOT catch this)
 - [ ] `internal` used appropriately — avoid over-exposing API surface
+
+### Testing
+
+- [ ] Flow-based tests use Turbine (`flow.test { … }`)
+- [ ] Tests live in the correct source set — `commonTest` for shared logic, `androidHostTest` for Android/Robolectric tests
 
 ### General Quality
 
@@ -145,6 +157,10 @@ Changes to convention plugins or configuration files affect every module — rev
 - [ ] No Android framework types (`Context`, `Activity`, etc.) leaked into `commonMain` source sets
 - [ ] No hardcoded strings that should be version catalog entries
 - [ ] Module interdependencies use `project(":module-name")` — no external coordinate references to sibling modules
+
+### PR Hygiene
+
+- [ ] No unrelated auto-formatter whitespace churn mixed into the diff (check `git diff master...HEAD --stat` — flag files whose churn doesn't match the stated PR scope)
 
 ---
 
