@@ -1,11 +1,9 @@
 package org.ccci.gto.android.common.db
 
-import android.annotation.SuppressLint
 import androidx.annotation.RestrictTo
 import androidx.annotation.VisibleForTesting
 import org.ccci.gto.android.common.db.AbstractDao.Companion.bindValues
 
-@SuppressLint("SupportAnnotationUsage")
 data class Query<T : Any> private constructor(
     @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
     val table: Table<T>,
