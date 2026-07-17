@@ -1,6 +1,6 @@
 [versions]
 accompanist = "0.36.0"
-android-gradle-plugin = "9.2.1"
+android-gradle-plugin = "9.3.0"
 android-sdk-compile = "37"
 android-sdk-min = "23"
 androidx-activity = "1.13.0"
