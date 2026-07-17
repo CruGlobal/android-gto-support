@@ -9,5 +9,6 @@ android {
 }
 
 dependencies {
-    testFixturesImplementation(libs.circuit.overlay)
+    // Deprecated: use org.ccci.gto.android.testing:gto-support-circuit directly.
+    testFixturesApi(projects.testing.gtoSupportCircuit)
 }
