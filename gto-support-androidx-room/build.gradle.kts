@@ -10,9 +10,14 @@ kotlin {
     configureIosTarget()
 
     sourceSets {
-        androidMain {
+        commonMain {
             dependencies {
                 implementation(libs.androidx.room.common)
+            }
+        }
+
+        androidMain {
+            dependencies {
                 implementation(libs.androidx.room.runtime)
             }
         }
