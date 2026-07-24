@@ -1,21 +1,25 @@
 plugins {
-    id("gto-support.android-conventions")
+    id("gto-support.multiplatform-android-conventions")
 }
 
-android {
-    namespace = "org.ccci.gto.android.common.androidx.room"
+kotlin {
+    android {
+        namespace = "org.ccci.gto.android.common.androidx.room"
+    }
 
-    testFixtures.enable = true
-}
+    configureIosTarget()
 
-dependencies {
-    implementation(libs.androidx.room.common)
-    implementation(libs.androidx.room.ktx)
-    implementation(libs.androidx.room.runtime)
+    sourceSets {
+        commonMain {
+            dependencies {
+                implementation(libs.androidx.room.common)
+            }
+        }
 
-    testFixturesApi(libs.androidx.room.runtime)
-    testFixturesApi(libs.junit)
-    testFixturesImplementation(libs.androidx.arch.core.runtime)
-    testFixturesImplementation(libs.androidx.test)
-    testFixturesImplementation(libs.kotlin.coroutines)
+        androidMain {
+            dependencies {
+                implementation(libs.androidx.room.runtime)
+            }
+        }
+    }
 }
