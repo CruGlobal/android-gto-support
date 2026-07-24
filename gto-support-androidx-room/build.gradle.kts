@@ -13,7 +13,6 @@ kotlin {
         androidMain {
             dependencies {
                 implementation(libs.androidx.room.common)
-                implementation(libs.androidx.room.ktx)
                 implementation(libs.androidx.room.runtime)
             }
         }
