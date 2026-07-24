@@ -1,4 +1,4 @@
-package org.ccci.gto.android.common.androidx.room
+package org.ccci.gto.android.common.testing.androidx.room
 
 import android.annotation.SuppressLint
 import androidx.room.Room.inMemoryDatabaseBuilder

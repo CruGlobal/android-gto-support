@@ -102,6 +102,7 @@ include("gto-support-turbine")
 include("gto-support-util")
 include("gto-support-viewpager")
 
+include("testing:gto-support-androidx-room")
 include("testing:gto-support-circuit")
 include("testing:gto-support-dagger")
 include("testing:gto-support-picasso")
