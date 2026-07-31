@@ -1,5 +1,6 @@
 plugins {
     id("gto-support.multiplatform-android-testing-conventions")
+    id("compose-multiplatform-conventions")
 }
 
 kotlin {
