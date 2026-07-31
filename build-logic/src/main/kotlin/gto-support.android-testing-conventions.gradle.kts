@@ -3,3 +3,5 @@ plugins {
 }
 
 group = "org.ccci.gto.android.testing"
+
+kover.disable()
