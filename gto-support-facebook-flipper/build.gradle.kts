@@ -1,3 +1,5 @@
+// @deprecated Since v4.6.0, the upstream Flipper library has been deprecated
+
 plugins {
     id("gto-support.android-conventions")
 }

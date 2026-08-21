@@ -8,6 +8,7 @@ import com.facebook.flipper.plugins.databases.impl.FrameworkSQLiteDatabaseWrappi
 import com.facebook.flipper.plugins.databases.impl.SqliteDatabaseConnectionProvider
 import java.io.File
 
+@Deprecated("Since v4.6.0, the upstream Flipper library has been deprecated")
 class SQLiteOpenHelperDatabaseConnectionProvider @JvmOverloads constructor(
     context: Context,
     private val fallback: SqliteDatabaseConnectionProvider = DefaultSqliteDatabaseConnectionProvider(),
