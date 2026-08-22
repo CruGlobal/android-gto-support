@@ -25,7 +25,7 @@ ktlint = "1.8.0"
 ktlintGradle = "14.2.0"
 moshi = "1.15.2"
 okhttp3 = "5.5.0"
-okta = "1.2.1"
+okta = "3.0.0"
 scarlet = "0.1.12"
 
 [libraries]
