@@ -1,6 +1,5 @@
 package org.ccci.gto.android.common.db
 
-import android.annotation.SuppressLint
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import androidx.annotation.RestrictTo
@@ -112,9 +111,7 @@ inline fun <reified T : Any> Dao.find(vararg key: Any) = find(T::class.java, *ke
 inline fun <T : Any> Query<T>.get(dao: Dao) = dao.get(this)
 inline fun Query<*>.getCursor(dao: Dao) = dao.getCursor(this)
 
-@SuppressLint("RestrictedApi")
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 inline fun <reified T : Any> Dao.getService() = getService(T::class.java)
-@SuppressLint("RestrictedApi")
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 inline fun <reified T : Any> Dao.getService(noinline defaultValue: () -> T) = getService(T::class.java, defaultValue)
